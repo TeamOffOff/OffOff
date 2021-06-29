@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,9 @@
 		EAE502EA2689E3D6002B1C6A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAE502E82689E3D6002B1C6A /* Main.storyboard */; };
 		EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAE502EB2689E3D7002B1C6A /* Assets.xcassets */; };
 		EAE502EF2689E3D7002B1C6A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAE502ED2689E3D7002B1C6A /* LaunchScreen.storyboard */; };
+		EAE50300268AA1C6002B1C6A /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = EAE502FF268AA1C6002B1C6A /* Then */; };
+		EAE50303268AA643002B1C6A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = EAE50302268AA643002B1C6A /* Alamofire */; };
+		EAE50306268AA660002B1C6A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EAE50305268AA660002B1C6A /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,8 @@
 		EAE502EB2689E3D7002B1C6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EAE502EE2689E3D7002B1C6A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EAE502F02689E3D7002B1C6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EAE502F7268AA0E0002B1C6A /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
+		EAE502FB268AA0EE002B1C6A /* SnapKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SnapKit.xcframework; path = Carthage/Build/SnapKit.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +36,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE50303268AA643002B1C6A /* Alamofire in Frameworks */,
+				EAE50300268AA1C6002B1C6A /* Then in Frameworks */,
+				EAE50306268AA660002B1C6A /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +50,7 @@
 			children = (
 				EAE502E12689E3D6002B1C6A /* OffOff_iOS */,
 				EAE502E02689E3D6002B1C6A /* Products */,
+				EAE502F6268AA0E0002B1C6A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +76,15 @@
 			path = OffOff_iOS;
 			sourceTree = "<group>";
 		};
+		EAE502F6268AA0E0002B1C6A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EAE502FB268AA0EE002B1C6A /* SnapKit.xcframework */,
+				EAE502F7268AA0E0002B1C6A /* Alamofire.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -83,6 +101,11 @@
 			dependencies = (
 			);
 			name = OffOff_iOS;
+			packageProductDependencies = (
+				EAE502FF268AA1C6002B1C6A /* Then */,
+				EAE50302268AA643002B1C6A /* Alamofire */,
+				EAE50305268AA660002B1C6A /* SnapKit */,
+			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -110,6 +133,11 @@
 				Base,
 			);
 			mainGroup = EAE502D62689E3D6002B1C6A;
+			packageReferences = (
+				EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */,
+				EAE50301268AA643002B1C6A /* XCRemoteSwiftPackageReference "Alamofire" */,
+				EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -216,7 +244,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -271,7 +299,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -289,15 +317,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8RLH6CULJ3;
 				INFOPLIST_FILE = OffOff_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -309,15 +338,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8RLH6CULJ3;
 				INFOPLIST_FILE = OffOff_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -343,6 +373,51 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/devxoul/Then";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+		EAE50301268AA643002B1C6A /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.4.3;
+			};
+		};
+		EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EAE502FF268AA1C6002B1C6A /* Then */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */;
+			productName = Then;
+		};
+		EAE50302268AA643002B1C6A /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAE50301268AA643002B1C6A /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		EAE50305268AA660002B1C6A /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EAE502D72689E3D6002B1C6A /* Project object */;
 }
