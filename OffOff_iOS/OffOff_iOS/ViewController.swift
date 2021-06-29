@@ -8,12 +8,23 @@
 import UIKit
 
 class ViewController: UIViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        let testView = TestView(frame: .zero)
+        view.addSubview(testView)
+        testView.setupView()
+        testView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
     }
-
-
 }
 
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+struct PreviewController: PreviewProvider{
+    static var previews: some View {
+        ViewController().showPreview(.iPhone11Pro)
+    }
+}
+#endif
