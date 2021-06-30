@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
+		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* ViewController.swift */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
+		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				EAE5030C268AB820002B1C6A /* TestView.swift */,
+				EA0EFFBC268B468B009C4722 /* LoginView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -191,6 +194,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EAE5030D268AB820002B1C6A /* TestView.swift in Sources */,
 				EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* ViewController.swift in Sources */,

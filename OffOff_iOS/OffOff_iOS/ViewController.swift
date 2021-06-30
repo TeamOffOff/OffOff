@@ -8,13 +8,17 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    lazy var loginView = LoginView(frame: .zero)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let testView = TestView(frame: .zero)
-        view.addSubview(testView)
-        testView.setupView()
-        testView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+        view.backgroundColor = .white
+        view.addSubview(loginView)
+        loginView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(view.snp.width).dividedBy(2.0)
+            $0.centerY.equalToSuperview().inset(100)
         }
     }
 }
