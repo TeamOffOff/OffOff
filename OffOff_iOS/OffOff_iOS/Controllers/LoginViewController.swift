@@ -7,9 +7,10 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class LoginViewController: UIViewController {
     
     lazy var loginView = LoginView(frame: .zero)
+    private let accountViewModel = AccountViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +29,7 @@ import SwiftUI
 
 struct PreviewController: PreviewProvider{
     static var previews: some View {
-        ViewController().showPreview(.iPhone11Pro)
+        LoginViewController().showPreview(.iPhone11Pro)
     }
 }
 #endif
