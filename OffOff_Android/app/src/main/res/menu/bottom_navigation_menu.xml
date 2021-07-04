@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 하단 navigation menu를 구성할 item 선언 -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_outline_home_24"
+        android:title="Home" />
+
+    <item android:id="@+id/navigation_schedule"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:title="Schedule" />
+
+    <item android:id="@+id/navigation_boards"
+        android:icon="@drawable/ic_baseline_list_alt_24"
+        android:title="Boards" />
+
+    <item android:id="@+id/navigation_notification"
+        android:icon="@drawable/ic_outline_notifications_24"
+        android:title="Notification" />
+
+</menu>
