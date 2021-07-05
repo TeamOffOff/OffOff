@@ -31,6 +31,7 @@
         app:itemIconTint="@drawable/menu_item_selected"
         app:itemTextColor="@drawable/menu_item_selected"
         app:labelVisibilityMode="unlabeled"
+        app:itemBackground="@color/design_default_color_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.1"
