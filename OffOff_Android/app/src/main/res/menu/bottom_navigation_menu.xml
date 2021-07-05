@@ -4,23 +4,23 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/navigation_home"
+    <item android:id="@+id/homeFragment"
         android:icon="@drawable/ic_outline_home_24"
         android:title="Home" />
 
-    <item android:id="@+id/navigation_boards"
+    <item android:id="@+id/boardsFragment"
         android:icon="@drawable/ic_baseline_list_alt_24"
         android:title="Boards" />
 
-    <item android:id="@+id/navigation_schedule"
+    <item android:id="@+id/scheduleFragment"
         android:icon="@drawable/ic_baseline_calendar_today_24"
         android:title="Schedule" />
 
-    <item android:id="@+id/navigation_notification"
+    <item android:id="@+id/notificationFragment"
         android:icon="@drawable/ic_outline_notifications_24"
         android:title="Notification" />
 
-    <item android:id="@+id/navigation_settings"
+    <item android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_outline_settings_24"
         android:title="Settings" />
 
