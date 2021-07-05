@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA07345526929C01007830ED /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345426929C01007830ED /* Post.swift */; };
+		EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */ = {isa = PBXBuildFile; fileRef = EA0734562692A0B8007830ED /* PostsDummyData.json */; };
+		EA07345B2692AD56007830ED /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostsViewModel.swift */; };
+		EA07345F2692CECA007830ED /* PostListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345E2692CECA007830ED /* PostListTableViewController.swift */; };
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
@@ -30,6 +34,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EA07345426929C01007830ED /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		EA0734562692A0B8007830ED /* PostsDummyData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostsDummyData.json; sourceTree = "<group>"; };
+		EA07345A2692AD56007830ED /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
+		EA07345E2692CECA007830ED /* PostListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListTableViewController.swift; sourceTree = "<group>"; };
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
 		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +95,7 @@
 		EAE502E12689E3D6002B1C6A /* OffOff_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				EA0734562692A0B8007830ED /* PostsDummyData.json */,
 				EAF2128F2690818800E47942 /* Data */,
 				EAF2127C268FEC4000E47942 /* Controllers */,
 				EAF2127B268FEC3100E47942 /* View Models */,
@@ -143,6 +152,7 @@
 			children = (
 				EAF2127F268FEE6500E47942 /* Account.swift */,
 				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
+				EA07345426929C01007830ED /* Post.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -151,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				EAF21281268FF08800E47942 /* AccountViewModel.swift */,
+				EA07345A2692AD56007830ED /* PostsViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -162,6 +173,7 @@
 				EAF212852690158100E47942 /* TabBarController.swift */,
 				EAF212872690355B00E47942 /* HomeViewController.swift */,
 				EAF2128B26907B9600E47942 /* CommunityTableViewController.swift */,
+				EA07345E2692CECA007830ED /* PostListTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -241,6 +253,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */,
 				EAE502EF2689E3D7002B1C6A /* LaunchScreen.storyboard in Resources */,
 				EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */,
 			);
@@ -253,6 +266,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA07345B2692AD56007830ED /* PostsViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
@@ -261,9 +275,11 @@
 				EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */,
 				EAF21282268FF08800E47942 /* AccountViewModel.swift in Sources */,
 				EAF2128C26907B9600E47942 /* CommunityTableViewController.swift in Sources */,
+				EA07345F2692CECA007830ED /* PostListTableViewController.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAF21280268FEE6500E47942 /* Account.swift in Sources */,
+				EA07345526929C01007830ED /* Post.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,
 				EAF212882690355B00E47942 /* HomeViewController.swift in Sources */,
