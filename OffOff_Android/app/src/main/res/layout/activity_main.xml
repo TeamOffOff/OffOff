@@ -8,6 +8,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <!-- 프래그먼트들이 보여질 컨테이너뷰 -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_nav_host"
