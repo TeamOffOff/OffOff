@@ -24,15 +24,14 @@ class TabBarController: UITabBarController {
         navController.tabBarItem.title = title
         navController.tabBarItem.image = image
         navController.navigationBar.prefersLargeTitles = false
-        navController.navigationBar.backgroundColor = .green
         rootViewController.navigationItem.title = title
         return navController
     }
     
     func setupVCs() {
         viewControllers = [
-            createNavController(for: PostListTableViewController(), title: NSLocalizedString("Home", comment: ""), image: UIImage(systemName: "house")!),
-            createNavController(for: CommunityTableViewController(), title: NSLocalizedString("Community", comment: ""), image: UIImage(systemName: "text.justify")!),
+            createNavController(for: PostListViewController(), title: NSLocalizedString("Home", comment: ""), image: UIImage(systemName: "house")!),
+            createNavController(for: CommunityListViewController(), title: NSLocalizedString("Community", comment: ""), image: UIImage(systemName: "text.justify")!),
             createNavController(for: LoginViewController(), title: NSLocalizedString("Profile", comment: ""), image: UIImage(systemName: "person")!)
         ]
     }

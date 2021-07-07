@@ -8,7 +8,7 @@
 import Foundation
 
 class PostsViewModel {
-    let posts: Box<[Post?]> = Box([])
+    let posts: Box<[PostModel?]> = Box([])
     
     var count: Int {
         return posts.value.count
@@ -16,13 +16,13 @@ class PostsViewModel {
     
     init() {
         fetchData()
-        print(count)
     }
     
-    func getPost(index: Int) -> Post? {
+    func getPost(index: Int) -> PostModel? {
         return posts.value[index]
     }
     
+    // TODO: 특정 게시판의 데이터를 파싱
     func fetchData() {
         // API Call 해서 해당 게시판의 데이터 받아오기
         let decoder = JSONDecoder()
@@ -30,14 +30,13 @@ class PostsViewModel {
         guard let jsonData = loadJsonFile() else {
             return
         }
-        if let posts = try? decoder.decode([Post].self, from: jsonData) {
-            print(posts.first?.metadata.title as Any)
+        if let posts = try? decoder.decode([PostModel].self, from: jsonData) {
             boxingData(posts: posts)
         }
         print(#fileID, #function, #line, "")
     }
     
-    private func boxingData(posts: [Post]) {
+    private func boxingData(posts: [PostModel]) {
         posts.forEach {
             self.posts.value.append($0)
         }

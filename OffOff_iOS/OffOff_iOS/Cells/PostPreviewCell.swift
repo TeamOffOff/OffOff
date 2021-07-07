@@ -1,76 +1,34 @@
 //
-//  PostListTableViewController.swift
+//  PostPreviewCell.swift
 //  OffOff_iOS
 //
-//  Created by Lee Nam Jun on 2021/07/05.
+//  Created by Lee Nam Jun on 2021/07/06.
 //
 
 import UIKit
-
-class PostListTableViewController: UITableViewController {
-    let postViewModel = PostsViewModel()
-    
-    override func loadView() {
-        super.loadView()
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 200
-        tableView.register(PostPreviewCell.classForCoder(), forCellReuseIdentifier: PostPreviewCell.identifier)
-    }
-}
-
-// MARK: - Table view data source
-extension PostListTableViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postViewModel.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostPreviewCell.identifier, for: indexPath) as? PostPreviewCell else {
-            return UITableViewCell()
-        }
-        cell.backgroundColor = .green
-        cell.setData(post: postViewModel.getPost(index: indexPath.row)!)
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 20.0
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-}
 
 class PostPreviewCell: UITableViewCell {
     static let identifier = "PostPreviewCell"
     
     var titleLabel = UILabel().then {
         $0.textAlignment = .left
+        $0.font = UIFont.boldSystemFont(ofSize: 17)
     }
     var previewTextView = UILabel().then {
         $0.numberOfLines = 2
-        #if DEBUG
-        $0.backgroundColor = .red
-        #endif
     }
     var authorLabel = UILabel().then {
-        $0.textColor = .lightGray
+        $0.textColor = .darkGray
+        $0.font = UIFont.systemFont(ofSize: 15)
         $0.textAlignment = .right
     }
     var dateLabel = UILabel().then {
         $0.textColor = .lightGray
-        #if DEBUG
-        $0.backgroundColor = .blue
-        #endif
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         setupCell()
     }
     
@@ -101,8 +59,7 @@ class PostPreviewCell: UITableViewCell {
         }
     }
     
-    func setData(post: Post) {
-        print(post.contents.content)
+    func setData(post: PostModel) {
         titleLabel.text = post.metadata.title
         previewTextView.text = post.contents.content
         authorLabel.text = post.metadata.author
@@ -116,13 +73,3 @@ class PostPreviewCell: UITableViewCell {
         self.contentView.addSubview(previewTextView)
     }
 }
-
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-@available (iOS 13.0, *)
-struct PostListPreview: PreviewProvider{
-    static var previews: some View {
-        PostListTableViewController().showPreview(.iPhone11Pro)
-    }
-}
-#endif

@@ -25,7 +25,7 @@
 }
 */
 
-struct Post: Codable {
+struct PostModel: Codable {
     var content_id: String
     var metadata: Metadata
     var contents: Contents
@@ -45,8 +45,4 @@ struct Post: Codable {
     struct Contents: Codable {
         var content: String
     }
-}
-
-struct Posts: Codable {
-    var posts: [Post]
 }

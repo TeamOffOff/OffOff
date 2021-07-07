@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommunityTableViewController: UITableViewController {
+class CommunityListViewController: UITableViewController {
 
     override func loadView() {
         super.loadView()
@@ -41,6 +41,14 @@ class CommunityTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 20.0
+    }
+    
+    // TODO: 선택한 게시판 정보 전달
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = PostListViewController.embededController()
+        vc.modalPresentationStyle = .overFullScreen
+        present(vc, animated: true, completion: nil)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
