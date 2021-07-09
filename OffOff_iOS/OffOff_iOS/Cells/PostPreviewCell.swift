@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SnapKit
+import Then
 
 class PostPreviewCell: UITableViewCell {
     static let identifier = "PostPreviewCell"

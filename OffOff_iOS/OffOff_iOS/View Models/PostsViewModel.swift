@@ -54,5 +54,14 @@ class PostsViewModel {
         
         return jsonData
     }
+    
+    // TODO: 새로운 포스트 게시
+    static func makeNewPost(title: String, content: String, board_type: String) {
+        let metadata = Metadata(author: "홍길동", title: title, date: Date().toString(), board_type: board_type, preview: "preview")
+        let newPost = PostModel(content_id: "Test_id", metadata: metadata, contents: Contents(content: content))
+        let encoder = JSONEncoder()
+        let data = try? encoder.encode(newPost)
+        print(data)
+    }
 }
 

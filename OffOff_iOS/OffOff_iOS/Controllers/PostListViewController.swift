@@ -13,13 +13,11 @@ class PostListViewController: UITableViewController {
     let postViewModel = PostsViewModel()
     
     override func loadView() {
-//        super.loadView()
-//        self.view = .init()
         self.tableView = .init()
         self.title = "자유게시판" // TODO: 받아온 게시판 정보로 타이틀 지정 필요
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close
-                                                                , target: self, action: #selector(addTapped))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(onCloseButton))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(onNewPostButton))
         
         // 모델에 새로운 포스트가 들어오면 테이블뷰 리로드
         postViewModel.posts.bind { _ in
@@ -30,17 +28,18 @@ class PostListViewController: UITableViewController {
         tableView.register(PostPreviewCell.classForCoder(), forCellReuseIdentifier: PostPreviewCell.identifier)
     }
     
-    @objc func addTapped() {
+    @objc func onCloseButton() {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func onNewPostButton() {
+        self.navigationController?.pushViewController(NewPostViewController(), animated: true)
     }
     
     static func embededController() -> UINavigationController {
         let vc = UINavigationController(rootViewController: PostListViewController())
         vc.modalPresentationStyle = .fullScreen
-        
-        vc.navigationItem.setLeftBarButton(UIBarButtonItem(
-                                            title: "Something Else", style: .plain
-                                            , target: nil, action: nil), animated: true)
+        vc.navigationItem.setLeftBarButton(UIBarButtonItem(title: "Something Else", style: .plain, target: nil, action: nil), animated: true)
         
         return vc
     }

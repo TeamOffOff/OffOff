@@ -29,20 +29,20 @@ struct PostModel: Codable {
     var content_id: String
     var metadata: Metadata
     var contents: Contents
-    
-    struct Metadata: Codable {
-        var author: String
-        var title: String
-        var date: String
-        var board_type: String
-        var preview: String
-        var likes: Int
-        var view_count: Int
-        var report_count: Int
-        var reply_count: Int
-    }
-    
-    struct Contents: Codable {
-        var content: String
-    }
+}
+
+struct Contents: Codable {
+    var content: String
+}
+
+struct Metadata: Codable {
+    var author: String
+    var title: String
+    var date: String
+    var board_type: String
+    var preview: String
+    var likes: Int = 0
+    var view_count: Int = 0
+    var report_count: Int = 0
+    var reply_count: Int = 0
 }
