@@ -60,8 +60,15 @@ class PostsViewModel {
         let metadata = Metadata(author: "홍길동", title: title, date: Date().toString(), board_type: board_type, preview: "preview")
         let newPost = PostModel(content_id: "Test_id", metadata: metadata, contents: Contents(content: content))
         let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
         let data = try? encoder.encode(newPost)
-        print(data)
+        
+        #if DEBUG
+        if let jsonData = data, let jsonString = String(data: jsonData, encoding: .utf8){
+            print(jsonString)
+        }
+        #endif
+        
     }
 }
 

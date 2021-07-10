@@ -28,6 +28,7 @@ class NewPostViewController: UIViewController {
     // 제목, 내용 비어있는지 검사
     @objc private func onSaveButton() {
         PostsViewModel.makeNewPost(title: newPostView.titleTextField.text!, content: newPostView.contentTextView.text!, board_type: "자유게시판")
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
