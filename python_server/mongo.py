@@ -44,7 +44,6 @@ class MongoHelper:
 
 if __name__ == "__main__":
     mongodb = MongoHelper()
-
     print(mongodb.insert_one({"test": "hi"}))
     for string in mongodb.find():
         print(string)
