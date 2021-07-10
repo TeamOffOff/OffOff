@@ -10,8 +10,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.OffOff_Android">
-        <activity android:name=".view.ui.UserActivity"></activity>
+        android:theme="@style/Theme.OffOff_Android"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".view.ui.PostActivity"></activity>
+        <activity android:name=".view.ui.BoardActivity" />
+        <activity android:name=".view.ui.UserActivity" />
         <activity android:name=".view.ui.SearchActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
