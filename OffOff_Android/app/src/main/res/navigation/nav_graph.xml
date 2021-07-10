@@ -11,11 +11,13 @@
         android:name="com.yuuuzzzin.offoff_android.view.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+
     <fragment
         android:id="@+id/boardsFragment"
         android:name="com.yuuuzzzin.offoff_android.view.ui.BoardsFragment"
         android:label="fragment_boards"
         tools:layout="@layout/fragment_boards" />
+
     <fragment
         android:id="@+id/scheduleFragment"
         android:name="com.yuuuzzzin.offoff_android.view.ui.ScheduleFragment"
@@ -31,4 +33,5 @@
         android:name="com.yuuuzzzin.offoff_android.view.ui.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+
 </navigation>

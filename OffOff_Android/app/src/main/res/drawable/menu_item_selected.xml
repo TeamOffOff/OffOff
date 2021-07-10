@@ -8,6 +8,6 @@
         android:color="@color/black"/>
 
     <item android:state_checked="false"
-        android:color="#BEBEBE"/>
+        android:color="@color/gray"/>
 
 </selector>
