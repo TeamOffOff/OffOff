@@ -13,6 +13,8 @@
 		EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345E2692CECA007830ED /* PostListViewController.swift */; };
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
+		EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B36269BFBD200F6F903 /* PostServices.swift */; };
+		EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B40269C5F7D00F6F903 /* OffOff_iOSTests.swift */; };
 		EA72D75B2698276C00EB07DA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75A2698276C00EB07DA /* PostView.swift */; };
 		EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */; };
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
@@ -37,6 +39,16 @@
 		EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF21290269081B800E47942 /* CommunityListSampleData.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		EA420B43269C5F7D00F6F903 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EAE502D72689E3D6002B1C6A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EAE502DE2689E3D6002B1C6A;
+			remoteInfo = OffOff_iOS;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		EA07345426929C01007830ED /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		EA0734562692A0B8007830ED /* PostsDummyData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostsDummyData.json; sourceTree = "<group>"; };
@@ -44,6 +56,10 @@
 		EA07345E2692CECA007830ED /* PostListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
 		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		EA420B36269BFBD200F6F903 /* PostServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostServices.swift; sourceTree = "<group>"; };
+		EA420B3E269C5F7D00F6F903 /* OffOff_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA420B40269C5F7D00F6F903 /* OffOff_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffOff_iOSTests.swift; sourceTree = "<group>"; };
+		EA420B42269C5F7D00F6F903 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EA72D75A2698276C00EB07DA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -70,6 +86,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		EA420B3B269C5F7D00F6F903 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAE502DC2689E3D6002B1C6A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -83,10 +106,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA420B3F269C5F7D00F6F903 /* OffOff_iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				EA420B40269C5F7D00F6F903 /* OffOff_iOSTests.swift */,
+				EA420B42269C5F7D00F6F903 /* Info.plist */,
+			);
+			path = OffOff_iOSTests;
+			sourceTree = "<group>";
+		};
 		EAE502D62689E3D6002B1C6A = {
 			isa = PBXGroup;
 			children = (
 				EAE502E12689E3D6002B1C6A /* OffOff_iOS */,
+				EA420B3F269C5F7D00F6F903 /* OffOff_iOSTests */,
 				EAE502E02689E3D6002B1C6A /* Products */,
 				EAE502F6268AA0E0002B1C6A /* Frameworks */,
 			);
@@ -96,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */,
+				EA420B3E269C5F7D00F6F903 /* OffOff_iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,6 +186,7 @@
 		EAE5030B268AB724002B1C6A /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EA420B36269BFBD200F6F903 /* PostServices.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -209,6 +244,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		EA420B3D269C5F7D00F6F903 /* OffOff_iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA420B45269C5F7D00F6F903 /* Build configuration list for PBXNativeTarget "OffOff_iOSTests" */;
+			buildPhases = (
+				EA420B3A269C5F7D00F6F903 /* Sources */,
+				EA420B3B269C5F7D00F6F903 /* Frameworks */,
+				EA420B3C269C5F7D00F6F903 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA420B44269C5F7D00F6F903 /* PBXTargetDependency */,
+			);
+			name = OffOff_iOSTests;
+			productName = OffOff_iOSTests;
+			productReference = EA420B3E269C5F7D00F6F903 /* OffOff_iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		EAE502DE2689E3D6002B1C6A /* OffOff_iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EAE502F32689E3D7002B1C6A /* Build configuration list for PBXNativeTarget "OffOff_iOS" */;
@@ -240,6 +293,10 @@
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					EA420B3D269C5F7D00F6F903 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = EAE502DE2689E3D6002B1C6A;
+					};
 					EAE502DE2689E3D6002B1C6A = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -264,11 +321,19 @@
 			projectRoot = "";
 			targets = (
 				EAE502DE2689E3D6002B1C6A /* OffOff_iOS */,
+				EA420B3D269C5F7D00F6F903 /* OffOff_iOSTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		EA420B3C269C5F7D00F6F903 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAE502DD2689E3D6002B1C6A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -282,6 +347,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		EA420B3A269C5F7D00F6F903 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAE502DB2689E3D6002B1C6A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +371,7 @@
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,
 				EAF2128C26907B9600E47942 /* CommunityListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
+				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
@@ -313,6 +387,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		EA420B44269C5F7D00F6F903 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EAE502DE2689E3D6002B1C6A /* OffOff_iOS */;
+			targetProxy = EA420B43269C5F7D00F6F903 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		EAE502ED2689E3D7002B1C6A /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -325,6 +407,48 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		EA420B46269C5F7D00F6F903 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8RLH6CULJ3;
+				INFOPLIST_FILE = OffOff_iOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OffOff_iOS.app/OffOff_iOS";
+			};
+			name = Debug;
+		};
+		EA420B47269C5F7D00F6F903 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8RLH6CULJ3;
+				INFOPLIST_FILE = OffOff_iOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OffOff_iOS.app/OffOff_iOS";
+			};
+			name = Release;
+		};
 		EAE502F12689E3D7002B1C6A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -486,6 +610,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		EA420B45269C5F7D00F6F903 /* Build configuration list for PBXNativeTarget "OffOff_iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA420B46269C5F7D00F6F903 /* Debug */,
+				EA420B47269C5F7D00F6F903 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		EAE502DA2689E3D6002B1C6A /* Build configuration list for PBXProject "OffOff_iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
