@@ -8,12 +8,12 @@ import mongo
 mongodb = mongo.MongoHelper()
 Board = Namespace("board")
 
-@Board.route("/board") 
+@Board.route("/") 
 class ListControl(Resource):
     def get(self, page_size=20, last_id=None): 
         #프론트에서 한 번에 불러올 게시글 리스트 갯수인 page_size를 넘겨주고 (default = 20), 
         #우리가 리턴해주는 last_id도 넘겨줘야함 (2번째부터)
-        board_type = request.args.get("borad_type") 
+        board_type = request.args.get("board_type") 
         #프론트에서 넘겨주는 board_type 받기
         
         if last_id is None:
