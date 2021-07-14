@@ -1,5 +1,7 @@
-#게시판 목록 -> 자유게시판 클릭 -> /board로 연결되게
-#자유게시판에서 스크롤 -> 마지막 받은 _id 넘겨주면서 /board로 연결되게
+#커뮤니티 탭 클릭 ->/boardlist로 연결되게 -> 게시판 목록(컬랙션 : board_list)
+#게시판 목록 중 -> 자유게시판 클릭 -> board_type 넘겨주면서 /postlist로 연결되게 -> 우선 20개 먼저 보내줌 (컬랙션 : 개별 board_type이름)
+#자유게시판에서 스크롤 -> board_type, 마지막 받은 _id 넘겨주면서 /postlist로 연결되게 -> 그 다음 20개 보내줌
+
 from flask import request
 from flask_restx import Resource, Namespace
 
@@ -35,7 +37,7 @@ class PostListControl(Resource):
         #프론트에서 한 번에 불러올 게시글 리스트 갯수인 page_size를 넘겨주고 (default = 20), 
         #우리가 리턴해주는 last_id도 넘겨줘야함 (2번째부터)
         board_type = request.args.get("board_type") 
-        #프론트에서 넘겨주는 board_type 받기 
+        #프론트에서 넘겨주는 board_type(name)의 value 받기 
         
         if last_id is None:
             #처음 게시판에 들어간 경우(마지막 다큐멘트의 아이디가 없음)
@@ -60,7 +62,7 @@ class PostListControl(Resource):
         #해당 리스트의 제일 마지막 요소의 _id값을 받아와야함
 
 
-        return post_list, last_id
+        return last_id, post_list
         
         # up이 아래에서 위로 -> 새로운 걸 불러오는 것
         # down이 위에서 아래로 -> 봤던 걸 불러오는 것        
