@@ -1,48 +1,49 @@
-package com.yuuuzzzin.offoff_android.view.ui
+package com.yuuuzzzin.offoff_android.view.ui.board
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
 import com.google.android.material.appbar.MaterialToolbar
-import com.yuuuzzzin.offoff_android.R
-import com.yuuuzzzin.offoff_android.service.model.Metadata
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
-import com.yuuuzzzin.offoff_android.service.model.Contents
+import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PostActivity : AppCompatActivity() {
 
-    // ViewBinding
     private var mBinding: ActivityPostBinding? = null
     private val binding get() = mBinding!!
+    private val viewModel: PostViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_post)
 
+        super.onCreate(savedInstanceState)
         mBinding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        init()
         initToolbar()
+        initPost()
 
     }
 
-    private fun init() {
+    private fun initPost() {
 
-        val metadata = intent.getParcelableExtra("metadata") as? Metadata
-        val contents = intent.getParcelableExtra("contents") as? Contents
-        binding.tvAuthor.text = metadata!!.author
-        binding.tvDate.text = metadata.date
-        binding.tvTitle.text = metadata.title
-        binding.tvContent.text = contents?.content
-
+        viewModel.responsePost.observe(this, { post ->
+            binding.apply {
+                tvAuthor.text = post.metadata.author
+                tvDate.text = post.metadata.date
+                tvTitle.text = post.metadata.title
+                tvContent.text = post.contents.content
+            }
+        })
     }
 
     private fun initToolbar() {
-        val toolbar : MaterialToolbar = binding.appbarPost // 상단 툴바
+        val toolbar : MaterialToolbar = binding.appbarPost
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         supportActionBar?.apply {
             toolbar.title = intent.getStringExtra("appBarTitle")
@@ -63,9 +64,7 @@ class PostActivity : AppCompatActivity() {
         }
     }
 
-    // 액티비티가 Destroy될 때
     override fun onDestroy() {
-        // onDestroy 에서 binding class 인스턴스 참조를 정리해주어야 함
         mBinding = null
         super.onDestroy()
     }

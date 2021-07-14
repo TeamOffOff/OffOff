@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">OffOff_Android</string>
+    <string name="app_name">오프오프</string>
 
     <!-- 앱바에 띄울 프래그먼트 이름 -->
-    <string name="appbar_home">OffOff</string>
+    <string name="appbar_home">ㅇㅍㅇㅍ</string>
     <string name="appbar_boards">게시판</string>
     <string name="appbar_schedule">스케줄표</string>
     <string name="appbar_notification">알림</string>
