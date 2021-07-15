@@ -72,6 +72,7 @@ extension PostListViewController {
     }
     
     // TODO: 포스트 목로에서 선택한 포스트 보여주기
+    // 선택한 포스트의 id로 서버에 다시 그 포스트를 요청해서 보여주기
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = PostViewController()
         vc.postBoxed = Box(postViewModel.getPost(index: indexPath.row)!)
