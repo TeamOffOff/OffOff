@@ -21,16 +21,16 @@ class OffOff_iOSTests: XCTestCase {
     }
     
     func testFetchPostListWithApi() throws {
-        PostServices.fetchPostList { (response) in
-            print(response.request)  // original URL request
-            print(response.response) // URL response
-            print(response.data)     // server data
-            print(response.result)   // result of response serialization
-            
-            
-            print(#fileID, #function, #line, "")
-        }
-        
+//        PostServices.fetchPostList { (response) in
+//            print(response.request)  // original URL request
+//            print(response.response) // URL response
+//            print(response.data)     // server data
+//            print(response.result)   // result of response serialization
+//            
+//            
+//            print(#fileID, #function, #line, "")
+//        }
+//        
     }
     
 }

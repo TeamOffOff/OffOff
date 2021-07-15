@@ -18,13 +18,16 @@
 		EA72D75B2698276C00EB07DA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75A2698276C00EB07DA /* PostView.swift */; };
 		EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */; };
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
+		EAAFFB9D269EFA25006D43D4 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EAAFFB9C269EFA25006D43D4 /* Moya */; };
+		EAAFFB9F269EFC2C006D43D4 /* CommunityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */; };
+		EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFBA0269F2DF4006D43D4 /* Constants.swift */; };
+		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
 		EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAE502EB2689E3D7002B1C6A /* Assets.xcassets */; };
 		EAE502EF2689E3D7002B1C6A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAE502ED2689E3D7002B1C6A /* LaunchScreen.storyboard */; };
 		EAE50300268AA1C6002B1C6A /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = EAE502FF268AA1C6002B1C6A /* Then */; };
-		EAE50303268AA643002B1C6A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = EAE50302268AA643002B1C6A /* Alamofire */; };
 		EAE50306268AA660002B1C6A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EAE50305268AA660002B1C6A /* SnapKit */; };
 		EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6525E269416B600D8F7BB /* PostPreviewCell.swift */; };
 		EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE652602694182D00D8F7BB /* PostViewController.swift */; };
@@ -63,6 +66,9 @@
 		EA72D75A2698276C00EB07DA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityAPI.swift; sourceTree = "<group>"; };
+		EAAFFBA0269F2DF4006D43D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -97,9 +103,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE50303268AA643002B1C6A /* Alamofire in Frameworks */,
 				EAE50300268AA1C6002B1C6A /* Then in Frameworks */,
 				EAE50306268AA660002B1C6A /* SnapKit in Frameworks */,
+				EAAFFB9D269EFA25006D43D4 /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +175,7 @@
 				EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */,
 				EAF2127D268FEC6C00E47942 /* Box.swift */,
 				EA72D75F26987D5300EB07DA /* Extensions.swift */,
+				EAAFFBA0269F2DF4006D43D4 /* Constants.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -179,6 +186,7 @@
 				EA0EFFBC268B468B009C4722 /* LoginView.swift */,
 				EAF212832690133500E47942 /* HomeView.swift */,
 				EA72D75A2698276C00EB07DA /* PostView.swift */,
+				EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -187,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				EA420B36269BFBD200F6F903 /* PostServices.swift */,
+				EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -277,8 +286,8 @@
 			name = OffOff_iOS;
 			packageProductDependencies = (
 				EAE502FF268AA1C6002B1C6A /* Then */,
-				EAE50302268AA643002B1C6A /* Alamofire */,
 				EAE50305268AA660002B1C6A /* SnapKit */,
+				EAAFFB9C269EFA25006D43D4 /* Moya */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -315,6 +324,7 @@
 				EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */,
 				EAE50301268AA643002B1C6A /* XCRemoteSwiftPackageReference "Alamofire" */,
 				EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */,
+				EAAFFB9B269EFA25006D43D4 /* XCRemoteSwiftPackageReference "Moya" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -359,6 +369,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */,
 				EA07345B2692AD56007830ED /* PostsViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
@@ -376,9 +387,11 @@
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
 				EAF21280268FEE6500E47942 /* Account.swift in Sources */,
+				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
 				EA07345526929C01007830ED /* PostModel.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
+				EAAFFB9F269EFC2C006D43D4 /* CommunityAPI.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,
 				EAF212882690355B00E47942 /* HomeViewController.swift in Sources */,
 				EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */,
@@ -640,6 +653,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		EAAFFB9B269EFA25006D43D4 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 14.0.1;
+			};
+		};
 		EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/devxoul/Then";
@@ -667,15 +688,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		EAAFFB9C269EFA25006D43D4 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAAFFB9B269EFA25006D43D4 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
 		EAE502FF268AA1C6002B1C6A /* Then */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */;
 			productName = Then;
-		};
-		EAE50302268AA643002B1C6A /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EAE50301268AA643002B1C6A /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
 		};
 		EAE50305268AA660002B1C6A /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
