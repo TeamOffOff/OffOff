@@ -12,5 +12,8 @@ public class Constants {
     static var mainColor: UIColor {
         return UIColor(named: "MainColor")!
     }
+    
+    static let USERID_MAXLENGTH = 20
+    static let USERPW_MAXLENGTH = 30
 }
 

@@ -16,20 +16,17 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         view.addSubview(loginView)
-        loginView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(view.snp.width).dividedBy(2.0)
-            $0.centerY.equalToSuperview().inset(100)
-        }
+        loginView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        
     }
 }
 
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-
-struct PreviewController: PreviewProvider{
-    static var previews: some View {
-        LoginViewController().showPreview(.iPhone11Pro)
-    }
-}
-#endif
+//#if canImport(SwiftUI) && DEBUG
+//import SwiftUI
+//
+//struct PreviewController: PreviewProvider{
+//    static var previews: some View {
+//        LoginViewController().showPreview(.iPhone11Pro)
+//    }
+//}
+//#endif
