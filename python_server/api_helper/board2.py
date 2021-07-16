@@ -2,7 +2,7 @@
 #게시판 목록 중 -> 자유게시판 클릭 -> board_type 넘겨주면서 /postlist로 연결되게 -> 우선 20개 먼저 보내줌 (컬랙션 : 개별 board_type이름)
 #자유게시판에서 스크롤 -> board_type, 마지막 받은 _id 넘겨주면서 /postlist로 연결되게 -> 그 다음 20개 보내줌
 
-from flask import request, Flask
+from flask import request
 from flask_restx import Resource, Namespace
 
 import mongo
@@ -37,16 +37,17 @@ class PostListControl(Resource):
     def get(self, page_size=20, last_id=None): 
         #프론트에서 한 번에 불러올 게시글 리스트 갯수인 page_size를 넘겨주고 (default = 20), 
         #우리가 리턴해주는 last_id도 넘겨줘야함 (2번째부터)
-        board_type = str(request.args.get("board_type"))
-        #프론트에서 넘겨주는 board_type(name)의 value 받기 
+        board_type_post = str(request.args.get("board_type_post"))
+        #free_post (자유게시판 컬랙션 이름)
+        #프론트에서 넘겨주는 board_type_post(name)의 value 받기 => board_type_post변수에 저장
         
         if last_id is None:
             #처음 게시판에 들어간 경우(마지막 다큐멘트의 아이디가 없음)
-            cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(page_size)
+            cursor = mongodb.find(collection_name=board_type_post).sort([("_id", -1)]).limit(page_size)
             #최신순으로 정렬해서(내림차순) 그냥 갯수만큼만 불러오면 됨
         else: 
             #사용자가 스크롤을 끝까지 내려서 새로운 리스트를 받아오는 경우
-            cursor = mongodb.find(query={'_id': {'$lt': last_id} }, collection_name=board_type).sort([("_id", -1)]).limit(page_size)
+            cursor = mongodb.find(query={'_id': {'$lt': last_id} }, collection_name=board_type_post).sort([("_id", -1)]).limit(page_size)
             #과거의 데이터를 불러오는 거니까 _id가 더 작음(시간이 더 빠르니까)
             #과거의 데이터들 중에서 최신순으로 정렬해서 갯수만큼 불러옴
             #최신순일 수록 _id가 크고 오래될 수록 _id가 작다
@@ -57,7 +58,7 @@ class PostListControl(Resource):
 
         if not post_list:
             #남은 다큐멘트가 없는 경우
-            return None, None
+            return "postlist return"
         
         last_id = post_list[-1]['_id']
         #해당 리스트의 제일 마지막 요소의 _id값을 받아와야함
