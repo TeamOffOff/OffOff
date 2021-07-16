@@ -1,6 +1,7 @@
 from flask import Flask, request  # 서버 구현을 위한 Flask 객체 import
 from flask_restx import Api, Resource
 from api_helper.post import Post
+from api_helper.board2 import BoardList, PostList
 
 import mongo
 
@@ -8,6 +9,8 @@ app = Flask(__name__)
 api = Api(app)
 
 api.add_namespace(Post, "/post")
+api.add_namespace(BoardList, "/boardlist")
+api.add_namespace(PostList, "/postlist")
 
 
 @api.route("/signup")
