@@ -7,30 +7,44 @@ mongodb = mongo.MongoHelper()
 Post = Namespace("post")
 
 
-@Post.route("/content-id=<string:content_id>")
+@Post.route("/")
 class PostControl(Resource):
-    def get(self, content_id):
-        post_info = mongodb.find_one(query={"content_id": content_id}, collection_name="post_collection")
+    """
+    input shape
+    {
+        content_id:~~,
+        board_type:~~
+    }
+    """
+    def get(self):  # 게시글 조회
+        post_info = request.get_json()
+        content_id = post_info["content_id"]
+        board_type = post_info["board_type"] + "_post"
 
-        if not post_info:
+        result = mongodb.find_one(query={"content_id": content_id}, collection_name=board_type)
+
+        if not result:
             return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}
         else:
             del post_info["_id"]
             return post_info
 
-    def delete(self, content_id):
-        result = mongodb.delete_one(query={"content_id": content_id}, collection_name="post_collection")
+    def delete(self):  # 게시글 삭제
+        post_info = request.get_json()
+        content_id = post_info["content_id"]
+        board_type = post_info["board_type"] + "_post"
+
+        result = mongodb.delete_one(query={"content_id": content_id}, collection_name=board_type)
 
         if result.raw_result["n"] == 1:
             return {"query_status": "success"}
         else:
             return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}
 
-    def put(self, content_id):
+    def post(self):  # 게시글 생성
         post_info = request.get_json()
+        board_type = post_info["board_type"] + "_post"
 
-        if not mongodb.find_one(query={"content_id": content_id}, collection_name="post_collection"):
-            mongodb.insert_one(data=post_info, collection_name="post_collection")
-            return {"query_status": "success"}
-        else:
-            return {"query_status": "중복된 id입니다."}
+        post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
+
+        return {"query_status": post_id}
