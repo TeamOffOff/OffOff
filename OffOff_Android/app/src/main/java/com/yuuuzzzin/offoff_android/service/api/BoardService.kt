@@ -14,6 +14,7 @@ interface BoardService {
     @GET("GetPosts")
     suspend fun getPosts(): Response<List<PostPreview>>
 
+    /* 해당 id의 게시물 불러오기 */
     @GET("GetPosts/{id}")
     suspend fun getPost(
         @Path("id") postId: String

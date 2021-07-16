@@ -1,5 +1,7 @@
 package com.yuuuzzzin.offoff_android.di
 
+import com.yuuuzzzin.offoff_android.BuildConfig
+import com.yuuuzzzin.offoff_android.service.api.AuthService
 import com.yuuuzzzin.offoff_android.service.api.BoardService
 import dagger.Module
 import dagger.Provides
@@ -11,7 +13,8 @@ import javax.inject.Singleton
 
 /* 네트워크 통신을 위한 모듈 */
 
-const val BASE_URL = "http:10.0.2.2:3000/"
+// const val BASE_URL = "http:10.0.2.2:3000/"
+const val BASE_URL = BuildConfig.BASE_URL
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -32,5 +35,11 @@ object NetworkModule {
     @Provides
     fun provideBoardService(retrofit: Retrofit): BoardService =
         retrofit.create(BoardService::class.java)
+
+    /* 로그인 응답을 위한 모듈 */
+    @Singleton
+    @Provides
+    fun provideAuthService(retrofit: Retrofit): AuthService =
+        retrofit.create(AuthService::class.java)
 
 }
