@@ -21,9 +21,10 @@ class MongoHelper:
         result = self.collection.insert_many(data).inserted_ids
         return result
 
-    def find_one(self, query=None, collection_name=None):
+    def find_one(self, query=None, collection_name=None, finding_key=None):
         self.collection = self.db[collection_name]
-        result = self.collection.find_one(query)
+        self.finding_key = finding_key
+        result = self.collection.find_one(query,finding_key)
         return result
 
     def find(self, query=None, collection_name=None):
