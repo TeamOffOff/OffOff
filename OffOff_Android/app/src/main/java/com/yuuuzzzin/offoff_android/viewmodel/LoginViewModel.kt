@@ -76,6 +76,7 @@ constructor(
         // 입력받은 id와 pw를 서버에 보내고 응답받기
         viewModelScope.launch(Dispatchers.IO) {
             repository.login(LoginInfo(userId, userPw)).let { response ->
+                // 서버 통신 성공
                 if(response.isSuccessful) {
                     // 로그인 성공
                     if(response.body()!!.result == "success") {

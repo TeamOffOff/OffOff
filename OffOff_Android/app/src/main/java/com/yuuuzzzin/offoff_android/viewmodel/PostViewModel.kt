@@ -27,7 +27,7 @@ constructor(
         getPost(postId)
     }
 
-    private fun getPost(postId : String) = viewModelScope.launch {
+    private fun getPost(postId: String) = viewModelScope.launch {
         repository.getPost(postId).let {response ->
 
             if (response.isSuccessful){

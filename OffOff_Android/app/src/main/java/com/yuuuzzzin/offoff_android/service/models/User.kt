@@ -17,4 +17,13 @@ data class LoginInfo(
     val pw: String
 ) : Parcelable
 
+@Parcelize
+data class SignupInfo(
+    @SerializedName("id")
+    val id: String,
+    @SerializedName("password")
+    val pw: String
+) : Parcelable
+
+
 

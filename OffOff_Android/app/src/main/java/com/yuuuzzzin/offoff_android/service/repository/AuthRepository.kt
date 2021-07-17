@@ -3,6 +3,7 @@ package com.yuuuzzzin.offoff_android.service.repository
 import com.yuuuzzzin.offoff_android.service.api.AuthService
 import com.yuuuzzzin.offoff_android.service.models.AuthResponse
 import com.yuuuzzzin.offoff_android.service.models.LoginInfo
+import com.yuuuzzzin.offoff_android.service.models.SignupInfo
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -15,4 +16,7 @@ constructor(private val authService: AuthService) {
 
     suspend fun login(loginInfo: LoginInfo): Response<AuthResponse> =
         authService.login(loginInfo)
+
+    suspend fun signup(signupInfo: SignupInfo) =
+        authService.signup(signupInfo)
 }
