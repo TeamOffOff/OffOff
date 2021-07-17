@@ -6,14 +6,14 @@
     <data>
         <variable
             name="viewModel"
-            type="com.yuuuzzzin.offoff_android.viewmodel.LoginViewModel" />
+            type="com.yuuuzzzin.offoff_android.viewmodel.SignupViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="32dp"
-        tools:context=".view.ui.member.LoginActivity">
+        tools:context=".view.ui.member.SignupActivity">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline1"
@@ -45,23 +45,21 @@
             android:layout_height="wrap_content"
             android:hint="@string/id"
             app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@drawable/ic_baseline_error_24"
+            app:helperTextTextColor="@color/design_default_color_error"
             app:hintTextColor="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline2"
-            app:startIconDrawable="@drawable/ic_round_person_24"
-            app:errorIconDrawable="@drawable/ic_baseline_error_24"
-            app:errorIconTint="@color/red"
-            app:errorEnabled="true"
-            app:boxStrokeErrorColor="@color/red"
-            app:helperTextTextColor="@color/red">
+            app:startIconDrawable="@drawable/ic_round_person_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_id"
-                android:text="@={viewModel.id}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:text="@={viewModel.id}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,7 +70,10 @@
             android:layout_height="wrap_content"
             android:hint="@string/pw"
             app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="password_toggle"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@drawable/ic_baseline_error_24"
+            app:helperTextTextColor="@color/design_default_color_error"
             app:hintTextColor="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,81 +82,49 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_pw"
-                android:text="@={viewModel.pw}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:text="@={viewModel.pw}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <CheckBox
-            android:id="@+id/cb_login"
-            style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_check_pw"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/green"
-            android:text="@string/auto_login"
+            android:hint="@string/check_pw"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:errorIconDrawable="@drawable/ic_baseline_error_24"
+            app:helperTextTextColor="@color/design_default_color_error"
+            app:hintTextColor="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tf_pw" />
+            app:layout_constraintTop_toBottomOf="@id/tf_pw"
+            app:startIconDrawable="@drawable/ic_outline_lock_24">
 
-        <TextView
-            android:id="@+id/tv_alert_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cb_login"
-            app:layout_constraintBottom_toTopOf="@id/bt_login"
-            android:textColor="@color/red"
-            android:text="@{viewModel.alertMsg}"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_check_pw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:text="@={viewModel.checkPw}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_login"
+            android:id="@+id/bt_signup"
             android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:text="로그인"
+            android:text="@string/signup"
             android:textStyle="bold"
+            android:onClick="@{()-> viewModel.signup()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_alert_id"
-            android:onClick="@{()-> viewModel.login()}"/>
-
-        <TextView
-            android:id="@+id/bt_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="회원가입"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bt_login" />
-
-        <TextView
-            android:id="@+id/bt_findId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:text="아이디"
-            app:layout_constraintEnd_toStartOf="@id/view"
-            app:layout_constraintTop_toTopOf="@id/bt_signup" />
-
-        <View
-            android:id="@+id/view"
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/green"
-            app:layout_constraintBottom_toBottomOf="@id/bt_signup"
-            app:layout_constraintEnd_toStartOf="@id/bt_findPw"
-            app:layout_constraintTop_toTopOf="@id/bt_signup" />
-
-        <TextView
-            android:id="@+id/bt_findPw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="비밀번호 찾기"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bt_signup" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
