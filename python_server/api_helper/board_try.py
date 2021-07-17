@@ -1,12 +1,8 @@
 #커뮤니티 탭 클릭 ->/boardlist로 연결되게 -> 게시판 목록(컬랙션 : board_list)
 #게시판 목록 중 -> 자유게시판 클릭 -> board_type 넘겨주면서 /postlist로 연결되게 -> 우선 20개 먼저 보내줌 (컬랙션 : 개별 board_type이름)
 #자유게시판에서 스크롤 -> board_type, 마지막 받은 _id 넘겨주면서 /postlist로 연결되게 -> 그 다음 20개 보내줌
-
-from re import I
-from flask import request, jsonify
+from flask import request
 from flask_restx import Resource, Namespace
-from bson import json_util
-import json
 import mongo
 from bson.objectid import ObjectId
 
@@ -16,14 +12,6 @@ mongodb = mongo.MongoHelper()
 BoardList = Namespace("boardlist") #커뮤니티 텝을 클릭하는 경우 게시판 리스트를 보여주고
 PostList = Namespace("postlist") #특정 게시판을 클릭하는 경우 게시글 리스트를 보여준다
 
-@BoardList.route('/example')
-class Example(Resource):
-    def post(self):
-        board_info = request.get_json()
-        mongodb.insert_one(board_info, collection_name="board_list")
-        return{"message" : "success"}
-
-
 @BoardList.route("/") 
 #사용자가 커뮤니티 텝을 클릭하는 경우 여기로 오세요
 class BoardListControl(Resource):
@@ -31,7 +19,7 @@ class BoardListControl(Resource):
         # board_list = request.args.get("board_list")
         # board_list은 사용자, 클라이언트에게 입력받는 값이 아니라 우리가 데이터베이스에 미리 저장해놓는 것! 따라서 request할 필요없다!
 
-        cursor = mongodb.find(collection_name="board_list",finding_key={"_id":0} )
+        cursor = mongodb.find(collection_name="board_list",projection_key={"_id":0} )
         #board_list이라는 컬렉션을 찾아서 모든 다큐멘트(즉 board_list)를 불러와라
 
 
@@ -39,14 +27,6 @@ class BoardListControl(Resource):
         #불러온 다큐멘트들을 리스트형태로 바꿔줌
 
         return board_list
-
-
-@PostList.route('/example')
-class Example(Resource):
-    def post(self):
-        post_info = request.get_json()
-        mongodb.insert_one(post_info, collection_name="board_type_post")
-        return{"message" : "success"}
 
 @PostList.route("/") 
 #사용자가 특정 게시판을 클릭하는 경우 여기로 오세요
