@@ -6,9 +6,9 @@
 //
 
 import UIKit
-import MaterialComponents.MaterialTextControls_OutlinedTextFields
-import MaterialComponents.MaterialButtons
-import MaterialComponents.MaterialTextControls_OutlinedTextAreas
+import SkyFloatingLabelTextField
+
+typealias TextField = SkyFloatingLabelTextFieldWithIcon
 
 class LoginView: UIView {
     
@@ -19,38 +19,46 @@ class LoginView: UIView {
         $0.contentMode = .scaleToFill
     }
     
-    var idTextField = MDCOutlinedTextField().then {
-        $0.label.text = "아이디"
-        $0.leftView = UIImageView(image: .personFill).then { $0.tintColor = .gray }
-        $0.leftViewMode = .always
+    var idTextField = TextField().then {
+        $0.placeholder = "아이디"
+        
         $0.tintColor = .mainColor
         $0.backgroundColor = .white
         $0.autocapitalizationType = .none
-        $0.setOutlineColor(.gray, for: .normal)
-        $0.setOutlineColor(.mainColor, for: .editing)
-        $0.trailingAssistiveLabel.text = "0/20"
         $0.clearButtonMode = .whileEditing
+        
+        $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .personFill, errorColor: .red)
     }
 
-    var passwordTextField = MDCOutlinedTextField().then {
-        $0.label.text = "비밀번호"
-        $0.leftView = UIImageView(image: .lockFill).then { $0.tintColor = .gray }
-        $0.leftViewMode = .always
+    var passwordTextField = TextField().then {
+        $0.placeholder = "비밀번호"
+        
         $0.tintColor = .mainColor
         $0.backgroundColor = .white
         $0.autocapitalizationType = .none
         $0.textContentType = .password
         $0.isSecureTextEntry = true
-        $0.setOutlineColor(.gray, for: .normal)
-        $0.setOutlineColor(.mainColor, for: .editing)
         $0.clearButtonMode = .whileEditing
+        
+        $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .lockFill, errorColor: .red)
     }
 
-    var loginButton = MDCButton().then {
+    var loginButton = UIButton().then {
         $0.setTitle("로그인", for: .normal)
         $0.backgroundColor = .mainColor
         $0.setTitleColor(.white, for: .normal)
-        $0.accessibilityLabel = "로그인"
+    }
+    
+    var signupButton = UIButton().then {
+        $0.backgroundColor = .clear
+        $0.setTitle("회원가입", for: .normal)
+        $0.setTitleColor(.gray, for: .normal)
+    }
+    
+    var searchButton = UIButton().then {
+        $0.backgroundColor = .clear
+        $0.setTitle("아이디 비밀번호 찾기", for: .normal)
+        $0.setTitleColor(.gray, for: .normal)
     }
     
     override init(frame: CGRect) {
@@ -60,8 +68,8 @@ class LoginView: UIView {
         self.addSubview(self.idTextField)
         self.addSubview(self.passwordTextField)
         self.addSubview(self.loginButton)
-        idTextField.delegate = self
-        passwordTextField.delegate = self
+        self.addSubview(self.signupButton)
+        self.addSubview(self.searchButton)
         self.setUpView()
     }
     
@@ -72,7 +80,7 @@ class LoginView: UIView {
     private func setUpView() {
         self.loginButton.snp.makeConstraints {
             $0.width.equalTo(self.snp.width).dividedBy(1.25)
-            $0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom).inset(10)
+            $0.top.equalTo(self.passwordTextField.snp.bottom).offset(30)
             $0.centerX.equalToSuperview()
         }
         
@@ -90,51 +98,19 @@ class LoginView: UIView {
         }
         
         self.passwordTextField.snp.makeConstraints {
-            $0.top.equalTo(self.idTextField.snp.bottom)
+            $0.top.equalTo(self.idTextField.snp.bottom).offset(12)
             $0.centerX.equalToSuperview()
             $0.width.equalTo(self.snp.width).dividedBy(1.25)
         }
-    }
-}
-
-extension LoginView: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let str = textField.text ?? ""
         
-        var max = 0
-        switch textField {
-        case self.idTextField:
-            max = Constants.USERID_MAXLENGTH
-        case self.passwordTextField:
-            max = Constants.USERPW_MAXLENGTH
-        default:
-            max = -1
+        self.signupButton.snp.makeConstraints {
+            $0.top.equalTo(self.loginButton.snp.bottom).offset(12)
+            $0.left.equalTo(self.loginButton.snp.left)
         }
-        guard let stringRange = Range(range, in: str) else { return false }
-        let updatedText = str.replacingCharacters(in: stringRange, with: string)
-
         
-        guard let tf = textField as? MDCOutlinedTextField else { return false }
-        
-        if updatedText.count <= max {
-            tf.trailingAssistiveLabel.text = "\(updatedText.count)/\(max)"
-            tf.trailingAssistiveLabel.tintColor = .gray
-            tf.setOutlineColor(.mainColor, for: .editing)
-            return true
-        } else {
-            tf.trailingAssistiveLabel.text = "\(20)/\(max)"
-            tf.trailingAssistiveLabel.shadowColor = nil
-            tf.setTrailingAssistiveLabelColor(.red, for: .editing)
-            tf.trailingAssistiveLabel.tintColor = nil
-            tf.setOutlineColor(.red, for: .editing)
-
-            return false
-        }
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-        if textField == idTextField {
-            
+        self.searchButton.snp.makeConstraints {
+            $0.top.equalTo(self.loginButton.snp.bottom).offset(12)
+            $0.right.equalTo(self.loginButton.snp.right)
         }
     }
 }

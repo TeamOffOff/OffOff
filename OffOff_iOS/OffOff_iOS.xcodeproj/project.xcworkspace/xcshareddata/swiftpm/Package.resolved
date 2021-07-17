@@ -20,6 +20,24 @@
         }
       },
       {
+        "package": "Material",
+        "repositoryURL": "https://github.com/CosmicMind/Material",
+        "state": {
+          "branch": null,
+          "revision": "059ed9c336d24b5f6383bec0346ae7c314724120",
+          "version": "3.1.8"
+        }
+      },
+      {
+        "package": "Motion",
+        "repositoryURL": "https://github.com/CosmicMind/Motion.git",
+        "state": {
+          "branch": null,
+          "revision": "808ac0cf1b67c5e4163ee867dd6c056836fcbc58",
+          "version": "3.1.3"
+        }
+      },
+      {
         "package": "Moya",
         "repositoryURL": "https://github.com/Moya/Moya.git",
         "state": {
@@ -92,6 +110,15 @@
         }
       },
       {
+        "package": "SkyFloatingLabelTextField",
+        "repositoryURL": "https://github.com/Skyscanner/SkyFloatingLabelTextField",
+        "state": {
+          "branch": null,
+          "revision": "a0750ebbc7311f3b3debf99c5e59338e854afa59",
+          "version": "4.0.0"
+        }
+      },
+      {
         "package": "SnapKit",
         "repositoryURL": "https://github.com/SnapKit/SnapKit",
         "state": {
@@ -107,6 +134,15 @@
           "branch": null,
           "revision": "a6014fe94c3dbff0ad500e8da4f251a5d336530b",
           "version": "5.1.0-beta.1"
+        }
+      },
+      {
+        "package": "TextFieldEffects",
+        "repositoryURL": "https://github.com/raulriera/TextFieldEffects",
+        "state": {
+          "branch": null,
+          "revision": "7e563d4d6d755bb1ab6c1c049f8c215d7c489100",
+          "version": "1.7.0"
         }
       },
       {

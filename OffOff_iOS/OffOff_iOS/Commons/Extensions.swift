@@ -9,7 +9,7 @@ import Foundation
 import UIKit.UIView
 import UIKit.UIColor
 import UIKit.UITextField
-import MaterialComponents.MaterialTextControls_OutlinedTextFields
+import SkyFloatingLabelTextField
 
 let dateFormatter = DateFormatter() //2020-01-29
 
@@ -99,8 +99,21 @@ open class PaddedTextField: UITextField {
     }
 }
 
-extension MDCOutlinedTextField {
-    func setNormalColor(color: UIColor) {
+extension TextField {
+    func setupTextField(selectedColor: UIColor, normalColor: UIColor, iconImage: UIImage, errorColor: UIColor) {
+        self.lineColor = normalColor
+        self.textColor = normalColor
+        self.titleColor = normalColor
         
+        self.selectedIconColor = selectedColor
+        self.selectedLineColor = selectedColor
+        self.selectedTitleColor = selectedColor
+        
+        self.iconType = .image
+        self.iconImage = iconImage
+        self.iconColor = normalColor
+        self.selectedIconColor = selectedColor
+        
+        self.errorColor = errorColor
     }
 }
