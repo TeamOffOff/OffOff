@@ -1,7 +1,8 @@
 import jwt
 import bcrypt
-from flask import request
+from flask import request, jsonify
 from flask_restx import Resource, Api, Namespace, fields
+import json
 
 import mongo
 
@@ -68,6 +69,7 @@ class AuthLogin(Resource):
 
 #사용자 로그인에 성공하면 정보 전체 불러줘야함
 
+#헤더로 디코드한거 보내서 회원탈퇴까지 진행할 수 있는건가?
 @Auth.route('/get')
 class AuthGet(Resource):
     @Auth.doc(responses={200: 'Success'})
@@ -77,5 +79,8 @@ class AuthGet(Resource):
         if header == None:
             return {"message": "Please Login"}, 404
         id_token = jwt.decode(header, "secret", algorithms="HS256") #{'id':실제 id} 딕셔너리형태로 돌려줌
-        user_info = mongodb.find_one(query={"id":id_token["id"]}, collection_name="user_collection")
-        return id_token, id_token["id"],200
+        user_info = mongodb.find_one(query={"id":id_token["id"]}, collection_name="user_collection", finding_key={"_id":0}) #찾는 것 까지 가능함
+        return {
+            "id": id_token["id"],
+            "user_name" : user_info["name"]
+        },200
