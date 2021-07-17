@@ -1,8 +1,7 @@
 import jwt
 import bcrypt
-from flask import request, jsonify
+from flask import request
 from flask_restx import Resource, Api, Namespace, fields
-import json
 
 import mongo
 
@@ -10,6 +9,8 @@ mongodb = mongo.MongoHelper()
 
 users = {}
 Auth = Namespace("Auth")
+
+#입력, 출력에 대한 스키마를 나타내는 객체 ===> 몽고디비도 스키마가 필요할까? (user.py참고)
 
 
 #Api 생성
@@ -69,7 +70,7 @@ class AuthLogin(Resource):
 
 #사용자 로그인에 성공하면 정보 전체 불러줘야함
 
-#헤더로 디코드한거 보내서 회원탈퇴까지 진행할 수 있는건가?
+
 @Auth.route('/get')
 class AuthGet(Resource):
     @Auth.doc(responses={200: 'Success'})
@@ -79,6 +80,11 @@ class AuthGet(Resource):
         if header == None:
             return {"message": "Please Login"}, 404
         id_token = jwt.decode(header, "secret", algorithms="HS256") #{'id':실제 id} 딕셔너리형태로 돌려줌
-        user_info = mongodb.find_one(query={"id":id_token["id"]}, collection_name="user_collection", finding_key={'_id':0, "password":0}) #찾는 것 까지 가능함
+        user_info = mongodb.find_one(query={"id":id_token["id"]}, collection_name="user_collection", projection_key={'_id':0, "password":0}) #찾는 것 까지 가능함
 
         return user_info,200
+
+#헤더로 디코드한거 보내서 회원탈퇴까지 진행할 수 있는건가?
+#비밀번호 변경하는 경우에는 해당 패스워드를 지우고 새로 입력받아야하는건가?
+#회원정보 수정도 고려해봐야함
+#로그아웃
