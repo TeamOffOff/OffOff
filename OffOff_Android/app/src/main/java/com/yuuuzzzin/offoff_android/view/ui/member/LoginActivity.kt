@@ -2,10 +2,11 @@ package com.yuuuzzzin.offoff_android.view.ui.member
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.yuuuzzzin.offoff_android.MainActivity
+import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityLoginBinding
 import com.yuuuzzzin.offoff_android.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,12 +27,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initView() {
 
-        mBinding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         binding.lifecycleOwner = this
         binding.viewModel = loginViewModel
-        binding.tvAlertId.visibility = View.GONE
-        binding.tvAlertPw!!.visibility = View.GONE
+        //binding.tvAlertId.visibility = View.GONE
+        //binding.tvAlertPw!!.visibility = View.GONE
 
         binding.btSignup.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
@@ -53,10 +53,12 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.id.observe(this, {
             loginViewModel.alertId.postValue("")
+            loginViewModel.alertMsg.postValue("")
         })
 
         loginViewModel.pw.observe(this, {
             loginViewModel.alertPw.postValue("")
+            loginViewModel.alertMsg.postValue("")
         })
 
         loginViewModel.loginSuccessEvent.observe(this, { event ->

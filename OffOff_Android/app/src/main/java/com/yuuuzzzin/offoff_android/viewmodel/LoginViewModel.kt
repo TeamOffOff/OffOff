@@ -37,7 +37,7 @@ constructor(
     }
     val alertMsg:MutableLiveData<String> by lazy {
         MutableLiveData<String>().apply {
-            postValue("")
+            //postValue("")
         }
     }
     val alertId:MutableLiveData<String> by lazy {
@@ -52,7 +52,6 @@ constructor(
     }
 
     fun login() {
-        Log.d("tag_success", "로그인함수들어와줘..")
 
         val userId = id.value.toString()
         val userPw = pw.value.toString()
@@ -64,7 +63,7 @@ constructor(
         }
         // 입력한 id가 패턴에 맞지 않을 경우
         else if(!Pattern.matches("^[a-zA-Z0-9]{5,15}\$", userId)) {
-            alertId.postValue("아이디는 영문과 숫자를 포함한 5~15글자")
+            alertId.postValue("아이디는 영문과 숫자를 조합한 5~15글자")
             return
         }
 
