@@ -2,7 +2,6 @@ package com.yuuuzzzin.offoff_android.view.ui.member
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.yuuuzzzin.offoff_android.databinding.ActivitySignupBinding
@@ -37,21 +36,18 @@ class SignupActivity : AppCompatActivity() {
 
         signupViewModel.isIdError.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-                Log.d("아이디에러남", it)
                 binding.tfId.error = it
             }
         })
 
         signupViewModel.isPwError.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-                Log.d("비번에러남", it)
                 binding.tfPw.error = it
             }
         })
 
         signupViewModel.isPwCheckError.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-                Log.d("비번확인에러남", it)
                 binding.tfCheckPw.error = it
             }
         })

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.yuuuzzzin.offoff_android.viewmodel.SignupViewModel" />
@@ -68,6 +69,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:hint="@string/pw"
             app:boxStrokeWidthFocused="2dp"
             app:endIconMode="clear_text"
@@ -78,6 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tf_id"
+            app:layout_goneMarginTop="8dp"
             app:startIconDrawable="@drawable/ic_outline_lock_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -119,12 +122,12 @@
             android:id="@+id/bt_signup"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:onClick="@{()-> viewModel.signup()}"
             android:text="@string/signup"
             android:textStyle="bold"
-            android:onClick="@{()-> viewModel.signup()}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

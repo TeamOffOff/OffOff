@@ -41,15 +41,6 @@ constructor(
     private val _infoChecked = MutableLiveData<Event<Unit>>()
     val infoChecked: LiveData<Event<Unit>> = _infoChecked
 
-//    private val _signup = MutableLiveData<Event<Unit>>()
-//    val signup: LiveData<Event<Unit>> = _signup
-
-//    fun signup() {
-//        if (!checkInfo()) return
-//
-//        createAccount()
-//    }
-
     // 입력받은 정보를 확인해 그에 따른 에러 메시지를 이벤트 처리
     private fun checkInfo(): Boolean {
 
@@ -72,6 +63,14 @@ constructor(
         else if(!Pattern.matches("^[a-zA-Z0-9]{5,15}\$", pw.value!!)) {
             _isPwError.value = Event("비밀번호는 영문과 숫자를 조합한 5~15글자")
             checkValue = false
+        }
+        else {
+            for(i in 1..(pw.value!!.length - 3) step(1)) {
+                if(id.value!!.contains(pw.value!!.substring(i, i + 3))) {
+                    _isPwError.value = Event("아이디와 비밀번호가 4자리 이상 중복됩니다")
+                    checkValue = false
+                }
+            }
         }
         // 비밀번호 확인 값 확인
         if(checkPw.value?.isBlank() == true) {
@@ -114,22 +113,3 @@ constructor(
         }
     }
 }
-
-//    private fun signup(userId: String, userPw: String) = viewModelScope.launch {
-//        repository.signup(SignupInfo(userId, userPw)).let { response ->
-//            // 서버 통신 성공
-//            if(response.isSuccessful) {
-//                // 회원가입 성공
-//                if(response.body()!!.result == "success") {
-//                    Log.d("tag_signup_success", response.body().toString())
-//                } else { // 회원가입 실패
-//                    Log.d("tag_signup_fail", response.body().toString())
-//                }
-//                // 서버 통신 실패
-//            } else {
-//                Log.d("tag_server_fail", "서버 통신 실패: ${response.code()}")
-//            }
-//        }
-//    }
-//
-//}
