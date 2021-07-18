@@ -1,4 +1,4 @@
-package com.yuuuzzzin.offoff_android.view.ui
+package com.yuuuzzzin.offoff_android.view.ui.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,11 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
-import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentHomeBinding
+import com.yuuuzzzin.offoff_android.view.ui.SearchActivity
+import com.yuuuzzzin.offoff_android.view.ui.UserActivity
 
 class HomeFragment : Fragment() {
 

@@ -1,4 +1,4 @@
-package com.yuuuzzzin.offoff_android.model
+package com.yuuuzzzin.offoff_android.service.models
 
 // 게시판 객체 모델
 data class BoardData(

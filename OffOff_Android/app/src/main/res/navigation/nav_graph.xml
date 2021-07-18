@@ -8,13 +8,13 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.yuuuzzzin.offoff_android.view.ui.HomeFragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/boardsFragment"
-        android:name="com.yuuuzzzin.offoff_android.view.ui.BoardsFragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.board.BoardsFragment"
         android:label="fragment_boards"
         tools:layout="@layout/fragment_boards" />
 
