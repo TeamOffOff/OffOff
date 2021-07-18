@@ -15,6 +15,13 @@ mongodb = mongo.MongoHelper()
 BoardList = Namespace("boardlist") #커뮤니티 텝을 클릭하는 경우 게시판 리스트를 보여주고
 PostList = Namespace("postlist") #특정 게시판을 클릭하는 경우 게시글 리스트를 보여준다
 
+@BoardList.route('/test')
+class Example(Resource):
+    def post(self):
+        board_info = request.get_json()
+        mongodb.insert_one(board_info, collection_name="board_list")
+        return{"message" : "success"}
+
 
 @BoardList.route("/") 
 #사용자가 커뮤니티 텝을 클릭하는 경우 여기로 오세요
@@ -30,27 +37,34 @@ class BoardListControl(Resource):
         board_list = [x for x in cursor]
         #불러온 다큐멘트들을 리스트형태로 바꿔줌
 
-        return board_list #리스트 형태로 반환되어도 되나요? 
+        return board_list
 
+
+@PostList.route('/test')
+class Example(Resource):
+    def post(self):
+        post_info = request.get_json()
+        mongodb.insert_one(post_info, collection_name="board_type_post")
+        return{"message" : "success"}
 
 @PostList.route("/") 
 #사용자가 특정 게시판을 클릭하는 경우 여기로 오세요
 class PostListControl(Resource):
-    def get(self, page_size=20, last_id=None):  #이 파라미터는 어떻게 전달되는걸까?
+    def get(self, page_size=5, last_id=None):  #이 파라미터는 어떻게 전달되는걸까?
         #프론트에서 한 번에 불러올 게시글 리스트 갯수인 page_size를 넘겨주고 (default = 20), 
         #우리가 리턴해주는 last_id도 넘겨줘야함 (2번째부터)
-        board_type_post = str(request.args.get("board_type_post"))
+        # board_type_post = str(request.args.get("board_type_post"))
         #free_post (자유게시판 컬랙션 이름)
         #프론트에서 넘겨주는 board_type_post(name)의 value 받기 => board_type_post변수에 저장
         self.last_id = ObjectId(last_id)
         
         if last_id is None:
             #처음 게시판에 들어간 경우(마지막 다큐멘트의 아이디가 없음)
-            cursor = mongodb.find(collection_name=board_type_post).sort([("_id", -1)]).limit(page_size)
+            cursor = mongodb.find(collection_name="board_type_post").sort([("_id", -1)]).limit(page_size)
             #최신순으로 정렬해서(내림차순) 그냥 갯수만큼만 불러오면 됨
         else: 
             #사용자가 스크롤을 끝까지 내려서 새로운 리스트를 받아오는 경우
-            cursor = mongodb.find(query={'_id': {'$lt': self.last_id} }, collection_name=board_type_post).sort([("_id", -1)]).limit(page_size)
+            cursor = mongodb.find(query={'_id': {'$lt': self.last_id} }, collection_name="board_type_post").sort([("_id", -1)]).limit(page_size)
             #과거의 데이터를 불러오는 거니까 _id가 더 작음(시간이 더 빠르니까)
             #과거의 데이터들 중에서 최신순으로 정렬해서 갯수만큼 불러옴
             #최신순일 수록 _id가 크고 오래될 수록 _id가 작다
