@@ -24,6 +24,7 @@
 		EABD99C326A2B5CF001DE8BF /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */; };
 		EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C426A2EA80001DE8BF /* LoginModel.swift */; };
 		EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */; };
+		EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
@@ -72,6 +73,7 @@
 		EAAFFBA0269F2DF4006D43D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				EAE6525E269416B600D8F7BB /* PostPreviewCell.swift */,
+				EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */,
 				EA07345B2692AD56007830ED /* PostsViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
+				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
 				EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */,

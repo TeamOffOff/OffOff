@@ -25,7 +25,7 @@ class LoginViewModel {
             }
             
             // if loginSuccess
-            loginStatus.value = .successed
+            loginStatus.value = [LoginStatus.failed, LoginStatus.successed].randomElement()!
         }
     }
 }

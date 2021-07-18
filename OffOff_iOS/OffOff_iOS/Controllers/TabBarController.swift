@@ -12,7 +12,6 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-//        UITabBar.appearance().barTintColor = Constants.mainColor
         self.tabBar.shadowImage = UIImage()
         tabBar.tintColor = Constants.mainColor
         setupVCs()
@@ -20,7 +19,7 @@ class TabBarController: UITabBarController {
     
     fileprivate func createNavController(for rootViewController: UIViewController, title: String, image: UIImage) -> UIViewController {
         let navController = UINavigationController(navigationBarClass: CustomNavigationBar.self, toolbarClass: nil)
-        rootViewController.edgesForExtendedLayout = [] // Navigation bar와 이 vc가 겹치지 않도록 하는 코드
+//        rootViewController.edgesForExtendedLayout = [] // Navigation bar와 이 vc가 겹치지 않도록 하는 코드
         navController.viewControllers = [rootViewController]
         navController.tabBarItem.title = title
         navController.tabBarItem.image = image
@@ -29,6 +28,7 @@ class TabBarController: UITabBarController {
         
         if let navigationBar = navController.navigationBar as? CustomNavigationBar {
             navigationBar.titleLabel.text = title
+            
         }
         
         return navController
@@ -36,6 +36,7 @@ class TabBarController: UITabBarController {
     
     func setupVCs() {
         viewControllers = [
+            // TODO: 첫 번째 tab의 navigation bar가 작아지는 문제
             createNavController(for: CommunityListViewController(), title: NSLocalizedString("커뮤니티", comment: ""), image: UIImage(systemName: "house")!),
 //            createNavController(for: PostListViewController(), title: NSLocalizedString("Community", comment: ""), image: UIImage(systemName: "text.justify")!),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
