@@ -23,12 +23,12 @@ class MongoHelper:
 
     def find_one(self, query=None, collection_name=None, projection_key=None):
         self.collection = self.db[collection_name]
-        result = self.collection.find_one(query,projection_key)
+        result = self.collection.find_one(query, projection_key)
         return result
 
     def find(self, query=None, collection_name=None, projection_key=None):
         self.collection = self.db[collection_name]
-        result = self.collection.find(query,projection_key)
+        result = self.collection.find(query, projection_key)
         return result
 
     def delete_one(self, query=None, collection_name=None):
