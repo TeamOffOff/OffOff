@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit.UIColor
+import SkyFloatingLabelTextField
 
 public class Constants {
     static var mainColor: UIColor {
@@ -17,3 +18,4 @@ public class Constants {
     static let USERPW_MAXLENGTH = 30
 }
 
+typealias TextField = SkyFloatingLabelTextFieldWithIcon

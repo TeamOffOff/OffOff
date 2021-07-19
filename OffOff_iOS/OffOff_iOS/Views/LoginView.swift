@@ -8,8 +8,6 @@
 import UIKit
 import SkyFloatingLabelTextField
 
-typealias TextField = SkyFloatingLabelTextFieldWithIcon
-
 class LoginView: UIView {
     
     var clearButton = UIImageView(image: .xmarkCircleFill)

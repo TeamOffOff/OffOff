@@ -22,6 +22,7 @@ class LoginViewController: UIViewController {
         loginView.idTextField.delegate = self
         loginView.passwordTextField.delegate = self
         loginView.loginButton.addTarget(self, action: #selector(onLoginButton), for: .touchUpInside)
+        loginView.signupButton.addTarget(self, action: #selector(onSignUpButton), for: .touchUpInside)
         
         loginViewModel.loginModel.bind { _ in self.loginViewModel.login(loginStatus: self.loginStatus) }
         
@@ -39,8 +40,16 @@ class LoginViewController: UIViewController {
         }
     }
     
+    
+    // MARK: - 버튼 리액션
     @objc func onLoginButton(_: AnyObject) {
         loginViewModel.loginModel.value = LoginModel(id: loginView.idTextField.text, password: loginView.passwordTextField.text)
+    }
+    
+    @objc func onSignUpButton(_: AnyObject) {
+        let vc = UINavigationController(rootViewController: IDPWViewController())
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
 }
 

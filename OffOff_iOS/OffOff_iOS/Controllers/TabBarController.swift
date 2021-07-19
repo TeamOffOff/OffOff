@@ -19,7 +19,6 @@ class TabBarController: UITabBarController {
     
     fileprivate func createNavController(for rootViewController: UIViewController, title: String, image: UIImage) -> UIViewController {
         let navController = UINavigationController(navigationBarClass: CustomNavigationBar.self, toolbarClass: nil)
-//        rootViewController.edgesForExtendedLayout = [] // Navigation bar와 이 vc가 겹치지 않도록 하는 코드
         navController.viewControllers = [rootViewController]
         navController.tabBarItem.title = title
         navController.tabBarItem.image = image
