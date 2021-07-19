@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import com.yuuuzzzin.offoff_android.MainActivity
-import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityLoginBinding
 import com.yuuuzzzin.offoff_android.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,11 +26,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initView() {
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        mBinding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         binding.lifecycleOwner = this
         binding.viewModel = loginViewModel
-        binding.tvAlertId.visibility = View.GONE
-        binding.tvAlertPw.visibility = View.GONE
+        binding.tvAlertMsg.visibility = View.GONE
 
         binding.btSignup.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
@@ -42,27 +40,35 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initViewModel() {
 
-        // alertMsg 값을 관찰하다가 값이 들어오면 error로 설정
-        loginViewModel.alertId.observe(this, {
-            binding.tfId.error = loginViewModel.alertId.value.toString()
+        loginViewModel.isIdError.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.tfId.error = it
+            }
         })
 
-        // alertMsg 값을 관찰하다가 값이 들어오면 error로 설정
-        loginViewModel.alertPw.observe(this, {
-            binding.tfPw.error = loginViewModel.alertPw.value.toString()
+        loginViewModel.isPwError.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.tfPw.error = it
+            }
+        })
+
+        loginViewModel.alertMsg.observe(this, { event ->
+            binding.tvAlertMsg.visibility = View.VISIBLE
         })
 
         loginViewModel.id.observe(this, {
-            loginViewModel.alertId.postValue("")
+            binding.tfId.error = null
             loginViewModel.alertMsg.postValue("")
+            binding.tvAlertMsg.visibility = View.GONE
         })
 
         loginViewModel.pw.observe(this, {
-            loginViewModel.alertPw.postValue("")
+            binding.tfPw.error = null
             loginViewModel.alertMsg.postValue("")
+            binding.tvAlertMsg.visibility = View.GONE
         })
 
-        loginViewModel.loginSuccessEvent.observe(this, { event ->
+        loginViewModel.loginSuccess.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("id", it)
