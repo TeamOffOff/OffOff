@@ -80,7 +80,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tf_id"
-            app:layout_goneMarginTop="8dp"
             app:startIconDrawable="@drawable/ic_outline_lock_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -97,6 +96,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:hint="@string/check_pw"
             app:boxStrokeWidthFocused="2dp"
             app:endIconMode="clear_text"

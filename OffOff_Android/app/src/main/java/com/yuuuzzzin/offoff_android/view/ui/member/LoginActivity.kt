@@ -30,7 +30,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.lifecycleOwner = this
         binding.viewModel = loginViewModel
-        binding.tvAlertMsg.visibility = View.GONE
 
         binding.btSignup.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
@@ -52,19 +51,23 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        loginViewModel.alertMsg.observe(this, { event ->
-            binding.tvAlertMsg.visibility = View.VISIBLE
+        // 로그인 시도 후 실패하면 버튼 위 에러메시지 텍스트뷰를 visible 상태로 바꿈꿈
+       loginViewModel.loginFail.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.tvAlertMsg.visibility = View.VISIBLE
+                binding.tvAlertMsg.text = it
+            }
         })
 
         loginViewModel.id.observe(this, {
             binding.tfId.error = null
-            loginViewModel.alertMsg.postValue("")
+            loginViewModel.alertMsg.postValue(null)
             binding.tvAlertMsg.visibility = View.GONE
         })
 
         loginViewModel.pw.observe(this, {
             binding.tfPw.error = null
-            loginViewModel.alertMsg.postValue("")
+            loginViewModel.alertMsg.postValue(null)
             binding.tvAlertMsg.visibility = View.GONE
         })
 
