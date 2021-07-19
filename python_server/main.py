@@ -4,7 +4,7 @@ from flask_restx import Api
 import mongo
 from api_helper.board import BoardList, PostList
 from api_helper.post import Post
-from api_helper.user_copy import Auth
+from api_helper.user import Auth
 
 app = Flask(__name__)
 api = Api(app)
