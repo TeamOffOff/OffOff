@@ -41,6 +41,16 @@ class MongoHelper:
         result = self.collection.delete_many(query)
         return result
 
+    def update_one(self, query=None, collection_name=None, modify=None):
+        self.collection = self.db[collection_name]
+        result = self.collection.update_one(query, modify, upsert=False)
+        return result
+
+    def update_many(self, query=None, collection_name=None, modify=None):
+        self.collection = self.db[collection_name]
+        result = self.collection.update_many(query, modify, upsert=False)
+        return result
+
 
 if __name__ == "__main__":
     mongodb = MongoHelper()
