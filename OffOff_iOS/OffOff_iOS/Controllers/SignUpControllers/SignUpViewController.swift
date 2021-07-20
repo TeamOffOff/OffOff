@@ -26,30 +26,40 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        SignUpViewModel.buttonHeight = idpwView.nextButton.snp.height
-        print(SignUpViewModel.buttonHeight)
+        SignUpViewModel.shared = SignUpViewModel()
         idpwView.idTextField.delegate = self
         idpwView.passwordTextField.delegate = self
         idpwView.passwordVerifyingField.delegate = self
         idpwView.nextButton.addTarget(self, action: #selector(onNextButton), for: .touchUpInside)
     }
     
-    private func verifyTextField(textField: TextField) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print(SignUpViewModel.shared.signUpModel.information)
+        if let id = SignUpViewModel.shared.signUpModel.information?.id {
+            idpwView.idTextField.text = id
+        } else {
+            idpwView.idTextField.setTextFieldNormal(iconImage: .ICON_USER_GRAY)
+        }
+        if let pw = SignUpViewModel.shared.signUpModel.information?.password {
+            idpwView.passwordTextField.text = pw
+        } else {
+            idpwView.passwordTextField.setTextFieldNormal(iconImage: .ICON_LOCK_GRAY)
+        }
+    }
+        
+    private func verifyTextField(textField: TextField, text: String) {
         textField.errorMessage = nil
         textField.iconImage = .ICON_CHECKCIRCLE_MAINCOLOR
         
         switch textField {
         case idpwView.idTextField:
-            SignUpViewModel.signUpModel.value.information?.id = textField.text
+            SignUpViewModel.shared.signUpModel.information?.id = text
         case idpwView.passwordVerifyingField:
-            SignUpViewModel.signUpModel.value.information?.password = textField.text
+            SignUpViewModel.shared.signUpModel.information?.password = text
         default:
             return
         }
-    }
-    
-    private func failTextField(textField: TextField, errorMessage: String) {
-        textField.errorMessage = errorMessage
     }
     
     @objc func onNextButton(sender: UIButton) {
@@ -59,10 +69,7 @@ class SignUpViewController: UIViewController {
     }
     
     @objc func onBackButton() {
-        self.dismiss(animated: true) {
-            SignUpViewModel.shared = SignUpViewModel()
-            SignUpViewModel.signUpModel = Box(SignUpModel(information: SignUpModel.Information(), subinfo: SignUpModel.Subinfo(), activity: SignUpModel.Activity()))
-        }
+        self.dismiss(animated: true)
     }
 }
 
@@ -86,10 +93,11 @@ extension SignUpViewController: UITextFieldDelegate {
         
         if textField == idpwView.passwordVerifyingField {
             let tf = textField as? TextField
-            if updatedText.count == idpwView.passwordTextField.text?.count {
-                if SignUpViewModel.shared.isValidPWVerify(verifyingText: updatedText, text: idpwView.passwordTextField.text ?? "") {
-                    verifyTextField(textField: tf!)
-                }
+            if SignUpViewModel.shared.isValidPWVerify(verifyingText: updatedText, text: idpwView.passwordTextField.text ?? "") {
+                verifyTextField(textField: tf!, text: updatedText)
+            } else {
+                tf!.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
+                SignUpViewModel.shared.signUpModel.information?.password = nil
             }
         }
         
@@ -101,15 +109,17 @@ extension SignUpViewController: UITextFieldDelegate {
         case idpwView.idTextField:
             if SignUpViewModel.shared.isValidID(text: textField.text ?? "") {
                 // TODO: 중복검사
-                verifyTextField(textField: idpwView.idTextField)
+                verifyTextField(textField: idpwView.idTextField, text: idpwView.idTextField.text!)
             } else {
-                failTextField(textField: idpwView.idTextField, errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
+                SignUpViewModel.shared.signUpModel.information?.id = nil
+                idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
             }
         case idpwView.passwordTextField:
             if SignUpViewModel.shared.isValidPW(text: textField.text ?? "") {
-                verifyTextField(textField: idpwView.passwordTextField)
+                verifyTextField(textField: idpwView.passwordTextField, text: textField.text!)
             } else {
-                failTextField(textField: idpwView.passwordTextField, errorMessage: Constants.PW_ERROR_MESSAGE)
+                SignUpViewModel.shared.signUpModel.information?.password = nil
+                idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
             }
         default:
             return

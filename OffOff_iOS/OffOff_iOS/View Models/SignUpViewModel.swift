@@ -10,10 +10,10 @@ import SnapKit
 
 class SignUpViewModel {
     static var shared = SignUpViewModel()
-    static var signUpModel = Box(SignUpModel(information: SignUpModel.Information(), subinfo: SignUpModel.Subinfo(), activity: SignUpModel.Activity()))
-    static var buttonHeight: ConstraintItem?
+    var signUpModel = SignUpModel(information: SignUpModel.Information(), subinfo: SignUpModel.Subinfo(), activity: SignUpModel.Activity())
     
     init() {
+        signUpModel = SignUpModel(information: SignUpModel.Information(), subinfo: SignUpModel.Subinfo(), activity: SignUpModel.Activity())
     }
     
     func isValidID(text: String) -> Bool {
@@ -26,6 +26,9 @@ class SignUpViewModel {
     }
     
     func isValidPWVerify(verifyingText: String, text: String) -> Bool {
-        return verifyingText == text
+        if isValidPW(text: text) {
+            return verifyingText == text
+        }
+        return false
     }
 }

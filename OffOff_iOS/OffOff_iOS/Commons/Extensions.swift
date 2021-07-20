@@ -70,6 +70,7 @@ extension UIImage {
     static let ICON_LOCK_MAINCOLOR = UIImage.fontAwesomeIcon(name: .lock, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
     static let ICON_AT_MAINCOLOR = UIImage.fontAwesomeIcon(name: .at, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
     static let ICON_CHECKCIRCLE_MAINCOLOR = UIImage.fontAwesomeIcon(name: .checkCircle, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
+    static let ICON_EXCLAMATION_RED = UIImage.fontAwesomeIcon(name: .exclamation, style: .solid, textColor: .red, size: Constants.ICON_SIZE)
     
     static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
 }
@@ -90,6 +91,17 @@ extension TextField {
         self.selectedIconColor = selectedColor
         
         self.errorColor = errorColor
+    }
+    
+    func setTextFieldNormal(iconImage: UIImage) {
+        self.errorMessage = ""
+        self.text = nil
+        self.iconImage = iconImage
+    }
+    
+    func setTextFieldFail(errorMessage: String) {
+        self.errorMessage = errorMessage
+        self.iconImage = .ICON_EXCLAMATION_RED
     }
 }
 

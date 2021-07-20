@@ -22,6 +22,7 @@ public class Constants {
     static let USERPW_RULE = "[A-Za-z0-9!_@$%^&+=]{8,16}"
     
     static let PW_ERROR_MESSAGE = "비밀번호는 8-16자의 영문, 숫자, 기호만 사용 가능합니다."
+    static let PWVERIFY_ERROR_MESSAGE = "비밀번호가 일치하지 않습니다."
     
     static func isValidString(str: String?, regEx: String) -> Bool {
         guard let string = str else { return false }
