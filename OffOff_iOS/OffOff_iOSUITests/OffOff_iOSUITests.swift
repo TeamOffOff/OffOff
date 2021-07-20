@@ -37,7 +37,7 @@ class OffOff_iOSUITests: XCTestCase {
     func testSignUpProcess() throws {
         let signUpButton = app.buttons["회원가입"].firstMatch
         signUpButton.tap()
-                                                        
+        pause()
     }
     
 //    func testLaunchPerformance() throws {

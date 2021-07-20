@@ -14,7 +14,7 @@
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
 		EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */; };
-		EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* IDPWViewController.swift */; };
+		EA406A8E26A475CE00737F90 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* SignUpViewController.swift */; };
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
 		EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B36269BFBD200F6F903 /* PostServices.swift */; };
 		EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B40269C5F7D00F6F903 /* OffOff_iOSTests.swift */; };
@@ -28,6 +28,20 @@
 		EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C426A2EA80001DE8BF /* LoginModel.swift */; };
 		EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */; };
 		EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */; };
+		EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */; };
+		EACC255E26A5CB5C000B12B6 /* FontAwesome in Frameworks */ = {isa = PBXBuildFile; productRef = EACC255D26A5CB5C000B12B6 /* FontAwesome */; };
+		EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
+		EACC257B26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
+		EACC257C26A5CFB3000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
+		EACC257D26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */; };
+		EACC257E26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */; };
+		EACC257F26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */; };
+		EACC258026A5CFB3000B12B6 /* Font Awesome 5 Brands-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */; };
+		EACC258126A5CFB3000B12B6 /* Font Awesome 5 Brands-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */; };
+		EACC258226A5CFB3000B12B6 /* Font Awesome 5 Brands-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */; };
+		EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258326A677D6000B12B6 /* SignUpViewModel.swift */; };
+		EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258326A677D6000B12B6 /* SignUpViewModel.swift */; };
+		EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258326A677D6000B12B6 /* SignUpViewModel.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
@@ -75,7 +89,7 @@
 		EA3DA4BB26A58B510075819B /* OffOff_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffOff_iOSUITests.swift; sourceTree = "<group>"; };
 		EA3DA4BF26A58B510075819B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EA406A8D26A475CE00737F90 /* IDPWViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewController.swift; sourceTree = "<group>"; };
+		EA406A8D26A475CE00737F90 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		EA406A8F26A4769300737F90 /* IDPWView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWView.swift; sourceTree = "<group>"; };
 		EA420B36269BFBD200F6F903 /* PostServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostServices.swift; sourceTree = "<group>"; };
 		EA420B3E269C5F7D00F6F903 /* OffOff_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +103,11 @@
 		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
+		EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
+		EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Free-Solid-900.otf"; sourceTree = "<group>"; };
+		EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Free-Regular-400.otf"; sourceTree = "<group>"; };
+		EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Brands-Regular-400.otf"; sourceTree = "<group>"; };
+		EACC258326A677D6000B12B6 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -132,6 +151,7 @@
 				EABD99C326A2B5CF001DE8BF /* SkyFloatingLabelTextField in Frameworks */,
 				EAE50306268AA660002B1C6A /* SnapKit in Frameworks */,
 				EAAFFB9D269EFA25006D43D4 /* Moya in Frameworks */,
+				EACC255E26A5CB5C000B12B6 /* FontAwesome in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,7 +170,7 @@
 		EA406A8C26A4759600737F90 /* SignUpControllers */ = {
 			isa = PBXGroup;
 			children = (
-				EA406A8D26A475CE00737F90 /* IDPWViewController.swift */,
+				EA406A8D26A475CE00737F90 /* SignUpViewController.swift */,
 			);
 			path = SignUpControllers;
 			sourceTree = "<group>";
@@ -219,6 +239,9 @@
 				EAF2127D268FEC6C00E47942 /* Box.swift */,
 				EA72D75F26987D5300EB07DA /* Extensions.swift */,
 				EAAFFBA0269F2DF4006D43D4 /* Constants.swift */,
+				EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */,
+				EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */,
+				EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -260,6 +283,7 @@
 				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 				EA07345426929C01007830ED /* PostModel.swift */,
 				EABD99C426A2EA80001DE8BF /* LoginModel.swift */,
+				EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -269,6 +293,7 @@
 			children = (
 				EA07345A2692AD56007830ED /* PostsViewModel.swift */,
 				EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */,
+				EACC258326A677D6000B12B6 /* SignUpViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -354,6 +379,7 @@
 				EAE50305268AA660002B1C6A /* SnapKit */,
 				EAAFFB9C269EFA25006D43D4 /* Moya */,
 				EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */,
+				EACC255D26A5CB5C000B12B6 /* FontAwesome */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -398,6 +424,7 @@
 				EAB088DE26A2970400E30324 /* XCRemoteSwiftPackageReference "Material" */,
 				EABD99BE26A2B28D001DE8BF /* XCRemoteSwiftPackageReference "TextFieldEffects" */,
 				EABD99C126A2B5CF001DE8BF /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
+				EACC255C26A5CB5C000B12B6 /* XCRemoteSwiftPackageReference "FontAwesome" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -415,6 +442,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EACC257C26A5CFB3000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */,
+				EACC258226A5CFB3000B12B6 /* Font Awesome 5 Brands-Regular-400.otf in Resources */,
+				EACC257F26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,6 +452,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EACC257B26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */,
+				EACC258126A5CFB3000B12B6 /* Font Awesome 5 Brands-Regular-400.otf in Resources */,
+				EACC257E26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,8 +463,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */,
+				EACC258026A5CFB3000B12B6 /* Font Awesome 5 Brands-Regular-400.otf in Resources */,
 				EAE502EF2689E3D7002B1C6A /* LaunchScreen.storyboard in Resources */,
 				EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */,
+				EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */,
+				EACC257D26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +478,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -450,6 +487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -466,7 +504,7 @@
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
 				EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */,
 				EAF212842690133500E47942 /* HomeView.swift in Sources */,
-				EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */,
+				EA406A8E26A475CE00737F90 /* SignUpViewController.swift in Sources */,
 				EA72D75B2698276C00EB07DA /* PostView.swift in Sources */,
 				EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */,
 				EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */,
@@ -474,7 +512,9 @@
 				EAF2128C26907B9600E47942 /* CommunityListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
 				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
+				EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
+				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
 				EAF21280268FEE6500E47942 /* Account.swift in Sources */,
@@ -832,6 +872,14 @@
 				minimumVersion = 4.0.0;
 			};
 		};
+		EACC255C26A5CB5C000B12B6 /* XCRemoteSwiftPackageReference "FontAwesome" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/thii/FontAwesome.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.9.1;
+			};
+		};
 		EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/devxoul/Then";
@@ -868,6 +916,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EABD99C126A2B5CF001DE8BF /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */;
 			productName = SkyFloatingLabelTextField;
+		};
+		EACC255D26A5CB5C000B12B6 /* FontAwesome */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EACC255C26A5CB5C000B12B6 /* XCRemoteSwiftPackageReference "FontAwesome" */;
+			productName = FontAwesome;
 		};
 		EAE502FF268AA1C6002B1C6A /* Then */ = {
 			isa = XCSwiftPackageProductDependency;

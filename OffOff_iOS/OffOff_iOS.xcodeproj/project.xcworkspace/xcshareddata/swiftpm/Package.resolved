@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "FontAwesome",
+        "repositoryURL": "https://github.com/thii/FontAwesome.swift",
+        "state": {
+          "branch": null,
+          "revision": "07883a32d49dfc7bdedbeea115067b53dfbeeb43",
+          "version": "1.9.1"
+        }
+      },
+      {
         "package": "Logger",
         "repositoryURL": "https://github.com/shibapm/Logger",
         "state": {
