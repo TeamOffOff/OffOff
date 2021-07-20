@@ -26,6 +26,8 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        SignUpViewModel.buttonHeight = idpwView.nextButton.snp.height
+        print(SignUpViewModel.buttonHeight)
         idpwView.idTextField.delegate = self
         idpwView.passwordTextField.delegate = self
         idpwView.passwordVerifyingField.delegate = self
@@ -52,7 +54,7 @@ class SignUpViewController: UIViewController {
     
     @objc func onNextButton(sender: UIButton) {
         sender.showAnimation {
-            
+            self.navController?.pushViewController(NameEmailViewController(), animated: true)
         }
     }
     
@@ -98,7 +100,7 @@ extension SignUpViewController: UITextFieldDelegate {
         switch textField {
         case idpwView.idTextField:
             if SignUpViewModel.shared.isValidID(text: textField.text ?? "") {
-                // 중복검사
+                // TODO: 중복검사
                 verifyTextField(textField: idpwView.idTextField)
             } else {
                 failTextField(textField: idpwView.idTextField, errorMessage: IDErrorMessage.idNotFollowRule.rawValue)

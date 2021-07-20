@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import SnapKit
 
 class SignUpViewModel {
     static var shared = SignUpViewModel()
     static var signUpModel = Box(SignUpModel(information: SignUpModel.Information(), subinfo: SignUpModel.Subinfo(), activity: SignUpModel.Activity()))
+    static var buttonHeight: ConstraintItem?
     
     init() {
     }
