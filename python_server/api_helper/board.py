@@ -46,24 +46,26 @@ class BoardListControl(Resource):
         }
 
 
-@PostList.route("/<string:board_type>/<int:page_size>")
+@PostList.route("/<string:board_type>")
 # 사용자가 특정 게시판을 클릭하는 경우
 class PostListControl(Resource):
     """
-        http://0.0.0.0:5000/postlist//free/20
-        http://0.0.0.0:5000/postlist/free/20?content-id=직전에 받은 게시글 id
+        http://0.0.0.0:5000/postlist//free
+        http://0.0.0.0:5000/postlist/free/?last-content-id=직전에 받은 게시글 id&page-size=10
     """
-    def get(self, board_type, page_size):
+    def get(self, board_type):
         """
         DB > 해당 게시판의 컬랙션(free_board)에서 게시글을 조회합니다
         """
         try:
 
             board_type = board_type + "_board"
-            last_content_id = request.args.get("last-content-id")
+
+            page_size = int(request.args.get("page-size", default=20))
+            
+            last_content_id = request.args.get("last-content-id", default="")
 
                 
-
             if not last_content_id:  # 게시판에 처음 들어간 경우
                 cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(page_size)
             else:  # 스크롤 하는 경우
