@@ -46,40 +46,30 @@ class BoardListControl(Resource):
         }
 
 
-@PostList.route("/")
+@PostList.route("/<string:board_type>/<int:page_size>")
 # 사용자가 특정 게시판을 클릭하는 경우
 class PostListControl(Resource):
     """
-    input shape
-
-    {
-        "board_type": "free",
-        "page_size": 20,
-        "last_content_id": "" or "last_content_id"
-    }
+        http://0.0.0.0:5000/postlist//free/20
+        http://0.0.0.0:5000/postlist/free/20?content-id=직전에 받은 게시글 id
     """
-    def get(self):
+    def get(self, board_type, page_size):
         """
         DB > 해당 게시판의 컬랙션(free_board)에서 게시글을 조회합니다
         """
         try:
-            board_info = request.get_json()
-           
 
-            board_type = board_info["board_type"] + "_board"  
+            board_type = board_type + "_board"
+            last_content_id = request.args.get("last-content-id")
 
-            last_content_id = None
-            if board_info["last_content_id"]:
-                last_content_id = ObjectId(board_info["last_content_id"])
+                
 
-
-            page_size = board_info["page_size"]
-
-            if last_content_id is None:  # 게시판에 처음 들어간 경우
+            if not last_content_id:  # 게시판에 처음 들어간 경우
                 cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(page_size)
             else:  # 스크롤 하는 경우
+                last_content_id = ObjectId(last_content_id)
                 cursor = mongodb.find(query={'_id': {'$lt': last_content_id}}, collection_name=board_type).sort(
-                    [("_id", -1)]).limit(page_size)
+                    [("_id", -1)]).limit(page_size)  # 고정해도 되나?
  
 
             post_list = []

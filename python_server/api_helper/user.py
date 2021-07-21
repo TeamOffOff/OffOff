@@ -10,20 +10,21 @@ from .utils import SECRET_KEY, ALGORITHM
 
 mongodb = mongo.MongoHelper()
 
-Auth = Namespace(name="Auth", description="유저 관련 API")
+User = Namespace(name="user", description="유저 관련 API")
 
 
-@Auth.route('/register')
-class AuthRegister(Resource):
+@User.route('/')
+class AuthBefore(Resource):
     """
-    중복확인, 회원가입, 비밀번호변경, 회원탈퇴
+    중복확인
     """
     def get(self):
         """
         입력한 id의 중복여부를 확인합니다
+        http://0.0.0.0:5000/user?check-id=hello
         """
-        check_id = request.get_json()
-        if mongodb.find_one(query={"id": check_id["id"]}, collection_name="user"):
+        check_id = request.args.get("check-id")
+        if mongodb.find_one(query={"id": check_id}, collection_name="user"):
             return {
                 "message": "The ID already exist"
             }, 500
@@ -31,7 +32,13 @@ class AuthRegister(Resource):
             return{
                 "message": "Possible"
             }, 200
+    
 
+@User.route('/register')
+class AuthRegister(Resource):
+    """
+    회원가입, 비밀번호변경, 회원탈퇴
+    """
 
     def post(self):
         """
@@ -60,7 +67,7 @@ class AuthRegister(Resource):
 
         new_password = request.get_json()
         new_encrypted_password = bcrypt.hashpw(str(new_password["password"]).encode("utf-8"), bcrypt.gensalt())
-        new_password["password"] = new_encrypted_password.decode('utf-8')  # db저장시에는 디코드
+        new_password["password"] = new_encrypted_password.decode('utf-8')  # db 저장시에는 디코드
 
         result = mongodb.update_one(query={"id": token_decoded["id"]}, collection_name="user", modify={"$set": new_password})
 
@@ -89,7 +96,7 @@ class AuthRegister(Resource):
     
 
 
-@Auth.route('/login')
+@User.route('/login')
 class AuthLogin(Resource):
     """
     로그인, 회원정보, 회원정보수정
@@ -140,7 +147,7 @@ class AuthLogin(Resource):
         회원정보를 수정합니다
         """
         header = request.headers.get('Authorization')
-        token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM) #인코드된 토큰 받아서 디코드함
+        token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # 인코드된 토큰 받아서 디코드함
 
         user_info = request.get_json()
         result = mongodb.update_one(query={"id": token_decoded["id"]}, collection_name="user", modify={"$set": user_info["modify"]})
