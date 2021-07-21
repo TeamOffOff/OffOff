@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_signup"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/signupStep1Fragment">
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.member.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login"/>
+
+    <fragment
+        android:id="@+id/signupStep1Fragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.member.SignupStep1Fragment"
+        android:label="fragment_signup_step1"
+        tools:layout="@layout/fragment_signup_step1" >
+        <action
+            android:id="@+id/action_signupStep1Fragment_to_signupStep2Fragment"
+            app:destination="@id/signupStep2Fragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/signupStep2Fragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.member.SignupStep2Fragment"
+        android:label="fragment_signup_step2"
+        tools:layout="@layout/fragment_signup_step2">
+        <action
+            android:id="@+id/action_signupStep2Fragment_to_signupStep1Fragment"
+            app:destination="@id/signupStep1Fragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/from_left" />
+    </fragment>
+
+</navigation>

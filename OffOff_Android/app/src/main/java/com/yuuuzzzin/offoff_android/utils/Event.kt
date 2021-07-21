@@ -1,4 +1,4 @@
-package com.yuuuzzzin.offoff_android.util
+package com.yuuuzzzin.offoff_android.utils
 
 /* 이벤트 처리 여부를 담당하는 Event Wrapper */
 

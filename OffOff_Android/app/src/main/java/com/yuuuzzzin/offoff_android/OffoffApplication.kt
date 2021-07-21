@@ -1,6 +1,7 @@
 package com.yuuuzzzin.offoff_android
 
-import android.app.Application
+import android.content.Context
+import androidx.multidex.MultiDexApplication
 import dagger.hilt.android.HiltAndroidApp
 
 /* Hilt 애플리케이션 클래스
@@ -9,6 +10,17 @@ import dagger.hilt.android.HiltAndroidApp
 * */
 
 @HiltAndroidApp
-class OffoffApplication : Application() {
+class OffoffApplication : MultiDexApplication() {
 
+    init {
+        instance = this
+    }
+
+    companion object {
+        private lateinit var instance: OffoffApplication
+
+        fun appCtx(): Context {
+            return instance.applicationContext
+        }
+    }
 }
