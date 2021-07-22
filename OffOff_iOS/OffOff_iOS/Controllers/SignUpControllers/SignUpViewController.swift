@@ -52,7 +52,12 @@ class SignUpViewController: UIViewController {
     // MARK: - objc methods
     @objc func onNextButton(sender: UIButton) {
         sender.showAnimation {
-            self.navController?.pushViewController(NameEmailViewController(), animated: true)
+            if self.idpwView.idTextField.isVerified(), self.idpwView.passwordTextField.isVerified(), self.idpwView.passwordVerifyingField.isVerified() {
+                SignUpViewModel.shared.setIDPW(id: self.idpwView.idTextField.text!, pw: self.idpwView.passwordTextField.text!)
+                self.navController?.pushViewController(PrivacyInfoViewController(), animated: true)
+            } else {
+                
+            }
         }
     }
     
@@ -140,5 +145,14 @@ extension SignUpViewController: UITextFieldDelegate {
         }
         
         return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let nextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField {
+            nextField.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return false
     }
 }

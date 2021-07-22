@@ -19,6 +19,7 @@ class IDPWView: UIView {
         $0.clearButtonMode = .whileEditing
         $0.autocorrectionType = .no
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_USER_GRAY, errorColor: .red)
+        $0.tag = 0
     }
 
     var passwordTextField = TextField().then {
@@ -36,6 +37,7 @@ class IDPWView: UIView {
 //        $0.isSecureTextEntry = true   // Strong Password가 TextField를 가리는 문제
         
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_LOCK_GRAY, errorColor: .red)
+        $0.tag = 1
     }
     
     var passwordVerifyingField = TextField().then {
@@ -53,6 +55,7 @@ class IDPWView: UIView {
 //        $0.isSecureTextEntry = true
         
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_LOCK_GRAY, errorColor: .red)
+        $0.tag = 2
     }
     
     var textFieldStack = UIStackView().then {

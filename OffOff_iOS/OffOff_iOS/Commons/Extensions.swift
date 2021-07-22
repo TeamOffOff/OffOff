@@ -22,7 +22,7 @@ extension String {
 
 extension Date {
     func toString() -> String {
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
         return dateFormatter.string(from: self)
     }
 }
@@ -71,6 +71,8 @@ extension UIImage {
     static let ICON_AT_MAINCOLOR = UIImage.fontAwesomeIcon(name: .at, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
     static let ICON_CHECKCIRCLE_MAINCOLOR = UIImage.fontAwesomeIcon(name: .checkCircle, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
     static let ICON_EXCLAMATION_RED = UIImage.fontAwesomeIcon(name: .exclamation, style: .solid, textColor: .red, size: Constants.ICON_SIZE)
+    static let ICON_BIRTHDAY_GRAY = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
+    static let ICON_BIRTHDAY_MAINCOLOR = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
     
     static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
 }
@@ -97,6 +99,7 @@ extension TextField {
         self.errorMessage = ""
         self.text = nil
         self.iconImage = iconImage
+        self.lineColor = .gray
     }
     
     func setTextFieldFail(errorMessage: String) {
@@ -107,6 +110,7 @@ extension TextField {
     func setTextFieldVerified() {
         self.errorMessage = nil
         self.iconImage = .ICON_CHECKCIRCLE_MAINCOLOR
+        self.lineColor = .mainColor
     }
     
     func isVerified() -> Bool {
@@ -119,12 +123,12 @@ extension UIBarButtonItem {
         let button = UIButton(type: .system)
         button.setImage(image, for: .normal)
         button.addTarget(target, action: action, for: .touchUpInside)
-
+        
         let menuBarItem = UIBarButtonItem(customView: button)
         menuBarItem.customView?.translatesAutoresizingMaskIntoConstraints = false
         menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24).isActive = true
         menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24).isActive = true
-
+        
         return menuBarItem
     }
 }

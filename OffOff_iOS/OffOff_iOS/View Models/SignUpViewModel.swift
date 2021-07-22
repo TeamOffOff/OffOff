@@ -16,15 +16,20 @@ class SignUpViewModel {
         signUpModel = SignUpModel(information: SignUpModel.Information(), subinfo: SignUpModel.Subinfo(), activity: SignUpModel.Activity())
     }
     
+    func setIDPW(id: String?, pw: String?) {
+        SignUpViewModel.shared.signUpModel.information?.id = id
+        SignUpViewModel.shared.signUpModel.information?.password = pw
+    }
+    
+    func setPrivacy(name: String?, email: String?, birthday: String?) {
+        SignUpViewModel.shared.signUpModel.information?.name = name
+        SignUpViewModel.shared.signUpModel.information?.email = email
+        SignUpViewModel.shared.signUpModel.information?.birth = birthday
+    }
+    
     func isValidID(text: String) -> Bool {
         // 중복검사 추가
-        if Constants.isValidString(str: text, regEx: Constants.USERID_RULE) {
-            SignUpViewModel.shared.signUpModel.information?.id = text
-            return true
-        } else {
-            SignUpViewModel.shared.signUpModel.information?.id = nil
-            return false
-        }
+        return Constants.isValidString(str: text, regEx: Constants.USERID_RULE)
     }
     
     func isIDDuplicate(id: String, completion: @escaping () -> Void) {
@@ -32,22 +37,21 @@ class SignUpViewModel {
     }
     
     func isValidPW(text: String) -> Bool {
-        if Constants.isValidString(str: text, regEx: Constants.USERPW_RULE) {
-            return true
-        } else {
-            SignUpViewModel.shared.signUpModel.information?.password = nil
-            return false
-        }
+        return Constants.isValidString(str: text, regEx: Constants.USERPW_RULE)
     }
     
     func isValidPWVerify(verifyingText: String, text: String) -> Bool {
         if isValidPW(text: text) {
-            if verifyingText == text {
-                SignUpViewModel.shared.signUpModel.information?.password = text
-                return true
-            }
+            return verifyingText == text
         }
-        SignUpViewModel.shared.signUpModel.information?.password = nil
         return false
+    }
+    
+    func isValidName(name: String) -> Bool {
+        return Constants.isValidString(str: name, regEx: Constants.USERNAME_RULE)
+    }
+    
+    func isValidEmail(email: String) -> Bool {
+        return Constants.isValidString(str: email, regEx: Constants.USEREMAIL_RULE)
     }
 }

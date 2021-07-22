@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class NameEmailView: UIView {
+class PrivacyInfoView: UIView {
     var nameTextField = TextField().then {
         $0.placeholder = "이름"
         $0.font = UIFont.preferredFont(forTextStyle: .callout)
@@ -20,6 +20,7 @@ class NameEmailView: UIView {
         $0.autocorrectionType = .no
         
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_USER_GRAY, errorColor: .red)
+        $0.tag = 0
     }
     
     var emailTextField = TextField().then {
@@ -34,6 +35,12 @@ class NameEmailView: UIView {
         $0.textContentType = .emailAddress
         
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_AT_GRAY, errorColor: .red)
+        $0.tag = 1
+    }
+    
+    var birthdayTextField = TextField().then {
+        $0.placeholder = "생년월일을 입력하세요"
+        $0.setupTextField(selectedColor: .gray, normalColor: .gray, iconImage: .ICON_BIRTHDAY_GRAY, errorColor: .gray)
     }
     
     var nextButton = UIButton().then {
@@ -55,6 +62,7 @@ class NameEmailView: UIView {
         self.addSubview(nextButton)
         textFieldStack.addArrangedSubview(nameTextField)
         textFieldStack.addArrangedSubview(emailTextField)
+        textFieldStack.addArrangedSubview(birthdayTextField)
         makeView()
     }
     
@@ -77,18 +85,3 @@ class NameEmailView: UIView {
         }
     }
 }
-
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-@available(iOS 13.0, *)
-struct PREVIEW: PreviewProvider {
-    static var previews: some View {
-        UIViewPreview {
-            let view = NameEmailView()
-            return view
-        }.previewLayout(.sizeThatFits)
-    }
-}
-
-#endif
-

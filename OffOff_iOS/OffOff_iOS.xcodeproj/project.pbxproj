@@ -46,12 +46,12 @@
 		EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258326A677D6000B12B6 /* SignUpViewModel.swift */; };
 		EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258326A677D6000B12B6 /* SignUpViewModel.swift */; };
 		EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258326A677D6000B12B6 /* SignUpViewModel.swift */; };
-		EACC258826A6B32D000B12B6 /* NameEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* NameEmailView.swift */; };
-		EACC258926A6B32D000B12B6 /* NameEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* NameEmailView.swift */; };
-		EACC258A26A6B32D000B12B6 /* NameEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* NameEmailView.swift */; };
-		EACC258C26A71466000B12B6 /* NameEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* NameEmailViewController.swift */; };
-		EACC258D26A71466000B12B6 /* NameEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* NameEmailViewController.swift */; };
-		EACC258E26A71466000B12B6 /* NameEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* NameEmailViewController.swift */; };
+		EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */; };
+		EACC258926A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */; };
+		EACC258A26A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */; };
+		EACC258C26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
+		EACC258D26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
+		EACC258E26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
@@ -120,8 +120,8 @@
 		EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Free-Regular-400.otf"; sourceTree = "<group>"; };
 		EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Brands-Regular-400.otf"; sourceTree = "<group>"; };
 		EACC258326A677D6000B12B6 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
-		EACC258726A6B32D000B12B6 /* NameEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameEmailView.swift; sourceTree = "<group>"; };
-		EACC258B26A71466000B12B6 /* NameEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameEmailViewController.swift; sourceTree = "<group>"; };
+		EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoView.swift; sourceTree = "<group>"; };
+		EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoViewController.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -185,7 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				EA406A8D26A475CE00737F90 /* SignUpViewController.swift */,
-				EACC258B26A71466000B12B6 /* NameEmailViewController.swift */,
+				EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */,
 			);
 			path = SignUpControllers;
 			sourceTree = "<group>";
@@ -269,7 +269,7 @@
 				EA72D75A2698276C00EB07DA /* PostView.swift */,
 				EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */,
 				EA406A8F26A4769300737F90 /* IDPWView.swift */,
-				EACC258726A6B32D000B12B6 /* NameEmailView.swift */,
+				EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -497,9 +497,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA2FDF4C26A7D88800AEC951 /* AuthServices.swift in Sources */,
-				EACC258E26A71466000B12B6 /* NameEmailViewController.swift in Sources */,
+				EACC258E26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
-				EACC258A26A6B32D000B12B6 /* NameEmailView.swift in Sources */,
+				EACC258A26A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -509,9 +509,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA2FDF4B26A7D88800AEC951 /* AuthServices.swift in Sources */,
-				EACC258D26A71466000B12B6 /* NameEmailViewController.swift in Sources */,
+				EACC258D26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
-				EACC258926A6B32D000B12B6 /* NameEmailView.swift in Sources */,
+				EACC258926A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -522,10 +522,10 @@
 			files = (
 				EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */,
 				EA07345B2692AD56007830ED /* PostsViewModel.swift in Sources */,
-				EACC258C26A71466000B12B6 /* NameEmailViewController.swift in Sources */,
+				EACC258C26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
-				EACC258826A6B32D000B12B6 /* NameEmailView.swift in Sources */,
+				EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EA2FDF4826A7C7EF00AEC951 /* AuthAPI.swift in Sources */,
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
