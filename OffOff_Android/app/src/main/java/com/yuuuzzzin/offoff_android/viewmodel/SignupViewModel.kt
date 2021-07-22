@@ -4,12 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.yuuuzzzin.offoff_android.service.models.SignupInfo
 import com.yuuuzzzin.offoff_android.service.repository.AuthRepository
-import com.yuuuzzzin.offoff_android.util.Event
+import com.yuuuzzzin.offoff_android.utils.Constants
+import com.yuuuzzzin.offoff_android.utils.Event
+import com.yuuuzzzin.offoff_android.utils.Strings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -22,94 +21,163 @@ constructor(
 
     val id = MutableLiveData("")
     val pw = MutableLiveData("")
-    val checkPw = MutableLiveData("")
+    val pwConfirm = MutableLiveData("")
+    val name = MutableLiveData("")
+    val email = MutableLiveData("")
+    val nickname = MutableLiveData("")
+    val birth = MutableLiveData("")
 
-    // 회원가입 성공 여부
-    private val _signupSuccess = MutableLiveData<Event<String>>()
-    val signupSuccess: LiveData<Event<String>> = _signupSuccess
+    private var userId = ""
+    private var userPw = ""
+    private var userName = ""
+    private var userEmail = ""
+    private var userNickname = ""
+    private var userBirth = ""
 
-    private val _isIdError = MutableLiveData<Event<String>>()
-    val isIdError: LiveData<Event<String>> = _isIdError
+    // 회원가입 단계별 성공 여부
+    private val _step1Success = MutableLiveData<Event<Boolean>>()
+    val step1Success: LiveData<Event<Boolean>> = _step1Success
+
+    private val _step2Success = MutableLiveData<Event<Boolean>>()
+    val step2Success: LiveData<Event<Boolean>> = _step2Success
+
+    private val _isIdError = MutableLiveData<Event<String>?>()
+    val isIdError: MutableLiveData<Event<String>?> = _isIdError
 
     private val _isPwError = MutableLiveData<Event<String>>()
     val isPwError: LiveData<Event<String>> = _isPwError
 
-    private val _isPwCheckError = MutableLiveData<Event<String>>()
-    val isPwCheckError: LiveData<Event<String>> = _isPwCheckError
+    private val _isPwConfirmError = MutableLiveData<Event<String>>()
+    val isPwConfirmError: LiveData<Event<String>> = _isPwConfirmError
+
+    private val _isNameError = MutableLiveData<Event<String>>()
+    val isNameError: LiveData<Event<String>> = _isNameError
+
+    private val _isEmailError = MutableLiveData<Event<String>>()
+    val isEmailError: LiveData<Event<String>> = _isEmailError
+
+    private val _isNicknameError = MutableLiveData<Event<String>>()
+    val isNicknameError: LiveData<Event<String>> = _isNicknameError
 
     // 입력받은 정보가 모두 조건에 만족했는지지 완료었는지 여부
     private val _infoChecked = MutableLiveData<Event<Unit>>()
     val infoChecked: LiveData<Event<Unit>> = _infoChecked
 
-    // 입력받은 정보를 확인해 그에 따른 에러 메시지를 이벤트 처리
-    private fun checkInfo(): Boolean {
+    fun validateId(): Boolean {
 
-        var checkValue = true
-
-        // 아이디 값 확인
-        if(id.value?.isBlank() == true) {
-            _isIdError.value = Event("아이디를 입력해주세요")
-            checkValue = false
-        }
-        else if(!Pattern.matches("^[a-zA-Z0-9]{5,15}\$", id.value!!)) {
-            _isIdError.value = Event("아이디는 영문과 숫자를 조합한 5~15글자")
-            checkValue = false
-        }
-        // 비밀번호 값 확인
-        if(pw.value?.isBlank() == true) {
-            _isPwError.value = Event("비밀번호를 입력해주세요")
-            checkValue = false
-        }
-        else if(!Pattern.matches("^[a-zA-Z0-9]{5,15}\$", pw.value!!)) {
-            _isPwError.value = Event("비밀번호는 영문과 숫자를 조합한 5~15글자")
-            checkValue = false
+        if(id.value?.isBlank() == true || !Pattern.matches(Constants.ID_REGEX, id.value!!)) {
+            Log.d("focusloose_tag", id.value.toString())
+            _isIdError.value = Event(Strings.id_error)
+            return false
         }
         else {
-            for(i in 1..(pw.value!!.length - 3) step(1)) {
-                if(id.value!!.contains(pw.value!!.substring(i, i + 3))) {
-                    _isPwError.value = Event("아이디와 비밀번호가 4자리 이상 중복됩니다")
-                    checkValue = false
-                }
-            }
-        }
-        // 비밀번호 확인 값 확인
-        if(checkPw.value?.isBlank() == true) {
-            _isPwCheckError.value = Event("비밀번호를 한번 더 입력해주세요")
-            checkValue = false
-        }
-        // 비밀번호와 비밀번호 확인 값 비교
-        if (pw.value != checkPw.value) {
-            _isPwCheckError.value = Event("비밀번호가 일치하지 않습니다")
-            checkValue = false
+            _isIdError.value = Event("")
+            Log.d("focusloose_tag", "패턴맞음")
+            userId = id.value!!
         }
 
-        return checkValue
+        return true
     }
 
-    // 회원가입 요청
-    fun signup() {
-        if (!checkInfo()) return
+    fun validatePw(): Boolean {
 
-        val userId = id.value ?: return
-        val userPw = pw.value ?: return
+        if(pw.value?.isBlank() == true || !Pattern.matches(Constants.PW_REGEX, pw.value!!)) {
+            Log.d("focusloose_tag", id.value.toString())
+            _isPwError.value = Event(Strings.pw_error)
+            return false
+        }
+        else {
+            _isPwError.value = Event("")
+        }
 
-        // 입력받은 id와 pw를 서버에 보내고 응답받기
-        viewModelScope.launch() {
-            repository.signup(SignupInfo(userId, userPw)).let { response ->
-                // 서버 통신 성공
-                if(response.isSuccessful) {
-                    // 회원가입 성공
-                    if(response.body()!!.result == "success") {
-                        _signupSuccess.postValue(Event(userId))
-                        Log.d("tag_signup_success", userId+userPw+response.body().toString())
-                    } else { // 회원가입 실패
-                        Log.d("tag_signup_fail", response.body().toString())
-                    }
-                    // 서버 통신 실패
-                } else {
-                    Log.d("tag_server_fail", "서버 통신 실패: ${response.code()}")
-                }
-            }
+        return true
+    }
+
+    fun validatePwConfirm(): Boolean {
+
+        if(pwConfirm.value?.isBlank() == true || pw.value != pwConfirm.value) {
+            _isPwConfirmError.value = Event(Strings.pw_confirm_error)
+            return false
+        }
+        else {
+            _isPwConfirmError.value = Event("")
+            userPw = pw.value!!
+        }
+
+        return true
+    }
+
+    fun validateName(): Boolean {
+
+        if(name.value?.isBlank() == true || !Pattern.matches(Constants.NAME_REGEX, name.value!!)) {
+            Log.d("focusloose_tag", name.value.toString())
+            _isNameError.value = Event(Strings.name_error)
+            return false
+        }
+        else {
+            _isNameError.value = Event("")
+            Log.d("focusloose_tag", "패턴맞음")
+            userName = name.value!!
+        }
+
+        return true
+    }
+
+    fun validateEmail(): Boolean {
+
+        if(email.value?.isBlank() == true || !Pattern.matches(Constants.EMAIL_REGEX, email.value!!)) {
+            Log.d("focusloose_tag", email.value.toString())
+            _isEmailError.value = Event(Strings.email_error)
+            return false
+        }
+        else {
+            _isEmailError.value = Event("")
+            Log.d("focusloose_tag", "패턴맞음")
+            userEmail = email.value!!
+        }
+
+        return true
+    }
+
+    fun validateNickname(): Boolean {
+
+        if(nickname.value?.isBlank() == true || !Pattern.matches(Constants.NICKNAME_REGEX, nickname.value!!)) {
+            Log.d("focusloose_tag", nickname.value.toString())
+            //_isNicknameError.value = Event()
+            return false
+        }
+        else {
+            _isNicknameError.value = Event("")
+            Log.d("focusloose_tag", "패턴맞음")
+            userNickname = nickname.value!!
+        }
+
+        return true
+    }
+
+    fun finishStep1() {
+
+        if((userId!="" && userPw!="")&&
+            (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)) {
+            _step1Success.postValue(Event(true))
+        }
+        else {
+            validateId()
+            validatePw()
+            validatePwConfirm()
         }
     }
+    
+    fun finishStep2(): Boolean{
+        return true
+    }
+
+    fun setStep1State(): Boolean {
+        return (userId!="")
+    }
+
+    fun getUserPw(): String {
+        return userPw
+    }
+
 }

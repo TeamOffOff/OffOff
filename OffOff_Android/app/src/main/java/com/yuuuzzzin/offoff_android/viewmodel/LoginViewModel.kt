@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.service.models.LoginInfo
 import com.yuuuzzzin.offoff_android.service.repository.AuthRepository
-import com.yuuuzzzin.offoff_android.util.Event
+import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

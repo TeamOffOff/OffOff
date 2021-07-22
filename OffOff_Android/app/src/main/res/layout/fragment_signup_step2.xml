@@ -73,7 +73,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:maxLength="20"
-                    android:text="@={viewModel.id}" />
+                    android:privateImeOptions="defaultInputmode=korean"
+                    android:text="@={viewModel.name}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,11 +97,40 @@
                 app:startIconDrawable="@drawable/ic_baseline_alternate_email_24">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_pw"
+                    android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:text="@={viewModel.pw}" />
+                    android:text="@={viewModel.email}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tf_birth"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                android:layout_marginTop="8dp"
+                app:errorEnabled="true"
+                android:hint="생년월일"
+                app:errorIconDrawable="@drawable/ic_baseline_error_24"
+                app:helperTextTextColor="@color/design_default_color_error"
+                app:hintTextColor="@color/green"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tf_email">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="@={viewModel.birth}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -113,7 +143,8 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/guideline"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:onClick="@{()-> viewModel.finishStep2()}"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"

@@ -52,15 +52,11 @@
                 android:hint="@string/id_pattern"
                 app:endIconMode="clear_text"
                 app:errorEnabled="true"
-                app:errorIconDrawable="@drawable/ic_baseline_error_24"
                 app:helperTextTextColor="@color/design_default_color_error"
-                app:hintTextColor="@color/green"
+                app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/guideline2"
-                app:startIconDrawable="@drawable/ic_round_person_24"
-                android:focusable="true"
-                android:focusableInTouchMode="true">
+                app:layout_constraintTop_toBottomOf="@id/guideline2">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_id"
@@ -68,8 +64,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:maxLength="20"
-                    android:text="@={viewModel.id}"
-                    onFocusChange="@{viewModel.idFocusChange}"/>
+                    android:text="@={viewModel.id}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,15 +76,13 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/pw_pattern"
                 app:boxStrokeWidthFocused="2dp"
-                app:endIconMode="clear_text"
+                app:endIconMode="password_toggle"
                 app:errorEnabled="true"
-                app:errorIconDrawable="@drawable/ic_baseline_error_24"
                 app:helperTextTextColor="@color/design_default_color_error"
-                app:hintTextColor="@color/green"
+                app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tf_id"
-                app:startIconDrawable="@drawable/ic_baseline_lock_24">
+                app:layout_constraintTop_toBottomOf="@id/tf_id">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_pw"
@@ -111,13 +104,11 @@
                 app:boxStrokeWidthFocused="2dp"
                 app:endIconMode="clear_text"
                 app:errorEnabled="true"
-                app:errorIconDrawable="@drawable/ic_baseline_error_24"
                 app:helperTextTextColor="@color/design_default_color_error"
-                app:hintTextColor="@color/green"
+                app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tf_pw"
-                app:startIconDrawable="@drawable/ic_baseline_lock_24">
+                app:layout_constraintTop_toBottomOf="@id/tf_pw">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_pw_confirm"
@@ -133,6 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_marginTop="8dp"
+                android:onClick="@{()-> viewModel.finishStep1()}"
                 android:text="@string/next"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/guideline"
@@ -144,15 +136,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_end="350dp"
-                app:layout_constraintGuide_percent="0.55" />
+                app:layout_constraintGuide_percent="0.57" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.05" />
+                app:layout_constraintGuide_percent="0.03" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
