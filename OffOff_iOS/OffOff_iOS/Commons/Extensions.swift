@@ -103,6 +103,15 @@ extension TextField {
         self.errorMessage = errorMessage
         self.iconImage = .ICON_EXCLAMATION_RED
     }
+    
+    func setTextFieldVerified() {
+        self.errorMessage = nil
+        self.iconImage = .ICON_CHECKCIRCLE_MAINCOLOR
+    }
+    
+    func isVerified() -> Bool {
+        return self.iconImage == .ICON_CHECKCIRCLE_MAINCOLOR
+    }
 }
 
 extension UIBarButtonItem {

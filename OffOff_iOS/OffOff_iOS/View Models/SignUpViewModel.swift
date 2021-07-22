@@ -17,18 +17,37 @@ class SignUpViewModel {
     }
     
     func isValidID(text: String) -> Bool {
-        // 중복검사 포함시키기
-        return Constants.isValidString(str: text, regEx: Constants.USERID_RULE)
+        // 중복검사 추가
+        if Constants.isValidString(str: text, regEx: Constants.USERID_RULE) {
+            SignUpViewModel.shared.signUpModel.information?.id = text
+            return true
+        } else {
+            SignUpViewModel.shared.signUpModel.information?.id = nil
+            return false
+        }
+    }
+    
+    func isIDDuplicate(id: String, completion: @escaping () -> Void) {
+        AuthServices.idDuplicationCheck(id: id, completion: completion)
     }
     
     func isValidPW(text: String) -> Bool {
-        return Constants.isValidString(str: text, regEx: Constants.USERPW_RULE)
+        if Constants.isValidString(str: text, regEx: Constants.USERPW_RULE) {
+            return true
+        } else {
+            SignUpViewModel.shared.signUpModel.information?.password = nil
+            return false
+        }
     }
     
     func isValidPWVerify(verifyingText: String, text: String) -> Bool {
         if isValidPW(text: text) {
-            return verifyingText == text
+            if verifyingText == text {
+                SignUpViewModel.shared.signUpModel.information?.password = text
+                return true
+            }
         }
+        SignUpViewModel.shared.signUpModel.information?.password = nil
         return false
     }
 }

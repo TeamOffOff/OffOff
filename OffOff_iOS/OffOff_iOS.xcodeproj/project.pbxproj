@@ -13,6 +13,10 @@
 		EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345E2692CECA007830ED /* PostListViewController.swift */; };
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
+		EA2FDF4826A7C7EF00AEC951 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4726A7C7EF00AEC951 /* AuthAPI.swift */; };
+		EA2FDF4A26A7D88800AEC951 /* AuthServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* AuthServices.swift */; };
+		EA2FDF4B26A7D88800AEC951 /* AuthServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* AuthServices.swift */; };
+		EA2FDF4C26A7D88800AEC951 /* AuthServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* AuthServices.swift */; };
 		EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */; };
 		EA406A8E26A475CE00737F90 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* SignUpViewController.swift */; };
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
@@ -92,6 +96,8 @@
 		EA07345E2692CECA007830ED /* PostListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
 		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		EA2FDF4726A7C7EF00AEC951 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
+		EA2FDF4926A7D88800AEC951 /* AuthServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServices.swift; sourceTree = "<group>"; };
 		EA3DA4BB26A58B510075819B /* OffOff_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffOff_iOSUITests.swift; sourceTree = "<group>"; };
 		EA3DA4BF26A58B510075819B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -273,6 +279,8 @@
 			children = (
 				EA420B36269BFBD200F6F903 /* PostServices.swift */,
 				EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */,
+				EA2FDF4726A7C7EF00AEC951 /* AuthAPI.swift */,
+				EA2FDF4926A7D88800AEC951 /* AuthServices.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -488,6 +496,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA2FDF4C26A7D88800AEC951 /* AuthServices.swift in Sources */,
 				EACC258E26A71466000B12B6 /* NameEmailViewController.swift in Sources */,
 				EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258A26A6B32D000B12B6 /* NameEmailView.swift in Sources */,
@@ -499,6 +508,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA2FDF4B26A7D88800AEC951 /* AuthServices.swift in Sources */,
 				EACC258D26A71466000B12B6 /* NameEmailViewController.swift in Sources */,
 				EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258926A6B32D000B12B6 /* NameEmailView.swift in Sources */,
@@ -516,6 +526,7 @@
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EACC258826A6B32D000B12B6 /* NameEmailView.swift in Sources */,
+				EA2FDF4826A7C7EF00AEC951 /* AuthAPI.swift in Sources */,
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
 				EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */,
@@ -524,6 +535,7 @@
 				EA72D75B2698276C00EB07DA /* PostView.swift in Sources */,
 				EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */,
 				EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */,
+				EA2FDF4A26A7D88800AEC951 /* AuthServices.swift in Sources */,
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,
 				EAF2128C26907B9600E47942 /* CommunityListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,

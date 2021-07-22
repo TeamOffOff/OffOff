@@ -31,11 +31,12 @@ class SignUpViewController: UIViewController {
         idpwView.passwordTextField.delegate = self
         idpwView.passwordVerifyingField.delegate = self
         idpwView.nextButton.addTarget(self, action: #selector(onNextButton), for: .touchUpInside)
+        idpwView.passwordVerifyingField.addTarget(self, action: #selector(onPWVerifyingTextFieldChange), for: .editingChanged)
+        idpwView.passwordTextField.addTarget(self, action: #selector(onPWTextFieldChange), for: .editingChanged)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print(SignUpViewModel.shared.signUpModel.information)
         if let id = SignUpViewModel.shared.signUpModel.information?.id {
             idpwView.idTextField.text = id
         } else {
@@ -47,21 +48,8 @@ class SignUpViewController: UIViewController {
             idpwView.passwordTextField.setTextFieldNormal(iconImage: .ICON_LOCK_GRAY)
         }
     }
-        
-    private func verifyTextField(textField: TextField, text: String) {
-        textField.errorMessage = nil
-        textField.iconImage = .ICON_CHECKCIRCLE_MAINCOLOR
-        
-        switch textField {
-        case idpwView.idTextField:
-            SignUpViewModel.shared.signUpModel.information?.id = text
-        case idpwView.passwordVerifyingField:
-            SignUpViewModel.shared.signUpModel.information?.password = text
-        default:
-            return
-        }
-    }
-    
+     
+    // MARK: - objc methods
     @objc func onNextButton(sender: UIButton) {
         sender.showAnimation {
             self.navController?.pushViewController(NameEmailViewController(), animated: true)
@@ -71,8 +59,28 @@ class SignUpViewController: UIViewController {
     @objc func onBackButton() {
         self.dismiss(animated: true)
     }
+    
+    @objc func onPWVerifyingTextFieldChange(_ textfield: TextField) {
+        if idpwView.passwordTextField.isVerified(){
+            if SignUpViewModel.shared.isValidPWVerify(verifyingText: textfield.text!, text: idpwView.passwordTextField.text!) {
+                textfield.setTextFieldVerified()
+            } else {
+                textfield.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
+            }
+        } else {
+            return
+        }
+    }
+ 
+    @objc func onPWTextFieldChange(_ textfield: TextField) {
+        if textfield.isVerified() {
+            idpwView.passwordVerifyingField.text = ""
+            idpwView.passwordVerifyingField.setTextFieldNormal(iconImage: .ICON_LOCK_GRAY)
+        }
+    }
 }
 
+// MARK: - UITextFieldDelegate
 extension SignUpViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let str = textField.text ?? ""
@@ -90,17 +98,7 @@ extension SignUpViewController: UITextFieldDelegate {
         }
         guard let stringRange = Range(range, in: str) else { return false }
         let updatedText = str.replacingCharacters(in: stringRange, with: string)
-        
-        if textField == idpwView.passwordVerifyingField {
-            let tf = textField as? TextField
-            if SignUpViewModel.shared.isValidPWVerify(verifyingText: updatedText, text: idpwView.passwordTextField.text ?? "") {
-                verifyTextField(textField: tf!, text: updatedText)
-            } else {
-                tf!.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
-                SignUpViewModel.shared.signUpModel.information?.password = nil
-            }
-        }
-        
+
         return updatedText.count <= max
     }
     
@@ -109,20 +107,38 @@ extension SignUpViewController: UITextFieldDelegate {
         case idpwView.idTextField:
             if SignUpViewModel.shared.isValidID(text: textField.text ?? "") {
                 // TODO: 중복검사
-                verifyTextField(textField: idpwView.idTextField, text: idpwView.idTextField.text!)
+                idpwView.idTextField.setTextFieldVerified()
+//                SignUpViewModel.shared.isIDDuplicate(id: textField.text!) {
+//                    self.verifyTextField(textField: self.idpwView.idTextField, text: self.idpwView.idTextField.text!)
+//                }
             } else {
-                SignUpViewModel.shared.signUpModel.information?.id = nil
                 idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
             }
         case idpwView.passwordTextField:
             if SignUpViewModel.shared.isValidPW(text: textField.text ?? "") {
-                verifyTextField(textField: idpwView.passwordTextField, text: textField.text!)
+                idpwView.passwordTextField.setTextFieldVerified()
             } else {
-                SignUpViewModel.shared.signUpModel.information?.password = nil
                 idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
             }
         default:
             return
         }
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        if let tf = textField as? TextField {
+            var image: UIImage?
+            switch tf {
+            case idpwView.idTextField:
+                image = .ICON_USER_GRAY
+            case idpwView.passwordTextField, idpwView.passwordVerifyingField:
+                image = .ICON_LOCK_GRAY
+            default:
+                return true
+            }
+            tf.setTextFieldNormal(iconImage: image!)
+        }
+        
+        return true
     }
 }
