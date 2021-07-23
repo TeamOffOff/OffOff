@@ -52,7 +52,6 @@
                 android:hint="@string/id_pattern"
                 app:endIconMode="clear_text"
                 app:errorEnabled="true"
-                app:helperTextTextColor="@color/design_default_color_error"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +77,6 @@
                 app:boxStrokeWidthFocused="2dp"
                 app:endIconMode="password_toggle"
                 app:errorEnabled="true"
-                app:helperTextTextColor="@color/design_default_color_error"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -104,7 +102,6 @@
                 app:boxStrokeWidthFocused="2dp"
                 app:endIconMode="clear_text"
                 app:errorEnabled="true"
-                app:helperTextTextColor="@color/design_default_color_error"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -143,7 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.03" />
+                app:layout_constraintGuide_percent="0.02" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

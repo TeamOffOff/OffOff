@@ -54,12 +54,12 @@ class SignupStep1Fragment : Fragment() {
         binding.tfPw.setErrorIconDrawable(0)
         binding.tfPwConfirm.setErrorIconDrawable(0)
 
-        if(signupViewModel.setStep1State())
+        if (signupViewModel.setStep1State())
             setTextFieldValid()
         else {
-                binding.tfId.startIconDrawable = id_fontDrawable
-                binding.tfPw.startIconDrawable = pw_fontDrawable
-                binding.tfPwConfirm.startIconDrawable = pw_fontDrawable
+            binding.tfId.startIconDrawable = id_fontDrawable
+            binding.tfPw.startIconDrawable = pw_fontDrawable
+            binding.tfPwConfirm.startIconDrawable = pw_fontDrawable
         }
 
         var isPwConfirmValid = false
@@ -67,16 +67,14 @@ class SignupStep1Fragment : Fragment() {
         binding.etId.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 binding.tfId.startIconDrawable = id_fontDrawable
-                if(signupViewModel.validateId()) {
+                if (signupViewModel.validateId()) {
                     binding.tfId.startIconDrawable = check_fontDrawable
                     binding.tfId.setValidColor()
                 }
-            }
-            else if(hasFocus){
-                if(binding.tfId.error != null) {
+            } else if (hasFocus) {
+                if (binding.tfId.error != null) {
                     binding.tfId.startIconDrawable = error_fontDrawable
-                }
-                else {
+                } else {
                     binding.tfId.startIconDrawable = id_fontDrawable_focus
                     binding.tfId.setValidColor()
                 }
@@ -85,7 +83,7 @@ class SignupStep1Fragment : Fragment() {
 
         binding.etPw.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
-                
+
                 binding.tfPw.startIconDrawable = pw_fontDrawable
                 if (signupViewModel.validatePw()) {
                     binding.tfPw.startIconDrawable = check_fontDrawable
@@ -113,9 +111,9 @@ class SignupStep1Fragment : Fragment() {
                         s: CharSequence, start: Int,
                         before: Int, count: Int
                     ) {
-                        if(signupViewModel.getUserPw() != binding.etPw.text.toString()) {
+                        if (signupViewModel.getUserPw() != binding.etPw.text.toString()) {
                             signupViewModel.pwConfirm.postValue("")
-                            if(binding.tfPwConfirm.error == null) {
+                            if (binding.tfPwConfirm.error == null) {
                                 binding.tfPwConfirm.startIconDrawable = pw_fontDrawable
                                 binding.tfPwConfirm.setDefaultColor()
                             }
@@ -141,22 +139,20 @@ class SignupStep1Fragment : Fragment() {
                     }
                 }
             } else if (hasFocus) {
-                if(binding.tfPwConfirm.error != null) {
+                if (binding.tfPwConfirm.error != null) {
                     binding.tfPwConfirm.startIconDrawable = error_fontDrawable
-                }
-                else {
+                } else {
                     binding.tfPwConfirm.startIconDrawable = pw_fontDrawable_focus
                     binding.tfPwConfirm.setValidColor()
                 }
                 signupViewModel.pwConfirm.observe(viewLifecycleOwner, {
                     isPwConfirmValid = false
-                    if((it?.length)!! >= (binding.etPw.text?.length)!!) {
+                    if ((it?.length)!! >= (binding.etPw.text?.length)!!) {
                         if (signupViewModel.validatePwConfirm()) {
                             isPwConfirmValid = true
                             binding.tfPwConfirm.startIconDrawable = check_fontDrawable
                             binding.tfPwConfirm.setValidColor()
-                        }
-                        else
+                        } else
                             binding.tfPwConfirm.startIconDrawable = error_fontDrawable
                     }
                 })
@@ -166,10 +162,12 @@ class SignupStep1Fragment : Fragment() {
         signupViewModel.isIdError.observe(viewLifecycleOwner, { event ->
             event?.getContentIfNotHandled()?.let {
                 binding.tfId.error = it
-                if(it != "") {
+                if (it != "") {
                     binding.tfId.startIconDrawable = error_fontDrawable
+                    binding.tfId.setDefaultColor()
                 } else {
                     binding.tfId.startIconDrawable = check_fontDrawable
+                    binding.tfId.setValidColor()
                 }
             }
         })
@@ -177,10 +175,12 @@ class SignupStep1Fragment : Fragment() {
         signupViewModel.isPwError.observe(viewLifecycleOwner, { event ->
             event?.getContentIfNotHandled()?.let {
                 binding.tfPw.error = it
-                if(it != "") {
+                if (it != "") {
                     binding.tfPw.startIconDrawable = error_fontDrawable
+                    binding.tfPw.setDefaultColor()
                 } else {
                     binding.tfPw.startIconDrawable = check_fontDrawable
+                    binding.tfPw.setValidColor()
                 }
             }
         })
@@ -188,17 +188,19 @@ class SignupStep1Fragment : Fragment() {
         signupViewModel.isPwConfirmError.observe(viewLifecycleOwner, { event ->
             event?.getContentIfNotHandled()?.let {
                 binding.tfPwConfirm.error = it
-                if(it != "") {
+                if (it != "") {
                     binding.tfPwConfirm.startIconDrawable = error_fontDrawable
+                    binding.tfPwConfirm.setDefaultColor()
                 } else {
                     binding.tfPwConfirm.startIconDrawable = check_fontDrawable
+                    binding.tfPwConfirm.setValidColor()
                 }
             }
         })
 
         signupViewModel.step1Success.observe(viewLifecycleOwner, { event ->
             event.getContentIfNotHandled()?.let {
-                if(it) {
+                if (it) {
                     binding.tfId.setValidColor()
                     binding.tfPw.setValidColor()
                     binding.tfPwConfirm.setValidColor()
@@ -214,9 +216,10 @@ class SignupStep1Fragment : Fragment() {
         binding.appbar.apply {
             setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             setNavigationIconTint(ContextCompat.getColor(mContext, R.color.white))
-            setNavigationOnClickListener{
+            setNavigationOnClickListener {
                 val intent = Intent(mContext, LoginActivity::class.java)
-                startActivity(intent)            }
+                startActivity(intent)
+            }
         }
     }
 
@@ -228,19 +231,34 @@ class SignupStep1Fragment : Fragment() {
     private fun initIcon() {
         // id 아이콘
         id_fontDrawable = FontDrawable(mContext, R.string.fa_user, true, false)
-        id_fontDrawable.setTextColor(ContextCompat.getColor(mContext, R.color.material_on_background_disabled))
+        id_fontDrawable.setTextColor(
+            ContextCompat.getColor(
+                mContext,
+                R.color.material_on_background_disabled
+            )
+        )
         id_fontDrawable_focus = FontDrawable(mContext, R.string.fa_user, true, false)
         id_fontDrawable_focus.setTextColor(ContextCompat.getColor(mContext, R.color.green))
 
         // pw 아이콘
         pw_fontDrawable = FontDrawable(mContext, R.string.fa_lock_solid, true, false)
-        pw_fontDrawable.setTextColor(ContextCompat.getColor(mContext, R.color.material_on_background_disabled))
+        pw_fontDrawable.setTextColor(
+            ContextCompat.getColor(
+                mContext,
+                R.color.material_on_background_disabled
+            )
+        )
         pw_fontDrawable_focus = FontDrawable(mContext, R.string.fa_lock_solid, true, false)
         pw_fontDrawable_focus.setTextColor(ContextCompat.getColor(mContext, R.color.green))
 
         // 에러
         error_fontDrawable = FontDrawable(mContext, R.string.fa_exclamation_solid, true, false)
-        error_fontDrawable.setTextColor(ContextCompat.getColor(mContext, R.color.design_default_color_error))
+        error_fontDrawable.setTextColor(
+            ContextCompat.getColor(
+                mContext,
+                R.color.design_default_color_error
+            )
+        )
 
         // 확인
         check_fontDrawable = FontDrawable(mContext, R.string.fa_check_circle_solid, true, false)
