@@ -94,4 +94,7 @@ dependencies {
     // FontAwesome
     implementation 'info.androidhive:fontawesome:0.0.5'
 
+    // CircleImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }
