@@ -54,4 +54,8 @@ class SignUpViewModel {
     func isValidEmail(email: String) -> Bool {
         return Constants.isValidString(str: email, regEx: Constants.USEREMAIL_RULE)
     }
+    
+    func isValidNickname(nickname: String) -> Bool {
+        return Constants.isValidString(str: nickname, regEx: Constants.USERNICKNAME_RULE)
+    }
 }

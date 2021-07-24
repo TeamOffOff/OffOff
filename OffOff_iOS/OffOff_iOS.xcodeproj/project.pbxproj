@@ -27,6 +27,7 @@
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
 		EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */; };
 		EA929F2126A9D12A009352B9 /* ProfileMakeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F2026A9D12A009352B9 /* ProfileMakeViewController.swift */; };
+		EA929F2326AC66BE009352B9 /* default profile.png in Resources */ = {isa = PBXBuildFile; fileRef = EA929F2226AC66BE009352B9 /* default profile.png */; };
 		EAAFFB9D269EFA25006D43D4 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EAAFFB9C269EFA25006D43D4 /* Moya */; };
 		EAAFFB9F269EFC2C006D43D4 /* CommunityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */; };
 		EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFBA0269F2DF4006D43D4 /* Constants.swift */; };
@@ -114,6 +115,7 @@
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMakeView.swift; sourceTree = "<group>"; };
 		EA929F2026A9D12A009352B9 /* ProfileMakeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMakeViewController.swift; sourceTree = "<group>"; };
+		EA929F2226AC66BE009352B9 /* default profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default profile.png"; sourceTree = "<group>"; };
 		EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityAPI.swift; sourceTree = "<group>"; };
 		EAAFFBA0269F2DF4006D43D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 				EAE5030A268AB6F6002B1C6A /* Views */,
 				EAE50309268AB6DC002B1C6A /* Commons */,
 				EAE502EB2689E3D7002B1C6A /* Assets.xcassets */,
+				EA929F2226AC66BE009352B9 /* default profile.png */,
 				EAE502F02689E3D7002B1C6A /* Info.plist */,
 			);
 			path = OffOff_iOS;
@@ -491,6 +494,7 @@
 				EAE502EF2689E3D7002B1C6A /* LaunchScreen.storyboard in Resources */,
 				EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */,
 				EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */,
+				EA929F2326AC66BE009352B9 /* default profile.png in Resources */,
 				EACC257D26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

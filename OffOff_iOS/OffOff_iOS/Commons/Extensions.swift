@@ -50,6 +50,8 @@ extension UIColor {
 }
 
 extension UIImage {
+    static var DEFAULT_PROFILE = UIImage(named: "default profile")
+    
     static var personFill: UIImage {
         return UIImage(systemName: "person.fill")!
     }
@@ -78,7 +80,7 @@ extension UIImage {
 }
 
 extension TextField {
-    func setupTextField(selectedColor: UIColor, normalColor: UIColor, iconImage: UIImage, errorColor: UIColor) {
+    func setupTextField(selectedColor: UIColor, normalColor: UIColor, iconImage: UIImage?, errorColor: UIColor) {
         self.lineColor = normalColor
         self.textColor = normalColor
         self.titleColor = normalColor
