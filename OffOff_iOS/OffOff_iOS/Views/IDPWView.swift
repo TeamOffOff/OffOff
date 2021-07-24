@@ -40,7 +40,7 @@ class IDPWView: UIView {
         $0.tag = 1
     }
     
-    var passwordVerifyingField = TextField().then {
+    var passwordRepeatField = TextField().then {
         $0.placeholder = "비밀번호 확인"
         $0.font = UIFont.preferredFont(forTextStyle: .callout)
         $0.adjustsFontForContentSizeCategory = true
@@ -75,7 +75,7 @@ class IDPWView: UIView {
         self.backgroundColor = .white
         textFieldStack.addArrangedSubview(idTextField)
         textFieldStack.addArrangedSubview(passwordTextField)
-        textFieldStack.addArrangedSubview(passwordVerifyingField)
+        textFieldStack.addArrangedSubview(passwordRepeatField)
         self.addSubview(textFieldStack)
         self.addSubview(nextButton)
         self.makeView()

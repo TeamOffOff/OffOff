@@ -25,6 +25,8 @@
 		EA72D75B2698276C00EB07DA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75A2698276C00EB07DA /* PostView.swift */; };
 		EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */; };
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
+		EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */; };
+		EA929F2126A9D12A009352B9 /* ProfileMakeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F2026A9D12A009352B9 /* ProfileMakeViewController.swift */; };
 		EAAFFB9D269EFA25006D43D4 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EAAFFB9C269EFA25006D43D4 /* Moya */; };
 		EAAFFB9F269EFC2C006D43D4 /* CommunityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */; };
 		EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFBA0269F2DF4006D43D4 /* Constants.swift */; };
@@ -110,6 +112,8 @@
 		EA72D75A2698276C00EB07DA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMakeView.swift; sourceTree = "<group>"; };
+		EA929F2026A9D12A009352B9 /* ProfileMakeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMakeViewController.swift; sourceTree = "<group>"; };
 		EAAFFB9E269EFC2C006D43D4 /* CommunityAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityAPI.swift; sourceTree = "<group>"; };
 		EAAFFBA0269F2DF4006D43D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 			children = (
 				EA406A8D26A475CE00737F90 /* SignUpViewController.swift */,
 				EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */,
+				EA929F2026A9D12A009352B9 /* ProfileMakeViewController.swift */,
 			);
 			path = SignUpControllers;
 			sourceTree = "<group>";
@@ -270,6 +275,7 @@
 				EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */,
 				EA406A8F26A4769300737F90 /* IDPWView.swift */,
 				EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */,
+				EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -542,6 +548,7 @@
 				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
 				EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
+				EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */,
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
@@ -551,6 +558,7 @@
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */,
+				EA929F2126A9D12A009352B9 /* ProfileMakeViewController.swift in Sources */,
 				EAAFFB9F269EFC2C006D43D4 /* CommunityAPI.swift in Sources */,
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,

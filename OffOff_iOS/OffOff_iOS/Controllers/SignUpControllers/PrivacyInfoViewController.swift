@@ -12,6 +12,39 @@ class PrivacyInfoViewController: UIViewController {
     lazy var privacyView = PrivacyInfoView()
     var birthdayPicker: UIDatePicker?
     
+    
+    // MARK: - TextField의 상태를 표시하기 위한 Property
+    var isNameVerified: Bool = false {
+        didSet {
+            if isNameVerified {
+                privacyView.nameTextField.setTextFieldVerified()
+            } else {
+                privacyView.nameTextField.setTextFieldFail(errorMessage: Constants.NAME_ERROR_MESSAGE)
+                SignUpViewModel.shared.signUpModel.information?.name = nil
+            }
+        }
+    }
+    var isEmailVerified: Bool = false {
+        didSet {
+            if isEmailVerified {
+                privacyView.emailTextField.setTextFieldVerified()
+            } else {
+                privacyView.emailTextField.setTextFieldFail(errorMessage: Constants.EMAIL_ERROR_MESSAGE)
+                SignUpViewModel.shared.signUpModel.information?.email = nil
+            }
+        }
+    }
+    var isBirthVerified: Bool = false {
+        didSet {
+            if isBirthVerified {
+                privacyView.birthdayTextField.setTextFieldVerified()
+            } else {
+                privacyView.birthdayTextField.setTextFieldFail(errorMessage: Constants.BIRTH_ERROR_MESSAGE)
+                SignUpViewModel.shared.signUpModel.information?.birth = nil
+            }
+        }
+    }
+    
     override func loadView() {
         self.view = privacyView
         self.title = "개인정보"
@@ -28,39 +61,56 @@ class PrivacyInfoViewController: UIViewController {
         privacyView.nextButton.addTarget(self, action: #selector(onNextButton), for: .touchUpInside)
     }
     
-    // MARK: - TextField Value Changed Handlers
-    @objc func onEmailTextFieldChanged(_ textField: TextField) {
-        if !textField.isVerified(){
-            return
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let name = SignUpViewModel.shared.signUpModel.information?.name {
+            privacyView.nameTextField.text = name
+            isNameVerified = true
+        }
+         
+        if let email = SignUpViewModel.shared.signUpModel.information?.email {
+            privacyView.emailTextField.text = email
+            isEmailVerified = true
         }
         
-        if SignUpViewModel.shared.isValidEmail(email: textField.text ?? "") {
-            textField.setTextFieldVerified()
-        } else {
-            textField.setTextFieldFail(errorMessage: Constants.NAME_ERROR_MESSAGE)
+        if let birth = SignUpViewModel.shared.signUpModel.information?.birth {
+            privacyView.birthdayTextField.text = birth
+            isBirthVerified = true
         }
     }
     
-    @objc func onNameTextFieldChanged(_ textField: TextField) {
-        if !textField.isVerified(){
+    private func resetBoolProperties() {
+        isNameVerified = Bool(isNameVerified)
+        isEmailVerified = Bool(isEmailVerified)
+        isBirthVerified = Bool(isBirthVerified)
+    }
+    
+    // MARK: - TextField Value Changed Handlers
+    @objc func onEmailTextFieldChanged(_ textField: TextField) {
+        if !isEmailVerified {
             return
         }
         
-        if SignUpViewModel.shared.isValidName(name: textField.text ?? "") {
-            textField.setTextFieldVerified()
-        } else {
-            textField.setTextFieldFail(errorMessage: Constants.NAME_ERROR_MESSAGE)
+        isEmailVerified = SignUpViewModel.shared.isValidEmail(email: textField.text ?? "")
+    }
+    
+    @objc func onNameTextFieldChanged(_ textField: TextField) {
+        if !isNameVerified {
+            return
         }
+        
+        isNameVerified = SignUpViewModel.shared.isValidName(name: textField.text ?? "")
     }
     
     // MARK: - Next Button Handler
     @objc func onNextButton(sender: UIButton) {
         sender.showAnimation {
-            if self.privacyView.nameTextField.isVerified(), self.privacyView.emailTextField.isVerified(), self.privacyView.birthdayTextField.isVerified() {
+            if self.isNameVerified, self.isEmailVerified, self.isBirthVerified {
                 SignUpViewModel.shared.setPrivacy(name: self.privacyView.nameTextField.text, email: self.privacyView.emailTextField.text, birthday: self.privacyView.birthdayTextField.text)
-//                self.navController?.pushViewController(PrivacyInfoViewController(), animated: true)
+                self.navigationController?.pushViewController(ProfileMakeViewController(), animated: true)
             } else {
-                
+                self.resetBoolProperties()
             }
         }
     }
@@ -86,17 +136,9 @@ extension PrivacyInfoViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField {
         case privacyView.nameTextField:
-            if SignUpViewModel.shared.isValidName(name: textField.text ?? "") {
-                privacyView.nameTextField.setTextFieldVerified()
-            } else {
-                privacyView.nameTextField.setTextFieldFail(errorMessage: Constants.NAME_ERROR_MESSAGE)
-            }
+            isNameVerified = SignUpViewModel.shared.isValidName(name: textField.text ?? "")
         case privacyView.emailTextField:
-            if SignUpViewModel.shared.isValidEmail(email: textField.text ?? "") {
-                privacyView.emailTextField.setTextFieldVerified()
-            } else {
-                privacyView.emailTextField.setTextFieldFail(errorMessage: Constants.EMAIL_ERROR_MESSAGE)
-            }
+            isEmailVerified = SignUpViewModel.shared.isValidEmail(email: textField.text ?? "")
         default:
             return
         }
@@ -141,7 +183,6 @@ extension PrivacyInfoViewController {
         privacyView.birthdayTextField.text = birthdayString
         SignUpViewModel.shared.signUpModel.information?.birth = birthdayString
         privacyView.birthdayTextField.resignFirstResponder()
-        privacyView.birthdayTextField.setTextFieldVerified()
-        print(SignUpViewModel.shared.signUpModel.information)
+        isBirthVerified = true
     }
 }

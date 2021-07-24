@@ -12,6 +12,39 @@ class SignUpViewController: UIViewController {
     lazy var idpwView = IDPWView(frame: .zero)
     var navController: UINavigationController?
     
+    // MARK: - TextField의 상태를 표시하기 위한 Property
+    var isIDVerified: Bool = false {
+        didSet {
+            if isIDVerified {
+                 idpwView.idTextField.setTextFieldVerified()
+            } else {
+                idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
+                SignUpViewModel.shared.signUpModel.information?.id = nil
+            }
+        }
+    }
+    var isPWVerified: Bool = false {
+        didSet {
+            if isPWVerified {
+                idpwView.passwordTextField.setTextFieldVerified()
+            } else {
+                isPWRepeatVerified = false
+                idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
+                SignUpViewModel.shared.signUpModel.information?.password = nil
+            }
+        }
+    }
+    var isPWRepeatVerified: Bool = false {
+        didSet {
+            if isPWRepeatVerified {
+                idpwView.passwordRepeatField.setTextFieldVerified()
+            } else {
+                idpwView.passwordRepeatField.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
+            }
+        }
+    }
+    
+    // MARK: -
     override func loadView() {
         self.view = idpwView
         self.title = "아이디 및 비밀번호"
@@ -29,9 +62,10 @@ class SignUpViewController: UIViewController {
         SignUpViewModel.shared = SignUpViewModel()
         idpwView.idTextField.delegate = self
         idpwView.passwordTextField.delegate = self
-        idpwView.passwordVerifyingField.delegate = self
+        idpwView.passwordRepeatField.delegate = self
         idpwView.nextButton.addTarget(self, action: #selector(onNextButton), for: .touchUpInside)
-        idpwView.passwordVerifyingField.addTarget(self, action: #selector(onPWVerifyingTextFieldChange), for: .editingChanged)
+        idpwView.idTextField.addTarget(self, action: #selector(onIDTextFieldChange), for: .editingChanged)
+        idpwView.passwordRepeatField.addTarget(self, action: #selector(onPWRepeatTextFieldChange), for: .editingChanged)
         idpwView.passwordTextField.addTarget(self, action: #selector(onPWTextFieldChange), for: .editingChanged)
     }
     
@@ -52,7 +86,7 @@ class SignUpViewController: UIViewController {
     // MARK: - objc methods
     @objc func onNextButton(sender: UIButton) {
         sender.showAnimation {
-            if self.idpwView.idTextField.isVerified(), self.idpwView.passwordTextField.isVerified(), self.idpwView.passwordVerifyingField.isVerified() {
+            if self.idpwView.idTextField.isVerified(), self.idpwView.passwordTextField.isVerified(), self.idpwView.passwordRepeatField.isVerified() {
                 SignUpViewModel.shared.setIDPW(id: self.idpwView.idTextField.text!, pw: self.idpwView.passwordTextField.text!)
                 self.navController?.pushViewController(PrivacyInfoViewController(), animated: true)
             } else {
@@ -65,22 +99,29 @@ class SignUpViewController: UIViewController {
         self.dismiss(animated: true)
     }
     
-    @objc func onPWVerifyingTextFieldChange(_ textfield: TextField) {
-        if idpwView.passwordTextField.isVerified(){
-            if SignUpViewModel.shared.isValidPWVerify(verifyingText: textfield.text!, text: idpwView.passwordTextField.text!) {
-                textfield.setTextFieldVerified()
-            } else {
-                textfield.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
-            }
-        } else {
+    // MARK: - TextField가 변화했을 때 실행될 셀렉터
+    @objc func onIDTextFieldChange(_ textField: TextField) {
+        if !isIDVerified {
             return
         }
+        
+        isIDVerified = SignUpViewModel.shared.isValidID(text: textField.text ?? "")
+    }
+    
+    @objc func onPWRepeatTextFieldChange(_ textfield: TextField) {
+        if !isPWVerified {
+            return
+        }
+        
+        isPWRepeatVerified = SignUpViewModel.shared.isValidPWVerify(verifyingText: textfield.text!, text: idpwView.passwordTextField.text!)
     }
  
-    @objc func onPWTextFieldChange(_ textfield: TextField) {
-        if textfield.isVerified() {
-            idpwView.passwordVerifyingField.text = ""
-            idpwView.passwordVerifyingField.setTextFieldNormal(iconImage: .ICON_LOCK_GRAY)
+    @objc func onPWTextFieldChange(_ textField: TextField) {
+        if textField.isVerified() {
+            idpwView.passwordRepeatField.text = ""
+            isPWRepeatVerified = false
+            idpwView.passwordRepeatField.setTextFieldNormal(iconImage: .ICON_LOCK_GRAY)
+            isPWVerified = SignUpViewModel.shared.isValidPW(text: textField.text ?? "")
         }
     }
 }
@@ -96,7 +137,7 @@ extension SignUpViewController: UITextFieldDelegate {
             max = Constants.USERID_MAXLENGTH
         case idpwView.passwordTextField:
             max = Constants.USERPW_MAXLENGTH
-        case idpwView.passwordVerifyingField:
+        case idpwView.passwordRepeatField:
             max = Constants.USERPW_MAXLENGTH
         default:
             max = -1
@@ -110,42 +151,34 @@ extension SignUpViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField {
         case idpwView.idTextField:
-            if SignUpViewModel.shared.isValidID(text: textField.text ?? "") {
-                // TODO: 중복검사
-                idpwView.idTextField.setTextFieldVerified()
-//                SignUpViewModel.shared.isIDDuplicate(id: textField.text!) {
-//                    self.verifyTextField(textField: self.idpwView.idTextField, text: self.idpwView.idTextField.text!)
-//                }
-            } else {
-                idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
-            }
+            isIDVerified = SignUpViewModel.shared.isValidID(text: textField.text ?? "")
+            // TODO: 중복검사
+            //                SignUpViewModel.shared.isIDDuplicate(id: textField.text!) {
+            //                    self.verifyTextField(textField: self.idpwView.idTextField, text: self.idpwView.idTextField.text!)
+            //                }
         case idpwView.passwordTextField:
-            if SignUpViewModel.shared.isValidPW(text: textField.text ?? "") {
-                idpwView.passwordTextField.setTextFieldVerified()
-            } else {
-                idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
-            }
+            isPWVerified = SignUpViewModel.shared.isValidPW(text: textField.text ?? "")
         default:
             return
         }
     }
     
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        if let tf = textField as? TextField {
-            var image: UIImage?
-            switch tf {
-            case idpwView.idTextField:
-                image = .ICON_USER_GRAY
-            case idpwView.passwordTextField, idpwView.passwordVerifyingField:
-                image = .ICON_LOCK_GRAY
-            default:
-                return true
-            }
-            tf.setTextFieldNormal(iconImage: image!)
-        }
-        
-        return true
-    }
+//    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+//        if let tf = textField as? TextField {
+//            var image: UIImage?
+//            switch tf {
+//            case idpwView.idTextField:
+//                image = .ICON_USER_GRAY
+//            case idpwView.passwordTextField, idpwView.passwordRepeatField:
+//                image = .ICON_LOCK_GRAY
+//            default:
+//                return true
+//            }
+//            tf.setTextFieldNormal(iconImage: image!)
+//        }
+//
+//        return true
+//    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let nextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField {
