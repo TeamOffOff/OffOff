@@ -10,7 +10,7 @@ import UIKit
 class CommunityListViewController: UITableViewController {
 
     override func loadView() {
-        super.loadView()
+        self.tableView = .init()
         setupTableView()
     }
     
@@ -28,7 +28,6 @@ class CommunityListViewController: UITableViewController {
         return data[section].count
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CommunityTableViewCell.identifier, for: indexPath) as? CommunityTableViewCell else {
             return UITableViewCell()
@@ -49,43 +48,5 @@ class CommunityListViewController: UITableViewController {
         vc.modalPresentationStyle = .overFullScreen
         present(vc, animated: true, completion: nil)
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-}
-
-class CommunityTableViewCell: UITableViewCell {
-    var titleImage: UIImageView!
-    var titleLabel: UILabel!
-    static let identifier = "CommunityTableViewCell"
-        
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupCell()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupCell() {
-        titleImage = UIImageView(image: UIImage(systemName: "cross"))
-        titleLabel = UILabel().then {
-            $0.text = "자유게시판"
-            $0.textAlignment = .right
-        }
-        
-        contentView.addSubview(titleImage)
-        contentView.addSubview(titleLabel)
-        
-        titleImage.snp.makeConstraints {
-            $0.left.equalToSuperview().inset(12)
-            $0.centerY.equalToSuperview()
-            $0.width.equalTo(titleImage.snp.height)
-        }
-        titleLabel.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(12)
-            $0.left.equalTo(titleImage.snp.right)
-            $0.centerY.equalToSuperview()
-        }
-        
     }
 }

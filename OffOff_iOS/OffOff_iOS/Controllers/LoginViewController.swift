@@ -13,14 +13,16 @@ class LoginViewController: UIViewController {
     private let loginViewModel = LoginViewModel()
     private lazy var loginStatus = Box(LoginStatus.none)
     
+    override func loadView() {
+        self.view = loginView
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        view.addSubview(loginView)
         loginView.idTextField.delegate = self
         loginView.passwordTextField.delegate = self
         loginView.loginButton.addTarget(self, action: #selector(onLoginButton), for: .touchUpInside)
-        loginView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        loginView.signupButton.addTarget(self, action: #selector(onSignUpButton), for: .touchUpInside)
         
         loginViewModel.loginModel.bind { _ in self.loginViewModel.login(loginStatus: self.loginStatus) }
         
@@ -28,15 +30,26 @@ class LoginViewController: UIViewController {
             if loginStatus.value == .successed {
                 let controller = TabBarController()
                 controller.modalPresentationStyle = .fullScreen
-                self.present(controller, animated: false, completion: nil)
+                self.present(controller, animated: true, completion: nil)
             } else if loginStatus.value == .failed {
-                print("@@@@@")
+                let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
+                let action = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(action)
+                present(alert, animated: true, completion: nil)
             }
         }
     }
     
+    
+    // MARK: - 버튼 리액션
     @objc func onLoginButton(_: AnyObject) {
         loginViewModel.loginModel.value = LoginModel(id: loginView.idTextField.text, password: loginView.passwordTextField.text)
+    }
+    
+    @objc func onSignUpButton(_: AnyObject) {
+        let vc = UINavigationController(rootViewController: SignUpViewController())
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
 }
 
