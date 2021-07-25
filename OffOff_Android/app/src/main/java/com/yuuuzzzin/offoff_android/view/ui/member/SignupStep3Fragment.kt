@@ -1,46 +1,65 @@
 package com.yuuuzzzin.offoff_android.view.ui.member
 
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep3Binding
 import com.yuuuzzzin.offoff_android.utils.Constants
-import com.yuuuzzzin.offoff_android.viewmodel.SignupViewModel
+import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignupStep3Fragment : Fragment() {
+class SignupStep3Fragment : BaseSignupFragment<FragmentSignupStep3Binding>(R.layout.fragment_signup_step3) {
 
-    private var mBinding: FragmentSignupStep3Binding? = null
-    private val binding get() = mBinding!!
-    private val signupViewModel: SignupViewModel by activityViewModels()
-    private lateinit var mContext: Context
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-            mContext = context
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        mBinding = FragmentSignupStep3Binding.inflate(inflater, container, false)
+    override fun initView() {
         binding.viewModel = signupViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
+
+        // 기본 에러 아이콘 제거
+        binding.tfNickname.setErrorIconDrawable(0)
         binding.btProfile.setOnClickListener {
-            showDialog()
+            showProfileDialog()
         }
 
-        return binding.root
+        binding.etNickname.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
+            if (hasFocus) {
+                if(!binding.tfNickname.isError()) {
+                    binding.tfNickname.setTextFieldFocus()
+                    binding.tfNickname.setStartIconDrawable(0)      }
+            }
+        }
+
+        signupViewModel.nickname.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateNickname()
+            } else {
+                binding.tfNickname.setTextFieldDefault()
+                binding.tfNickname.helperText = null
+            }
+        })
+
+        signupViewModel.isNicknameVerified.observe(viewLifecycleOwner, { event ->
+            event?.getContentIfNotHandled()?.let {
+                binding.tfNickname.helperText = it
+                binding.tfNickname.setTextFieldVerified()
+                binding.tfNickname.setStartIconDrawable(0)
+            }
+        })
+
+        signupViewModel.isNicknameError.observe(viewLifecycleOwner, { event ->
+            event?.getContentIfNotHandled()?.let {
+                if(it.isNullOrEmpty()) {
+                    binding.tfNickname.setTextFieldDefault()
+                    binding.tfNickname.helperText = null
+                }
+                else {
+                    binding.tfNickname.setTextFieldError(it)
+                    binding.tfNickname.setStartIconDrawable(0)
+                }
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +72,7 @@ class SignupStep3Fragment : Fragment() {
         }
     }
 
-    private fun showDialog() {
+    private fun showProfileDialog() {
 
         val array = arrayOf(Constants.PROFILE_OPTION1, Constants.PROFILE_OPTION2, Constants.PROFILE_OPTION3, Constants.PROFILE_OPTION4)
         val builder = AlertDialog.Builder(mContext)
@@ -73,10 +92,5 @@ class SignupStep3Fragment : Fragment() {
 
         val dialog = builder.create()
         dialog.show()
-    }
-
-    override fun onDestroyView() {
-        mBinding = null
-        super.onDestroyView()
     }
 }

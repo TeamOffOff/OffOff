@@ -81,17 +81,11 @@ class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.lay
                 if(!binding.tfPwConfirm.isError())
                     binding.tfPwConfirm.setTextFieldFocus()
 
-                signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) { event ->
-                    event?.getContentIfNotHandled()?.let {
-                        binding.tfPwConfirm.validate(it)
-                    }
-                }
+                signupViewModel.pwConfirm.observe(viewLifecycleOwner, {
+                    signupViewModel.validatePwConfirm()
+                })
             }
         }
-
-        signupViewModel.pwConfirm.observe(viewLifecycleOwner, {
-            signupViewModel.validatePwConfirm()
-        })
 
         signupViewModel.isIdVerified.observe(viewLifecycleOwner, { event ->
             event?.getContentIfNotHandled()?.let {
@@ -101,16 +95,15 @@ class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.lay
 
         signupViewModel.isPwVerified.observe(viewLifecycleOwner, { event ->
             event?.getContentIfNotHandled()?.let {
-                if(!it.isNullOrEmpty())
                 binding.tfPw.validate(it)
             }
         })
 
-//        signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) { event ->
-//            event?.getContentIfNotHandled()?.let {
-//                binding.tfPwConfirm.validate(it)
-//            }
-//        }
+        signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) { event ->
+            event?.getContentIfNotHandled()?.let {
+                binding.tfPwConfirm.validate(it)
+            }
+        }
 
         signupViewModel.step1Success.observe(viewLifecycleOwner, { event ->
             event.getContentIfNotHandled()?.let {

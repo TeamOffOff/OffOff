@@ -39,8 +39,8 @@ constructor(
     private var userPw = ""
     private var userName = ""
     private var userEmail = ""
-    private var userNickname = ""
     private var userBirth = ""
+    private var userNickname = ""
 
     // 회원가입 단계별 성공 여부
     private val _step1Success = MutableLiveData<Event<Boolean>>()
@@ -74,9 +74,8 @@ constructor(
     private val _isNicknameVerified = MutableLiveData<Event<String>?>()
     val isNicknameVerified: MutableLiveData<Event<String>?> = _isNicknameVerified
 
-    // 입력받은 정보가 모두 조건에 만족했는지지 완료었는지 여부
-    private val _infoChecked = MutableLiveData<Event<Unit>>()
-    val infoChecked: LiveData<Event<Unit>> = _infoChecked
+    private val _isNicknameError = MutableLiveData<Event<String>?>()
+    val isNicknameError: MutableLiveData<Event<String>?> = _isNicknameError
 
     // 유효성 검사
     fun validateId() {
@@ -100,8 +99,7 @@ constructor(
 
     fun validatePwConfirm() {
 
-        if (pwConfirm.value?.isBlank() == true || pw.get() != pwConfirm.get()) {
-            Log.d("비번확인검사_tag", pw.get() + " / " + pwConfirm.get())
+        if (pwConfirm.get().isNullOrEmpty() || pw.get() != pwConfirm.get()) {
             _isPwConfirmVerified.value = Event(pw_confirm_error)
         } else {
             _isPwConfirmVerified.value = Event("")
@@ -142,15 +140,17 @@ constructor(
     fun validateNickname() {
 
         if (!validate(nickname, NICKNAME_REGEX)) {
-            // _isNicknameVerified.value = Event(Strings.nickname_error)
+            Log.d("tag_닉넴유효성불통", nickname.get())
+            _isNicknameError.value = Event(nickname.get() + "은(는) 사용할 수 없습니다.")
         } else {
-            _isBirthVerified.value = Event("")
-            userBirth = birth.value!!
+            Log.d("tag_닉넴유효성통", nickname.get())
+            _isNicknameVerified.value = Event(nickname.get() + "은(는) 사용 가능한 닉네임입니다.")
+            //userNickname = nickname.value!!
         }
     }
 
     fun finishStep1() {
-
+        //_step1Success.postValue(Event(true))
         if((userId!="" && userPw!="")&&
             (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)) {
             _step1Success.postValue(Event(true))
@@ -163,7 +163,7 @@ constructor(
     }
 
     fun finishStep2() {
-
+        //_step2Success.postValue(Event(true))
         if ((userName != "" && userEmail != "" && userBirth != "") &&
             (name.value == userName && email.value == userEmail)) {
             _step2Success.postValue(Event(true))
