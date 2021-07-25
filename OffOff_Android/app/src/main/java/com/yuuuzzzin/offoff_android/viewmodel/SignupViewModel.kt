@@ -5,11 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuuuzzzin.offoff_android.service.repository.AuthRepository
-import com.yuuuzzzin.offoff_android.utils.Constants
+import com.yuuuzzzin.offoff_android.utils.Constants.EMAIL_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.ID_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.NAME_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.NICKNAME_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.PW_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.get
+import com.yuuuzzzin.offoff_android.utils.Constants.validate
 import com.yuuuzzzin.offoff_android.utils.Event
 import com.yuuuzzzin.offoff_android.utils.Strings
+import com.yuuuzzzin.offoff_android.utils.Strings.id_error
+import com.yuuuzzzin.offoff_android.utils.Strings.pw_confirm_error
+import com.yuuuzzzin.offoff_android.utils.Strings.pw_error
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,158 +49,123 @@ constructor(
     private val _step2Success = MutableLiveData<Event<Boolean>>()
     val step2Success: LiveData<Event<Boolean>> = _step2Success
 
-    private val _isIdError = MutableLiveData<Event<String>?>()
-    val isIdError: MutableLiveData<Event<String>?> = _isIdError
+    private val _step3Success = MutableLiveData<Event<Boolean>>()
+    val step3Success: LiveData<Event<Boolean>> = _step3Success
 
-    private val _isPwError = MutableLiveData<Event<String>>()
-    val isPwError: LiveData<Event<String>> = _isPwError
+    // 입력 항목별 verified 여부
+    private val _isIdVerified = MutableLiveData<Event<String>?>()
+    val isIdVerified: MutableLiveData<Event<String>?> = _isIdVerified
 
-    private val _isPwConfirmError = MutableLiveData<Event<String>>()
-    val isPwConfirmError: LiveData<Event<String>> = _isPwConfirmError
+    private val _isPwVerified = MutableLiveData<Event<String>?>()
+    val isPwVerified: MutableLiveData<Event<String>?> = _isPwVerified
 
-    private val _isNameError = MutableLiveData<Event<String>>()
-    val isNameError: LiveData<Event<String>> = _isNameError
+    private val _isPwConfirmVerified = MutableLiveData<Event<String>?>()
+    val isPwConfirmVerified: MutableLiveData<Event<String>?> = _isPwConfirmVerified
 
-    private val _isEmailError = MutableLiveData<Event<String>>()
-    val isEmailError: LiveData<Event<String>> = _isEmailError
+    private val _isNameVerified = MutableLiveData<Event<String>?>()
+    val isNameVerified: MutableLiveData<Event<String>?> = _isNameVerified
 
-    private val _isBirthError = MutableLiveData<Event<String>>()
-    val isBirthError: LiveData<Event<String>> = _isBirthError
+    private val _isEmailVerified = MutableLiveData<Event<String>?>()
+    val isEmailVerified: MutableLiveData<Event<String>?> = _isEmailVerified
 
-    private val _isNicknameError = MutableLiveData<Event<String>>()
-    val isNicknameError: LiveData<Event<String>> = _isNicknameError
+    private val _isBirthVerified = MutableLiveData<Event<String>?>()
+    val isBirthVerified: MutableLiveData<Event<String>?> = _isBirthVerified
+
+    private val _isNicknameVerified = MutableLiveData<Event<String>?>()
+    val isNicknameVerified: MutableLiveData<Event<String>?> = _isNicknameVerified
 
     // 입력받은 정보가 모두 조건에 만족했는지지 완료었는지 여부
     private val _infoChecked = MutableLiveData<Event<Unit>>()
     val infoChecked: LiveData<Event<Unit>> = _infoChecked
 
-    fun validateId(): Boolean {
+    // 유효성 검사
+    fun validateId() {
 
-        if (id.value?.isBlank() == true || !Pattern.matches(Constants.ID_REGEX, id.value!!)) {
-            Log.d("focusloose_tag", id.value.toString())
-            _isIdError.value = Event(Strings.id_error)
-            return false
+        if (!validate(id, ID_REGEX)) {
+            _isIdVerified.value = Event(id_error)
         } else {
-            _isIdError.value = Event("")
-            Log.d("focusloose_tag", "패턴맞음")
+            _isIdVerified.value = Event("")
             userId = id.value!!
         }
-
-        return true
     }
 
-    fun validatePw(): Boolean {
+    fun validatePw() {
 
-        if (pw.value?.isBlank() == true || !Pattern.matches(Constants.PW_REGEX, pw.value!!)) {
-            Log.d("focusloose_tag", id.value.toString())
-            _isPwError.value = Event(Strings.pw_error)
-            return false
+        if (!validate(pw, PW_REGEX)) {
+            _isPwVerified.value = Event(pw_error)
         } else {
-            _isPwError.value = Event("")
+            _isPwVerified.value = Event("")
         }
-
-        return true
     }
 
-    fun validatePwConfirm(): Boolean {
+    fun validatePwConfirm() {
 
-        if (pwConfirm.value?.isBlank() == true || pw.value != pwConfirm.value) {
-            _isPwConfirmError.value = Event(Strings.pw_confirm_error)
-            return false
+        if (pwConfirm.value?.isBlank() == true || pw.get() != pwConfirm.get()) {
+            Log.d("비번확인검사_tag", pw.get() + " / " + pwConfirm.get())
+            _isPwConfirmVerified.value = Event(pw_confirm_error)
         } else {
-            _isPwConfirmError.value = Event("")
+            _isPwConfirmVerified.value = Event("")
             userPw = pw.value!!
         }
-
-        return true
     }
 
-    fun validateName(): Boolean {
+    fun validateName() {
 
-        if (name.value?.isBlank() == true || !Pattern.matches(Constants.NAME_REGEX, name.value!!)) {
-            _isNameError.value = Event(Strings.name_error)
-            return false
+        if (!validate(name, NAME_REGEX)) {
+            _isNameVerified.value = Event(Strings.name_error)
         } else {
-            _isNameError.value = Event("")
-            Log.d("focusloose_tag", "패턴맞음")
+            _isNameVerified.value = Event("")
             userName = name.value!!
         }
-
-        return true
     }
 
-    fun validateEmail(): Boolean {
+    fun validateEmail() {
 
-        if (email.value?.isBlank() == true || !Pattern.matches(
-                Constants.EMAIL_REGEX,
-                email.value!!
-            )
-        ) {
-            Log.d("focusloose_tag", email.value.toString())
-            _isEmailError.value = Event(Strings.email_error)
-            return false
+        if (!validate(email, EMAIL_REGEX)) {
+            _isEmailVerified.value = Event(Strings.email_error)
         } else {
-            _isEmailError.value = Event("")
-            Log.d("focusloose_tag", "패턴맞음")
+            _isEmailVerified.value = Event("")
             userEmail = email.value!!
         }
-
-        return true
     }
 
-    fun validateBirth(): Boolean {
+    fun validateBirth() {
 
         if (birth.value?.isBlank() == true) {
-            Log.d("focusloose_tag", birth.value.toString())
-            _isBirthError.value = Event(Strings.birth_error)
-            return false
+            _isBirthVerified.value = Event(Strings.birth_error)
         } else {
-            _isBirthError.value = Event("")
-            Log.d("focusloose_tag", "패턴맞음")
+            _isBirthVerified.value = Event("")
             userBirth = birth.value!!
         }
-
-        return true
     }
 
-    fun validateNickname(): Boolean {
+    fun validateNickname() {
 
-        if (nickname.value?.isBlank() == true || !Pattern.matches(
-                Constants.NICKNAME_REGEX,
-                nickname.value!!
-            )
-        ) {
-            Log.d("focusloose_tag", nickname.value.toString())
-            //_isNicknameError.value = Event()
-            return false
+        if (!validate(nickname, NICKNAME_REGEX)) {
+            // _isNicknameVerified.value = Event(Strings.nickname_error)
         } else {
-            _isNicknameError.value = Event("")
-            Log.d("focusloose_tag", "패턴맞음")
-            userNickname = nickname.value!!
+            _isBirthVerified.value = Event("")
+            userBirth = birth.value!!
         }
-
-        return true
     }
 
     fun finishStep1() {
-        _step1Success.postValue(Event(true))
 
-//        if((userId!="" && userPw!="")&&
-//            (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)) {
-//            _step1Success.postValue(Event(true))
-//        }
-//        else {
-//            validateId()
-//            validatePw()
-//            validatePwConfirm()
-//        }
+        if((userId!="" && userPw!="")&&
+            (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)) {
+            _step1Success.postValue(Event(true))
+        }
+        else {
+            validateId()
+            validatePw()
+            validatePwConfirm()
+        }
     }
 
     fun finishStep2() {
-        _step2Success.postValue(Event(true))
+
         if ((userName != "" && userEmail != "" && userBirth != "") &&
-            (name.value == userName && email.value == userEmail) //  && birth.value == userBirth
-        ) {
+            (name.value == userName && email.value == userEmail)) {
             _step2Success.postValue(Event(true))
         } else {
             validateName()
@@ -213,8 +186,10 @@ constructor(
         return (userName != "")
     }
 
-    fun getUserPw(): String {
-        return userPw
+    // 비밀번호 입력칸의 문자열이 비밀번호 확인 입력칸에 문자열이 존재할 때
+    // 변동이 생긴다면 -> 비밀번호 확인 칸 리셋
+    // 하기 위해 비교
+    fun comparePw(): Boolean {
+        return (pw.value == pwConfirm.value)
     }
-
 }

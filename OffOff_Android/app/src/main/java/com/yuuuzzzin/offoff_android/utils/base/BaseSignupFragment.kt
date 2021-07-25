@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputLayout
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.utils.setDefaultColor
+import com.yuuuzzzin.offoff_android.utils.setErrorColor
 import com.yuuuzzzin.offoff_android.utils.setVerifiedColor
 import com.yuuuzzzin.offoff_android.view.ui.member.SignupActivity
 import com.yuuuzzzin.offoff_android.viewmodel.SignupViewModel
@@ -86,7 +87,7 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
         nameIcon = FontDrawable(mContext, R.string.fa_user, true, false)
         nameIcon.setTextColor(ContextCompat.getColor(mContext, R.color.material_on_surface_disabled))
         nameIconFocus = FontDrawable(mContext, R.string.fa_user, true, false)
-        nameIcon.setTextColor(ContextCompat.getColor(mContext, R.color.green))
+        nameIconFocus.setTextColor(ContextCompat.getColor(mContext, R.color.green))
 
         // email 아이콘
         emailIcon = FontDrawable(mContext, R.string.fa_at_solid, true, false)
@@ -111,6 +112,7 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
 
     // TextField default 상태
     fun TextInputLayout.setTextFieldDefault() {
+        this.error = null
         setDefaultColor()
         when(this.id) {
             R.id.tf_id -> startIconDrawable = idIcon
@@ -122,7 +124,7 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
         }
     }
 
-    // TextField default 상태
+    // TextField focus 상태
     fun TextInputLayout.setTextFieldFocus() {
         setVerifiedColor()
         when(this.id) {
@@ -144,8 +146,9 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
 
     // TextField error 상태
     fun TextInputLayout.setTextFieldError(errorMsg: String?) {
-        startIconDrawable = errorIcon
         error = errorMsg
+        startIconDrawable = errorIcon
+        setErrorColor()
     }
 
     // TextField error 여부
@@ -153,6 +156,7 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
         return this.error != null
     }
 
+    // 유효성 검사에 따른 TextField 상태 처리
     fun TextInputLayout.validate(str: String) {
         if(str.isEmpty())
             this.setTextFieldVerified()

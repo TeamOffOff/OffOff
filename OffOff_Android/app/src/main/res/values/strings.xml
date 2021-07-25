@@ -36,11 +36,11 @@
     <string name="signup_step1">아이디 및 비밀번호</string>
     <string name="signup_step2">개인 정보</string>
     <string name="signup_step3">프로필</string>
+    <string name="edit">편집</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--    <string name=""></string>-->
     <!--    <string name=""></string>-->
-
 
 
 </resources>

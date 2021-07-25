@@ -10,4 +10,5 @@ object Strings {
     const val email_error = "올바른 형식의 이메일이 아닙니다."
     const val email_duplicated = "이미 사용중인 이메일입니다."
     const val birth_error = "생년월일을 입력해주세요."
+
 }

@@ -31,9 +31,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                app:title="@string/signup_step2"
-                app:titleTextColor="@color/white" />
+                android:layout_marginEnd="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/signup_step2"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -57,7 +66,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
-                app:endIconMode="clear_text"
                 app:errorEnabled="true"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +91,6 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/email_hint"
                 app:boxStrokeWidthFocused="2dp"
-                app:endIconMode="clear_text"
                 app:errorEnabled="true"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +114,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/birth"
-                app:endIconMode="clear_text"
                 app:errorEnabled="true"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"

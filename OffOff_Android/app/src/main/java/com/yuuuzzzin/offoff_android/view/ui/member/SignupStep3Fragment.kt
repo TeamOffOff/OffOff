@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.view.ui.member
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +12,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep3Binding
+import com.yuuuzzzin.offoff_android.utils.Constants
 import com.yuuuzzzin.offoff_android.viewmodel.SignupViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignupStep3Fragment : Fragment() {
 
     private var mBinding: FragmentSignupStep3Binding? = null
@@ -22,7 +26,6 @@ class SignupStep3Fragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is SignupActivity)
             mContext = context
     }
 
@@ -33,6 +36,9 @@ class SignupStep3Fragment : Fragment() {
         mBinding = FragmentSignupStep3Binding.inflate(inflater, container, false)
         binding.viewModel = signupViewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.btProfile.setOnClickListener {
+            showDialog()
+        }
 
         return binding.root
     }
@@ -45,6 +51,28 @@ class SignupStep3Fragment : Fragment() {
                 findNavController().navigate(R.id.action_signupStep3Fragment_to_signupStep2Fragment)
             }
         }
+    }
+
+    private fun showDialog() {
+
+        val array = arrayOf(Constants.PROFILE_OPTION1, Constants.PROFILE_OPTION2, Constants.PROFILE_OPTION3, Constants.PROFILE_OPTION4)
+        val builder = AlertDialog.Builder(mContext)
+
+        builder.setItems(array) { _, which ->
+            val selected = array[which]
+
+            try {
+                when(which) {
+
+                }
+
+            } catch (e: IllegalArgumentException) {
+
+            }
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     override fun onDestroyView() {
