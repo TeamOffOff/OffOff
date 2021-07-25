@@ -4,13 +4,20 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.yuuuzzzin.offoff_android.service.models.SignupInfo
 import com.yuuuzzzin.offoff_android.service.repository.AuthRepository
-import com.yuuuzzzin.offoff_android.util.Event
+import com.yuuuzzzin.offoff_android.utils.Constants.EMAIL_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.ID_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.NAME_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.NICKNAME_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.PW_REGEX
+import com.yuuuzzzin.offoff_android.utils.Constants.get
+import com.yuuuzzzin.offoff_android.utils.Constants.validate
+import com.yuuuzzzin.offoff_android.utils.Event
+import com.yuuuzzzin.offoff_android.utils.Strings
+import com.yuuuzzzin.offoff_android.utils.Strings.id_error
+import com.yuuuzzzin.offoff_android.utils.Strings.pw_confirm_error
+import com.yuuuzzzin.offoff_android.utils.Strings.pw_error
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,98 +25,171 @@ class SignupViewModel
 @Inject
 constructor(
     private val repository: AuthRepository
-): ViewModel() {
+) : ViewModel() {
 
     val id = MutableLiveData("")
     val pw = MutableLiveData("")
-    val checkPw = MutableLiveData("")
+    val pwConfirm = MutableLiveData("")
+    val name = MutableLiveData("")
+    val email = MutableLiveData("")
+    val nickname = MutableLiveData("")
+    val birth = MutableLiveData("")
 
-    // 회원가입 성공 여부
-    private val _signupSuccess = MutableLiveData<Event<String>>()
-    val signupSuccess: LiveData<Event<String>> = _signupSuccess
+    private var userId = ""
+    private var userPw = ""
+    private var userName = ""
+    private var userEmail = ""
+    private var userNickname = ""
+    private var userBirth = ""
 
-    private val _isIdError = MutableLiveData<Event<String>>()
-    val isIdError: LiveData<Event<String>> = _isIdError
+    // 회원가입 단계별 성공 여부
+    private val _step1Success = MutableLiveData<Event<Boolean>>()
+    val step1Success: LiveData<Event<Boolean>> = _step1Success
 
-    private val _isPwError = MutableLiveData<Event<String>>()
-    val isPwError: LiveData<Event<String>> = _isPwError
+    private val _step2Success = MutableLiveData<Event<Boolean>>()
+    val step2Success: LiveData<Event<Boolean>> = _step2Success
 
-    private val _isPwCheckError = MutableLiveData<Event<String>>()
-    val isPwCheckError: LiveData<Event<String>> = _isPwCheckError
+    private val _step3Success = MutableLiveData<Event<Boolean>>()
+    val step3Success: LiveData<Event<Boolean>> = _step3Success
+
+    // 입력 항목별 verified 여부
+    private val _isIdVerified = MutableLiveData<Event<String>?>()
+    val isIdVerified: MutableLiveData<Event<String>?> = _isIdVerified
+
+    private val _isPwVerified = MutableLiveData<Event<String>?>()
+    val isPwVerified: MutableLiveData<Event<String>?> = _isPwVerified
+
+    private val _isPwConfirmVerified = MutableLiveData<Event<String>?>()
+    val isPwConfirmVerified: MutableLiveData<Event<String>?> = _isPwConfirmVerified
+
+    private val _isNameVerified = MutableLiveData<Event<String>?>()
+    val isNameVerified: MutableLiveData<Event<String>?> = _isNameVerified
+
+    private val _isEmailVerified = MutableLiveData<Event<String>?>()
+    val isEmailVerified: MutableLiveData<Event<String>?> = _isEmailVerified
+
+    private val _isBirthVerified = MutableLiveData<Event<String>?>()
+    val isBirthVerified: MutableLiveData<Event<String>?> = _isBirthVerified
+
+    private val _isNicknameVerified = MutableLiveData<Event<String>?>()
+    val isNicknameVerified: MutableLiveData<Event<String>?> = _isNicknameVerified
 
     // 입력받은 정보가 모두 조건에 만족했는지지 완료었는지 여부
     private val _infoChecked = MutableLiveData<Event<Unit>>()
     val infoChecked: LiveData<Event<Unit>> = _infoChecked
 
-    // 입력받은 정보를 확인해 그에 따른 에러 메시지를 이벤트 처리
-    private fun checkInfo(): Boolean {
+    // 유효성 검사
+    fun validateId() {
 
-        var checkValue = true
-
-        // 아이디 값 확인
-        if(id.value?.isBlank() == true) {
-            _isIdError.value = Event("아이디를 입력해주세요")
-            checkValue = false
+        if (!validate(id, ID_REGEX)) {
+            _isIdVerified.value = Event(id_error)
+        } else {
+            _isIdVerified.value = Event("")
+            userId = id.value!!
         }
-        else if(!Pattern.matches("^[a-zA-Z0-9]{5,15}\$", id.value!!)) {
-            _isIdError.value = Event("아이디는 영문과 숫자를 조합한 5~15글자")
-            checkValue = false
-        }
-        // 비밀번호 값 확인
-        if(pw.value?.isBlank() == true) {
-            _isPwError.value = Event("비밀번호를 입력해주세요")
-            checkValue = false
-        }
-        else if(!Pattern.matches("^[a-zA-Z0-9]{5,15}\$", pw.value!!)) {
-            _isPwError.value = Event("비밀번호는 영문과 숫자를 조합한 5~15글자")
-            checkValue = false
-        }
-        else {
-            for(i in 1..(pw.value!!.length - 3) step(1)) {
-                if(id.value!!.contains(pw.value!!.substring(i, i + 3))) {
-                    _isPwError.value = Event("아이디와 비밀번호가 4자리 이상 중복됩니다")
-                    checkValue = false
-                }
-            }
-        }
-        // 비밀번호 확인 값 확인
-        if(checkPw.value?.isBlank() == true) {
-            _isPwCheckError.value = Event("비밀번호를 한번 더 입력해주세요")
-            checkValue = false
-        }
-        // 비밀번호와 비밀번호 확인 값 비교
-        if (pw.value != checkPw.value) {
-            _isPwCheckError.value = Event("비밀번호가 일치하지 않습니다")
-            checkValue = false
-        }
-
-        return checkValue
     }
 
-    // 회원가입 요청
-    fun signup() {
-        if (!checkInfo()) return
+    fun validatePw() {
 
-        val userId = id.value ?: return
-        val userPw = pw.value ?: return
-
-        // 입력받은 id와 pw를 서버에 보내고 응답받기
-        viewModelScope.launch() {
-            repository.signup(SignupInfo(userId, userPw)).let { response ->
-                // 서버 통신 성공
-                if(response.isSuccessful) {
-                    // 회원가입 성공
-                    if(response.body()!!.result == "success") {
-                        _signupSuccess.postValue(Event(userId))
-                        Log.d("tag_signup_success", userId+userPw+response.body().toString())
-                    } else { // 회원가입 실패
-                        Log.d("tag_signup_fail", response.body().toString())
-                    }
-                    // 서버 통신 실패
-                } else {
-                    Log.d("tag_server_fail", "서버 통신 실패: ${response.code()}")
-                }
-            }
+        if (!validate(pw, PW_REGEX)) {
+            _isPwVerified.value = Event(pw_error)
+        } else {
+            _isPwVerified.value = Event("")
         }
+    }
+
+    fun validatePwConfirm() {
+
+        if (pwConfirm.value?.isBlank() == true || pw.get() != pwConfirm.get()) {
+            Log.d("비번확인검사_tag", pw.get() + " / " + pwConfirm.get())
+            _isPwConfirmVerified.value = Event(pw_confirm_error)
+        } else {
+            _isPwConfirmVerified.value = Event("")
+            userPw = pw.value!!
+        }
+    }
+
+    fun validateName() {
+
+        if (!validate(name, NAME_REGEX)) {
+            _isNameVerified.value = Event(Strings.name_error)
+        } else {
+            _isNameVerified.value = Event("")
+            userName = name.value!!
+        }
+    }
+
+    fun validateEmail() {
+
+        if (!validate(email, EMAIL_REGEX)) {
+            _isEmailVerified.value = Event(Strings.email_error)
+        } else {
+            _isEmailVerified.value = Event("")
+            userEmail = email.value!!
+        }
+    }
+
+    fun validateBirth() {
+
+        if (birth.value?.isBlank() == true) {
+            _isBirthVerified.value = Event(Strings.birth_error)
+        } else {
+            _isBirthVerified.value = Event("")
+            userBirth = birth.value!!
+        }
+    }
+
+    fun validateNickname() {
+
+        if (!validate(nickname, NICKNAME_REGEX)) {
+            // _isNicknameVerified.value = Event(Strings.nickname_error)
+        } else {
+            _isBirthVerified.value = Event("")
+            userBirth = birth.value!!
+        }
+    }
+
+    fun finishStep1() {
+
+        if((userId!="" && userPw!="")&&
+            (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)) {
+            _step1Success.postValue(Event(true))
+        }
+        else {
+            validateId()
+            validatePw()
+            validatePwConfirm()
+        }
+    }
+
+    fun finishStep2() {
+
+        if ((userName != "" && userEmail != "" && userBirth != "") &&
+            (name.value == userName && email.value == userEmail)) {
+            _step2Success.postValue(Event(true))
+        } else {
+            validateName()
+            validateEmail()
+            validateBirth()
+        }
+    }
+
+    fun finishStep3() {
+
+    }
+
+    fun setStep1State(): Boolean {
+        return (userId != "")
+    }
+
+    fun setStep2State(): Boolean {
+        return (userName != "")
+    }
+
+    // 비밀번호 입력칸의 문자열이 비밀번호 확인 입력칸에 문자열이 존재할 때
+    // 변동이 생긴다면 -> 비밀번호 확인 칸 리셋
+    // 하기 위해 비교
+    fun comparePw(): Boolean {
+        return (pw.value == pwConfirm.value)
     }
 }
