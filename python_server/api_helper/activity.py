@@ -20,6 +20,9 @@ class ActivityControl(Resource):
     공감, 스크랩, 댓글, 작성글
     """
     def put(self):  # 활동 추가
+        """
+        사용자 활동 추가하기
+        """
         header = request.headers.get("Authorization")  # 이 회원의 활동정보 변경
 
         if header is None: 
@@ -30,7 +33,7 @@ class ActivityControl(Resource):
         new_activity_info = request.get_json()  
         """
         {
-            "like" : ["board_type", "content_id"]
+            "likes" : ["board_type", "content_id"]
         } 
         """
 
@@ -38,14 +41,14 @@ class ActivityControl(Resource):
         """
         {
          "activity" : {
-           "likes" : [["content_id", "board_type"], ["content_id", "board_type"]],
+           "likes" : [["board_type", "content_id"], ["board_type", "content_id"]],
            "posts" : [[], []]
         }
         """
 
         for key in new_activity_info:
             specific_activity = user_activity["activity"][key]
-            specific_activity.insert(0,new_activity_info[key])  # insert : 제일 앞으로 추가함
+            specific_activity.append(new_activity_info[key])  # insert : 제일 앞으로 추가함
         
         result = mongodb.update_one(query={"id": token_decoded["id"]}, collection_name="user", modify={"$set" : user_activity})
 
@@ -55,7 +58,10 @@ class ActivityControl(Resource):
             return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}, 500
     
 
-    def delete(self):  # 활동 제거(활동취소시, 게시글삭제시)
+    def delete(self):  # 활동 제거(활동 취소 시, 게시글 삭제 시)
+        """
+        사용자 활동 지우기
+        """
         header = request.headers.get("Authorization")  # 이 회원의 활동정보 변경
 
         if header is None: 
@@ -118,17 +124,20 @@ class ActivityControl(Resource):
 
         post_list = []
         for post in specific_activity:
-            board_type = post[0]+"_board"
-            content_id = post[1]
+            try :
+                board_type = post[0]+"_board"
+                content_id = post[1]
 
-            result = mongodb.find_one(query={"_id": ObjectId(content_id)},collection_name=board_type)
-            result["_id"] = str(result["_id"])
+                result = mongodb.find_one(query={"_id": ObjectId(content_id)},collection_name=board_type)
+                result["_id"] = str(result["_id"])
 
-            post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
+                post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
 
-        if not post_list:
-            return {"query_status": "해당 id의 활동을 찾을 수 없습니다."}, 500
-        else:
-            return {
-                "post_list" : post_list
-            }
+                post_list.sort(key=lambda x:x["_id"], reverse=True )
+            
+            except TypeError:
+                pass
+        
+        return {
+            "post_list" : post_list
+        }

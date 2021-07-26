@@ -13,32 +13,41 @@ mongodb = mongo.MongoHelper()
 User = Namespace(name="user", description="유저 관련 API")
 
 
-@User.route('/')
-class AuthBefore(Resource):
-    """
-    중복확인
-    """
-    def get(self):
-        """
-        입력한 id의 중복여부를 확인합니다
-        http://0.0.0.0:5000/user?check-id=hello
-        """
-        check_id = request.args.get("check-id")
-        if mongodb.find_one(query={"id": check_id}, collection_name="user"):
-            return {
-                "message": "The ID already exist"
-            }, 500
-        else :
-            return{
-                "message": "Possible"
-            }, 200
-    
-
 @User.route('/register')
 class AuthRegister(Resource):
     """
-    회원가입, 비밀번호변경, 회원탈퇴
+    (아이디, 닉네임)중복확인, 회원가입, 비밀번호변경, 회원탈퇴
     """
+
+    def get(self):
+        """
+        입력한 id의 중복여부를 확인합니다
+        http://0.0.0.0:5000/user/register?id=hello
+        http://0.0.0.0:5000/user/register?nickname=hello
+        """
+        check_id = request.args.get("id")
+        check_nickname = request.args.get("nickname")
+
+        if check_id:
+            if mongodb.find_one(query={"id": check_id}, collection_name="user"):
+                return {
+                    "message": "The ID already exist"
+                }, 500
+            else :
+                return{
+                    "message": "Possible"
+                }, 200
+
+        elif check_nickname:
+            if mongodb.find_one(query={"subinfo": {"nickname": check_nickname}}, collection_name="user"):
+                return {
+                    "message": "The nickname already exist"
+                }, 500
+            else :
+                return{
+                    "message": "Possible"
+                }, 200
+
 
     def post(self):
         """
@@ -55,7 +64,7 @@ class AuthRegister(Resource):
             'Authorization': token_encoded,
             "message": 'Register Success'
         }, 200
-    
+
 
     def put(self):
         """

@@ -18,8 +18,8 @@ class PostControl(Resource):
     }
     """
     def get(self):
-        content_id = request.args.get("content_id")
-        board_type = request.args.get("board_type") + "_board"
+        content_id = request.args.get("content-id")
+        board_type = request.args.get("board-type") + "_board"
 
         result = mongodb.find_one(query={"_id": ObjectId(content_id)},
                                   collection_name=board_type,
