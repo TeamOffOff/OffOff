@@ -8,21 +8,6 @@ mongodb = mongo.MongoHelper()
 Post = Namespace("post", description="게시물 관련 API")
 
 
-@Post.route("/content-id=<string:content_id>&board-type=<string:board_type>")
-class GetPost(Resource):
-    def get(self, content_id, board_type):
-        board_type = board_type + "_board"
-
-        result = mongodb.find_one(query={"_id": ObjectId(content_id)},
-                                  collection_name=board_type,
-                                  projection_key={"_id": False})
-
-        if not result:
-            return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}, 500
-        else:
-            return result
-
-
 @Post.route("")
 class PostControl(Resource):
     """
@@ -32,6 +17,18 @@ class PostControl(Resource):
         board_type:~~
     }
     """
+    def get(self):
+        content_id = request.args.get("content_id")
+        board_type = request.args.get("board_type") + "_board"
+
+        result = mongodb.find_one(query={"_id": ObjectId(content_id)},
+                                  collection_name=board_type,
+                                  projection_key={"_id": False})
+
+        if not result:
+            return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}, 500
+        else:
+            return result
 
     def delete(self):  # 게시글 삭제
         """특정 id의 게시글을 삭제합니다."""
