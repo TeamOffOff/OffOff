@@ -11,6 +11,7 @@ import UIKit
 
 class PostListViewController: UITableViewController {
     let postViewModel = PostsViewModel()
+    var boardType = "free"
     
     override func loadView() {
         self.tableView = .init()
@@ -20,9 +21,10 @@ class PostListViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(onNewPostButton))
         
         // 모델에 새로운 포스트가 들어오면 테이블뷰 리로드
-        postViewModel.posts.bind { _ in
+        postViewModel.postList.bind { _ in
             self.tableView.reloadData()
         }
+        postViewModel.fetchPostList(board_type: self.boardType)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
         tableView.register(PostPreviewCell.classForCoder(), forCellReuseIdentifier: PostPreviewCell.identifier)

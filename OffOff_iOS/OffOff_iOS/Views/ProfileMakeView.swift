@@ -9,15 +9,7 @@ import UIKit
 
 class ProfileMakeView: UIView {
     
-    var profileImageView = UIImageView().then {
-        $0.image = UIImage.DEFAULT_PROFILE
-        
-        // Image View를 원형으로
-        $0.layer.masksToBounds = true
-        $0.layer.cornerRadius = UIScreen.main.bounds.size.width / 6.0
-        $0.layer.borderWidth = 1.5
-        $0.layer.borderColor = UIColor.mainColor.cgColor
-    }
+    var profileImageView = CircularImageView(image: UIImage.DEFAULT_PROFILE)
     
     var nickNameTextField = TextField().then {
         $0.placeholder = "닉네임 (2-10자, 한글, 영어, 숫자 사용 가능)"
@@ -29,6 +21,7 @@ class ProfileMakeView: UIView {
         $0.clearButtonMode = .whileEditing
         $0.autocorrectionType = .no
         $0.titleFormatter = { $0 }
+        $0.iconWidth = CGFloat(2.0)
         $0.tag = 0
     }
     

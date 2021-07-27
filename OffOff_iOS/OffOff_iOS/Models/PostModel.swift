@@ -5,44 +5,39 @@
 //  Created by Lee Nam Jun on 2021/07/05.
 //
 
-/*
-{
-  "content_id": "1",
-  "metadata": {
-    "author": "ABC",
-    "title": "CVC",
-    "date": "qow",
-    "board_type": "자유게시판",
-    "preview": "동해물과 백두산이",
-    "likes": "0",
-    "view_count": "0",
-    "report_count": "0",
-    "reply_count": "0"
-  },
-  "contents": {
-    "content": "Lorem Ipsum is simply dummy text of the printing and typesetting <image1> industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-  }
+//"last_content_id": "60fff22fbf0d70004967d75b",
+//    "post_list": [
+//        {
+//            "_id": "60fff22fbf0d70004967d75b",
+//            "board_type": "promotion",
+//            "Author": "박유진",
+//            "Date": "2021-03-02T02:20:20",
+//            "Title": "안녕하세요",
+//            "Content": "맨 발로 걷고싶어 따사로운 햇볕아래 짐들을 풀어놓고 풀 가득한 공원에 마구 뛰어다니는 개들과 놀고싶어 어렸을적엔 잘 몰랐었어 누가 날 보던말던 I don't care at all 창피한줄도 몰라 훌훌벗고서 계곡 아래로 몸을 던져 camping everywhere 잔디 위로 누워 구름을 바라보다 잠들래 camping everywhere",
+//            "image": null,
+//            "Likes": 8,
+//            "view_count": 4,
+//            "report_count": 0,
+//            "reply_count": 8
+//        }
+//    ]
+
+
+struct PostList: Codable {
+    var last_content_id: String
+    var post_list: [PostModel]
 }
-*/
 
 struct PostModel: Codable {
-    var content_id: String
-    var metadata: Metadata
-    var contents: Contents
-}
-
-struct Contents: Codable {
-    var content: String
-}
-
-struct Metadata: Codable {
-    var author: String
-    var title: String
-    var date: String
+    var _id: String
     var board_type: String
-    var preview: String
-    var likes: Int = 0
-    var view_count: Int = 0
-    var report_count: Int = 0
-    var reply_count: Int = 0
+    var Author: String
+    var Date: String
+    var Title: String
+    var Content: String
+    var image: String?
+    var Likes: Int
+    var view_count: Int
+    var report_count: Int
+    var reply_count: Int
 }

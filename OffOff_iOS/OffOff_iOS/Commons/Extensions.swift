@@ -75,6 +75,12 @@ extension UIImage {
     static let ICON_EXCLAMATION_RED = UIImage.fontAwesomeIcon(name: .exclamation, style: .solid, textColor: .red, size: Constants.ICON_SIZE)
     static let ICON_BIRTHDAY_GRAY = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
     static let ICON_BIRTHDAY_MAINCOLOR = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
+    static let ICON_LIKES_GRAY = UIImage.fontAwesomeIcon(name: .thumbsUp, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
+    static let ICON_COMMENT_GRAY = UIImage.fontAwesomeIcon(name: .commentAlt, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
+    static let ICON_SCRAP_GRAY = UIImage.fontAwesomeIcon(name: .star, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
+    static let ICON_SEARCH_GRAY = UIImage.fontAwesomeIcon(name: .search, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
+    static let ICON_REPORT_GRAY = UIImage.fontAwesomeIcon(name: .exclamationCircle, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
+    static let ICON_WRITE_GRAY = UIImage.fontAwesomeIcon(name: .pen, style: .solid, textColor: .gray, size: Constants.ICON_SIZE)
     
     static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
 }
