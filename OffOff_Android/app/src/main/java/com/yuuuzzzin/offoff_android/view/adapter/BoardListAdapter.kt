@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.databinding.RvItemBoardBinding
-import com.yuuuzzzin.offoff_android.service.models.BoardData
+import com.yuuuzzzin.offoff_android.service.models.Board
 
 class BoardListAdapter() : RecyclerView.Adapter<BoardListAdapter.BoardListViewHolder>() {
 
     lateinit var binding: RvItemBoardBinding
 
-    var boardList = mutableListOf<BoardData>()
+    var boardList = mutableListOf<Board>()
 
     // 어떤 View를 생성할 것인지
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardListViewHolder {
@@ -32,7 +32,7 @@ class BoardListAdapter() : RecyclerView.Adapter<BoardListAdapter.BoardListViewHo
 
     /*리사이클러뷰 아이템 클릭시 BookDetailActivity로 이동하기 위한 book click listener 정의*/
     interface OnBoardClickListener {
-        fun onBoardClick(view: View, boardData: BoardData)
+        fun onBoardClick(view: View, board: Board)
     }
 
     private lateinit var boardClickListener: OnBoardClickListener
@@ -46,12 +46,12 @@ class BoardListAdapter() : RecyclerView.Adapter<BoardListAdapter.BoardListViewHo
     // val 예약어로 binding을 전달 받아 전역으로 사용
     // 상속받는 ViewHolder 생성자에서는 꼭 binding.root를 전달해야 함.
     inner class BoardListViewHolder(private val binding : RvItemBoardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun onBind(boardData: BoardData) {
-            binding.tvTitle.text = boardData.title
-            binding.ivIcon.setImageResource(boardData.icon)
+        fun onBind(board: Board) {
+            binding.tvTitle.text = board.title
+            binding.ivIcon.setImageResource(board.icon)
 
             itemView.setOnClickListener {
-                boardClickListener.onBoardClick(itemView, boardData)
+                boardClickListener.onBoardClick(itemView, board)
             }
         }
     }

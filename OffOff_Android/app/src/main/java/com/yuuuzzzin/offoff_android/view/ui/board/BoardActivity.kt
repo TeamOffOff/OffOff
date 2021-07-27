@@ -1,11 +1,11 @@
 package com.yuuuzzzin.offoff_android.view.ui.board
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,8 +67,9 @@ class BoardActivity : AppCompatActivity() {
                 this@BoardActivity, LinearLayoutManager.VERTICAL, false)
         }
 
-        viewModel.responsePost.observe(this, { listPosts ->
-            boardAdapter.posts = listPosts
+        viewModel.responsePost.observe(this, {
+
+            boardAdapter.posts = it.post_list
         })
 
         /* click listener 재정의 */
@@ -94,4 +95,6 @@ class BoardActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 }

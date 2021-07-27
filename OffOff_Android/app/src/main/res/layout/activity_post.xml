@@ -1,95 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".view.ui.board.PostActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/appbar_post"
+                style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                app:title="게시판" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- AppBarLayout 아래에 스크롤 뷰 배치 -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_post"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="제목"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="40dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_round_person_24"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+                <TextView
+                    android:id="@+id/tv_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="작성자"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/iv_avatar"
+                    app:layout_constraintTop_toTopOf="@id/iv_avatar" />
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="0000-00-00"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@id/iv_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/tv_author" />
+
+                <TextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="글 내용"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_avatar" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:outlineProvider="bounds"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/green">
+        android:layout_marginBottom="0dp"
+        android:orientation="horizontal"
+        android:windowSoftInputMode="adjustUnspecified|adjustPan"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/appbar_post"
-            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+        <EditText
+            android:id="@+id/et_comment"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            app:title="게시판" />
+            android:layout_height="wrap_content"
+            android:layout_weight="8" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <ImageButton
+            android:id="@+id/bt_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
 
-    <!-- AppBarLayout 아래에 스크롤 뷰 배치 -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+    </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_post"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/iv_avatar"
-                android:layout_width="40dp"
-                android:layout_height="0dp"
-                android:src="@drawable/ic_round_person_24"
-                app:layout_constraintBottom_toBottomOf="@id/tv_date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/tv_author"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/iv_avatar"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@id/tv_author"
-                app:layout_constraintTop_toBottomOf="@id/tv_author" />
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_date" />
-
-            <TextView
-                android:id="@+id/tv_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_title" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>

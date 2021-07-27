@@ -1,7 +1,7 @@
 package com.yuuuzzzin.offoff_android.service.api
 
 import com.yuuuzzzin.offoff_android.service.models.Post
-import com.yuuuzzzin.offoff_android.service.models.PostPreview
+import com.yuuuzzzin.offoff_android.service.models.PostList
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -11,8 +11,8 @@ import retrofit2.http.Path
 interface BoardService {
 
     /* 특정 게시판의 게시물들을 불러오기 */
-    @GET("GetPosts")
-    suspend fun getPosts(): Response<List<PostPreview>>
+    @GET("postlist/free")
+    suspend fun getPosts(): Response<PostList>
 
     /* 해당 id의 게시물 불러오기 */
     @GET("GetPosts/{id}")

@@ -12,7 +12,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class SignupStep2Fragment : BaseSignupFragment<FragmentSignupStep2Binding>(R.layout.fragment_signup_step2) {
+class SignupStep2Fragment :
+    BaseSignupFragment<FragmentSignupStep2Binding>(R.layout.fragment_signup_step2) {
     lateinit var datePicker: DatePickerHelper
 
     override fun initView() {
@@ -53,7 +54,7 @@ class SignupStep2Fragment : BaseSignupFragment<FragmentSignupStep2Binding>(R.lay
             if (!hasFocus) {
                 signupViewModel.validateName()
             } else {
-                if(!binding.tfName.isError())
+                if (!binding.tfName.isError())
                     binding.tfName.setTextFieldFocus()
             }
         }
@@ -62,7 +63,7 @@ class SignupStep2Fragment : BaseSignupFragment<FragmentSignupStep2Binding>(R.lay
             if (!hasFocus) {
                 signupViewModel.validateEmail()
             } else {
-                if(!binding.tfEmail.isError())
+                if (!binding.tfEmail.isError())
                     binding.tfEmail.setTextFieldFocus()
             }
         }

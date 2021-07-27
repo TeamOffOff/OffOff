@@ -14,7 +14,8 @@ import com.yuuuzzzin.offoff_android.utils.setDefaultColor
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.layout.fragment_signup_step1) {
+class SignupStep1Fragment :
+    BaseSignupFragment<FragmentSignupStep1Binding>(R.layout.fragment_signup_step1) {
 
     override fun initView() {
         binding.viewModel = signupViewModel
@@ -44,7 +45,7 @@ class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.lay
             if (!hasFocus) {
                 signupViewModel.validateId()
             } else {
-                if(!binding.tfId.isError())
+                if (!binding.tfId.isError())
                     binding.tfId.setTextFieldFocus()
             }
         }
@@ -53,22 +54,24 @@ class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.lay
             if (!hasFocus) {
                 signupViewModel.validatePw()
             } else {
-                if(!binding.tfPw.isError()) {
+                if (!binding.tfPw.isError()) {
                     binding.tfPw.setTextFieldFocus()
                     binding.etPw.addTextChangedListener(object : TextWatcher {
 
-                    override fun afterTextChanged(s: Editable) { }
-                    override fun beforeTextChanged(
-                        s: CharSequence, start: Int,
-                        count: Int, after: Int
-                    ) { }
-                    override fun onTextChanged(
-                        s: CharSequence, start: Int,
-                        before: Int, count: Int
-                    ) {
-                        if (!signupViewModel.comparePw()) {
-                            signupViewModel.pwConfirm.postValue("")
-                            binding.tfPwConfirm.setDefaultColor()
+                        override fun afterTextChanged(s: Editable) {}
+                        override fun beforeTextChanged(
+                            s: CharSequence, start: Int,
+                            count: Int, after: Int
+                        ) {
+                        }
+
+                        override fun onTextChanged(
+                            s: CharSequence, start: Int,
+                            before: Int, count: Int
+                        ) {
+                            if (!signupViewModel.comparePw()) {
+                                signupViewModel.pwConfirm.postValue("")
+                                binding.tfPwConfirm.setDefaultColor()
                             }
                         }
                     })
@@ -78,7 +81,7 @@ class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.lay
 
         binding.etPwConfirm.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (hasFocus) {
-                if(!binding.tfPwConfirm.isError())
+                if (!binding.tfPwConfirm.isError())
                     binding.tfPwConfirm.setTextFieldFocus()
 
                 signupViewModel.pwConfirm.observe(viewLifecycleOwner, {

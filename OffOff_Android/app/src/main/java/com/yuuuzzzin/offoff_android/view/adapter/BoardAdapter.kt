@@ -70,13 +70,12 @@ class BoardAdapter :
         ) {
             binding = RvItemPostPreviewBinding.bind(itemView)
             binding.apply {
-                tvTitle.text = currentPost.metadataPreview.title
-                tvContentPreview.text = currentPost.contents.content
-                tvDate.text = currentPost.metadataPreview.date
-                tvAuthor.text = currentPost.metadataPreview.author
-                tvLikes.text = (currentPost.metadataPreview.likes).toString()
-                tvReplyCount.text = (currentPost.metadataPreview.reply_count).toString()
-
+                tvTitle.text = currentPost.title
+                tvDate.text = currentPost.date
+                tvAuthor.text = currentPost.author
+                tvContentPreview.text = currentPost.content
+                tvLikes.text = (currentPost.likes).toString()
+                tvReplyCount.text = (currentPost.reply_count).toString()
                 itemView.setOnClickListener {
                     listener?.onItemClick(itemView, currentPost)
                 }

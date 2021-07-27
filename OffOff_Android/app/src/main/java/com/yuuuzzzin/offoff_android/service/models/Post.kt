@@ -35,13 +35,28 @@ data class Metadata(
     val reply_count: Int
 ) : Parcelable
 
+data class PostList(
+    @SerializedName("last_content_id")
+    val last_id: String,
+    @SerializedName("post_list")
+    val post_list: List<PostPreview>
+)
+
 data class PostPreview(
-    @SerializedName("id")
+    @SerializedName("_id")
     val id: String,
-    @SerializedName("metadata")
-    val metadataPreview: MetadataPreview,
-    @SerializedName("contents")
-    val contents: Contents
+    @SerializedName("Author")
+    val author: String,
+    @SerializedName("Date")
+    val date: String,
+    @SerializedName("Title")
+    val title: String,
+    @SerializedName("Content")
+    val content: String,
+    @SerializedName("Likes")
+    val likes: Int,
+    @SerializedName("reply_count")
+    val reply_count: Int
 )
 
 @Parcelize

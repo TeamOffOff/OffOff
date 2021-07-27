@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentBoardsBinding
-import com.yuuuzzzin.offoff_android.service.models.BoardData
+import com.yuuuzzzin.offoff_android.service.models.Board
 import com.yuuuzzzin.offoff_android.view.adapter.BoardListAdapter
 
 class BoardsFragment : Fragment() {
@@ -41,21 +41,21 @@ class BoardsFragment : Fragment() {
 
         boardListAdapter.boardList.addAll(
             listOf(
-                BoardData("자유 게시판", R.drawable.ic_twotone_list_alt_24),
-                BoardData("익명 게시판", R.drawable.ic_twotone_textsms_24),
-                BoardData("HOT 게시판", R.drawable.ic_twotone_local_fire_department_24),
-                BoardData("BEST 게시판", R.drawable.ic_twotone_thumb_up_24),
-                BoardData("스크랩", R.drawable.ic_twotone_star_24),
-                BoardData("좋아요", R.drawable.ic_twotone_favorite_24)
+                Board("자유 게시판", R.drawable.ic_twotone_list_alt_24),
+                Board("익명 게시판", R.drawable.ic_twotone_textsms_24),
+                Board("HOT 게시판", R.drawable.ic_twotone_local_fire_department_24),
+                Board("BEST 게시판", R.drawable.ic_twotone_thumb_up_24),
+                Board("스크랩", R.drawable.ic_twotone_star_24),
+                Board("좋아요", R.drawable.ic_twotone_favorite_24)
             ),
         )
 
         /*board click listener 재정의*/
         boardListAdapter.setOnBoardClickListener(object :
             BoardListAdapter.OnBoardClickListener{
-            override fun onBoardClick(view: View, boardData: BoardData) {
+            override fun onBoardClick(view: View, board: Board) {
                 val intent = Intent(activity, BoardActivity::class.java)
-                intent.putExtra("title", boardData.title)
+                intent.putExtra("title", board.title)
                 startActivity(intent)
             }
         })
