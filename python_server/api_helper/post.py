@@ -17,12 +17,9 @@ class PostControl(Resource):
         board_type:~~
     }
     """
-
-    def get(self):  # 게시글 조회
-        """특정 id의 게시글을 조회합니다."""
-        post_info = request.get_json()
-        content_id = post_info["content_id"]
-        board_type = post_info["board_type"] + "_board"
+    def get(self):
+        content_id = request.args.get("content-id")
+        board_type = request.args.get("board-type") + "_board"
 
         result = mongodb.find_one(query={"_id": ObjectId(content_id)},
                                   collection_name=board_type,
