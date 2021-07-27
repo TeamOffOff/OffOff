@@ -6,6 +6,25 @@ import mongo
 
 mongodb = mongo.MongoHelper()
 
+
+def insert_board_list():
+    mongodb.insert_many(collection_name="board_list", data=[
+{"board_type": "hot", "name": "인기게시판", "icon": None},
+{"board_type": "free", "name": "자유게시판", "icon": None},
+{"board_type": "career", "name": "취업게시판", "icon": None},
+{"board_type": "student", "name": "학생게시판", "icon": None},
+{"board_type": "nurse", "name": "현직자게시판", "icon": None},
+{"board_type": "newjob", "name": "이직게시판", "icon": None},
+{"board_type": "secret", "name": "익명게시판", "icon": None},
+{"board_type": "qna", "name": "질문답변게시판", "icon": None},
+{"board_type": "market", "name": "장터게시판", "icon": None},
+{"board_type": "promotion", "name": "홍보게시판", "icon": None}
+])
+
+
+insert_board_list()
+
+
 BoardList = Namespace(
     name="boardlist",
     description="게시판목록을 불러오는 API")
@@ -91,3 +110,4 @@ class PostListControl(Resource):
                 "last_content_id": None,
                 "post_list": None
             }
+
