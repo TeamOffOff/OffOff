@@ -34,7 +34,7 @@ PostList = Namespace(
     description="게시글목록을 불러오는 API")
 
 
-@BoardList.route("/")
+@BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우
 class BoardListControl(Resource):
     """
@@ -50,6 +50,7 @@ class BoardListControl(Resource):
     }
     """
 
+
     def get(self):
         """
         DB > board_list 컬랙션에서 게시판을 조회합니다
@@ -63,6 +64,28 @@ class BoardListControl(Resource):
         return {
             "board": board_list
         }
+    
+    
+    def delete(self):  # 게시판 목록 삭제
+        """특정 게시판 정보를 삭제합니다."""
+        board_info = request.get_json()
+        board_type = board_info["board_type"]
+
+        result = mongodb.delete_one(query={"board_type": board_type}, collection_name="board_list")
+
+        if result.raw_result["n"] == 1:
+            return {"query_status": "해당 게시판을 삭제했습니다."}
+        else:
+            return {"query_status": "게시판 삭제를 실패했습니다."}, 500
+
+
+    def post(self):  # 게시판 목록 등록
+        """특정 게시판 정보를 등록합니다."""
+        board_info = request.get_json()
+
+        mongodb.insert_one(data=board_info, collection_name="board_list")
+
+        return {"query_status": "게시판을 등록했습니다"}
 
 
 @PostList.route("/<string:board_type>")
