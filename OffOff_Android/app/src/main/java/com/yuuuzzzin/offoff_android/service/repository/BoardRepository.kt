@@ -11,6 +11,6 @@ class BoardRepository
 constructor(private val boardService: BoardService) {
 
     suspend fun getPosts() = boardService.getPosts()
-    suspend fun getPost(postId: String) =
-        boardService.getPost(postId)
+    suspend fun getPost(postId: String, postBoardType: String) =
+        boardService.getPost(postId, postBoardType)
 }

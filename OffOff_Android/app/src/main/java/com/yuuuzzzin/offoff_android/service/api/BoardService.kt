@@ -4,7 +4,7 @@ import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.models.PostList
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 /* 게시판 API 인터페이스 */
 
@@ -15,8 +15,9 @@ interface BoardService {
     suspend fun getPosts(): Response<PostList>
 
     /* 해당 id의 게시물 불러오기 */
-    @GET("GetPosts/{id}")
+    @GET("post")
     suspend fun getPost(
-        @Path("id") postId: String
+        @Query("content-id") postId: String,
+        @Query("board-type") postBoardType: String
     ): Response<Post>
 }

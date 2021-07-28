@@ -1,7 +1,10 @@
 package com.yuuuzzzin.offoff_android.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,23 +15,27 @@ import javax.inject.Inject
 class PostViewModel
 @Inject
 constructor(
-    savedStateHandle: SavedStateHandle,
     private val repository: BoardRepository
 ): ViewModel() {
 
-    private val postId: String = savedStateHandle["id"] ?:
-        throw IllegalArgumentException("missing post id")
+//    private val postId: String = savedStateHandle["id"] ?:
+//        throw IllegalArgumentException("missing post id")
+//    private val postBoardType: String = savedStateHandle["board_type"] ?:
+//        throw IllegalArgumentException("missing post board type")
+
+    val postId = MutableLiveData<String>()
+    val postBoardType = MutableLiveData<String>()
 
     private val _response = MutableLiveData<Post>()
     val responsePost: LiveData<Post>
         get() = _response
 
-    init {
-        getPost(postId)
-    }
+//    init {
+//        getPost(postId, postBoardType)
+//    }
 
-    private fun getPost(postId: String) = viewModelScope.launch {
-        repository.getPost(postId).let {response ->
+    fun getPost(postId: String, postBoardType: String) = viewModelScope.launch {
+        repository.getPost(postId, postBoardType).let {response ->
 
             if (response.isSuccessful){
                 _response.postValue(response.body())

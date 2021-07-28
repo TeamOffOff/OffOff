@@ -97,4 +97,6 @@ dependencies {
     // CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    // Sandwich
+    implementation "com.github.skydoves:sandwich:1.2.1"
 }

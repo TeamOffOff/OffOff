@@ -24,14 +24,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_content"/>
 
-    <ImageButton
-        android:id="@+id/bt_declare"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:background="@drawable/ic_twotone_favorite_24"
+    <info.androidhive.fontawesome.FontTextView
+        android:id="@+id/bt_report"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fa_exclamation_circle_solid"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_author"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tv_content"/>
+        app:layout_constraintTop_toTopOf="@id/tv_author" />
 
     <TextView
         android:id="@+id/tv_content"
@@ -51,21 +52,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-    <ImageButton
+    <info.androidhive.fontawesome.FontTextView
         android:id="@+id/bt_likes"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_twotone_favorite_24"
-        app:layout_constraintEnd_toStartOf="@id/bt_reply"
-        app:layout_constraintBottom_toBottomOf="@id/tv_date"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/fa_thumbs_up_solid"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_likes"
+        app:layout_constraintEnd_toStartOf="@id/tv_likes"
+        app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-    <ImageButton
+    <TextView
+        android:id="@+id/tv_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@id/bt_reply"
+        app:layout_constraintBottom_toBottomOf="@id/bt_reply"
+        app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
+    <info.androidhive.fontawesome.FontTextView
         android:id="@+id/bt_reply"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:background="@drawable/ic_twotone_textsms_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/fa_comment_alt"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/tv_date"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

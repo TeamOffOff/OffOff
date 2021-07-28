@@ -1,9 +1,10 @@
 package com.yuuuzzzin.offoff_android.view.ui.board
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
@@ -17,8 +18,13 @@ class PostActivity : AppCompatActivity() {
     private val viewModel: PostViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+
+        val id = intent.getStringExtra("id")
+        val boardType = intent.getStringExtra("boardType")
+        Log.e("tag_check","postID : $id")
+        viewModel.getPost(id!!, boardType!!)
+
         mBinding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -31,10 +37,10 @@ class PostActivity : AppCompatActivity() {
 
         viewModel.responsePost.observe(this, { post ->
             binding.apply {
-                tvAuthor.text = post.metadata.author
-                tvDate.text = post.metadata.date
-                tvTitle.text = post.metadata.title
-                tvContent.text = post.contents.content
+                tvAuthor.text = post.author
+                tvDate.text = post.date
+                tvTitle.text = post.title
+                tvContent.text = post.content
             }
         })
     }

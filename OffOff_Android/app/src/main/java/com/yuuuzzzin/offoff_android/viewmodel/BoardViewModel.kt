@@ -14,7 +14,9 @@ import javax.inject.Inject
 @HiltViewModel
 class BoardViewModel
 @Inject
-constructor(private val repository: BoardRepository): ViewModel() {
+constructor(
+    private val repository: BoardRepository
+) : ViewModel() {
 
     private val _response = MutableLiveData<PostList>()
     val responsePost: LiveData<PostList>
@@ -26,7 +28,7 @@ constructor(private val repository: BoardRepository): ViewModel() {
 
     private fun getAllPosts() = viewModelScope.launch {
         repository.getPosts().let { response ->
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 Log.d("tag", response.body().toString())
                 _response.postValue(response.body())
             } else {
