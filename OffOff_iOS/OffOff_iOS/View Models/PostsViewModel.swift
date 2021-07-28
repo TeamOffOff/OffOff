@@ -19,6 +19,10 @@ class PostsViewModel {
         
     }
     
+    func fetchPost(index: Int) {
+        
+    }
+    
     func getPost(index: Int) -> PostModel? {
         return postList.value?.post_list[index]
     }

@@ -10,17 +10,18 @@ import UIKit
 class CustomNavigationBar: UINavigationBar {
     var titleLabel = UILabel().then {
         $0.text = "Title"
-        $0.font = UIFont.systemFont(ofSize: 22.5, weight: .bold)
-        $0.textColor = .black
+        $0.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        $0.textColor = .white
         $0.textAlignment = .left
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .mainColor
         self.addSubview(titleLabel)
         
         titleLabel.snp.makeConstraints {
-            $0.left.right.equalToSuperview().inset(12)
+            $0.left.right.equalToSuperview().inset(15)
             $0.centerY.equalToSuperview()
         }
         

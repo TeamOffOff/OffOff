@@ -9,14 +9,14 @@ import UIKit
 
 class TextWithIconView: UIView {
     var iconImageView = UIImageView().then {
-        $0.image = .ICON_LIKES_GRAY
+        $0.image = .ICON_LIKES_RED
         $0.contentMode = .scaleToFill
     }
     
     var label = UILabel().then {
         $0.text = "좋아요"
         $0.textColor = .darkGray
-        $0.font = UIFont.systemFont(ofSize: 15)
+        $0.font = UIFont.systemFont(ofSize: 13)
     }
     
     override init(frame: CGRect) {

@@ -21,7 +21,7 @@ enum PostAPI {
 
 extension PostAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://3.34.138.102:5000")!
+        return URL(string: Constants.API_SOURCE)!
     }
     
     var path: String {

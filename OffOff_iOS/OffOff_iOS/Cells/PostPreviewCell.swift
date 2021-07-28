@@ -21,16 +21,16 @@ class PostPreviewCell: UITableViewCell {
     }
     var dateAuthorLabel = UILabel().then {
         $0.textColor = .darkGray
-        $0.font = UIFont.systemFont(ofSize: 15)
+        $0.font = UIFont.systemFont(ofSize: 13)
         $0.textAlignment = .left
     }
     var likeLabel = TextWithIconView().then {
-        $0.iconImageView.image = .ICON_LIKES_GRAY
-        $0.label.text = "좋아요 0 | "
+        $0.iconImageView.image = .ICON_LIKES_RED
+        $0.label.text = "0 | "
     }
     var commentLabel = TextWithIconView().then {
-        $0.iconImageView.image = .ICON_COMMENT_GRAY
-        $0.label.text = "댓글 0"
+        $0.iconImageView.image = .ICON_COMMENT_BLUE
+        $0.label.text = "0"
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -55,21 +55,20 @@ class PostPreviewCell: UITableViewCell {
             $0.right.equalToSuperview().inset(8)
         }
         previewTextView.snp.makeConstraints {
-            $0.top.equalTo(dateAuthorLabel.snp.bottom).offset(8)
+            $0.top.equalTo(dateAuthorLabel.snp.bottom).offset(12)
             $0.left.equalToSuperview().inset(12)
             $0.right.equalToSuperview().inset(8)
         }
         commentLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(12)
-            $0.bottom.equalToSuperview().offset(8)
             $0.height.equalTo(18)
+            $0.bottom.equalToSuperview().inset(8)
             $0.right.equalToSuperview().inset(12)
         }
         likeLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(12)
-            $0.bottom.equalToSuperview().offset(8)
             $0.height.equalTo(18)
-            $0.bottom.equalToSuperview().offset(8)
+            $0.bottom.equalToSuperview().inset(8)
             $0.right.equalTo(commentLabel.iconImageView.snp.left)
         }
     }
@@ -78,8 +77,8 @@ class PostPreviewCell: UITableViewCell {
         titleLabel.text = post.Title
         previewTextView.text = post.Content
         dateAuthorLabel.text = "\(post.Date) | \(post.Author)"
-        likeLabel.label.text = "좋아요 \(post.Likes) | "
-        commentLabel.label.text = "댓글 \(post.reply_count)"
+        likeLabel.label.text = "\(post.Likes) | "
+        commentLabel.label.text = "\(post.reply_count)"
     }
     
     private func addViews() {

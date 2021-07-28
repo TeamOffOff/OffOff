@@ -14,6 +14,8 @@ public class Constants {
         return UIColor(named: "MainColor")!
     }
     
+    static let API_SOURCE = "http://3.34.138.102:5000"
+    
     static let ICON_SIZE = CGSize(width: 140, height: 140)
     
     static let USERID_MAXLENGTH = 20
@@ -31,6 +33,8 @@ public class Constants {
     static let NAME_ERROR_MESSAGE = "올바른 형식의 이름이 아닙니다."
     static let EMAIL_ERROR_MESSAGE = "올바른 형식의 이메일이 아닙니다."
     static let BIRTH_ERROR_MESSAGE = "생년월일을 입력해주세요."
+    
+    static let SCREEN_SIZE = UIScreen.main.bounds.size
     
     static func isValidString(str: String?, regEx: String) -> Bool {
         guard let string = str else { return false }

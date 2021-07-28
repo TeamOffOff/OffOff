@@ -17,6 +17,11 @@ class PostListViewController: UITableViewController {
         self.tableView = .init()
         self.title = "자유게시판" // TODO: 받아온 게시판 정보로 타이틀 지정 필요
         
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationController?.navigationBar.barTintColor = .mainColor
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(onCloseButton))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(onNewPostButton))
         
@@ -25,9 +30,12 @@ class PostListViewController: UITableViewController {
             self.tableView.reloadData()
         }
         postViewModel.fetchPostList(board_type: self.boardType)
+        
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
         tableView.register(PostPreviewCell.classForCoder(), forCellReuseIdentifier: PostPreviewCell.identifier)
+        tableView.separatorStyle = .singleLine
+        tableView.separatorColor = .mainColor
     }
     
     @objc func onCloseButton() {

@@ -23,7 +23,7 @@ enum AuthAPI {
 
 extension AuthAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://3.34.138.102:5000/Auth")!
+        return URL(string: "\(Constants.API_SOURCE)/Auth")!
     }
     
     var path: String {

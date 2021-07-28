@@ -23,7 +23,8 @@ class TabBarController: UITabBarController {
         navController.tabBarItem.title = title
         navController.tabBarItem.image = image
         
-        navController.navigationBar.prefersLargeTitles = true
+        navController.navigationBar.barTintColor = .mainColor
+        navController.navigationBar.prefersLargeTitles = false
         
         if let navigationBar = navController.navigationBar as? CustomNavigationBar {
             navigationBar.titleLabel.text = title

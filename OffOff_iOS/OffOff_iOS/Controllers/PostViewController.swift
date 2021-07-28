@@ -13,12 +13,12 @@ class PostViewController: UIViewController {
     
     override func loadView() {
         self.view = .init()
+        self.view.backgroundColor = .white
         view.addSubview(postView)
         postView.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide.snp.edges)
         }
         postView.makeView()
-        print(#fileID, #function, #line, "")
     }
     
     override func viewDidLoad() {

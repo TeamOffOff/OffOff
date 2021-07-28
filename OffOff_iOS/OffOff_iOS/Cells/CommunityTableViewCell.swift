@@ -25,22 +25,23 @@ class CommunityTableViewCell: UITableViewCell {
         titleImage = UIImageView(image: UIImage(systemName: "cross")).then { $0.tintColor = .mainColor }
         titleLabel = UILabel().then {
             $0.text = "자유게시판"
-            $0.textAlignment = .right
+            $0.textAlignment = .left
         }
         
         contentView.addSubview(titleImage)
         contentView.addSubview(titleLabel)
-        
-        titleLabel.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(12)
-            $0.top.bottom.equalToSuperview().inset(8)
-        }
         
         titleImage.snp.makeConstraints {
             $0.left.equalToSuperview().inset(12)
             $0.centerY.equalToSuperview()
             $0.height.equalTo(titleLabel.snp.height)
             $0.width.equalTo(titleImage.snp.height)
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.left.equalTo(titleImage.snp.right).offset(12)
+            $0.right.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(12)
         }
     }
 }
