@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_bottom"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/boardsFragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.board.BoardsFragment"
+        android:label="fragment_boards"
+        tools:layout="@layout/fragment_boards" />
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.ScheduleFragment"
+        android:label="fragment_schedule"
+        tools:layout="@layout/fragment_schedule" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.yuuuzzzin.offoff_android.view.ui.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>
