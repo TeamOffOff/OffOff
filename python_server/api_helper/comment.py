@@ -76,9 +76,22 @@ class CommentControl(Resource):
         comment_info = request.get_json()
         board_type = comment_info["board_type"] + "_board_comment"
         comment_id = comment_info["comment_id"]  # 댓글 조회시 해당 댓글 고유의 _id를 포함해서 리턴함
+        whether_subcomment = comment_info["subcomment"]
 
-        result = mongodb.delete_one(query={"_id": ObjectId(comment_id)}, collection_name=board_type)
-
+        if not whether_subcomment:  # 대댓글이 없는 경우
+            result = mongodb.delete_one(query={"_id": ObjectId(comment_id)}, collection_name=board_type)
+        else:
+            alert_delete = {
+                "comment": {
+                    "author": None,
+                    "content": None,
+                    "date": None,
+                    "likes": None
+                }
+            }
+            result = mongodb.update_one(query={"_id": ObjectId(comment_id)}, collection_name=board_type, modify={"$set": alert_delete })
+        
+        
         if result.raw_result["n"] == 1:
             return {"query_status": "success"}
         else:
