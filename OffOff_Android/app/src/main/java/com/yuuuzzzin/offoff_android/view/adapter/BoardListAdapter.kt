@@ -5,8 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.databinding.RvItemBoardBinding
-import com.yuuuzzzin.offoff_android.model.BoardData
-import com.yuuuzzzin.offoff_android.service.model.Post
+import com.yuuuzzzin.offoff_android.service.models.BoardData
 
 class BoardListAdapter() : RecyclerView.Adapter<BoardListAdapter.BoardListViewHolder>() {
 

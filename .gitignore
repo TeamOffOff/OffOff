@@ -101,4 +101,7 @@ fastlane/test_output
 
 iOSInjectionProject/
 
+# iOS 상수 파일
+Constants.swift
+
 # End of https://www.toptal.com/developers/gitignore/api/swift,carthage,cocoapods

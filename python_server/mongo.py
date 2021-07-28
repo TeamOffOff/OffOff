@@ -21,14 +21,14 @@ class MongoHelper:
         result = self.collection.insert_many(data).inserted_ids
         return result
 
-    def find_one(self, query=None, collection_name=None):
+    def find_one(self, query=None, collection_name=None, projection_key=None):
         self.collection = self.db[collection_name]
-        result = self.collection.find_one(query)
+        result = self.collection.find_one(query, projection_key)
         return result
 
-    def find(self, query=None, collection_name=None):
+    def find(self, query=None, collection_name=None, projection_key=None):
         self.collection = self.db[collection_name]
-        result = self.collection.find(query)
+        result = self.collection.find(query, projection_key)
         return result
 
     def delete_one(self, query=None, collection_name=None):
@@ -39,6 +39,16 @@ class MongoHelper:
     def delete_many(self, query=None, collection_name=None):
         self.collection = self.db[collection_name]
         result = self.collection.delete_many(query)
+        return result
+
+    def update_one(self, query=None, collection_name=None, modify=None):
+        self.collection = self.db[collection_name]
+        result = self.collection.update_one(query, modify, upsert=False)
+        return result
+
+    def update_many(self, query=None, collection_name=None, modify=None):
+        self.collection = self.db[collection_name]
+        result = self.collection.update_many(query, modify, upsert=False)
         return result
 
 

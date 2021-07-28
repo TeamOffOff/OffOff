@@ -10,26 +10,76 @@ import UIKit
 class LoginViewController: UIViewController {
     
     lazy var loginView = LoginView(frame: .zero)
-    private let accountViewModel = AccountViewModel()
+    private let loginViewModel = LoginViewModel()
+    private lazy var loginStatus = Box(LoginStatus.none)
+    
+    override func loadView() {
+        self.view = loginView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        view.addSubview(loginView)
-        loginView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(view.snp.width).dividedBy(2.0)
-            $0.centerY.equalToSuperview().inset(100)
+        loginView.idTextField.delegate = self
+        loginView.passwordTextField.delegate = self
+        loginView.loginButton.addTarget(self, action: #selector(onLoginButton), for: .touchUpInside)
+        loginView.signupButton.addTarget(self, action: #selector(onSignUpButton), for: .touchUpInside)
+        
+        loginViewModel.loginModel.bind { _ in self.loginViewModel.login(loginStatus: self.loginStatus) }
+        
+        loginStatus.bind { [self] _ in
+            if loginStatus.value == .successed {
+                let controller = TabBarController()
+                controller.modalPresentationStyle = .fullScreen
+                self.present(controller, animated: true, completion: nil)
+            } else if loginStatus.value == .failed {
+                let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
+                let action = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alert.addAction(action)
+                present(alert, animated: true, completion: nil)
+            }
         }
     }
-}
-
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-
-struct PreviewController: PreviewProvider{
-    static var previews: some View {
-        LoginViewController().showPreview(.iPhone11Pro)
+    
+    
+    // MARK: - 버튼 리액션
+    @objc func onLoginButton(_: AnyObject) {
+        loginViewModel.loginModel.value = LoginModel(id: loginView.idTextField.text, password: loginView.passwordTextField.text)
+    }
+    
+    @objc func onSignUpButton(_: AnyObject) {
+        let vc = UINavigationController(rootViewController: SignUpViewController())
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
 }
-#endif
+
+extension LoginViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let str = textField.text ?? ""
+        
+        var max = 0
+        switch textField {
+        case loginView.idTextField:
+            max = Constants.USERID_MAXLENGTH
+        case loginView.passwordTextField:
+            max = Constants.USERPW_MAXLENGTH
+        default:
+            max = -1
+        }
+        guard let stringRange = Range(range, in: str) else { return false }
+        let updatedText = str.replacingCharacters(in: stringRange, with: string)
+        
+        return updatedText.count <= max
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        guard let tf = textField as? TextField else { return }
+        tf.errorMessage = ""
+    }
+}
+
+enum LoginStatus {
+    case successed
+    case failed
+    case none
+}
