@@ -19,12 +19,18 @@ class PostsViewModel {
         
     }
     
-    func fetchPost(index: Int) {
-        
-    }
-    
     func getPost(index: Int) -> PostModel? {
         return postList.value?.post_list[index]
+    }
+    
+    func fetchPost(index: Int, completion: @escaping (PostModel) -> Void) {
+        fetchPost(content_id: postList.value?.post_list[index]._id ?? "", board_type: postList.value?.post_list[index].board_type ?? "", completion: completion)
+    }
+    
+    func fetchPost(content_id: String, board_type: String, completion: @escaping (PostModel) -> Void) {
+        PostServices.fetchPost(content_id: content_id, board_type: board_type) { (post) in
+            completion(post)
+        }
     }
     
     // 특정 게시판의 데이터를 파싱

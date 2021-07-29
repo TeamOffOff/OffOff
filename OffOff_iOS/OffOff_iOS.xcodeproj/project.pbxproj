@@ -293,9 +293,9 @@
 			isa = PBXGroup;
 			children = (
 				EA420B36269BFBD200F6F903 /* PostServices.swift */,
+				EA975A5F26B045A600C6FB41 /* PostAPI.swift */,
 				EA2FDF4726A7C7EF00AEC951 /* AuthAPI.swift */,
 				EA2FDF4926A7D88800AEC951 /* AuthServices.swift */,
-				EA975A5F26B045A600C6FB41 /* PostAPI.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";

@@ -17,6 +17,7 @@ public class Constants {
     static let API_SOURCE = "http://3.34.138.102:5000"
     
     static let ICON_SIZE = CGSize(width: 140, height: 140)
+    static let BUTTON_ICON_SIZE = CGSize(width: 20, height: 20)
     
     static let USERID_MAXLENGTH = 20
     static let USERPW_MAXLENGTH = 16

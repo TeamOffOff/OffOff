@@ -28,4 +28,22 @@ public class PostServices {
             }
         }
     }
+    
+    static func fetchPost(content_id: String, board_type: String, completion: @escaping (_ post: PostModel) -> Void) {
+        PostServices.provider.request(.getPost(content_id, board_type: board_type)) { (result) in
+            switch result {
+            case let .success(response):
+                do {
+                    let filteredResponse = try response.filterSuccessfulStatusCodes()
+                    let decoder = JSONDecoder()
+                    let post = try filteredResponse.map(PostModel.self, using: decoder)
+                    completion(post)
+                } catch let error {
+                    print(error.localizedDescription)
+                }
+            case let .failure(error):
+                print(error.errorDescription)
+            }
+        }
+    }
 }

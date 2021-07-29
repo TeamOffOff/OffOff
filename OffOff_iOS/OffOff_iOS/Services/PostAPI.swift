@@ -31,7 +31,7 @@ extension PostAPI: TargetType {
         case .getBoardList:
             return "/boardlist"
         case .getPost(let content_id, let board_type):
-            return "/post/content-id=\(content_id)&board-type=\(board_type)"
+            return "/post?content-id=\(content_id)&board-type=\(board_type)"
         }
     }
     
