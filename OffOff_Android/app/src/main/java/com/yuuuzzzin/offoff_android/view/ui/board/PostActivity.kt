@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
+import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,20 +42,21 @@ class PostActivity : AppCompatActivity() {
                 tvDate.text = post.date
                 tvTitle.text = post.title
                 tvContent.text = post.content
+                tvLikes.text = post.likes.toString()
             }
         })
     }
 
     private fun initToolbar() {
-        val toolbar : MaterialToolbar = binding.appbarPost
+        val toolbar : MaterialToolbar = binding.appbar
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         supportActionBar?.apply {
-            toolbar.title = intent.getStringExtra("appBarTitle")
+            binding.tvToolbarTitle.text = intent.getStringExtra("appBarTitle")
 
-            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
+            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
             setDisplayShowHomeEnabled(true)
         }
 
