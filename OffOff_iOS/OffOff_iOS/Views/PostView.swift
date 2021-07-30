@@ -28,34 +28,53 @@ class PostView: UIView {
         $0.text = "2021년 11월 11일"
     }
     var likeButton = UIButton().then {
-        $0.setImage(.ICON_LIKES_RED, for: .normal)
         $0.setTitleColor(.black, for: .normal)
-        $0.setTitle("좋아요", for: .normal)
+        $0.setTitle("0", for: .normal)
+        $0.titleLabel?.textAlignment = .right
+        $0.setImage(.ICON_LIKES_RED, for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
-//        $0.contentHorizontalAlignment = .center
-//        $0.semanticContentAttribute = .forceRightToLeft
-//        $0.imageEdgeInsets = .init(top: 0, left: 15, bottom: 0, right: 15)
-        $0.makeBorder()
+        $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
+        $0.titleLabel?.adjustsFontForContentSizeCategory = true
+        $0.makeBorder(color: UIColor.gray.cgColor, width: 0.5, cornerRadius: 10)
     }
-    var scrapButton = UIButton()
+    var scrapButton = UIButton().then {
+        $0.setImage(.ICON_SCRAP_YELLOW, for: .normal)
+        $0.imageView?.contentMode = .scaleAspectFit
+        $0.setTitleColor(.black, for: .normal)
+        $0.setTitle("스크랩", for: .normal)
+        $0.titleLabel?.textAlignment = .right
+        $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
+        $0.titleLabel?.contentMode = .scaleToFill
+        $0.titleLabel?.adjustsFontForContentSizeCategory = true
+        $0.makeBorder(color: UIColor.gray.cgColor, width: 0.5, cornerRadius: 10)
+    }
     var contentTextView = UITextView().then {
         $0.isUserInteractionEnabled = false
         $0.font = .preferredFont(forTextStyle: .body)
         $0.adjustsFontForContentSizeCategory = true
+        $0.translatesAutoresizingMaskIntoConstraints = true
+        $0.sizeToFit()
+        $0.isScrollEnabled = false
+        $0.textContainer.lineBreakMode = .byCharWrapping
         $0.text =
             """
             Lorem Ipsum is simply dummy text of the printing and typesetting <image1> industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
             """
     }
+    var scrollView = UIScrollView()
+    var textContainerView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(titleLabel)
-        self.addSubview(profileImageView)
-        self.addSubview(authorLabel)
-        self.addSubview(dateLabel)
-        self.addSubview(contentTextView)
-        self.addSubview(likeButton)
+        self.addSubview(scrollView)
+        self.scrollView.addSubview(textContainerView)
+        self.textContainerView.addSubview(contentTextView)
+        self.scrollView.addSubview(titleLabel)
+        self.scrollView.addSubview(profileImageView)
+        self.scrollView.addSubview(authorLabel)
+        self.scrollView.addSubview(dateLabel)
+        self.scrollView.addSubview(likeButton)
+        self.scrollView.addSubview(scrapButton)
         self.makeView()
     }
     
@@ -64,15 +83,17 @@ class PostView: UIView {
     }
     
     func makeView() {
+        scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        textContainerView.snp.makeConstraints {
+            $0.left.right.equalToSuperview()
+            $0.width.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(30)
+            $0.top.equalTo(profileImageView.snp.bottom).offset(8)
+        }
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(12)
             $0.left.equalToSuperview().inset(12)
             $0.right.equalToSuperview().offset(12)
-        }
-        likeButton.snp.makeConstraints {
-            $0.top.equalTo(titleLabel)
-            $0.right.equalToSuperview()
-            $0.height.equalTo(25)
         }
         profileImageView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
@@ -88,10 +109,20 @@ class PostView: UIView {
             $0.top.equalTo(authorLabel.snp.bottom).offset(3)
         }
         contentTextView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview()
+            $0.height.equalToSuperview()
             $0.left.equalToSuperview().offset(12)
             $0.right.equalToSuperview().inset(12)
-            $0.top.equalTo(profileImageView.snp.bottom).offset(8)
-            $0.bottom.equalToSuperview().inset(10)
+        }
+        scrapButton.snp.makeConstraints {
+            $0.top.equalTo(contentTextView.snp.bottom).offset(8)
+            $0.right.equalToSuperview().inset(12)
+            $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
+        }
+        likeButton.snp.makeConstraints {
+            $0.top.equalTo(contentTextView.snp.bottom).offset(8)
+            $0.right.equalTo(scrapButton.snp.left).offset(-8)
+            $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
         }
     }
     
@@ -102,18 +133,3 @@ class PostView: UIView {
         contentTextView.text = post.Content
     }
 }
-
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-@available(iOS 13.0, *)
-struct LSDFLMFSDF: PreviewProvider {
-    static var previews: some View {
-        UIViewPreview {
-            let view = PostView()
-            return view
-        }.previewLayout(.sizeThatFits)
-    }
-}
-
-#endif
-

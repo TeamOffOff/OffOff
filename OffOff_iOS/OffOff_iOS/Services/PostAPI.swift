@@ -13,7 +13,7 @@ import Moya
 enum PostAPI {
     case getPostList(_ board_type: String)
     case getBoardList
-    case getPost(_ content_id: String, board_type: String)
+    case getPost(content_id: String, board_type: String)
 //    case makeNewPost(
 //    case modifyPost
 //    case deletePost
@@ -31,7 +31,7 @@ extension PostAPI: TargetType {
         case .getBoardList:
             return "/boardlist"
         case .getPost(let content_id, let board_type):
-            return "/post?content-id=\(content_id)&board-type=\(board_type)"
+            return "/post"
         }
     }
     
@@ -56,8 +56,8 @@ extension PostAPI: TargetType {
             return .requestPlain
         case .getBoardList:
             return .requestPlain
-        case .getPost(_, _):
-            return .requestPlain
+        case .getPost(let content_id, let board_type):
+            return .requestParameters(parameters: ["content-id": content_id, "board-type": board_type], encoding: URLEncoding.default)
         }
     }
     

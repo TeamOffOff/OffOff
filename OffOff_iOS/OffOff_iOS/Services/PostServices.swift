@@ -24,13 +24,13 @@ public class PostServices {
                     print(error.localizedDescription)
                 }
             case let .failure(error):
-                print(error.errorDescription)
+                print("request failed: \(error.errorDescription)")
             }
         }
     }
     
     static func fetchPost(content_id: String, board_type: String, completion: @escaping (_ post: PostModel) -> Void) {
-        PostServices.provider.request(.getPost(content_id, board_type: board_type)) { (result) in
+        PostServices.provider.request(.getPost(content_id: content_id, board_type: board_type)) { (result) in
             switch result {
             case let .success(response):
                 do {
@@ -42,7 +42,7 @@ public class PostServices {
                     print(error.localizedDescription)
                 }
             case let .failure(error):
-                print(error.errorDescription)
+                print("request failed: \(error.errorDescription)")
             }
         }
     }

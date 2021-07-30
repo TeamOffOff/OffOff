@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EA07345526929C01007830ED /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345426929C01007830ED /* PostModel.swift */; };
+		EA07345526929C01007830ED /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345426929C01007830ED /* Post.swift */; };
 		EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */ = {isa = PBXBuildFile; fileRef = EA0734562692A0B8007830ED /* PostsDummyData.json */; };
 		EA07345B2692AD56007830ED /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostsViewModel.swift */; };
 		EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345E2692CECA007830ED /* PostListViewController.swift */; };
@@ -95,7 +95,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		EA07345426929C01007830ED /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
+		EA07345426929C01007830ED /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		EA0734562692A0B8007830ED /* PostsDummyData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostsDummyData.json; sourceTree = "<group>"; };
 		EA07345A2692AD56007830ED /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
 		EA07345E2692CECA007830ED /* PostListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
@@ -314,7 +314,7 @@
 			children = (
 				EAF2127F268FEE6500E47942 /* Account.swift */,
 				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
-				EA07345426929C01007830ED /* PostModel.swift */,
+				EA07345426929C01007830ED /* Post.swift */,
 				EABD99C426A2EA80001DE8BF /* LoginModel.swift */,
 				EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */,
 			);
@@ -565,7 +565,7 @@
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
 				EAF21280268FEE6500E47942 /* Account.swift in Sources */,
 				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
-				EA07345526929C01007830ED /* PostModel.swift in Sources */,
+				EA07345526929C01007830ED /* Post.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */,
