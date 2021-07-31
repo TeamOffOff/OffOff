@@ -21,9 +21,7 @@ class PostViewController: UIViewController {
         $0.isScrollEnabled = false
         $0.tintColor = .mainColor
         $0.backgroundColor = .white
-        
         $0.autocorrectionType = .no
-        
     }
     var commentButton = UIButton().then {
         $0.setImage(.getIcon(name: .pen, color: .mainColor, size: Constants.BUTTON_ICON_SIZE), for: .normal)
@@ -74,6 +72,7 @@ class PostViewController: UIViewController {
     }
 }
 
+// MARK: - TextView가 키보드 위로 이동하도록 하는 함수
 extension PostViewController {
     func addKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification , object: nil)
@@ -93,23 +92,40 @@ extension PostViewController {
                 $0.right.left.equalToSuperview().inset(12)
                 $0.bottom.equalTo(self.view.snp.bottom).inset(keyboardHeight)
             }
-//            self.commentContainer.frame.origin.y -= keyboardHeight
         }
     }
     
     @objc func keyboardWillHide(_ noti: NSNotification) {
-        if let keyboardFrame: NSValue = noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-//            let keyboardRectangle = keyboardFrame.cgRectValue
-//            let keyboardHeight = keyboardRectangle.height
-//            self.commentContainer.frame.origin.y += keyboardHeight
-            self.commentContainer.snp.remakeConstraints {
-                $0.right.left.equalToSuperview().inset(12)
-                $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(8)
-            }
+        self.commentContainer.snp.remakeConstraints {
+            $0.right.left.equalToSuperview().inset(12)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(8)
         }
     }
 }
 
 extension PostViewController: UITextViewDelegate {
-    
+    func sizeOfString (string: String, constrainedToWidth width: Double, font: UIFont) -> CGSize {
+        return (string as NSString).boundingRect(with: CGSize(width: width, height: Double.greatestFiniteMagnitude),
+                                                 options: NSStringDrawingOptions.usesLineFragmentOrigin,
+                                                 attributes: [NSAttributedString.Key.font: font],
+            context: nil).size
+    }
+
+    // Text가 4줄 이상이면, 스크롤이 되게하고, 텍스트뷰가 커지지 않도록
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
+        var textWidth = textView.frame.inset(by: textView.textContainerInset).width
+        textWidth -= 2.0 * textView.textContainer.lineFragmentPadding
+
+        let boundingRect = sizeOfString(string: newText, constrainedToWidth: Double(textWidth), font: textView.font!)
+        let numberOfLines = boundingRect.height / textView.font!.lineHeight
+
+        if numberOfLines >= 4.0 {
+            textView.isScrollEnabled = true
+        } else {
+            textView.isScrollEnabled = false
+        }
+        
+        return true
+    }
 }
