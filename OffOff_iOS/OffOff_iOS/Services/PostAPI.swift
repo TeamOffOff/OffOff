@@ -14,7 +14,7 @@ enum PostAPI {
     case getPostList(_ board_type: String)
     case getBoardList
     case getPost(content_id: String, board_type: String)
-//    case makeNewPost(
+//    case makePost
 //    case modifyPost
 //    case deletePost
 }

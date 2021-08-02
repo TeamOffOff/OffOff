@@ -85,8 +85,8 @@ extension PostListViewController {
         let vc = PostViewController()
         postViewModel.fetchPost(index: indexPath.row) { (post) in
             vc.postBoxed = Box(post)
+            self.navigationController?.pushViewController(vc, animated: true)
         }
-        self.navigationController?.pushViewController(vc, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }

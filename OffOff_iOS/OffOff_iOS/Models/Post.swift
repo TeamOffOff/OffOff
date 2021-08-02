@@ -41,3 +41,16 @@ struct PostModel: Codable {
     var report_count: Int
     var reply_count: Int
 }
+
+struct Post: Codable {
+    var board_type: String
+    var Author: String
+    var Date: String
+    var Title: String
+    var Content: String
+    var image: String?
+    var Likes: Int
+    var view_count: Int
+    var report_count: Int
+    var reply_count: Int
+}

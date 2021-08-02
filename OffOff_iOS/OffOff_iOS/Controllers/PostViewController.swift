@@ -9,9 +9,10 @@ import UIKit
 
 class PostViewController: UIViewController {
     var postView = PostView(frame: .zero)
-    var postBoxed: Box<PostModel>?
+    var postBoxed: Box<Post>?
     var commentContainer = UIView().then {
-        $0.backgroundColor = .systemGray
+        $0.backgroundColor = .white
+        $0.makeBorder(color: UIColor.mainColor.cgColor, cornerRadius: 12)
     }
     var commentTextView = UITextView().then {
         $0.font = .preferredFont(forTextStyle: .body)
@@ -20,7 +21,7 @@ class PostViewController: UIViewController {
         $0.sizeToFit()
         $0.isScrollEnabled = false
         $0.tintColor = .mainColor
-        $0.backgroundColor = .white
+//        $0.backgroundColor = .white
         $0.autocorrectionType = .no
     }
     var commentButton = UIButton().then {

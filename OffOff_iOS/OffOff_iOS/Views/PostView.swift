@@ -9,22 +9,25 @@ import UIKit
 
 class PostView: UIView {
     var titleLabel = UILabel().then {
-        $0.font = UIFont.preferredFont(forTextStyle: .title2)
+        $0.font = UIFont.preferredFont(forTextStyle: .title2).bold()
         $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.text = "타이틀"
     }
-    var profileImageView = CircularImageView(image: .DEFAULT_PROFILE).then {
-        $0.layer.cornerRadius = Constants.SCREEN_SIZE.width / 15.0
+    var profileImageView = UIImageView(image: .DEFAULT_PROFILE).then {
+        $0.makeBorder(color: UIColor.clear.cgColor, cornerRadius: 10)
     }
     var authorLabel = UILabel().then {
+        $0.font = UIFont.preferredFont(forTextStyle: .body).bold()
+        $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.text = "작성자"
     }
     var dateLabel = UILabel().then {
+        $0.font = UIFont.preferredFont(forTextStyle: .caption1)
+        $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.textColor = .gray
-        $0.font = UIFont.systemFont(ofSize: 13)
         $0.text = "2021년 11월 11일"
     }
     var likeButton = UIButton().then {
@@ -35,7 +38,6 @@ class PostView: UIView {
         $0.imageView?.contentMode = .scaleAspectFit
         $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
         $0.titleLabel?.adjustsFontForContentSizeCategory = true
-        $0.makeBorder(color: UIColor.gray.cgColor, width: 0.5, cornerRadius: 10)
     }
     var scrapButton = UIButton().then {
         $0.setImage(.ICON_SCRAP_YELLOW, for: .normal)
@@ -46,7 +48,6 @@ class PostView: UIView {
         $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
         $0.titleLabel?.contentMode = .scaleToFill
         $0.titleLabel?.adjustsFontForContentSizeCategory = true
-        $0.makeBorder(color: UIColor.gray.cgColor, width: 0.5, cornerRadius: 10)
     }
     var contentTextView = UITextView().then {
         $0.isUserInteractionEnabled = false
@@ -61,6 +62,11 @@ class PostView: UIView {
             Lorem Ipsum is simply dummy text of the printing and typesetting <image1> industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
             """
     }
+    var informationStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.alignment = .leading
+        $0.distribution = .fillEqually
+    }
     var scrollView = UIScrollView()
     var textContainerView = UIView()
     
@@ -69,10 +75,11 @@ class PostView: UIView {
         self.addSubview(scrollView)
         self.scrollView.addSubview(textContainerView)
         self.textContainerView.addSubview(contentTextView)
+        self.scrollView.addSubview(informationStackView)
+        informationStackView.addArrangedSubview(authorLabel)
+        informationStackView.addArrangedSubview(dateLabel)
         self.scrollView.addSubview(titleLabel)
         self.scrollView.addSubview(profileImageView)
-        self.scrollView.addSubview(authorLabel)
-        self.scrollView.addSubview(dateLabel)
         self.scrollView.addSubview(likeButton)
         self.scrollView.addSubview(scrapButton)
         self.makeView()
@@ -88,25 +95,22 @@ class PostView: UIView {
             $0.left.right.equalToSuperview()
             $0.width.equalToSuperview()
             $0.bottom.equalToSuperview().inset(30)
-            $0.top.equalTo(profileImageView.snp.bottom).offset(8)
+            $0.top.equalTo(profileImageView.snp.bottom)
         }
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(12)
+            $0.top.equalToSuperview().offset(20)
             $0.left.equalToSuperview().inset(12)
             $0.right.equalToSuperview().offset(12)
         }
         profileImageView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
             $0.left.equalToSuperview().inset(12)
-            $0.width.height.equalTo(Constants.SCREEN_SIZE.width / 7.5)
+            $0.width.height.equalTo(Constants.SCREEN_SIZE.width / 8.0)
         }
-        authorLabel.snp.makeConstraints {
-            $0.top.equalTo(profileImageView)
+        informationStackView.snp.makeConstraints {
+            $0.top.bottom.equalTo(profileImageView)
             $0.left.equalTo(profileImageView.snp.right).offset(12)
-        }
-        dateLabel.snp.makeConstraints {
-            $0.left.equalTo(authorLabel)
-            $0.top.equalTo(authorLabel.snp.bottom).offset(3)
+            $0.right.equalToSuperview().inset(12)
         }
         contentTextView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
@@ -121,12 +125,12 @@ class PostView: UIView {
         }
         likeButton.snp.makeConstraints {
             $0.top.equalTo(contentTextView.snp.bottom).offset(8)
-            $0.right.equalTo(scrapButton.snp.left).offset(-8)
+            $0.right.equalTo(scrapButton.snp.left)
             $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
         }
     }
     
-    func setupView(post: PostModel) {
+    func setupView(post: Post) {
         titleLabel.text = post.Title
         authorLabel.text = post.Author
         dateLabel.text = post.Date

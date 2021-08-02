@@ -57,6 +57,10 @@
 		EACC258C26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
 		EACC258D26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
 		EACC258E26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
+		EACF1B3726B5A9DD00C153D3 /* BoardAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3626B5A9DD00C153D3 /* BoardAPI.swift */; };
+		EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3826B6698C00C153D3 /* BoardServices.swift */; };
+		EACF1B3B26B6710800C153D3 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3A26B6710800C153D3 /* Board.swift */; };
+		EACF1B3D26B7E42300C153D3 /* BoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3C26B7E42300C153D3 /* BoardViewModel.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
@@ -72,7 +76,7 @@
 		EAF212842690133500E47942 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF212832690133500E47942 /* HomeView.swift */; };
 		EAF212862690158100E47942 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF212852690158100E47942 /* TabBarController.swift */; };
 		EAF212882690355B00E47942 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF212872690355B00E47942 /* HomeViewController.swift */; };
-		EAF2128C26907B9600E47942 /* CommunityListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2128B26907B9600E47942 /* CommunityListViewController.swift */; };
+		EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2128B26907B9600E47942 /* BoardListViewController.swift */; };
 		EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2128D2690814400E47942 /* CommunityBoard.swift */; };
 		EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF21290269081B800E47942 /* CommunityListSampleData.swift */; };
 /* End PBXBuildFile section */
@@ -132,6 +136,10 @@
 		EACC258326A677D6000B12B6 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoView.swift; sourceTree = "<group>"; };
 		EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoViewController.swift; sourceTree = "<group>"; };
+		EACF1B3626B5A9DD00C153D3 /* BoardAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardAPI.swift; sourceTree = "<group>"; };
+		EACF1B3826B6698C00C153D3 /* BoardServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardServices.swift; sourceTree = "<group>"; };
+		EACF1B3A26B6710800C153D3 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
+		EACF1B3C26B7E42300C153D3 /* BoardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewModel.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -147,7 +155,7 @@
 		EAF212832690133500E47942 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EAF212852690158100E47942 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		EAF212872690355B00E47942 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		EAF2128B26907B9600E47942 /* CommunityListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListViewController.swift; sourceTree = "<group>"; };
+		EAF2128B26907B9600E47942 /* BoardListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardListViewController.swift; sourceTree = "<group>"; };
 		EAF2128D2690814400E47942 /* CommunityBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityBoard.swift; sourceTree = "<group>"; };
 		EAF21290269081B800E47942 /* CommunityListSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListSampleData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -296,6 +304,8 @@
 				EA975A5F26B045A600C6FB41 /* PostAPI.swift */,
 				EA2FDF4726A7C7EF00AEC951 /* AuthAPI.swift */,
 				EA2FDF4926A7D88800AEC951 /* AuthServices.swift */,
+				EACF1B3626B5A9DD00C153D3 /* BoardAPI.swift */,
+				EACF1B3826B6698C00C153D3 /* BoardServices.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -317,6 +327,7 @@
 				EA07345426929C01007830ED /* Post.swift */,
 				EABD99C426A2EA80001DE8BF /* LoginModel.swift */,
 				EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */,
+				EACF1B3A26B6710800C153D3 /* Board.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -327,6 +338,7 @@
 				EA07345A2692AD56007830ED /* PostsViewModel.swift */,
 				EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */,
 				EACC258326A677D6000B12B6 /* SignUpViewModel.swift */,
+				EACF1B3C26B7E42300C153D3 /* BoardViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -338,7 +350,7 @@
 				EAE502E62689E3D6002B1C6A /* LoginViewController.swift */,
 				EAF212852690158100E47942 /* TabBarController.swift */,
 				EAF212872690355B00E47942 /* HomeViewController.swift */,
-				EAF2128B26907B9600E47942 /* CommunityListViewController.swift */,
+				EAF2128B26907B9600E47942 /* BoardListViewController.swift */,
 				EA07345E2692CECA007830ED /* PostListViewController.swift */,
 				EAE652602694182D00D8F7BB /* PostViewController.swift */,
 				EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */,
@@ -540,8 +552,10 @@
 				EA07345B2692AD56007830ED /* PostsViewModel.swift in Sources */,
 				EACC258C26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
+				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
+				EACF1B3726B5A9DD00C153D3 /* BoardAPI.swift in Sources */,
 				EA2FDF4826A7C7EF00AEC951 /* AuthAPI.swift in Sources */,
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
@@ -553,8 +567,9 @@
 				EA975A5E26AFE4A300C6FB41 /* TextWithIconView.swift in Sources */,
 				EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */,
 				EA2FDF4A26A7D88800AEC951 /* AuthServices.swift in Sources */,
+				EACF1B3D26B7E42300C153D3 /* BoardViewModel.swift in Sources */,
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,
-				EAF2128C26907B9600E47942 /* CommunityListViewController.swift in Sources */,
+				EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
 				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
 				EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */,
@@ -567,6 +582,7 @@
 				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
 				EA07345526929C01007830ED /* Post.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
+				EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileMakeViewController.swift in Sources */,

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Alamofire
 
 class PostsViewModel {
     let postList: Box<PostList?> = Box(nil)
@@ -23,11 +22,11 @@ class PostsViewModel {
         return postList.value?.post_list[index]
     }
     
-    func fetchPost(index: Int, completion: @escaping (PostModel) -> Void) {
+    func fetchPost(index: Int, completion: @escaping (Post) -> Void) {
         fetchPost(content_id: postList.value?.post_list[index]._id ?? "", board_type: postList.value?.post_list[index].board_type ?? "", completion: completion)
     }
     
-    func fetchPost(content_id: String, board_type: String, completion: @escaping (PostModel) -> Void) {
+    func fetchPost(content_id: String, board_type: String, completion: @escaping (Post) -> Void) {
         PostServices.fetchPost(content_id: content_id, board_type: board_type) { (post) in
             completion(post)
         }
