@@ -14,14 +14,14 @@ class CommunityTableViewCell: UITableViewCell {
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupCell()
+        makeCell()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupCell() {
+    private func makeCell() {
         titleImage = UIImageView(image: UIImage(systemName: "cross")).then { $0.tintColor = .mainColor }
         titleLabel = UILabel().then {
             $0.text = "자유게시판"
@@ -42,6 +42,13 @@ class CommunityTableViewCell: UITableViewCell {
             $0.left.equalTo(titleImage.snp.right).offset(12)
             $0.right.equalToSuperview()
             $0.top.bottom.equalToSuperview().inset(12)
+        }
+    }
+    
+    public func setupCell(board: Board?) {
+        if board != nil {
+            titleLabel.text = board?.name
+//            titleImage.image = UIImage(systemName: "cross")
         }
     }
 }

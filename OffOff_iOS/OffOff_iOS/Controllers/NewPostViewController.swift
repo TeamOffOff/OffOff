@@ -12,6 +12,7 @@ class NewPostViewController: UIViewController {
     
     override func loadView() {
         self.view = .init()
+        self.view.backgroundColor = .white
         view.addSubview(newPostView)
         newPostView.snp.makeConstraints {
             $0.edges.equalTo(self.view.safeAreaLayoutGuide.snp.edges).inset(8)

@@ -1,5 +1,5 @@
 //
-//  CommunityTableViewController.swift
+//  BoardListViewController.swift
 //  OffOff_iOS
 //
 //  Created by Lee Nam Jun on 2021/07/03.
@@ -7,11 +7,15 @@
 
 import UIKit
 
-class CommunityListViewController: UITableViewController {
-
+class BoardListViewController: UITableViewController {
+    let boardViewModel = BoardViewModel()
+    
     override func loadView() {
         self.tableView = .init()
         setupTableView()
+        boardViewModel.boardList.bind { _ in
+            self.tableView.reloadData()
+        }
     }
     
     private func setupTableView() {
@@ -21,11 +25,11 @@ class CommunityListViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return data.count
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data[section].count
+        return boardViewModel.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -33,8 +37,7 @@ class CommunityListViewController: UITableViewController {
             return UITableViewCell()
         }
             
-        cell.titleImage.image = data[indexPath.section][indexPath.row].image
-        cell.titleLabel.text = data[indexPath.section][indexPath.row].title
+        cell.setupCell(board: boardViewModel.getBoard(of: indexPath.row))
         return cell
     }
     
