@@ -34,7 +34,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp">
 
-                    <TextView
+                    <com.yuuuzzzin.offoff_android.utils.CharacterWrapTextView
                         android:id="@+id/tv_toolbar_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -131,6 +131,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="4dp"
+                        android:textColor="@color/red"
                         android:text="@string/fa_thumbs_up_solid"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_likes"
@@ -154,6 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="4dp"
+                        android:textColor="#FFC107"
                         android:text="@string/fa_star_solid"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_scrap"
@@ -197,12 +199,13 @@
                     android:id="@+id/tf_id"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     app:boxStrokeWidthFocused="1dp"
                     app:boxStrokeWidth="1dp"
+                    app:endIconMode="custom"
                     app:boxStrokeColor="@color/box_stroke_color_verified"
-                    app:layout_constraintEnd_toStartOf="@id/bt_comment"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_height="wrap_content">
@@ -211,19 +214,10 @@
                         android:id="@+id/et_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textMultiLine"/>
+                        android:inputType="textMultiLine"
+                        android:maxLines="4"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <info.androidhive.fontawesome.FontTextView
-                    android:id="@+id/bt_comment"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="@string/fa_pen_solid"
-                    android:textSize="30sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

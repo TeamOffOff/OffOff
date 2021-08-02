@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import info.androidhive.fontawesome.FontDrawable
 
 @AndroidEntryPoint
 class PostActivity : AppCompatActivity() {
@@ -17,6 +19,8 @@ class PostActivity : AppCompatActivity() {
     private var mBinding: ActivityPostBinding? = null
     private val binding get() = mBinding!!
     private val viewModel: PostViewModel by viewModels()
+    private lateinit var writeIcon: FontDrawable
+    private lateinit var likeIcon: FontDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +35,7 @@ class PostActivity : AppCompatActivity() {
 
         initToolbar()
         initPost()
+        initView()
 
     }
 
@@ -47,10 +52,21 @@ class PostActivity : AppCompatActivity() {
         })
     }
 
+    private fun initView() {
+        writeIcon = FontDrawable(this, R.string.fa_pen_solid, true, false)
+        writeIcon.setTextColor(ContextCompat.getColor(this, R.color.green))
+
+        likeIcon = FontDrawable(this, R.string.fa_thumbs_up_solid, true, false)
+        likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
+
+        binding.tfId.endIconDrawable = writeIcon
+    }
+
     private fun initToolbar() {
         val toolbar : MaterialToolbar = binding.appbar
 
         setSupportActionBar(toolbar)
+        Log.d("앱바타이틀_tag", intent.getStringExtra("appBarTitle").toString())
         supportActionBar?.apply {
             binding.tvToolbarTitle.text = intent.getStringExtra("appBarTitle")
 

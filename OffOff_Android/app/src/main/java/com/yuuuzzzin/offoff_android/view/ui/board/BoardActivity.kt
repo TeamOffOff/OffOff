@@ -30,7 +30,6 @@ class BoardActivity : AppCompatActivity() {
     private lateinit var searchIcon: FontDrawable
     private lateinit var writeIcon: FontDrawable
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -83,12 +82,12 @@ class BoardActivity : AppCompatActivity() {
         /* click listener 재정의 */
         boardAdapter.setOnItemClickListener(object : BoardAdapter.OnItemClickListener {
             override fun onItemClick(view: View, postPreview: PostPreview) {
-
+                val appBarTitle = intent.getStringExtra("title").toString()
                 val id = postPreview.id
                 val boardType = postPreview.board_type
 
                 val intent = Intent(this@BoardActivity, PostActivity::class.java)
-                intent.putExtra("appBarTitle", binding.appbarBoard.title)
+                intent.putExtra("appBarTitle", appBarTitle)
                 intent.putExtra("id", id)
                 intent.putExtra("boardType", boardType)
                 startActivity(intent)
@@ -118,8 +117,8 @@ class BoardActivity : AppCompatActivity() {
             }
             R.id.action_write -> {
                 //글쓰기 버튼 누를 시
-//                val intent = Intent(applicationContext, WriteActivity::class.java)
-//                startActivity(intent)
+                val intent = Intent(applicationContext, PostWriteActivity::class.java)
+                startActivity(intent)
                 true
             }
             android.R.id.home -> {
