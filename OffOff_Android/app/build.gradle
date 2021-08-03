@@ -71,7 +71,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation"androidx.recyclerview:recyclerview-selection:1.1.0"
 
-    // Coroutine
+    // Coroutines
     def coroutines_version = "1.5.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
@@ -97,6 +97,4 @@ dependencies {
     // CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    // Sandwich
-    implementation "com.github.skydoves:sandwich:1.2.1"
 }

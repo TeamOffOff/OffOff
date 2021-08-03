@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-/* 게시판 API 인터페이스 */
+/* 게시판 관련 API 인터페이스 */
 
 interface BoardService {
 

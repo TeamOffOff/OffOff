@@ -4,17 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
-import com.yuuuzzzin.offoff_android.databinding.*
-import com.yuuuzzzin.offoff_android.service.models.PostPreview
+import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.view.adapter.BoardAdapter
 import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,8 +23,7 @@ import info.androidhive.fontawesome.FontDrawable
 @AndroidEntryPoint
 class BoardActivity : AppCompatActivity() {
 
-    private var mBinding: ActivityBoardBinding? = null
-    private val binding get() = mBinding!!
+    private lateinit var binding: ActivityBoardBinding
     private val viewModel: BoardViewModel by viewModels()
     private lateinit var boardAdapter: BoardAdapter
     private lateinit var searchIcon: FontDrawable
@@ -33,65 +32,57 @@ class BoardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        mBinding = ActivityBoardBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+        init()
         initToolbar()
-        setUpRv()
+        initRV()
+        initViewModel()
     }
 
-    // 액티비티가 Destroy될 때
-    override fun onDestroy() {
-        // onDestroy 에서 binding class 인스턴스 참조를 정리해주어야 함
-        mBinding = null
-        super.onDestroy()
+    fun init() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_board)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+    }
+
+    private fun initRV() {
+        val boardRecyclerView: RecyclerView = binding.rvPostPreview
+        val linearLayoutManager = LinearLayoutManager(this)
+        val decoration = DividerItemDecoration(this, VERTICAL)
+
+        boardAdapter = BoardAdapter(
+            itemClick = { item ->
+                val appBarTitle = intent.getStringExtra("title").toString()
+                val intent = Intent(this@BoardActivity, PostActivity::class.java)
+                intent.putExtra("appBarTitle", appBarTitle)
+                intent.putExtra("id", item.id)
+                intent.putExtra("boardType", item.board_type)
+                startActivity(intent)
+            }
+        )
+
+        boardRecyclerView.apply {
+            adapter = boardAdapter
+            layoutManager = linearLayoutManager
+            addItemDecoration(decoration)
+        }
     }
 
     private fun initToolbar() {
-        val toolbar : MaterialToolbar = binding.appbarBoard // 상단 툴바
+        val toolbar: MaterialToolbar = binding.appbarBoard // 상단 툴바
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             binding.tvToolbarTitle.text = intent.getStringExtra("title")
-
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
             setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
             setDisplayShowHomeEnabled(true)
         }
-
-
-
     }
 
-    private fun setUpRv() {
-        val decoration = DividerItemDecoration(this, VERTICAL)
-        boardAdapter = BoardAdapter()
-
-        binding.rvPostPreview.apply {
-            adapter = boardAdapter
-            addItemDecoration(decoration)
-            layoutManager = LinearLayoutManager(
-                this@BoardActivity, LinearLayoutManager.VERTICAL, false)
-        }
-
-        viewModel.responsePost.observe(this, {
-
-            boardAdapter.posts = it.post_list
-        })
-
-        /* click listener 재정의 */
-        boardAdapter.setOnItemClickListener(object : BoardAdapter.OnItemClickListener {
-            override fun onItemClick(view: View, postPreview: PostPreview) {
-                val appBarTitle = intent.getStringExtra("title").toString()
-                val id = postPreview.id
-                val boardType = postPreview.board_type
-
-                val intent = Intent(this@BoardActivity, PostActivity::class.java)
-                intent.putExtra("appBarTitle", appBarTitle)
-                intent.putExtra("id", id)
-                intent.putExtra("boardType", boardType)
-                startActivity(intent)
-            }
+    private fun initViewModel() {
+        viewModel.postList.observe(binding.lifecycleOwner!!, {
+            with(boardAdapter) { submitList(it.toMutableList()) }
         })
     }
 
@@ -111,8 +102,6 @@ class BoardActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_search -> {
                 //검색 버튼 누를 시
-//                val intent = Intent(applicationContext, WriteActivity::class.java)
-//                startActivity(intent)
                 true
             }
             R.id.action_write -> {
@@ -128,6 +117,4 @@ class BoardActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
 }

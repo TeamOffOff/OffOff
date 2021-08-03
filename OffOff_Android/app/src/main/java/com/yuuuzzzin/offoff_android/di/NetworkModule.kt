@@ -13,12 +13,12 @@ import javax.inject.Singleton
 
 /* 네트워크 통신을 위한 모듈 */
 
-// const val BASE_URL = "http:10.0.2.2:3000/"
-const val BASE_URL = BuildConfig.BASE_URL
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    // private const val BASE_URL = "http:10.0.2.2:3000/" // 로컬 가상 서버 주소
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     /* Retrofit2 통신 모듈 */
     @Singleton

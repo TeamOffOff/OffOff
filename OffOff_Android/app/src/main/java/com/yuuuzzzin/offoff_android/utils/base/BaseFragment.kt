@@ -10,11 +10,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
-abstract class BaseFragment<T : ViewDataBinding>(
+abstract class BaseFragment<VB : ViewDataBinding>(
     @LayoutRes private val layoutRes: Int
     ) : Fragment() {
 
-    private var mBinding: T? = null
+    private var mBinding: VB? = null
     protected val binding get() = mBinding!!
     lateinit var mContext: Context
 
