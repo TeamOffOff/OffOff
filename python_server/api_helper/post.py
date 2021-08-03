@@ -14,13 +14,6 @@ Subcomment = Namespace("subcomment", description="대댓글 관련 API")
 # 게시글 관련 API
 @Post.route("")
 class PostControl(Resource):
-    """
-    input shape
-    {
-        content_id:~~,
-        board_type:~~
-    }
-    """
     def get(self):
         content_id = request.args.get("content-id")
         board_type = request.args.get("board-type") + "_board"
@@ -28,17 +21,22 @@ class PostControl(Resource):
         result = mongodb.find_one(query={"_id": ObjectId(content_id)},
                                   collection_name=board_type,
                                   projection_key={"_id": False})
+        update_status = mongodb.update_one(query={"_id": ObjectId(content_id)},
+                                           collection_name=board_type,
+                                           modify={"$inc": {"viewCount": 1}})
 
         if not result:
             return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}, 500
+        elif update_status.raw_result["n"] == 0:
+            return {"query_status": "viewCount update fail"}, 500
         else:
             return result
 
     def delete(self):  # 게시글 삭제
         """특정 id의 게시글을 삭제합니다."""
         post_info = request.get_json()
-        content_id = post_info["content_id"]
-        board_type = post_info["board_type"] + "_board"
+        content_id = post_info["_id"]
+        board_type = post_info["boardType"] + "_board"
 
         result = mongodb.delete_one(query={"_id": ObjectId(content_id)}, collection_name=board_type)
 
@@ -50,8 +48,9 @@ class PostControl(Resource):
     def post(self):  # 게시글 생성
         """게시글을 생성합니다."""
         post_info = request.get_json()
-        board_type = post_info["board_type"] + "_board"
+        board_type = post_info["boardType"] + "_board"
 
+        del post_info["_id"]
         post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
 
         return {"query_status": str(post_id)}
@@ -59,18 +58,36 @@ class PostControl(Resource):
     def put(self):  # 게시글 수정
         """특정 id의 게시글을 수정합니다."""
         post_info = request.get_json()
-        content_id = post_info["content_id"]
-        board_type = post_info["board_type"] + "_board"
+        content_id = post_info["_id"]
+        board_type = post_info["boardType"] + "_board"
 
-        result = mongodb.update_one(query={"_id": ObjectId(content_id)},
-                                    collection_name=board_type,
-                                    modify={"$set": post_info["modify"]})
+        del post_info["_id"]
+
+        article_key = ["title", "content", "image"]
+        activity_key = ["likes", "viewCount", "reportCount", "replyCount"]
+
+        modified_article = {}
+        modified_activity = {}
+
+        for key in post_info.keys():
+            if key in article_key:
+                modified_article[key] = post_info[key]
+            elif key in activity_key:
+                modified_activity[key] = post_info[key]
+
+        if None in list(modified_activity.values()):
+            result = mongodb.update_one(query={"_id": ObjectId(content_id)},
+                                        collection_name=board_type,
+                                        modify={"$set": modified_article})
+        else:
+            result = mongodb.update_one(query={"_id": ObjectId(content_id)},
+                                        collection_name=board_type,
+                                        modify={"$inc": modified_activity})
 
         if result.raw_result["n"] == 1:
             modified_post = mongodb.find_one(query={"_id": ObjectId(content_id)},
                                              collection_name=board_type,
                                              projection_key={"_id": False})
-
             return modified_post
         else:
             return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}, 500
@@ -111,7 +128,7 @@ class CommentControl(Resource):
         }
         """
 
-        board_type = comment_info["board_type"] + "_board_comment"
+        board_type = comment_info["boardType"] + "_board_comment"
 
         comment_id = mongodb.insert_one(data=comment_info, collection_name=board_type)
 
@@ -119,10 +136,10 @@ class CommentControl(Resource):
 
     def get(self):  # 댓글 조회
         """댓글을 조회합니다."""
-        content_id = request.args.get("content-id")
-        board_type = request.args.get("board-type") + "_board_comment"
+        content_id = request.args.get("_id")
+        board_type = request.args.get("boardType") + "_board_comment"
 
-        cursor = mongodb.find(query={"content_id": content_id},
+        cursor = mongodb.find(query={"_id": content_id},
                               collection_name=board_type,
                               projection_key={"comment": True, "subcomment": True})  # 댓글은 오름차순
 
@@ -138,8 +155,8 @@ class CommentControl(Resource):
     def delete(self):  # 댓글 삭제
         """댓글을 삭제합니다."""
         comment_info = request.get_json()
-        board_type = comment_info["board_type"] + "_board_comment"
-        comment_id = comment_info["comment_id"]  # 댓글 조회시 해당 댓글 고유의 _id를 포함해서 리턴함
+        board_type = comment_info["boardType"] + "_board_comment"
+        comment_id = comment_info["_id"]  # 댓글 조회시 해당 댓글 고유의 _id를 포함해서 리턴함
         whether_subcomment = comment_info["subcomment"]
 
         if not whether_subcomment:  # 대댓글이 없는 경우
@@ -166,8 +183,8 @@ class CommentControl(Resource):
     def put(self):  # 댓글 수정
         """댓글을 수정합니다."""
         comment_info = request.get_json()
-        board_type = comment_info["board_type"] + "_board_comment"
-        comment_id = comment_info["comment_id"]
+        board_type = comment_info["boardType"] + "_board_comment"
+        comment_id = comment_info["_id"]
 
         result = mongodb.update_one(query={"_id": ObjectId(comment_id)},
                                     collection_name=board_type,
@@ -203,8 +220,8 @@ class SubcommentControl(Resource):
 
         """
         subcomment_info = request.get_json()
-        comment_id = subcomment_info["comment_id"]
-        board_type = subcomment_info["board_type"] + "_board_comment"
+        comment_id = subcomment_info["_id"]
+        board_type = subcomment_info["boardType"] + "_board_comment"
         subcomment = subcomment_info["subcomment"]
 
         result = mongodb.update_one(query={"_id": ObjectId(comment_id)},
@@ -221,8 +238,8 @@ class SubcommentControl(Resource):
         대댓글 삭제
         """
         subcomment_info = request.get_json()
-        comment_id = subcomment_info["comment_id"]
-        board_type = subcomment_info["board_type"] + "_board_comment"
+        comment_id = subcomment_info["_id"]
+        board_type = subcomment_info["boardType"] + "_board_comment"
         subcomment = subcomment_info["subcomment"]
 
         result = mongodb.update_one(query={"_id": ObjectId(comment_id)},
