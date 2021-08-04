@@ -14,10 +14,13 @@ class PostPreviewCell: UITableViewCell {
     
     var titleLabel = UILabel().then {
         $0.textAlignment = .left
-        $0.font = UIFont.boldSystemFont(ofSize: 17)
+        $0.font = UIFont.preferredFont(forTextStyle: .body).bold()
+        $0.adjustsFontForContentSizeCategory = true
     }
     var previewTextView = UILabel().then {
         $0.numberOfLines = 2
+        $0.font = UIFont.preferredFont(forTextStyle: .footnote)
+        $0.adjustsFontForContentSizeCategory = true
     }
     var dateAuthorLabel = UILabel().then {
         $0.textColor = .darkGray
