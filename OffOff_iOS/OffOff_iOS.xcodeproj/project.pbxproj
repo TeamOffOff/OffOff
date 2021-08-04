@@ -31,7 +31,11 @@
 		EA975A5C26AFB87000C6FB41 /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA975A5B26AFB87000C6FB41 /* CircularImageView.swift */; };
 		EA975A5E26AFE4A300C6FB41 /* TextWithIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA975A5D26AFE4A300C6FB41 /* TextWithIconView.swift */; };
 		EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA975A5F26B045A600C6FB41 /* PostAPI.swift */; };
-		EAAFFB9D269EFA25006D43D4 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EAAFFB9C269EFA25006D43D4 /* Moya */; };
+		EA9D0AC426BA956200D571EC /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC326BA956200D571EC /* Moya */; };
+		EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC526BA956200D571EC /* RxMoya */; };
+		EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC726BA956200D571EC /* ReactiveMoya */; };
+		EA9D0ACB26BA95A700D571EC /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACA26BA95A700D571EC /* RxCocoa */; };
+		EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACC26BA95A700D571EC /* RxSwift */; };
 		EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFBA0269F2DF4006D43D4 /* Constants.swift */; };
 		EABD99C326A2B5CF001DE8BF /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */; };
 		EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C426A2EA80001DE8BF /* LoginModel.swift */; };
@@ -179,10 +183,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */,
+				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
+				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EAE50300268AA1C6002B1C6A /* Then in Frameworks */,
 				EABD99C326A2B5CF001DE8BF /* SkyFloatingLabelTextField in Frameworks */,
 				EAE50306268AA660002B1C6A /* SnapKit in Frameworks */,
-				EAAFFB9D269EFA25006D43D4 /* Moya in Frameworks */,
+				EA9D0AC426BA956200D571EC /* Moya in Frameworks */,
+				EA9D0ACB26BA95A700D571EC /* RxCocoa in Frameworks */,
 				EACC255E26A5CB5C000B12B6 /* FontAwesome in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,9 +430,13 @@
 			packageProductDependencies = (
 				EAE502FF268AA1C6002B1C6A /* Then */,
 				EAE50305268AA660002B1C6A /* SnapKit */,
-				EAAFFB9C269EFA25006D43D4 /* Moya */,
 				EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */,
 				EACC255D26A5CB5C000B12B6 /* FontAwesome */,
+				EA9D0AC326BA956200D571EC /* Moya */,
+				EA9D0AC526BA956200D571EC /* RxMoya */,
+				EA9D0AC726BA956200D571EC /* ReactiveMoya */,
+				EA9D0ACA26BA95A700D571EC /* RxCocoa */,
+				EA9D0ACC26BA95A700D571EC /* RxSwift */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -463,13 +475,11 @@
 			mainGroup = EAE502D62689E3D6002B1C6A;
 			packageReferences = (
 				EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */,
-				EAE50301268AA643002B1C6A /* XCRemoteSwiftPackageReference "Alamofire" */,
 				EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */,
-				EAAFFB9B269EFA25006D43D4 /* XCRemoteSwiftPackageReference "Moya" */,
-				EAB088DE26A2970400E30324 /* XCRemoteSwiftPackageReference "Material" */,
-				EABD99BE26A2B28D001DE8BF /* XCRemoteSwiftPackageReference "TextFieldEffects" */,
 				EABD99C126A2B5CF001DE8BF /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
 				EACC255C26A5CB5C000B12B6 /* XCRemoteSwiftPackageReference "FontAwesome" */,
+				EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */,
+				EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -904,7 +914,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EAAFFB9B269EFA25006D43D4 /* XCRemoteSwiftPackageReference "Moya" */ = {
+		EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
 			requirement = {
@@ -912,20 +922,13 @@
 				minimumVersion = 14.0.1;
 			};
 		};
-		EAB088DE26A2970400E30324 /* XCRemoteSwiftPackageReference "Material" */ = {
+		EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CosmicMind/Material";
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.1.8;
-			};
-		};
-		EABD99BE26A2B28D001DE8BF /* XCRemoteSwiftPackageReference "TextFieldEffects" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/raulriera/TextFieldEffects";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.7.0;
+				kind = versionRange;
+				maximumVersion = 6.0.0;
+				minimumVersion = 5.0.0;
 			};
 		};
 		EABD99C126A2B5CF001DE8BF /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */ = {
@@ -952,14 +955,6 @@
 				minimumVersion = 2.7.0;
 			};
 		};
-		EAE50301268AA643002B1C6A /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.4.3;
-			};
-		};
 		EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -971,10 +966,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EAAFFB9C269EFA25006D43D4 /* Moya */ = {
+		EA9D0AC326BA956200D571EC /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EAAFFB9B269EFA25006D43D4 /* XCRemoteSwiftPackageReference "Moya" */;
+			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
+		};
+		EA9D0AC526BA956200D571EC /* RxMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = RxMoya;
+		};
+		EA9D0AC726BA956200D571EC /* ReactiveMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = ReactiveMoya;
+		};
+		EA9D0ACA26BA95A700D571EC /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		EA9D0ACC26BA95A700D571EC /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
 		};
 		EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */ = {
 			isa = XCSwiftPackageProductDependency;
