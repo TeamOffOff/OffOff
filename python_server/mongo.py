@@ -50,6 +50,10 @@ class MongoHelper:
         self.collection = self.db[collection_name]
         result = self.collection.update_many(query, modify, upsert=False)
         return result
+    
+    def aggregate(self, pipeline=None, collection_name=None):
+        self.collection = self.db[collection_name]
+        result = self.collection.aggregate(pipeline)
 
 
 if __name__ == "__main__":
