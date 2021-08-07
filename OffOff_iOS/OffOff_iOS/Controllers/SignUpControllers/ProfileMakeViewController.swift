@@ -36,6 +36,6 @@ class ProfileMakeViewController: UIViewController {
     }
     
     @objc func onNicknameTextFieldChanged(_ textField: TextField) {
-        isNicknameVerified = SignUpViewModel.shared.isValidNickname(nickname: textField.text ?? "")
+        isNicknameVerified = SignUpViewModel.sharedViewModel.isValidNickname(nickname: textField.text ?? "")
     }
 }

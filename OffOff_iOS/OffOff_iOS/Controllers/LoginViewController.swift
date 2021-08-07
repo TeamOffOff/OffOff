@@ -47,7 +47,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc func onSignUpButton(_: AnyObject) {
-        let vc = UINavigationController(rootViewController: SignUpViewController())
+        let vc = UINavigationController(rootViewController: IDPWViewController())
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true, completion: nil)
     }

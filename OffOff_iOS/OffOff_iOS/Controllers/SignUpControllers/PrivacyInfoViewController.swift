@@ -20,7 +20,7 @@ class PrivacyInfoViewController: UIViewController {
                 privacyView.nameTextField.setTextFieldVerified()
             } else {
                 privacyView.nameTextField.setTextFieldFail(errorMessage: Constants.NAME_ERROR_MESSAGE)
-                SignUpViewModel.shared.signUpModel.information?.name = nil
+                SignUpViewModel.sharedViewModel.signUpModel.information?.name = nil
             }
         }
     }
@@ -30,7 +30,7 @@ class PrivacyInfoViewController: UIViewController {
                 privacyView.emailTextField.setTextFieldVerified()
             } else {
                 privacyView.emailTextField.setTextFieldFail(errorMessage: Constants.EMAIL_ERROR_MESSAGE)
-                SignUpViewModel.shared.signUpModel.information?.email = nil
+                SignUpViewModel.sharedViewModel.signUpModel.information?.email = nil
             }
         }
     }
@@ -40,7 +40,7 @@ class PrivacyInfoViewController: UIViewController {
                 privacyView.birthdayTextField.setTextFieldVerified()
             } else {
                 privacyView.birthdayTextField.setTextFieldFail(errorMessage: Constants.BIRTH_ERROR_MESSAGE)
-                SignUpViewModel.shared.signUpModel.information?.birth = nil
+                SignUpViewModel.sharedViewModel.signUpModel.information?.birth = nil
             }
         }
     }
@@ -64,17 +64,17 @@ class PrivacyInfoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let name = SignUpViewModel.shared.signUpModel.information?.name {
+        if let name = SignUpViewModel.sharedViewModel.signUpModel.information?.name {
             privacyView.nameTextField.text = name
             isNameVerified = true
         }
          
-        if let email = SignUpViewModel.shared.signUpModel.information?.email {
+        if let email = SignUpViewModel.sharedViewModel.signUpModel.information?.email {
             privacyView.emailTextField.text = email
             isEmailVerified = true
         }
         
-        if let birth = SignUpViewModel.shared.signUpModel.information?.birth {
+        if let birth = SignUpViewModel.sharedViewModel.signUpModel.information?.birth {
             privacyView.birthdayTextField.text = birth
             isBirthVerified = true
         }
@@ -92,7 +92,7 @@ class PrivacyInfoViewController: UIViewController {
             return
         }
         
-        isEmailVerified = SignUpViewModel.shared.isValidEmail(email: textField.text ?? "")
+        isEmailVerified = SignUpViewModel.sharedViewModel.isValidEmail(email: textField.text ?? "")
     }
     
     @objc func onNameTextFieldChanged(_ textField: TextField) {
@@ -100,14 +100,14 @@ class PrivacyInfoViewController: UIViewController {
             return
         }
         
-        isNameVerified = SignUpViewModel.shared.isValidName(name: textField.text ?? "")
+        isNameVerified = SignUpViewModel.sharedViewModel.isValidName(name: textField.text ?? "")
     }
     
     // MARK: - Next Button Handler
     @objc func onNextButton(sender: UIButton) {
         sender.showAnimation {
             if self.isNameVerified, self.isEmailVerified, self.isBirthVerified {
-                SignUpViewModel.shared.setPrivacy(name: self.privacyView.nameTextField.text, email: self.privacyView.emailTextField.text, birthday: self.privacyView.birthdayTextField.text)
+                SignUpViewModel.sharedViewModel.setPrivacy(name: self.privacyView.nameTextField.text, email: self.privacyView.emailTextField.text, birthday: self.privacyView.birthdayTextField.text)
                 self.navigationController?.pushViewController(ProfileMakeViewController(), animated: true)
             } else {
                 self.resetBoolProperties()
@@ -136,9 +136,9 @@ extension PrivacyInfoViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField {
         case privacyView.nameTextField:
-            isNameVerified = SignUpViewModel.shared.isValidName(name: textField.text ?? "")
+            isNameVerified = SignUpViewModel.sharedViewModel.isValidName(name: textField.text ?? "")
         case privacyView.emailTextField:
-            isEmailVerified = SignUpViewModel.shared.isValidEmail(email: textField.text ?? "")
+            isEmailVerified = SignUpViewModel.sharedViewModel.isValidEmail(email: textField.text ?? "")
         default:
             return
         }
@@ -181,7 +181,7 @@ extension PrivacyInfoViewController {
     @objc func onDoneButton() {
         let birthdayString = birthdayPicker?.date.toString()
         privacyView.birthdayTextField.text = birthdayString
-        SignUpViewModel.shared.signUpModel.information?.birth = birthdayString
+        SignUpViewModel.sharedViewModel.signUpModel.information?.birth = birthdayString
         privacyView.birthdayTextField.resignFirstResponder()
         isBirthVerified = true
     }

@@ -23,7 +23,7 @@ enum AuthAPI {
 
 extension AuthAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "\(Constants.API_SOURCE)/Auth")!
+        return URL(string: "\(Constants.API_SOURCE)/user")!
     }
     
     var path: String {
@@ -62,8 +62,8 @@ extension AuthAPI: TargetType {
     
     var task: Task {
         switch self {
-        case .idChek(let id):
-            return .requestParameters(parameters: ["id": id], encoding: JSONEncoding.default)
+    case .idChek(let id):
+            return .requestParameters(parameters: ["id": id], encoding: URLEncoding.default)
         case .signUp(let signUpModel):
             return .requestJSONEncodable(signUpModel)
         case .passwordChange(let password):

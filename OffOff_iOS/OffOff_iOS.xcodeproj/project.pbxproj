@@ -18,7 +18,7 @@
 		EA2FDF4B26A7D88800AEC951 /* AuthServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* AuthServices.swift */; };
 		EA2FDF4C26A7D88800AEC951 /* AuthServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* AuthServices.swift */; };
 		EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */; };
-		EA406A8E26A475CE00737F90 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* SignUpViewController.swift */; };
+		EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* IDPWViewController.swift */; };
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
 		EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B36269BFBD200F6F903 /* PostServices.swift */; };
 		EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B40269C5F7D00F6F903 /* OffOff_iOSTests.swift */; };
@@ -36,13 +36,16 @@
 		EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC726BA956200D571EC /* ReactiveMoya */; };
 		EA9D0ACB26BA95A700D571EC /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACA26BA95A700D571EC /* RxCocoa */; };
 		EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACC26BA95A700D571EC /* RxSwift */; };
+		EA9D0AD026BAC93100D571EC /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACF26BAC93100D571EC /* Then */; };
+		EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD226BAC96D00D571EC /* SnapKit */; };
+		EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD526BAC97C00D571EC /* SkyFloatingLabelTextField */; };
+		EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD826BAC9DF00D571EC /* FontAwesome */; };
+		EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
 		EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFBA0269F2DF4006D43D4 /* Constants.swift */; };
-		EABD99C326A2B5CF001DE8BF /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */; };
 		EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C426A2EA80001DE8BF /* LoginModel.swift */; };
 		EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */; };
 		EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */; };
 		EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */; };
-		EACC255E26A5CB5C000B12B6 /* FontAwesome in Frameworks */ = {isa = PBXBuildFile; productRef = EACC255D26A5CB5C000B12B6 /* FontAwesome */; };
 		EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
 		EACC257B26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
 		EACC257C26A5CFB3000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
@@ -71,8 +74,6 @@
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
 		EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EAE502EB2689E3D7002B1C6A /* Assets.xcassets */; };
 		EAE502EF2689E3D7002B1C6A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAE502ED2689E3D7002B1C6A /* LaunchScreen.storyboard */; };
-		EAE50300268AA1C6002B1C6A /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = EAE502FF268AA1C6002B1C6A /* Then */; };
-		EAE50306268AA660002B1C6A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EAE50305268AA660002B1C6A /* SnapKit */; };
 		EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6525E269416B600D8F7BB /* PostPreviewCell.swift */; };
 		EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE652602694182D00D8F7BB /* PostViewController.swift */; };
 		EAF2127E268FEC6C00E47942 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2127D268FEC6C00E47942 /* Box.swift */; };
@@ -114,7 +115,7 @@
 		EA3DA4BB26A58B510075819B /* OffOff_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffOff_iOSUITests.swift; sourceTree = "<group>"; };
 		EA3DA4BF26A58B510075819B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EA406A8D26A475CE00737F90 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		EA406A8D26A475CE00737F90 /* IDPWViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewController.swift; sourceTree = "<group>"; };
 		EA406A8F26A4769300737F90 /* IDPWView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWView.swift; sourceTree = "<group>"; };
 		EA420B36269BFBD200F6F903 /* PostServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostServices.swift; sourceTree = "<group>"; };
 		EA420B3E269C5F7D00F6F903 /* OffOff_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +130,7 @@
 		EA975A5B26AFB87000C6FB41 /* CircularImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
 		EA975A5D26AFE4A300C6FB41 /* TextWithIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithIconView.swift; sourceTree = "<group>"; };
 		EA975A5F26B045A600C6FB41 /* PostAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostAPI.swift; sourceTree = "<group>"; };
+		EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewModel.swift; sourceTree = "<group>"; };
 		EAAFFBA0269F2DF4006D43D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -184,14 +186,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */,
+				EA9D0AD026BAC93100D571EC /* Then in Frameworks */,
+				EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */,
 				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
+				EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */,
 				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
-				EAE50300268AA1C6002B1C6A /* Then in Frameworks */,
-				EABD99C326A2B5CF001DE8BF /* SkyFloatingLabelTextField in Frameworks */,
-				EAE50306268AA660002B1C6A /* SnapKit in Frameworks */,
+				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
 				EA9D0AC426BA956200D571EC /* Moya in Frameworks */,
 				EA9D0ACB26BA95A700D571EC /* RxCocoa in Frameworks */,
-				EACC255E26A5CB5C000B12B6 /* FontAwesome in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +212,7 @@
 		EA406A8C26A4759600737F90 /* SignUpControllers */ = {
 			isa = PBXGroup;
 			children = (
-				EA406A8D26A475CE00737F90 /* SignUpViewController.swift */,
+				EA406A8D26A475CE00737F90 /* IDPWViewController.swift */,
 				EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */,
 				EA929F2026A9D12A009352B9 /* ProfileMakeViewController.swift */,
 			);
@@ -336,6 +338,7 @@
 				EABD99C426A2EA80001DE8BF /* LoginModel.swift */,
 				EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */,
 				EACF1B3A26B6710800C153D3 /* Board.swift */,
+				EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -428,15 +431,15 @@
 			);
 			name = OffOff_iOS;
 			packageProductDependencies = (
-				EAE502FF268AA1C6002B1C6A /* Then */,
-				EAE50305268AA660002B1C6A /* SnapKit */,
-				EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */,
-				EACC255D26A5CB5C000B12B6 /* FontAwesome */,
 				EA9D0AC326BA956200D571EC /* Moya */,
 				EA9D0AC526BA956200D571EC /* RxMoya */,
 				EA9D0AC726BA956200D571EC /* ReactiveMoya */,
 				EA9D0ACA26BA95A700D571EC /* RxCocoa */,
 				EA9D0ACC26BA95A700D571EC /* RxSwift */,
+				EA9D0ACF26BAC93100D571EC /* Then */,
+				EA9D0AD226BAC96D00D571EC /* SnapKit */,
+				EA9D0AD526BAC97C00D571EC /* SkyFloatingLabelTextField */,
+				EA9D0AD826BAC9DF00D571EC /* FontAwesome */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -474,12 +477,12 @@
 			);
 			mainGroup = EAE502D62689E3D6002B1C6A;
 			packageReferences = (
-				EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */,
-				EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */,
-				EABD99C126A2B5CF001DE8BF /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
-				EACC255C26A5CB5C000B12B6 /* XCRemoteSwiftPackageReference "FontAwesome" */,
 				EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */,
 				EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */,
+				EA9D0ACE26BAC93100D571EC /* XCRemoteSwiftPackageReference "Then" */,
+				EA9D0AD126BAC96D00D571EC /* XCRemoteSwiftPackageReference "SnapKit" */,
+				EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
+				EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -571,7 +574,7 @@
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
 				EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */,
 				EAF212842690133500E47942 /* HomeView.swift in Sources */,
-				EA406A8E26A475CE00737F90 /* SignUpViewController.swift in Sources */,
+				EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */,
 				EA72D75B2698276C00EB07DA /* PostView.swift in Sources */,
 				EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */,
 				EA975A5E26AFE4A300C6FB41 /* TextWithIconView.swift in Sources */,
@@ -596,6 +599,7 @@
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileMakeViewController.swift in Sources */,
+				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */,
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,
@@ -931,23 +935,7 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		EABD99C126A2B5CF001DE8BF /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Skyscanner/SkyFloatingLabelTextField";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
-			};
-		};
-		EACC255C26A5CB5C000B12B6 /* XCRemoteSwiftPackageReference "FontAwesome" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/thii/FontAwesome.swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.9.1;
-			};
-		};
-		EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */ = {
+		EA9D0ACE26BAC93100D571EC /* XCRemoteSwiftPackageReference "Then" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/devxoul/Then";
 			requirement = {
@@ -955,12 +943,28 @@
 				minimumVersion = 2.7.0;
 			};
 		};
-		EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		EA9D0AD126BAC96D00D571EC /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.0.1;
+			};
+		};
+		EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Skyscanner/SkyFloatingLabelTextField";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+		EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/thii/FontAwesome.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.9.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -991,25 +995,25 @@
 			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
-		EABD99C226A2B5CF001DE8BF /* SkyFloatingLabelTextField */ = {
+		EA9D0ACF26BAC93100D571EC /* Then */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EABD99C126A2B5CF001DE8BF /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */;
-			productName = SkyFloatingLabelTextField;
-		};
-		EACC255D26A5CB5C000B12B6 /* FontAwesome */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EACC255C26A5CB5C000B12B6 /* XCRemoteSwiftPackageReference "FontAwesome" */;
-			productName = FontAwesome;
-		};
-		EAE502FF268AA1C6002B1C6A /* Then */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EAE502FE268AA1C6002B1C6A /* XCRemoteSwiftPackageReference "Then" */;
+			package = EA9D0ACE26BAC93100D571EC /* XCRemoteSwiftPackageReference "Then" */;
 			productName = Then;
 		};
-		EAE50305268AA660002B1C6A /* SnapKit */ = {
+		EA9D0AD226BAC96D00D571EC /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EAE50304268AA660002B1C6A /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = EA9D0AD126BAC96D00D571EC /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		EA9D0AD526BAC97C00D571EC /* SkyFloatingLabelTextField */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */;
+			productName = SkyFloatingLabelTextField;
+		};
+		EA9D0AD826BAC9DF00D571EC /* FontAwesome */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */;
+			productName = FontAwesome;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

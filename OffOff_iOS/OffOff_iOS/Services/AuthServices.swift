@@ -7,19 +7,28 @@
 
 import Foundation
 import Moya
+import RxMoya
+import RxSwift
 
 public class AuthServices {
     static let provider = MoyaProvider<AuthAPI>()
     
-    static func idDuplicationCheck(id: String, completion: @escaping () -> Void) {
-        AuthServices.provider.request(.idChek(id)) { (result) in
-            switch result {
-            case let .success(response):
-                print(try? response.mapJSON())
-                completion()
-            case let .failure(error):
-                print(error.localizedDescription)
-            }
+    struct IDValidation: Codable {
+        var message: String = "Impossible"
+    }
+    
+    static func idDuplicationCheck(id: String) -> Observable<Bool> {
+        if Constants.isValidString(str: id, regEx: Constants.USERID_RULE) {
+            return AuthServices.provider
+                .rx.request(.idChek(id))
+                .asObservable()
+                .map {
+                    let result = try JSONDecoder().decode(IDValidation.self, from: $0.data)
+                    return result.message == "Possible"
+                }
+                .catchErrorJustReturn(false)
+        } else {
+            return Observable.just(false)
         }
     }
 }
