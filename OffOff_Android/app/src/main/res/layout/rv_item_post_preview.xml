@@ -4,16 +4,15 @@
 
     <data>
         <variable
-            name="postPreview"
-            type="com.yuuuzzzin.offoff_android.service.models.PostPreview"/>
+            name="item"
+            type="com.yuuuzzzin.offoff_android.service.models.Post"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tv_title"
@@ -23,7 +22,7 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{postPreview.title}"
+            android:text="@{item.title}"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -39,7 +38,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@{postPreview.date}"
+            android:text="@{item.date}"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
@@ -61,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@{postPreview.author}"
+            android:text="@{item.author}"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@id/view"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
@@ -75,7 +74,7 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@{postPreview.content}"
+            android:text="@{item.content}"
             android:textColor="@color/black"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@{Integer.toString(postPreview.likes)}"
+            android:text="@{Integer.toString(item.likes)}"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@id/iv_reply_count"
             app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
@@ -125,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="@{Integer.toString(postPreview.reply_count)}"
+            android:text="@{Integer.toString(item.reply_count)}"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />

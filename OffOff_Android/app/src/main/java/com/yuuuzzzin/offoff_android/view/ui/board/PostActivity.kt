@@ -4,20 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
+import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
 
 @AndroidEntryPoint
-class PostActivity : AppCompatActivity() {
+class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
-    private var mBinding: ActivityPostBinding? = null
-    private val binding get() = mBinding!!
     private val viewModel: PostViewModel by viewModels()
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
@@ -25,41 +23,24 @@ class PostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initViewModel()
+        processIntent()
+        initToolbar()
+        initView()
+    }
+
+    private fun processIntent() {
         val id = intent.getStringExtra("id")
         val boardType = intent.getStringExtra("boardType")
-        Log.e("tag_check","postID : $id")
         viewModel.getPost(id!!, boardType!!)
-
-        mBinding = ActivityPostBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        initToolbar()
-        initPost()
-        initView()
-
     }
 
-    private fun initPost() {
+    private fun initViewModel() {
+        binding.viewModel = viewModel
 
-        viewModel.response.observe(this, { post ->
-            binding.apply {
-                tvAuthor.text = post.author
-                tvDate.text = post.date
-                tvTitle.text = post.title
-                tvContent.text = post.content
-                tvLikes.text = post.likes.toString()
-            }
+        viewModel.response.observe(binding.lifecycleOwner!!,{
+            binding.post = it
         })
-    }
-
-    private fun initView() {
-        writeIcon = FontDrawable(this, R.string.fa_pen_solid, true, false)
-        writeIcon.setTextColor(ContextCompat.getColor(this, R.color.green))
-
-        likeIcon = FontDrawable(this, R.string.fa_thumbs_up_solid, true, false)
-        likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
-
-        binding.tfId.endIconDrawable = writeIcon
     }
 
     private fun initToolbar() {
@@ -78,6 +59,16 @@ class PostActivity : AppCompatActivity() {
 
     }
 
+    private fun initView() {
+        writeIcon = FontDrawable(this, R.string.fa_pen_solid, true, false)
+        writeIcon.setTextColor(ContextCompat.getColor(this, R.color.green))
+
+        likeIcon = FontDrawable(this, R.string.fa_thumbs_up_solid, true, false)
+        likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
+
+        binding.tfId.endIconDrawable = writeIcon
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -86,10 +77,5 @@ class PostActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onDestroy() {
-        mBinding = null
-        super.onDestroy()
     }
 }
