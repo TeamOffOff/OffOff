@@ -34,6 +34,9 @@ class IDPWViewController: UIViewController {
         idpwView.passwordTextField.delegate = self
         idpwView.passwordRepeatField.delegate = self
         
+        // Shared Model 초기화
+        SharedSignUpModel.model = SignUpModel(id: nil, password: nil, information: Information(), subinfo: Subinfo(), activity: Activity())
+        
         // input과 함께 viewModel 생성
         let viewModel = IDPWViewModel(
             input: (

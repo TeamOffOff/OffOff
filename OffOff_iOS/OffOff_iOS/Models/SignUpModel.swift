@@ -28,6 +28,10 @@ import Foundation
 //    }
 //}
 
+class SharedSignUpModel {
+    static var model = SignUpModel(id: nil, password: nil, information: Information(), subinfo: Subinfo(), activity: Activity())
+}
+
 struct SignUpModel: Codable {
     var id: String?
     var password: String?

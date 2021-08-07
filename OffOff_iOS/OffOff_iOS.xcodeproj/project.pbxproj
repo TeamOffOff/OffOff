@@ -41,6 +41,9 @@
 		EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD526BAC97C00D571EC /* SkyFloatingLabelTextField */; };
 		EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD826BAC9DF00D571EC /* FontAwesome */; };
 		EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
+		EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
+		EAAA212126BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
+		EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */; };
 		EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFBA0269F2DF4006D43D4 /* Constants.swift */; };
 		EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C426A2EA80001DE8BF /* LoginModel.swift */; };
 		EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */; };
@@ -131,6 +134,7 @@
 		EA975A5D26AFE4A300C6FB41 /* TextWithIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithIconView.swift; sourceTree = "<group>"; };
 		EA975A5F26B045A600C6FB41 /* PostAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostAPI.swift; sourceTree = "<group>"; };
 		EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewModel.swift; sourceTree = "<group>"; };
+		EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoViewModel.swift; sourceTree = "<group>"; };
 		EAAFFBA0269F2DF4006D43D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -226,6 +230,16 @@
 				EA420B42269C5F7D00F6F903 /* Info.plist */,
 			);
 			path = OffOff_iOSTests;
+			sourceTree = "<group>";
+		};
+		EAAA211F26BE80BC004FA6F9 /* SignUpViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				EACC258326A677D6000B12B6 /* SignUpViewModel.swift */,
+				EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */,
+				EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */,
+			);
+			path = SignUpViewModels;
 			sourceTree = "<group>";
 		};
 		EAE502D62689E3D6002B1C6A = {
@@ -338,7 +352,6 @@
 				EABD99C426A2EA80001DE8BF /* LoginModel.swift */,
 				EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */,
 				EACF1B3A26B6710800C153D3 /* Board.swift */,
-				EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -346,9 +359,9 @@
 		EAF2127B268FEC3100E47942 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				EAAA211F26BE80BC004FA6F9 /* SignUpViewModels */,
 				EA07345A2692AD56007830ED /* PostsViewModel.swift */,
 				EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */,
-				EACC258326A677D6000B12B6 /* SignUpViewModel.swift */,
 				EACF1B3C26B7E42300C153D3 /* BoardViewModel.swift */,
 			);
 			path = "View Models";
@@ -539,6 +552,7 @@
 			files = (
 				EA2FDF4C26A7D88800AEC951 /* AuthServices.swift in Sources */,
 				EACC258E26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
+				EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258A26A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */,
@@ -551,6 +565,7 @@
 			files = (
 				EA2FDF4B26A7D88800AEC951 /* AuthServices.swift in Sources */,
 				EACC258D26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
+				EAAA212126BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258926A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */,
@@ -586,6 +601,7 @@
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
 				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
 				EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */,
+				EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
 				EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */,
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
