@@ -30,8 +30,9 @@ class PrivacyInfoViewModel {
                 return Constants.isValidString(str: name, regEx: Constants.USERNAME_RULE)
             }
         isEmailConfirmed = input.emailText
-            .map { email in
-                return Constants.isValidString(str: email, regEx: Constants.USEREMAIL_RULE)
+            .debounce(.milliseconds(5)) // 0.5초 딜레이 주기
+            .flatMapLatest { email in
+                return UserServices.emailDuplicationCheck(email: email).asDriver(onErrorJustReturn: false)
             }
         isBirthdayConfirmed = input.birthdayText
             .map { birthday in
@@ -43,7 +44,22 @@ class PrivacyInfoViewModel {
                 return name && email && birth
             }
         
-        isValidatedToProgress = input.nextButtonTap.withLatestFrom(isNextEnabled)
-            .flatMapLatest { Driver.just($0) }
+        let enabledAndValues = Driver.combineLatest(isNextEnabled, input.nameText, input.emailText, input.birthdayText) { (
+            enabled: $0,
+            name: $1,
+            email: $2,
+            birthday: $3
+        )}
+        
+        isValidatedToProgress = input.nextButtonTap.withLatestFrom(enabledAndValues)
+            .flatMapLatest { pair in
+                if pair.enabled {
+                    SharedSignUpModel.model.information?.name = pair.name
+                    SharedSignUpModel.model.information?.email = pair.email
+                    SharedSignUpModel.model.information?.birth = pair.birthday
+                }
+                
+                return Driver.just(pair.enabled)
+            }
     }
 }

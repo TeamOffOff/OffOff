@@ -91,10 +91,7 @@ class PrivacyInfoViewController: UIViewController {
         viewModel.isValidatedToProgress
             .drive(onNext: {
                 if $0 {
-                    SharedSignUpModel.model.information?.name = self.privacyView.nameTextField.text!
-                    SharedSignUpModel.model.information?.email = self.privacyView.emailTextField.text!
-                    SharedSignUpModel.model.information?.birth = self.privacyView.birthdayTextField.text!
-                    self.navigationController?.pushViewController(ProfileMakeViewController(), animated: true)
+                    self.navigationController?.pushViewController(ProfileViewController(), animated: true)
                 }
             })
             .disposed(by: disposeBag)

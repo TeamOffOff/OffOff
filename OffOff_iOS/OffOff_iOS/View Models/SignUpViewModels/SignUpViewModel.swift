@@ -7,87 +7,38 @@
 
 import Foundation
 import RxSwift
-import RxRelay
+import RxCocoa
 
 class SignUpViewModel {
-    let disposeBag = DisposeBag()
-    static var sharedViewModel = SignUpViewModel()
     
-    var IDPWObservable = BehaviorSubject<IDPWModel>(value: IDPWModel())
+    // Outputs
+    let isNickNameConfirmed: Driver<Bool>
+    let signedUp: Driver<Bool>
     
-    static var sharedModel = SignUpModel()
-    var signUpModel = SignUpModel(information: Information(), subinfo: Subinfo(), activity: Activity())
-    
-    let checkingID = PublishSubject<String?>()
-    var isIDVerified = PublishSubject<Bool>()
-    var isPWVerified = PublishSubject<Bool>()
-    var isPWRepeatVerified = PublishSubject<Bool>()
-    
-    var idTextRelay = PublishRelay<String>()
-    var isIdOverlapped = PublishSubject<String?>()
-    
-    init() {
-        signUpModel = SignUpModel(information: Information(), subinfo: Subinfo(), activity: Activity())
+    init(
+        input: (
+            nicknameText: Driver<String>,
+            signUpButtonTap: Signal<()>
+        )
+    ) {
+        isNickNameConfirmed = input.nicknameText
+            .flatMapLatest { nickName in
+                return UserServices.nicknameDuplicationCheck(nickname: nickName).asDriver(onErrorJustReturn: false) }
         
-            
-    }
-    
-    func isValidID() -> Observable<Bool> {
+        let nickNameAndProfileImage = Driver.combineLatest(isNickNameConfirmed, input.nicknameText) { (confirmed: $0, nickname: $1) }
         
-        return isIdOverlapped.map {
-            $0 != nil
-        }
+        signedUp = input.signUpButtonTap.withLatestFrom(nickNameAndProfileImage)
+            .flatMapLatest { pair in
+                if pair.confirmed {
+                    SharedSignUpModel.model.subinfo?.nickname = pair.nickname
+                    return UserServices.signUp(with: SharedSignUpModel.model).asDriver(onErrorJustReturn: false)
+                } else {
+                    return Driver.just(false)
+                }
+            }
     }
-    
-//    func isChangedIDValid(text: String) {
-//        _ = isIDVerified
-//            .filter{ $0 }
-//            .onNext(Constants.isValidString(str: text, regEx: Constants.USERID_RULE))
-//    }
-    
-    
-    
-    
-    // MARK: -
-    
-    
-    func setIDPW(id: String?, pw: String?) {
-        SignUpViewModel.sharedViewModel.signUpModel.id = id
-        SignUpViewModel.sharedViewModel.signUpModel.password = pw
-    }
-    
-    func setPrivacy(name: String?, email: String?, birthday: String?) {
-        SignUpViewModel.sharedViewModel.signUpModel.information?.name = name
-        SignUpViewModel.sharedViewModel.signUpModel.information?.email = email
-        SignUpViewModel.sharedViewModel.signUpModel.information?.birth = birthday
-    }
-    
-    
-    
-    func isIDDuplicate(id: String, completion: @escaping () -> Void) {
-//        AuthServices.idDuplicationCheck(id: id, completion: completion)
-    }
-    
-    func isValidPW(text: String) -> Bool {
-        return Constants.isValidString(str: text, regEx: Constants.USERPW_RULE)
-    }
-    
-    func isValidPWVerify(verifyingText: String, text: String) -> Bool {
-        if isValidPW(text: text) {
-            return verifyingText == text
-        }
-        return false
-    }
-    
-    func isValidName(name: String) -> Bool {
-        return Constants.isValidString(str: name, regEx: Constants.USERNAME_RULE)
-    }
-    
-    func isValidEmail(email: String) -> Bool {
-        return Constants.isValidString(str: email, regEx: Constants.USEREMAIL_RULE)
-    }
-    
-    func isValidNickname(nickname: String) -> Bool {
-        return Constants.isValidString(str: nickname, regEx: Constants.USERNICKNAME_RULE)
-    }
+}
+
+private func isValidNickname(nickname: String) -> Bool {
+    return Constants.isValidString(str: nickname, regEx: Constants.USERNICKNAME_RULE)
 }

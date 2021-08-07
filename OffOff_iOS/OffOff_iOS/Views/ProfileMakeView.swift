@@ -37,14 +37,13 @@ class ProfileMakeView: UIView {
         self.addSubview(profileImageView)
         self.addSubview(nickNameTextField)
         self.addSubview(signUpButton)
-        makeView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func makeView() {
+    public func makeView() {
         profileImageView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().offset(UIScreen.main.bounds.size.height / 10.0)
@@ -66,18 +65,3 @@ class ProfileMakeView: UIView {
         }
     }
 }
-
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-@available(iOS 13.0, *)
-struct PROFILEPREIVEW: PreviewProvider {
-    static var previews: some View {
-        UIViewPreview {
-            let view = ProfileMakeView()
-            return view
-        }.previewLayout(.sizeThatFits)
-    }
-}
-
-#endif
-

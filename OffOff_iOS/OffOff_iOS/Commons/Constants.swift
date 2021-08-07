@@ -22,6 +22,7 @@ public class Constants {
     static let USERID_MAXLENGTH = 20
     static let USERPW_MAXLENGTH = 16
     static let USERNAME_MAXLENGTH = 10
+    static let USERNICKNAME_MAXLENGTH = 10
     static let USERID_RULE = "[A-Za-z0-9]{5,20}"
     static let USERPW_RULE = #"(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#\$%^&()_+=-]).{8,16}"#
     static let USERNAME_RULE = "[가-힣]{2,10}"

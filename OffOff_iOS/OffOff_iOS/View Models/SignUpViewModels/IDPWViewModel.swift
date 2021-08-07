@@ -31,7 +31,7 @@ final class IDPWViewModel {
         isIdConfirmed = input.idText
             .debounce(.milliseconds(5)) // 0.5초 딜레이 주기
             .flatMapLatest { id in
-                return AuthServices.idDuplicationCheck(id: id)
+                return UserServices.idDuplicationCheck(id: id)
                     .asDriver(onErrorJustReturn: false)
             }
         
@@ -51,9 +51,14 @@ final class IDPWViewModel {
         }
         .distinctUntilChanged()
         
-        isValidatedToProgress = input.nextButtonTap.withLatestFrom(isNextEnabled)
-            .flatMapLatest {
-                Driver.just($0)
+        let enabledAndValues = Driver.combineLatest(isNextEnabled, input.idText, input.passwordRepeatText) { (enabled: $0, id: $1, password: $2) }
+        isValidatedToProgress = input.nextButtonTap.withLatestFrom(enabledAndValues)
+            .flatMapLatest { pair in
+                if pair.enabled {
+                    SharedSignUpModel.model.id = pair.id
+                    SharedSignUpModel.model.password = pair.password
+                }
+                return Driver.just(pair.enabled)
             }
             
     }

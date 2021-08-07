@@ -100,8 +100,6 @@ class IDPWViewController: UIViewController {
         viewModel.isValidatedToProgress
             .drive(onNext: {
                 if $0 {
-                    SharedSignUpModel.model.id = self.idpwView.idTextField.text!
-                    SharedSignUpModel.model.password = self.idpwView.passwordTextField.text!
                     self.navController?.pushViewController(PrivacyInfoViewController(), animated: true)
                 }
             })
