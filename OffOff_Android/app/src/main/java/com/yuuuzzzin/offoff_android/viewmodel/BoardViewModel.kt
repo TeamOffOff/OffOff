@@ -19,31 +19,26 @@ constructor(
     private val repository: BoardRepository
 ) : ViewModel() {
 
-    private var count:Int = 0
-
     private val _postList = ArrayList<PostPreview>()
     val postList: MutableLiveData<ArrayList<PostPreview>> by lazy{
         MutableLiveData<ArrayList<PostPreview>>()
     }
 
     private val _response = MutableLiveData<PostList>()
-    val responsePost: LiveData<PostList>
+    val response: LiveData<PostList>
         get() = _response
 
     init {
-        getAllPosts()
+        getPosts()
     }
 
-    private fun getAllPosts() = viewModelScope.launch {
+    private fun getPosts() = viewModelScope.launch {
         repository.getPosts().let { response ->
             if (response.isSuccessful) {
-                Log.d("tag", response.body().toString())
-
                 for(postPreview in response.body()!!.post_list){
                     _postList.add(postPreview)
                 }
                 postList.postValue(_postList)
-                count += response.body()!!.post_list.size
             } else {
                 Log.d("tag", "getPosts Error: ${response.code()}")
             }

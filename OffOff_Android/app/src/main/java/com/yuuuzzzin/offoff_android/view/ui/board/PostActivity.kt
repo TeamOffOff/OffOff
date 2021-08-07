@@ -41,7 +41,7 @@ class PostActivity : AppCompatActivity() {
 
     private fun initPost() {
 
-        viewModel.responsePost.observe(this, { post ->
+        viewModel.response.observe(this, { post ->
             binding.apply {
                 tvAuthor.text = post.author
                 tvDate.text = post.date

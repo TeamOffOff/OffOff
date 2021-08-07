@@ -23,23 +23,22 @@ import info.androidhive.fontawesome.FontDrawable
 @AndroidEntryPoint
 class BoardActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityBoardBinding
     private val viewModel: BoardViewModel by viewModels()
+    private lateinit var binding: ActivityBoardBinding
     private lateinit var boardAdapter: BoardAdapter
     private lateinit var searchIcon: FontDrawable
     private lateinit var writeIcon: FontDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         init()
+        initViewModel()
         initToolbar()
         initRV()
-        initViewModel()
     }
 
-    fun init() {
+    private fun init() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_board)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
