@@ -14,42 +14,11 @@ class IDPWViewController: UIViewController {
     lazy var idpwView = IDPWView(frame: .zero)
     var navController: UINavigationController?
     
-    // MARK: - TextField의 상태를 표시하기 위한 Property
-    var isIDVerified: Bool = false {
-        didSet {
-            if isIDVerified {
-                idpwView.idTextField.setTextFieldVerified()
-            } else {
-                idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
-                SignUpViewModel.sharedViewModel.signUpModel.id = nil
-            }
-        }
-    }
-    var isPWVerified: Bool = false {
-        didSet {
-            if isPWVerified {
-                idpwView.passwordTextField.setTextFieldVerified()
-            } else {
-                isPWRepeatVerified = false
-                idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
-                SignUpViewModel.sharedViewModel.signUpModel.password = nil
-            }
-        }
-    }
-    var isPWRepeatVerified: Bool = false {
-        didSet {
-            if isPWRepeatVerified {
-                idpwView.passwordRepeatField.setTextFieldVerified()
-            } else {
-                idpwView.passwordRepeatField.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
-            }
-        }
-    }
-    
-    // MARK: -
+    // MARK: - Life Cycle
     override func loadView() {
         self.view = idpwView
         self.title = "아이디 및 비밀번호"
+        idpwView.makeView()
         navController = self.navigationController
         navController?.navigationBar.barTintColor = .mainColor
         navController?.navigationBar.tintColor = .white
@@ -98,30 +67,18 @@ class IDPWViewController: UIViewController {
                     self.idpwView.idTextField.setTextFieldVerified()
                 } else {
                     self.idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
-                    SignUpViewModel.sharedViewModel.signUpModel.id = nil
+                    SharedSignUpModel.model.id = nil
                 }
             })
             .disposed(by: disposeBag)
         
-        
-        viewModel.isIdConfirmed
-            .drive(onNext:  {
-                if $0 {
-                    self.idpwView.idTextField.setTextFieldVerified()
-                } else {
-                    self.idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
-                    SignUpViewModel.sharedViewModel.signUpModel.id = nil
-                }
-            })
-            .disposed(by: disposeBag)
-    
         viewModel.isPasswordComfirmed
             .drive(onNext: {
                 if $0 {
                     self.idpwView.passwordTextField.setTextFieldVerified()
                 } else {
                     self.idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
-                    SignUpViewModel.sharedViewModel.signUpModel.password = nil
+                    SharedSignUpModel.model.password = nil
                 }
             })
             .disposed(by: disposeBag)
@@ -132,7 +89,7 @@ class IDPWViewController: UIViewController {
                     self.idpwView.passwordRepeatField.setTextFieldVerified()
                 } else {
                     self.idpwView.passwordRepeatField.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
-                    SignUpViewModel.sharedViewModel.signUpModel.password = nil
+                    SharedSignUpModel.model.password = nil
                 }
             })
             .disposed(by: disposeBag)
@@ -140,7 +97,8 @@ class IDPWViewController: UIViewController {
         viewModel.isValidatedToProgress
             .drive(onNext: {
                 if $0 {
-                    SignUpViewModel.sharedViewModel.setIDPW(id: self.idpwView.idTextField.text!, pw: self.idpwView.passwordTextField.text!)
+                    SharedSignUpModel.model.id = self.idpwView.idTextField.text!
+                    SharedSignUpModel.model.password = self.idpwView.passwordTextField.text!
                     self.navController?.pushViewController(PrivacyInfoViewController(), animated: true)
                 }
             })
@@ -151,15 +109,11 @@ class IDPWViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if let id = SignUpViewModel.sharedViewModel.signUpModel.id {
+        if let id = SharedSignUpModel.model.id {
             idpwView.idTextField.text = id
-        } else {
-            idpwView.idTextField.setTextFieldNormal(iconImage: .ICON_USER_GRAY)
         }
-        if let pw = SignUpViewModel.sharedViewModel.signUpModel.password {
+        if let pw = SharedSignUpModel.model.password {
             idpwView.passwordTextField.text = pw
-        } else {
-            idpwView.passwordTextField.setTextFieldNormal(iconImage: .ICON_LOCK_GRAY)
         }
     }
     
