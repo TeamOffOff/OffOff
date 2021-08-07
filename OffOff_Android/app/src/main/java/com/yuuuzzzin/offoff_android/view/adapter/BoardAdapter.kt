@@ -2,7 +2,7 @@ package com.yuuuzzzin.offoff_android.view.adapter
 
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemPostPreviewBinding
-import com.yuuuzzzin.offoff_android.service.models.PostPreview
+import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.utils.base.BaseRVAdapter
 
 /*
@@ -11,5 +11,5 @@ import com.yuuuzzzin.offoff_android.utils.base.BaseRVAdapter
 */
 
 class BoardAdapter(
-    itemClick: (PostPreview) -> Unit
-) : BaseRVAdapter<PostPreview, RvItemPostPreviewBinding>(itemClick, R.layout.rv_item_post_preview)
+    itemClick: (Post) -> Unit
+) : BaseRVAdapter<Post, RvItemPostPreviewBinding>(itemClick, R.layout.rv_item_post_preview)

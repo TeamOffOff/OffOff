@@ -1,25 +1,42 @@
 package com.yuuuzzzin.offoff_android.view.ui.board
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yuuuzzzin.offoff_android.R
+import androidx.recyclerview.widget.RecyclerView
+import com.yuuuzzzin.offoff_android.MainActivity
 import com.yuuuzzzin.offoff_android.databinding.FragmentBoardsBinding
-import com.yuuuzzzin.offoff_android.service.models.Board
 import com.yuuuzzzin.offoff_android.view.adapter.BoardListAdapter
+import com.yuuuzzzin.offoff_android.viewmodel.BoardListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BoardsFragment : Fragment() {
 
     // ViewBinding
     private var mBinding: FragmentBoardsBinding? = null
     private val binding get() = mBinding!!
+    private val viewModel: BoardListViewModel by viewModels()
+    lateinit var mContext: Context
 
     private lateinit var boardListAdapter: BoardListAdapter
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is MainActivity) {
+            this.mContext = context
+        } else {
+            throw RuntimeException("$context error")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,39 +45,38 @@ class BoardsFragment : Fragment() {
     ): View? {
         mBinding = FragmentBoardsBinding.inflate(inflater, container, false)
 
-        val decoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-
-        boardListAdapter = BoardListAdapter()
-
-        binding.rvBoards.adapter = boardListAdapter
-
-        binding.rvBoards.addItemDecoration(decoration)
-
-        binding.rvBoards.layoutManager =
-            LinearLayoutManager(context).also { it.orientation = LinearLayoutManager.VERTICAL }
-
-        boardListAdapter.boardList.addAll(
-            listOf(
-                Board("자유 게시판", R.drawable.ic_twotone_list_alt_24),
-                Board("익명 게시판", R.drawable.ic_twotone_textsms_24),
-                Board("HOT 게시판", R.drawable.ic_twotone_local_fire_department_24),
-                Board("BEST 게시판", R.drawable.ic_twotone_thumb_up_24),
-                Board("스크랩", R.drawable.ic_twotone_star_24),
-                Board("좋아요", R.drawable.ic_twotone_favorite_24)
-            ),
-        )
-
-        /*board click listener 재정의*/
-        boardListAdapter.setOnBoardClickListener(object :
-            BoardListAdapter.OnBoardClickListener{
-            override fun onBoardClick(view: View, board: Board) {
-                val intent = Intent(activity, BoardActivity::class.java)
-                intent.putExtra("title", board.title)
-                startActivity(intent)
-            }
-        })
+        initViewModel()
+        initRV()
 
         return binding.root
+    }
+
+    private fun initViewModel() {
+        binding.viewModel = viewModel
+        viewModel.boardList.observe(viewLifecycleOwner, {
+            with(boardListAdapter) { submitList(it.toMutableList()) }
+        })
+    }
+
+    private fun initRV() {
+        val boardListRecyclerView: RecyclerView = binding.rvBoards
+        val linearLayoutManager = LinearLayoutManager(mContext)
+        val decoration = DividerItemDecoration(mContext, VERTICAL)
+
+        boardListAdapter = BoardListAdapter(
+            itemClick = { item ->
+                val intent = Intent(mContext, BoardActivity::class.java)
+                intent.putExtra("boardType", item.board_type)
+                intent.putExtra("boardName", item.name)
+                startActivity(intent)
+            }
+        )
+
+        boardListRecyclerView.apply {
+            adapter = boardListAdapter
+            layoutManager = linearLayoutManager
+            addItemDecoration(decoration)
+        }
     }
 
     override fun onDestroyView() {

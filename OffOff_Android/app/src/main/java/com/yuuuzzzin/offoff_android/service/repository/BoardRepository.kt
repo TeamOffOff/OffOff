@@ -10,7 +10,8 @@ class BoardRepository
 @Inject
 constructor(private val boardService: BoardService) {
 
-    suspend fun getPosts() = boardService.getPosts()
+    suspend fun getBoardList() = boardService.getBoardList()
+    suspend fun getPosts(boardType: String) = boardService.getPosts(boardType)
     suspend fun getPost(postId: String, postBoardType: String) =
         boardService.getPost(postId, postBoardType)
 }
