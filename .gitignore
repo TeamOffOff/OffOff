@@ -1,4 +1,3 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/swift,carthage,cocoapods
 # Edit at https://www.toptal.com/developers/gitignore?templates=swift,carthage,cocoapods
 
@@ -100,5 +99,8 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+# iOS 상수 파일
+Constants.swift
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,carthage,cocoapods
