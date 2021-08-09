@@ -23,7 +23,8 @@ class TabBarController: UITabBarController {
         navController.tabBarItem.title = title
         navController.tabBarItem.image = image
         
-        navController.navigationBar.prefersLargeTitles = true
+        navController.navigationBar.barTintColor = .mainColor
+        navController.navigationBar.prefersLargeTitles = false
         
         if let navigationBar = navController.navigationBar as? CustomNavigationBar {
             navigationBar.titleLabel.text = title
@@ -36,7 +37,7 @@ class TabBarController: UITabBarController {
     func setupVCs() {
         viewControllers = [
             // TODO: 첫 번째 tab의 navigation bar가 작아지는 문제
-            createNavController(for: CommunityListViewController(), title: NSLocalizedString("커뮤니티", comment: ""), image: UIImage(systemName: "house")!),
+            createNavController(for: BoardListViewController(), title: NSLocalizedString("커뮤니티", comment: ""), image: UIImage(systemName: "house")!),
 //            createNavController(for: PostListViewController(), title: NSLocalizedString("Community", comment: ""), image: UIImage(systemName: "text.justify")!),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),

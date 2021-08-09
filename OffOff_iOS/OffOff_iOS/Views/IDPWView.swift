@@ -78,14 +78,13 @@ class IDPWView: UIView {
         textFieldStack.addArrangedSubview(passwordRepeatField)
         self.addSubview(textFieldStack)
         self.addSubview(nextButton)
-        self.makeView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func makeView() {
+    public func makeView() {
         textFieldStack.snp.makeConstraints {
             $0.top.equalToSuperview().offset(UIScreen.main.bounds.size.height / 10.0)
             $0.centerX.equalToSuperview()

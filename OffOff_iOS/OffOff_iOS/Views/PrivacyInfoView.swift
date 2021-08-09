@@ -63,7 +63,6 @@ class PrivacyInfoView: UIView {
         textFieldStack.addArrangedSubview(nameTextField)
         textFieldStack.addArrangedSubview(emailTextField)
         textFieldStack.addArrangedSubview(birthdayTextField)
-        makeView()
     }
     
     required init?(coder: NSCoder) {

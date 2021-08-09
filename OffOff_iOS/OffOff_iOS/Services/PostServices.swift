@@ -6,51 +6,53 @@
 //
 
 import Foundation
-import Alamofire
 import Moya
+import RxMoya
+import RxSwift
 
 public class PostServices {
-    typealias PostListCompletion = ([PostModel]?, AFError?) -> ()
-    typealias MakeNewPostCompletion = (PostModel, AFError?) -> ()
-    static let source = "http://localhost:4000/GetPosts"
+    static let provider = MoyaProvider<PostAPI>()
     
-    // 어떤 게시판인지, 어떤 포스트부터 받을지를 정하고, 포스트 목록 받아오기
-    static func fetchPostList(completion: @escaping PostListCompletion) {
-        AF.request(source, method: .get).responseJSON { (response) in
-            switch response.result {
-            case .success(let result):
-                do {
-                    let jsonData = try JSONSerialization.data(withJSONObject: result, options: .prettyPrinted)
-                    let json = try JSONDecoder().decode([PostModel].self, from: jsonData)
-                    completion(json, nil)
-                } catch(let error) {
-                    print(error.localizedDescription)
+    static func fetchPost(content_id: String, board_type: String) -> Observable<Post?> {
+        PostServices.provider
+            .rx.request(.getPost(content_id: content_id, board_type: board_type))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    let response = try JSONDecoder().decode(Post.self, from: $0.data)
+                    return response
                 }
-            case .failure(let error):
-                print("Underlying error: \(error.errorDescription!)")
-                completion(nil, error)
+                return nil
             }
-        }
+            .catchErrorJustReturn(nil)
     }
     
-    // TODO: 새로운 포스트 게시
-    static func makeNewPost(post: PostModel, completion: @escaping MakeNewPostCompletion) {
-        let provider = MoyaProvider<CommunityAPI>()
-        provider.request(.newPost(post)) { (result) in
-            switch result {
-            case let .success(response):
-                print(response.request)
-                print(try? response.mapJSON())
-            case let .failure(error):
-                print(error.localizedDescription)
+    static func createPost(post: Post) -> Observable<Bool> {
+        PostServices.provider
+            .rx.request(.makePost(post: post))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    return true
+                }
+                return false
             }
-        }
-//        #if DEBUG
-//        let source = "http://3.34.138.102:5000/post/content-id=\(post.content_id)"
-//        AF.request(source, method: .put, parameters: post, encoder: JSONParameterEncoder.default).response { (response) in
-//            print(response)
-//            completion(post, response.error)
-//        }
-//        #endif
+            .catchErrorJustReturn(false)
     }
+    
+    
+    // 새로 작성한 포스트를 바로 받아오는 버젼
+//    static func createPost(post: Post) -> Observable<Post?> {
+//        PostServices.provider
+//            .rx.request(.makePost(post: post))
+//            .asObservable()
+//            .map {
+//                if $0.statusCode == 200 {
+//                    let post = try JSONDecoder().decode(Post.self, from: $0.data)
+//                    return post
+//                }
+//                return nil
+//            }
+//            .catchErrorJustReturn(nil)
+//    }
 }

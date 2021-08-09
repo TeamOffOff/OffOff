@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import RxCocoa
 
 class NewPostViewController: UIViewController {
     let newPostView = NewPostView()
     
     override func loadView() {
         self.view = .init()
+        self.view.backgroundColor = .white
         view.addSubview(newPostView)
         newPostView.snp.makeConstraints {
             $0.edges.equalTo(self.view.safeAreaLayoutGuide.snp.edges).inset(8)
@@ -21,14 +23,31 @@ class NewPostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "글 쓰기"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(onSaveButton))
-    }
-    
-    // TODO:
-    // 제목, 내용 비어있는지 검사
-    @objc private func onSaveButton() {
-        PostsViewModel.makeNewPost(title: newPostView.titleTextField.text!, content: newPostView.contentTextView.text!, board_type: "자유게시판")
-        self.navigationController?.popViewController(animated: true)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: nil, action: nil)
+        
+        // view model
+        let viewModel = NewPostViewModel(
+            input: (
+                titleText: newPostView.titleTextField
+                    .rx.text
+                    .orEmpty
+                    .skip(1)
+                    .distinctUntilChanged()
+                    .asDriver(onErrorJustReturn: ""),
+                contentText: newPostView.contentTextView
+                    .rx.text
+                    .orEmpty
+                    .skip(1)
+                    .distinctUntilChanged()
+                    .asDriver(onErrorJustReturn: ""),
+                createButtonTap: self.navigationItem.rightBarButtonItem!.rx.tap.asSignal())
+        )
+        
+        // bind results
+//        viewModel.postCreated
+//            .drive(onNext: {
+//                self.
+//            })
     }
 }
 
@@ -49,28 +68,9 @@ class NewPostView: UIStackView {
         self.spacing = 8
         self.addArrangedSubview(titleTextField)
         self.addArrangedSubview(contentTextView)
-        self.makeView()
     }
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func makeView() {
-        
-    }
-    
-    func setupView() {
-        
-    }
 }
-
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-@available (iOS 13.0, *)
-struct Newpostpreview: PreviewProvider{
-    static var previews: some View {
-        NewPostViewController().showPreview(.iPhone11Pro)
-    }
-}
-#endif

@@ -9,9 +9,6 @@ import UIKit
 import SkyFloatingLabelTextField
 
 class LoginView: UIView {
-    
-    var clearButton = UIImageView(image: .xmarkCircleFill)
-    
     var iconImageView = UIImageView().then {
         $0.image = UIImage(named: "IconImage")
         $0.contentMode = .scaleToFill
@@ -68,14 +65,13 @@ class LoginView: UIView {
         self.addSubview(self.loginButton)
         self.addSubview(self.signupButton)
         self.addSubview(self.searchButton)
-        self.makeView()
     }
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func makeView() {
+    public func makeView() {
         self.loginButton.snp.makeConstraints {
             $0.width.equalTo(self.snp.width).dividedBy(1.25)
             $0.top.equalTo(self.passwordTextField.snp.bottom).offset(30)
@@ -86,7 +82,7 @@ class LoginView: UIView {
             $0.width.equalTo(self.snp.width).dividedBy(3)
             $0.height.equalTo(self.iconImageView.snp.width)
             $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(UIScreen.main.bounds.size.height / 10.0)
+            $0.top.equalToSuperview().inset(UIScreen.main.bounds.size.height / 10.0)
         }
         
         self.idTextField.snp.makeConstraints {

@@ -9,15 +9,7 @@ import UIKit
 
 class ProfileMakeView: UIView {
     
-    var profileImageView = UIImageView().then {
-        $0.image = UIImage.DEFAULT_PROFILE
-        
-        // Image View를 원형으로
-        $0.layer.masksToBounds = true
-        $0.layer.cornerRadius = UIScreen.main.bounds.size.width / 6.0
-        $0.layer.borderWidth = 1.5
-        $0.layer.borderColor = UIColor.mainColor.cgColor
-    }
+    var profileImageView = CircularImageView(image: UIImage.DEFAULT_PROFILE)
     
     var nickNameTextField = TextField().then {
         $0.placeholder = "닉네임 (2-10자, 한글, 영어, 숫자 사용 가능)"
@@ -29,6 +21,7 @@ class ProfileMakeView: UIView {
         $0.clearButtonMode = .whileEditing
         $0.autocorrectionType = .no
         $0.titleFormatter = { $0 }
+        $0.iconWidth = CGFloat(2.0)
         $0.tag = 0
     }
     
@@ -44,14 +37,13 @@ class ProfileMakeView: UIView {
         self.addSubview(profileImageView)
         self.addSubview(nickNameTextField)
         self.addSubview(signUpButton)
-        makeView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func makeView() {
+    public func makeView() {
         profileImageView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().offset(UIScreen.main.bounds.size.height / 10.0)
@@ -73,18 +65,3 @@ class ProfileMakeView: UIView {
         }
     }
 }
-
-#if canImport(SwiftUI) && DEBUG
-import SwiftUI
-@available(iOS 13.0, *)
-struct PROFILEPREIVEW: PreviewProvider {
-    static var previews: some View {
-        UIViewPreview {
-            let view = ProfileMakeView()
-            return view
-        }.previewLayout(.sizeThatFits)
-    }
-}
-
-#endif
-

@@ -1,5 +1,5 @@
 //
-//  AuthAPI.swift
+//  UserAPI.swift
 //  OffOff_iOS
 //
 //  Created by Lee Nam Jun on 2021/07/21.
@@ -10,25 +10,31 @@ import Moya
 
 // 유저 로그인, 회원가입과 관련된 API
 
-enum AuthAPI {
+enum UserAPI {
     case idChek(_ id: String)
+    case emailCheck(_ email: String)
+    case nicknameCheck(_ nickname: String)
     case signUp(_ signUpModel: SignUpModel)
     case passwordChange(_ password: String)
-//    case resign(_)
+    case resign
     case login(_ id: String, _ password: String)
     case getMemberInfo
-//    case modifyMemberInfo
-
+    case modifyMemberInfo(_ signUpModel: SignUpModel)
+    
 }
 
-extension AuthAPI: TargetType {
+extension UserAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://3.34.138.102:5000/Auth")!
+        return URL(string: "\(Constants.API_SOURCE)/user")!
     }
     
     var path: String {
         switch self {
         case .idChek(_):
+            return "/register"
+        case .emailCheck(_):
+            return "/register"
+        case .nicknameCheck(_):
             return "/register"
         case .signUp(_):
             return "/register"
@@ -37,13 +43,21 @@ extension AuthAPI: TargetType {
         case .login(_, _):
             return "/login"
         case .getMemberInfo:
-            return "/login"
+            return "/TODO"
+        case .resign:
+            return "/TODO"
+        case .modifyMemberInfo(_):
+            return "/TODO"
         }
     }
     
     var method: Moya.Method {
         switch self {
         case .idChek(_):
+            return .get
+        case .emailCheck(_):
+            return .get
+        case .nicknameCheck(_):
             return .get
         case .signUp(_):
             return .post
@@ -52,6 +66,10 @@ extension AuthAPI: TargetType {
         case .login(_, _):
             return .post
         case .getMemberInfo:
+            return .get
+        case .resign:
+            return .get
+        case .modifyMemberInfo(_):
             return .get
         }
     }
@@ -63,7 +81,11 @@ extension AuthAPI: TargetType {
     var task: Task {
         switch self {
         case .idChek(let id):
-            return .requestParameters(parameters: ["id": id], encoding: JSONEncoding.default)
+            return .requestParameters(parameters: ["id": id], encoding: URLEncoding.default)
+        case .emailCheck(let email):
+            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.default)
+        case .nicknameCheck(let nickname):
+            return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.default)
         case .signUp(let signUpModel):
             return .requestJSONEncodable(signUpModel)
         case .passwordChange(let password):
@@ -72,12 +94,21 @@ extension AuthAPI: TargetType {
             return .requestParameters(parameters: ["id": id, "password": password], encoding: JSONEncoding.default)
         case .getMemberInfo:
             return .requestPlain
+        case .resign:
+            return .requestPlain
+        case .modifyMemberInfo(_):
+            return .requestPlain
         }
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json"]
+        switch self {
+        case .passwordChange(_), .resign, .modifyMemberInfo(_):
+            return ["Authorization": "token_encoded"]
+        default:
+            return ["Content-type": "application/json"]
+        }
+        
     }
-    
     
 }

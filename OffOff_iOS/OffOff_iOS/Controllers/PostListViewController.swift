@@ -8,75 +8,80 @@
 // TODO: - 맨 위, 맨 아래로 스크롤 해서 새로운 데이터 로딩
 
 import UIKit
+import RxSwift
 
 class PostListViewController: UITableViewController {
-    let postViewModel = PostsViewModel()
+    var boardType: String?
+    var boardName: String?
+    let disposeBag = DisposeBag()
     
     override func loadView() {
         self.tableView = .init()
-        self.title = "자유게시판" // TODO: 받아온 게시판 정보로 타이틀 지정 필요
+        self.tableView.delegate = nil
+        self.tableView.dataSource = nil
+        self.title = boardName ?? ""
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationController?.navigationBar.barTintColor = .mainColor
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: nil, action: nil)
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(onCloseButton))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(onNewPostButton))
-        
-        // 모델에 새로운 포스트가 들어오면 테이블뷰 리로드
-        postViewModel.posts.bind { _ in
-            self.tableView.reloadData()
-        }
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
         tableView.register(PostPreviewCell.classForCoder(), forCellReuseIdentifier: PostPreviewCell.identifier)
+        tableView.separatorStyle = .singleLine
+        tableView.separatorColor = .mainColor
     }
     
-    @objc func onCloseButton() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    @objc func onNewPostButton() {
-        self.navigationController?.pushViewController(NewPostViewController(), animated: true)
-    }
-    
-    static func embededController() -> UINavigationController {
-        let vc = UINavigationController(rootViewController: PostListViewController())
-        vc.modalPresentationStyle = .fullScreen
-        vc.navigationItem.setLeftBarButton(UIBarButtonItem(title: "Something Else", style: .plain, target: nil, action: nil), animated: true)
+    override func viewDidLoad() {
+        self.tableView.rx.setDelegate(self).disposed(by: disposeBag)
         
-        return vc
+        // view model
+        let viewModel = PostListViewModel(boardType: boardType ?? "")
+        
+        // bind result
+        viewModel.postList
+            .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
+                cell.titleLabel.text = element.Title
+                cell.dateAuthorLabel.text = "\(element.Date) | \(element.Author)"
+                cell.previewTextView.text = element.Content
+                cell.likeLabel.label.text = "\(element.Likes) "
+                cell.commentLabel.label.text = "\(element.reply_count)"
+            }
+            .disposed(by: disposeBag)
+        
+        // select row
+        self.tableView.rx
+            .modelSelected(PostModel.self)
+            .bind {
+                let vc = PostViewController()
+                vc.postInfo = (id: $0._id, type: $0.board_type)
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        // inputs
+        self.navigationItem.leftBarButtonItem?
+            .rx.tap
+            .bind { self.dismiss(animated: true, completion: nil) }
+            .disposed(by: disposeBag)
+        
+        self.navigationItem.rightBarButtonItem?
+            .rx.tap
+            .bind { self.navigationController?.pushViewController(NewPostViewController(), animated: true) }
+            .disposed(by: disposeBag)
     }
 }
 
 // MARK: - Table view data source, delegate
 extension PostListViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postViewModel.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostPreviewCell.identifier, for: indexPath) as? PostPreviewCell else {
-            return UITableViewCell()
-        }
-        cell.setData(post: postViewModel.getPost(index: indexPath.row)!)
-        return cell
-    }
-
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 20.0
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
-    }
-    
-    // TODO: 포스트 목로에서 선택한 포스트 보여주기
-    // 선택한 포스트의 id로 서버에 다시 그 포스트를 요청해서 보여주기
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = PostViewController()
-        vc.postBoxed = Box(postViewModel.getPost(index: indexPath.row)!)
-        self.navigationController?.pushViewController(vc, animated: true)
-        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
