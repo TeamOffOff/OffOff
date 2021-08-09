@@ -6,50 +6,40 @@
 //
 
 import UIKit
+import RxSwift
 
 class BoardListViewController: UITableViewController {
-    let boardViewModel = BoardViewModel()
+    
+    let disposeBag = DisposeBag()
     
     override func loadView() {
         self.tableView = .init()
-        setupTableView()
-        boardViewModel.boardList.bind { _ in
-            self.tableView.reloadData()
-        }
+        self.tableView.delegate = nil
+        self.tableView.dataSource = nil
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
     
-    private func setupTableView() {
-        tableView.register(CommunityTableViewCell.classForCoder(), forCellReuseIdentifier: CommunityTableViewCell.identifier)
-    }
-
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return boardViewModel.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CommunityTableViewCell.identifier, for: indexPath) as? CommunityTableViewCell else {
-            return UITableViewCell()
-        }
-            
-        cell.setupCell(board: boardViewModel.getBoard(of: indexPath.row))
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 20.0
-    }
-    
-    // TODO: 선택한 게시판 정보 전달
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = PostListViewController.embededController()
-        vc.modalPresentationStyle = .overFullScreen
-        present(vc, animated: true, completion: nil)
-        tableView.deselectRow(at: indexPath, animated: true)
+    override func viewDidLoad() {
+        let viewModel = BoardListViewModel()
+        
+        // bind result
+        viewModel.boardLists
+            .bind(to: self.tableView.rx.items(cellIdentifier: "Cell", cellType: UITableViewCell.self)) { (row, element, cell) in
+                cell.textLabel?.text = element.name
+                cell.imageView?.image = UIImage.init(systemName: "list.bullet")
+            }
+            .disposed(by: disposeBag)
+        
+        // row 선택 대응
+        self.tableView.rx
+            .modelSelected(Board.self)
+            .subscribe(onNext: {
+                let vc = PostListViewController()
+                vc.boardType = $0.board_type
+                let nav = UINavigationController(rootViewController: vc)
+                nav.modalPresentationStyle = .fullScreen
+                self.present(nav, animated: true, completion: nil)
+            })
+            .disposed(by: disposeBag)
     }
 }

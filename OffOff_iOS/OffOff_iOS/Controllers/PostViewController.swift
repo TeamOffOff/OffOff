@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import RxSwift
 
 class PostViewController: UIViewController {
     var postView = PostView(frame: .zero)
-    var postBoxed: Box<Post>?
+    var postInfo: (id: String, type: String)?
+    let disposeBag = DisposeBag()
+    
     var commentContainer = UIView().then {
         $0.backgroundColor = .white
         $0.makeBorder(color: UIColor.mainColor.cgColor, cornerRadius: 12)
@@ -37,9 +40,6 @@ class PostViewController: UIViewController {
         commentContainer.addSubview(commentTextView)
         commentContainer.addSubview(commentButton)
         
-        postBoxed?.bind { _ in
-            self.postView.setupView(post: self.postBoxed!.value)
-        }
         postView.snp.makeConstraints {
             $0.left.right.top.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(Constants.SCREEN_SIZE.height / 12.5)
@@ -65,6 +65,19 @@ class PostViewController: UIViewController {
         super.viewDidLoad()
         commentTextView.delegate = self
         addKeyboardNotifications()
+        
+        // view model
+        let viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "")
+        
+        // bind result
+        viewModel.post
+            .bind {
+                self.postView.authorLabel.text = $0?.Author
+                self.postView.contentTextView.text = $0?.Content
+                self.postView.dateLabel.text = $0?.Date
+                self.postView.profileImageView.image = UIImage(systemName: "person.fil")
+            }
+            .disposed(by: disposeBag)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

@@ -7,6 +7,8 @@
 
 import Foundation
 import Moya
+import RxMoya
+import RxSwift
 
 public class BoardServices {
     static let provider = MoyaProvider<BoardAPI>()
@@ -19,39 +21,31 @@ public class BoardServices {
         
     }
     
-    static func fetchBoardList(completion: @escaping (_ boardList: BoardList) -> Void) {
-        BoardServices.provider.request(.getBoardList) { (result) in
-            switch result {
-            case let .success(response):
-                do {
-                    let filteredResponse = try response.filterSuccessfulStatusCodes()
-                    let decoder = JSONDecoder()
-                    let boardList = try filteredResponse.map(BoardList.self, using: decoder)
-                    completion(boardList)
-                } catch let error {
-                    print(error.localizedDescription)
+    static func fetchBoardList() -> Observable<BoardList?> {
+        BoardServices.provider
+            .rx.request(.getBoardList)
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    let boards = try JSONDecoder().decode(BoardList.self, from: $0.data)
+                    return boards
                 }
-            case let .failure(error):
-                print("request failed: \(error.errorDescription)")
+                return nil
             }
-        }
+            .catchErrorJustReturn(nil)
     }
     
-    static func fetchPostList(boardType: String, lastContentID: String?, completion: @escaping (_ postList: PostList) -> Void) {
-        BoardServices.provider.request(.getPostList(boardType, lastContentID)) { (result) in
-            switch result {
-            case let .success(response):
-                do {
-                    let filteredResponse = try response.filterSuccessfulStatusCodes()
-                    let decoder = JSONDecoder()
-                    let postList = try filteredResponse.map(PostList.self, using: decoder)
-                    completion(postList)
-                } catch let error {
-                    print(error.localizedDescription)
+    static func fetchPostList(board_type: String) -> Observable<PostList?> {
+        PostServices.provider
+            .rx.request(.getPostList(board_type))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    let postList = try JSONDecoder().decode(PostList.self, from: $0.data)
+                    return postList
                 }
-            case let .failure(error):
-                print("request failed: \(error.errorDescription)")
+                return nil
             }
-        }
+            .catchErrorJustReturn(nil)
     }
 }
