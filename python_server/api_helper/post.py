@@ -65,7 +65,7 @@ class PostControl(Resource):
         if result.raw_result["n"] == 1:
             return {"queryStatus": "success"}
         else:
-            return {"queryStatus": "not found"}, 500
+            return {"queryStatus": "post delete fail"}, 500
 
 
     def post(self):  # 게시글 생성
@@ -149,7 +149,7 @@ class PostControl(Resource):
             return modified_post
 
         else:
-            return {"queryStatus": "not modified"}, 500
+            return {"queryStatus": "post modify fail"}, 500
 
 
 # 댓글 관련 API
@@ -177,7 +177,7 @@ class CommentControl(Resource):
             reply_list.append(reply)
 
         return {
-            "reply_list": reply_list
+            "replyList": reply_list
         }
 
 
@@ -237,7 +237,7 @@ class CommentControl(Resource):
             "replyList": reply_list
         }
         else:
-            return {"queryStatus": "댓글 삭제에 실패하였습니다."}, 500
+            return {"queryStatus": "reply delete failed"}, 500
 
 
 # 대댓글 관련 API
@@ -272,7 +272,7 @@ class SubcommentControl(Resource):
             "replyList": reply_list
         }
         else:
-            return {"queryStatus": "대댓글 등록에 실패하였습니다."}, 500
+            return {"queryStatus": "subreply register fail"}, 500
 
 
     def delete(self):  # 대댓글 삭제
@@ -302,4 +302,4 @@ class SubcommentControl(Resource):
             "replyList": reply_list
         }
         else:
-            return {"queryStatus": "대댓글 삭제에 실패하였습니다."}, 500
+            return {"queryStatus": "subreply delete failed"}, 500
