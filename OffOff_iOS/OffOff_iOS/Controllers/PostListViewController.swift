@@ -12,13 +12,14 @@ import RxSwift
 
 class PostListViewController: UITableViewController {
     var boardType: String?
+    var boardName: String?
     let disposeBag = DisposeBag()
     
     override func loadView() {
         self.tableView = .init()
-        self.title = "자유게시판" // TODO: 받아온 게시판 정보로 타이틀 지정 필요
         self.tableView.delegate = nil
         self.tableView.dataSource = nil
+        self.title = boardName ?? ""
         self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationController?.navigationBar.barTintColor = .mainColor
         self.navigationController?.navigationBar.isTranslucent = false

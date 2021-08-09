@@ -26,4 +26,33 @@ public class PostServices {
             }
             .catchErrorJustReturn(nil)
     }
+    
+    static func createPost(post: Post) -> Observable<Bool> {
+        PostServices.provider
+            .rx.request(.makePost(post: post))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    return true
+                }
+                return false
+            }
+            .catchErrorJustReturn(false)
+    }
+    
+    
+    // 새로 작성한 포스트를 바로 받아오는 버젼
+//    static func createPost(post: Post) -> Observable<Post?> {
+//        PostServices.provider
+//            .rx.request(.makePost(post: post))
+//            .asObservable()
+//            .map {
+//                if $0.statusCode == 200 {
+//                    let post = try JSONDecoder().decode(Post.self, from: $0.data)
+//                    return post
+//                }
+//                return nil
+//            }
+//            .catchErrorJustReturn(nil)
+//    }
 }

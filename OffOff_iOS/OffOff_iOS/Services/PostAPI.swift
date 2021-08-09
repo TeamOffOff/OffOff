@@ -11,10 +11,8 @@ import Moya
 // 게시글, 게시글 목록과 관련된 API
 
 enum PostAPI {
-    case getPostList(_ board_type: String)
-    case getBoardList
     case getPost(content_id: String, board_type: String)
-//    case makePost
+    case makePost(post: Post)
 //    case modifyPost
 //    case deletePost
 }
@@ -26,23 +24,19 @@ extension PostAPI: TargetType {
     
     var path: String {
         switch self {
-        case .getPostList(let board_type):
-            return "/postlist/\(board_type)"
-        case .getBoardList:
-            return "/boardlist"
-        case .getPost(let content_id, let board_type):
+        case .getPost(_, _):
+            return "/post"
+        case .makePost(_):
             return "/post"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .getPostList(_):
-            return .get
-        case .getBoardList:
-            return .get
         case .getPost(_, _):
             return .get
+        case .makePost(_):
+            return .post
         }
     }
     
@@ -52,12 +46,10 @@ extension PostAPI: TargetType {
     
     var task: Task {
         switch self {
-        case .getPostList(_):
-            return .requestPlain
-        case .getBoardList:
-            return .requestPlain
         case .getPost(let content_id, let board_type):
             return .requestParameters(parameters: ["content-id": content_id, "board-type": board_type], encoding: URLEncoding.default)
+        case .makePost(let post):
+            return .requestJSONEncodable(post)
         }
     }
     
