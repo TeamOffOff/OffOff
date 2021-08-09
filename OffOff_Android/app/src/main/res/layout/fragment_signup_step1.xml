@@ -60,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/id_pattern"
                 app:errorEnabled="true"
+                app:helperTextTextColor="@color/green"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

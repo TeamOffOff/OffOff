@@ -1,9 +1,9 @@
 package com.yuuuzzzin.offoff_android.di
 
-import com.yuuuzzzin.offoff_android.service.api.AuthService
 import com.yuuuzzzin.offoff_android.service.api.BoardService
-import com.yuuuzzzin.offoff_android.service.repository.AuthRepository
+import com.yuuuzzzin.offoff_android.service.api.MemberService
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
+import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,8 +22,8 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideAuthRepository(authService: AuthService): AuthRepository {
-        return AuthRepository(authService)
+    fun provideMemberRepository(memberService: MemberService): MemberRepository {
+        return MemberRepository(memberService)
     }
 
 }

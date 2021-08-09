@@ -12,7 +12,8 @@ import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignupStep3Fragment : BaseSignupFragment<FragmentSignupStep3Binding>(R.layout.fragment_signup_step3) {
+class SignupStep3Fragment :
+    BaseSignupFragment<FragmentSignupStep3Binding>(R.layout.fragment_signup_step3) {
 
     override fun initView() {
         binding.viewModel = signupViewModel
@@ -25,9 +26,10 @@ class SignupStep3Fragment : BaseSignupFragment<FragmentSignupStep3Binding>(R.lay
 
         binding.etNickname.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (hasFocus) {
-                if(!binding.tfNickname.isError()) {
+                if (!binding.tfNickname.isError()) {
                     binding.tfNickname.setTextFieldFocus()
-                    binding.tfNickname.setStartIconDrawable(0)      }
+                    binding.tfNickname.setStartIconDrawable(0)
+                }
             }
         }
 
@@ -40,23 +42,29 @@ class SignupStep3Fragment : BaseSignupFragment<FragmentSignupStep3Binding>(R.lay
             }
         })
 
-        signupViewModel.isNicknameVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfNickname.helperText = it
-                binding.tfNickname.setTextFieldVerified()
+        signupViewModel.isNicknameVerified.observe(viewLifecycleOwner, {
+            binding.tfNickname.helperText = it
+            binding.tfNickname.setTextFieldVerified()
+            binding.tfNickname.setStartIconDrawable(0)
+        })
+
+        signupViewModel.isNicknameError.observe(viewLifecycleOwner, {
+            if (it.isNullOrEmpty()) {
+                binding.tfNickname.setTextFieldDefault()
+                binding.tfNickname.helperText = null
+            } else {
+                binding.tfNickname.setTextFieldError(it)
                 binding.tfNickname.setStartIconDrawable(0)
             }
         })
 
-        signupViewModel.isNicknameError.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                if(it.isNullOrEmpty()) {
-                    binding.tfNickname.setTextFieldDefault()
-                    binding.tfNickname.helperText = null
-                }
-                else {
-                    binding.tfNickname.setTextFieldError(it)
-                    binding.tfNickname.setStartIconDrawable(0)
+        signupViewModel.step3Success.observe(viewLifecycleOwner, { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    activity?.supportFragmentManager
+                        ?.beginTransaction()
+                        ?.remove(this)
+                        ?.commit()
                 }
             }
         })
@@ -74,14 +82,19 @@ class SignupStep3Fragment : BaseSignupFragment<FragmentSignupStep3Binding>(R.lay
 
     private fun showProfileDialog() {
 
-        val array = arrayOf(Constants.PROFILE_OPTION1, Constants.PROFILE_OPTION2, Constants.PROFILE_OPTION3, Constants.PROFILE_OPTION4)
+        val array = arrayOf(
+            Constants.PROFILE_OPTION1,
+            Constants.PROFILE_OPTION2,
+            Constants.PROFILE_OPTION3,
+            Constants.PROFILE_OPTION4
+        )
         val builder = AlertDialog.Builder(mContext)
 
         builder.setItems(array) { _, which ->
             val selected = array[which]
 
             try {
-                when(which) {
+                when (which) {
 
                 }
 

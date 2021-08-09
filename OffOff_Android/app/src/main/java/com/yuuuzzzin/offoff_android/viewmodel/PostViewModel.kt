@@ -19,8 +19,7 @@ constructor(
 ): ViewModel() {
 
     private val _response = MutableLiveData<Post>()
-    val response: LiveData<Post>
-        get() = _response
+    val response: LiveData<Post> get() = _response
 
     fun getPost(postId: String, postBoardType: String) = viewModelScope.launch {
         repository.getPost(postId, postBoardType).let {response ->

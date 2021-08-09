@@ -14,20 +14,14 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".view.ui.board.PostWriteActivity"></activity>
-        <activity
-            android:name=".utils.base.BaseActivity"
-            android:label="@string/title_activity_base"
-            android:theme="@style/Theme.OffOff_Android.NoActionBar" />
+        <activity android:name=".view.ui.board.PostWriteActivity"/>
         <activity android:name=".view.ui.member.SignupActivity" />
         <activity android:name=".view.ui.member.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".view.ui.board.PostActivity" />
         <activity android:name=".view.ui.board.BoardActivity" />

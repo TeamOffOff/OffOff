@@ -1,8 +1,8 @@
 package com.yuuuzzzin.offoff_android.di
 
 import com.yuuuzzzin.offoff_android.BuildConfig
-import com.yuuuzzzin.offoff_android.service.api.AuthService
 import com.yuuuzzzin.offoff_android.service.api.BoardService
+import com.yuuuzzzin.offoff_android.service.api.MemberService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,7 +39,7 @@ object NetworkModule {
     /* 로그인 응답을 위한 모듈 */
     @Singleton
     @Provides
-    fun provideAuthService(retrofit: Retrofit): AuthService =
-        retrofit.create(AuthService::class.java)
+    fun provideMemberService(retrofit: Retrofit): MemberService =
+        retrofit.create(MemberService::class.java)
 
 }

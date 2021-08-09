@@ -50,6 +50,7 @@ class SignupStep2Fragment :
                 signupViewModel.validateEmail()
         }
 
+        /* 이름 파트 */
         binding.etName.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 signupViewModel.validateName()
@@ -59,6 +60,17 @@ class SignupStep2Fragment :
             }
         }
 
+        signupViewModel.name.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateName()
+            }
+        })
+
+        signupViewModel.isNameVerified.observe(viewLifecycleOwner, {
+            binding.tfName.validate(it)
+        })
+
+        /* 이메일 파트 */
         binding.etEmail.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 signupViewModel.validateEmail()
@@ -68,6 +80,17 @@ class SignupStep2Fragment :
             }
         }
 
+        signupViewModel.email.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateEmail()
+            }
+        })
+
+        signupViewModel.isEmailVerified.observe(viewLifecycleOwner, {
+            binding.tfEmail.validate(it)
+        })
+
+        /* 생년월일 파트 */
         signupViewModel.birth.observe(viewLifecycleOwner, {
             if (!binding.etBirth.text.isNullOrEmpty()) {
                 binding.tfBirth.setTextFieldVerified()
@@ -76,22 +99,14 @@ class SignupStep2Fragment :
             }
         })
 
-        signupViewModel.isNameVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfName.validate(it)
+        signupViewModel.birth.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateBirth()
             }
         })
 
-        signupViewModel.isEmailVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfEmail.validate(it)
-            }
-        })
-
-        signupViewModel.isBirthVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfBirth.validate(it)
-            }
+        signupViewModel.isBirthVerified.observe(viewLifecycleOwner, {
+            binding.tfBirth.validate(it)
         })
 
         signupViewModel.step2Success.observe(viewLifecycleOwner, { event ->

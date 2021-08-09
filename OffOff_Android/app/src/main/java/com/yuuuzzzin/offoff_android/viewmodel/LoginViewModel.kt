@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.service.models.LoginInfo
-import com.yuuuzzzin.offoff_android.service.repository.AuthRepository
+import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class LoginViewModel
 @Inject
 constructor(
-    private val repository: AuthRepository
+    private val repository: MemberRepository
 ): ViewModel() {
 
     val id = MutableLiveData("")
@@ -78,13 +78,13 @@ constructor(
                 // 서버 통신 성공
                 if(response.isSuccessful) {
                     // 로그인 성공
-                    if(response.body()!!.result == "success") {
+                    if(response.body()!!.message == "success") {
                         _loginSuccess.postValue(Event(userId))
                         Log.d("tag_login_success", response.body().toString())
                     } else { // 로그인 실패
                         Log.d("tag_login_fail", response.body().toString())
                         //alertMsg.postValue(response.body()!!.result)
-                        _loginFail.postValue(Event(response.body()!!.result))
+                        _loginFail.postValue(Event(response.body()!!.message))
                     }
                     // 서버 통신 실패
                 } else {
