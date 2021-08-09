@@ -15,6 +15,12 @@ Reply = Namespace("reply", description="댓글 관련 API")
 SubReply = Namespace("subreply", description="대댓글 관련 API")
 
 
+# JSON 형태로 response하기 위해 string 타입으로 변환하는 함수
+def convert_to_string(post):
+    post["_id"] = str(post["_id"])
+    post["date"] = str(post["date"])
+
+
 # 게시글 관련 API
 @Post.route("")
 class PostControl(Resource):
@@ -47,8 +53,7 @@ class PostControl(Resource):
             #     post["author"] = None
             # else:
             #     post["author"] = author
-            post["_id"] = str(post["_id"])
-            post["date"] = str(post["date"])
+            convert_to_string(post=post)
 
             return post
 
@@ -79,8 +84,8 @@ class PostControl(Resource):
         post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
 
         post = mongodb.find_one(query={"_id":post_id}, collection_name=board_type)
-        post["_id"] = str(post["_id"])
-        post["date"] = str(post["date"])
+
+        convert_to_string(post=post)
 
         return post
 
@@ -93,6 +98,7 @@ class PostControl(Resource):
         
         # 직전 좋아요 수 저장
         past_likes = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id":False, "likes":True})
+
         past_likes = past_likes["likes"]
 
         # 프론트에서 받은 JSON의 _id 삭제
@@ -134,22 +140,37 @@ class PostControl(Resource):
             # 인기게시판 관련
             if (past_likes < 10) and (modified_post["likes"] == 10) :
                 hot_post_info={}
-                hot_post_info["_id"] = modified_post["_id"]
-                hot_post_info["boardType"] = modified_post["boardType"]
-                hot_post_info["date"] = modified_post["date"]
-
+                
+                # hot_board 컬렉션에 저장할 key 값
+                hot_board_element = ["_id", "boardType", "date"]
+    
+                for key in hot_board_element:
+                    hot_post_info[key] = modified_post[key]
+                
                 mongodb.insert_one(data=hot_post_info, collection_name="hot_board")
             
             elif (past_likes >= 10) and (modified_post["likes"] < 10):
                 mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name="hot_board")
             
-            modified_post["_id"] = str(modified_post["_id"])
-            modified_post["date"] = str(modified_post["date"])
+            convert_to_string(post=modified_post)
             
             return modified_post
 
         else:
             return {"queryStatus": "post modify fail"}, 500
+
+
+# 댓글 조회 함수
+def get_reply_list(post_id, board_type):
+    cursor = mongodb.find(query={"postId": post_id},
+                              collection_name=board_type)  # 댓글은 오름차순
+
+    reply_list = []
+    for reply in cursor:
+        reply["_id"] = str(reply["_id"])
+        reply_list.append(reply)
+    
+    return reply_list
 
 
 # 댓글 관련 API
@@ -166,16 +187,11 @@ class CommentControl(Resource):
 
         post_id = reply_info["postId"]
 
-        result = mongodb.insert_one(data=reply_info, collection_name=board_type)
+        mongodb.insert_one(data=reply_info, collection_name=board_type)
 
-        cursor = mongodb.find(query={"postId": post_id},
-                              collection_name=board_type)  # 댓글은 오름차순
+        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
 
-        reply_list = []
-        for reply in cursor:
-            reply["_id"] = str(reply["_id"])
-            reply_list.append(reply)
-
+        
         return {
             "replyList": reply_list
         }
@@ -186,14 +202,8 @@ class CommentControl(Resource):
 
         post_id = request.args.get("postId")
         board_type = request.args.get("boardType") + "_board_reply"
-
-        cursor = mongodb.find(query={"postId": post_id},
-                              collection_name=board_type)  # 댓글은 오름차순
-
-        reply_list = []
-        for reply in cursor:
-            reply["_id"] = str(reply["_id"])
-            reply_list.append(reply)
+        
+        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
 
         return {
             "replyList": reply_list
@@ -224,13 +234,7 @@ class CommentControl(Resource):
                                         collection_name=board_type,
                                         modify={"$set": alert_delete})
         
-        cursor = mongodb.find(query={"postId": post_id},
-                              collection_name=board_type)  # 댓글은 오름차순
-
-        reply_list = []
-        for reply in cursor:
-            reply["_id"] = str(reply["_id"])
-            reply_list.append(reply)
+        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
 
         if result.raw_result["n"] == 1:
             return {
@@ -238,6 +242,17 @@ class CommentControl(Resource):
         }
         else:
             return {"queryStatus": "reply delete failed"}, 500
+
+
+# 대댓글 변수 설정 함수
+def get_subreply_variable():
+    subreply_info = request.get_json()
+    post_id = subreply_info["postId"]
+    reply_id = subreply_info["replyId"]
+    board_type = subreply_info["boardType"] + "_board_reply"
+    subreply = subreply_info["subReply"]
+
+    return post_id, reply_id, board_type, subreply
 
 
 # 대댓글 관련 API
@@ -249,23 +264,13 @@ class SubcommentControl(Resource):
         """
         대댓글 추가
         """
-        subreply_info = request.get_json()
-        post_id = subreply_info["postId"]
-        reply_id = subreply_info["replyId"]
-        board_type = subreply_info["boardType"] + "_board_reply"
-        subreply = subreply_info["subReply"]
+        post_id, reply_id, board_type, subreply = get_subreply_variable()
 
         result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
                                     collection_name=board_type,
                                     modify={"$push": {"subReply": subreply}})
 
-        cursor = mongodb.find(query={"postId": post_id},
-                              collection_name=board_type)  # 댓글은 오름차순
-
-        reply_list = []
-        for reply in cursor:
-            reply["_id"] = str(reply["_id"])
-            reply_list.append(reply)
+        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
 
         if result.raw_result["n"] == 1:
             return {
@@ -279,23 +284,13 @@ class SubcommentControl(Resource):
         """
         대댓글 삭제
         """
-        subreply_info = request.get_json()
-        post_id = subreply_info["postId"]
-        reply_id = subreply_info["replyId"]
-        board_type = subreply_info["boardType"] + "_board_reply"
-        subreply = subreply_info["subReply"]
+        post_id, reply_id, board_type, subreply = get_subreply_variable()
 
         result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
                                     collection_name=board_type,
                                     modify={"$pull": {"subReply": subreply}})
 
-        cursor = mongodb.find(query={"postId": post_id},
-                              collection_name=board_type)  # 댓글은 오름차순
-
-        reply_list = []
-        for reply in cursor:
-            reply["_id"] = str(reply["_id"])
-            reply_list.append(reply)
+        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
 
         if result.raw_result["n"] == 1:
             return {

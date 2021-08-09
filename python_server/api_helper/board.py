@@ -92,16 +92,23 @@ class PostListControl(Resource):
         try:
 
             board_type = board_type + "_board"
-            page_size = int(request.args.get("pageSize", default=20))
-            last_post_id = request.args.get("lastPostId", default="")
+            volume = int(request.args.get("volume", default=20))
+            standard_id = request.args.get("standardId", default="")
+            direction = request.args.get("direction", default="old")
 
-            if not last_post_id:  # 게시판에 처음 들어간 경우
-                cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(page_size)
-            else:  # 스크롤 하는 경우
-                last_content_id = ObjectId(last_post_id)
-                cursor = mongodb.find(query={'_id': {'$lt': last_content_id}}, collection_name=board_type).sort(
-                    [("_id", -1)]).limit(page_size)  # 고정해도 되나?
- 
+            if not standard_id:  # 게시판에 처음 들어간 경우
+                cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(volume)
+            
+            elif direction == "old":  # 과거 게시글 불러올 때
+                standard_id = ObjectId(standard_id)
+                cursor = mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
+                    [("_id", -1)]).limit(volume)
+            
+            elif direction == "new":  # 최신 게시글 불러올 때
+                standard_id = ObjectId(standard_id)
+                cursor = mongodb.find(query={'_id': {'$gt': standard_id}}, collection_name=board_type).sort(
+                        [("_id",1)]).limit(volume)
+
 
             post_list = []
             for post in cursor:
@@ -109,7 +116,11 @@ class PostListControl(Resource):
 
                 if board_type != "hot_board":
                     post["date"] = str(post["date"])
-                post_list.append(post)
+                
+                if direction == "new":
+                    post_list.insert(0,post)
+                else:
+                    post_list.append(post)
 
             last_post_id = post_list[-1]["_id"]
 
@@ -136,7 +147,7 @@ class PostListControl(Resource):
                     "postList": post_list
                 }
 
-                 
+
         except IndexError:  # 일반 게시판 더 이상 없는 경우
             return {
                 "lastPostId": None,
