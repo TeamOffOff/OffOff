@@ -1,10 +1,15 @@
 from flask import request
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
+from datetime import datetime, timedelta
+
+from pymongo import collection
+
 
 import mongo
 
 mongodb = mongo.MongoHelper()
+
 
 BoardList = Namespace(
     name="boardlist",
@@ -15,79 +20,149 @@ PostList = Namespace(
     description="게시글목록을 불러오는 API")
 
 
-@BoardList.route("/")
+
+@BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우
 class BoardListControl(Resource):
-    """
-    <DB에 구조>
-    board_list 라는 컬랙션에
-    {
-        "name" : "자유게시판",
-        "icon" : "image url"
-    },
-    {
-        "name" : "비밀게시판",
-        "icon" : "image url"
-    }
-    """
 
-    def get(self):
-        """
-        DB > board_list 컬랙션에서 게시판을 조회합니다
-        """
+    def get(self):  # 게시판 목록 불러오기
+
         cursor = mongodb.find(collection_name="board_list", projection_key={"_id": 0})
         
-        board_list = []
-        for doc in cursor:
-            board_list.append(doc)
+        access_on = datetime.now()
+        standard = access_on - timedelta(hours=3)
 
+        
+        board_list= []
+        for board in cursor:
+            
+            board_type = board["boardType"]+"_board"
+            
+            result = mongodb.find_one(collection_name=board_type, query={"date":{"$gte": standard}})
+            
+            if result:
+                board["newPost"] = True
+
+            # result = mongodb.aggregate(collection_name=board_type, pipeline=[{"$match": {"date": {"$gte":standard}}}])
+            # temp_board_list = []
+            # for new_post in result:
+            #     temp_board_list.append(new_post)
+            
+            # if temp_board_list:
+            #     board["newPost"] = True
+            
+            board_list.append(board)
+                
+ 
         return {
-            "board": board_list
+            "boardList": board_list
         }
+    
+    
+    def delete(self):  # 게시판 목록 삭제
+        """특정 게시판 정보를 삭제합니다."""
+        board_info = request.get_json()
+        board_type = board_info["boardType"]
+
+        result = mongodb.delete_one(query={"boardType": board_type}, collection_name="board_list")
+
+        if result.raw_result["n"] == 1:
+            return {"queryStatus": "해당 게시판을 삭제했습니다."}
+        else:
+            return {"queryStatus": "게시판 삭제를 실패했습니다."}, 500
+
+
+    def post(self):  # 게시판 목록 등록
+        """특정 게시판 정보를 등록합니다."""
+        board_info = request.get_json()
+
+        mongodb.insert_one(data=board_info, collection_name="board_list")
+
+        return {"queryStatus": "게시판을 등록했습니다"}
 
 
 @PostList.route("/<string:board_type>")
 # 사용자가 특정 게시판을 클릭하는 경우
 class PostListControl(Resource):
-    """
-        http://0.0.0.0:5000/postlist//free
-        http://0.0.0.0:5000/postlist/free/?last-content-id=직전에 받은 게시글 id&page-size=10
-    """
-    def get(self, board_type):
+
+    def get(self, board_type):  # 게시글 목록 불러오기
         """
         DB > 해당 게시판의 컬랙션(free_board)에서 게시글을 조회합니다
         """
         try:
 
             board_type = board_type + "_board"
+            volume = int(request.args.get("volume", default=20))
+            standard_id = request.args.get("standardId", default="")
+            direction = request.args.get("direction", default="old")
 
-            page_size = int(request.args.get("page-size", default=20))
+            if not standard_id:  # 게시판에 처음 들어간 경우
+                cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(volume)
             
-            last_content_id = request.args.get("last-content-id", default="")
+            elif direction == "old":  # 과거 게시글 불러올 때
+                standard_id = ObjectId(standard_id)
+                cursor = mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
+                    [("_id", -1)]).limit(volume)
+            
+            elif direction == "new":  # 최신 게시글 불러올 때
+                standard_id = ObjectId(standard_id)
+                cursor = mongodb.find(query={'_id': {'$gt': standard_id}}, collection_name=board_type).sort(
+                        [("_id",1)]).limit(volume)
 
-                
-            if not last_content_id:  # 게시판에 처음 들어간 경우
-                cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(page_size)
-            else:  # 스크롤 하는 경우
-                last_content_id = ObjectId(last_content_id)
-                cursor = mongodb.find(query={'_id': {'$lt': last_content_id}}, collection_name=board_type).sort(
-                    [("_id", -1)]).limit(page_size)  # 고정해도 되나?
- 
 
             post_list = []
-            for doc in cursor:
-                doc["_id"] = str(doc["_id"])
-                post_list.append(doc)
+            for post in cursor:
+                post["_id"] = str(post["_id"])
 
-            last_content_id = post_list[-1]["_id"]
+                if board_type != "hot_board":
+                    post["date"] = str(post["date"])
+                
+                if direction == "new":
+                    post_list.insert(0,post)
+                else:
+                    post_list.append(post)
 
-            return {
-                "last_content_id": last_content_id,
-                "post_list": post_list
-            }
+            last_post_id = post_list[-1]["_id"]
+
+            if board_type == "hot_board":  # 인기게시판인 경우
+                hot_post_list = []
+                for temp_post in post_list:
+                    post_id = temp_post["_id"]
+                    board_type = temp_post["boardType"]+"_board"
+
+                    post = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
+                    post["_id"] = str(post["_id"])
+                    post["date"] = str(post["date"])
+
+                    hot_post_list.append(post)
+                
+                return {
+                    "lastPostId": last_post_id,
+                    "postList": hot_post_list
+                }
             
-        except IndexError:
+            else:
+                return {
+                    "lastPostId": last_post_id,
+                    "postList": post_list
+                }
+
+
+        except IndexError:  # 일반 게시판 더 이상 없는 경우
             return {
-                "last_content_id": None,
-                "post_list": None
+                "lastPostId": None,
+                "postList": None
             }
+        except TypeError:  # 인기 게시판 더 이상 없는 경우
+            return {
+                "lastPostId": None,
+                "postList": None
+            }
+    
+    def delete(self, board_type):  # 컬렉션 자체를 삭제
+        
+        result= mongodb.drop(collection_name=board_type)
+        
+        return result
+
+
