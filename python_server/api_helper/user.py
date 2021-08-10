@@ -21,26 +21,6 @@ Activity = Namespace(name="activity", description="유저 활동 관련 API")
 class AuthRegister(Resource):
     """
     (아이디, 닉네임)중복확인, 회원가입, 비밀번호변경, 회원탈퇴
-    { 
-        "_id": string   
-        "password": string
-        “info”: { 
-                "name": string
-                "email": string
-                "birth": string
-                "type": string
-        }, 
-        “subinfo”: { 
-            "nickname": string
-            "profile_image": string(
-        }, 
-        “activity”: { 
-            "posts": list
-            "reply": list
-            "likes": list
-            "report": list
-        } 
-    }
     """
 
     def get(self):
@@ -59,7 +39,7 @@ class AuthRegister(Resource):
                 }, 200
 
         if check_email:
-            if mongodb.find_one(query={"subinfo": {"email": check_email}}, collection_name="user"):
+            if mongodb.find_one(query={"info.email": check_email}, collection_name="user"):
                 return {
                     "queryStatus": "already exist"
                 }, 500
@@ -69,7 +49,7 @@ class AuthRegister(Resource):
                 }, 200
 
         if check_nickname:
-            if mongodb.find_one(query={"subinfo": {"nickname": check_nickname}}, collection_name="user"):
+            if mongodb.find_one(query={"subinfo.nickname": check_nickname}, collection_name="user"):
                 return {
                     "queryStatus": "already exist"
                 }, 500
@@ -201,7 +181,7 @@ class AuthLogin(Resource):
         result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set": new_user_info})
 
         if result.raw_result["n"] == 1:
-            modified_user = mongodb.find_one(query={"id": token_decoded["id"]},
+            modified_user = mongodb.find_one(query={"_id": token_decoded["_id"]},
                                              collection_name="user")
             modified_user["password"] = "비밀번호"
 
