@@ -10,6 +10,7 @@ class MongoHelper:
         self.client = MongoClient(self.host, self.port)
         self.db = self.client[db_name]
         self.collection = None
+    
 
     def insert_one(self, data=None, collection_name=None):
         self.collection = self.db[collection_name]
@@ -54,6 +55,13 @@ class MongoHelper:
     def aggregate(self, pipeline=None, collection_name=None):
         self.collection = self.db[collection_name]
         result = self.collection.aggregate(pipeline)
+        return result
+    
+    def drop(self, collection_name=None):  # 컬렉션 자체를 없앰
+        self.collection = self.db[collection_name]
+        result = self.collection.drop()
+        return result
+
 
 
 if __name__ == "__main__":

@@ -1,8 +1,10 @@
+from api_helper.user import ActivityControl
 from flask import request
 from flask_restx import Resource, Namespace, fields
 from bson.objectid import ObjectId
 from bson import json_util
 import json
+from api_helper.user import ActivityUpdate
 
 import mongo
 
@@ -65,7 +67,15 @@ class PostControl(Resource):
         post_id = post_info["_id"]
         board_type = post_info["boardType"] + "_board"
 
+        # 게시글 삭제
         result = mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
+
+        # 회원활동정보 삭제
+        post_activity = [post_info["boardType"], str(post_id)]
+        author = post_info["author"]
+
+        update_activity = ActivityUpdate(author=author, field="activity.posts", new_activity_info=post_activity)
+        update_activity.update_activity(operator="$pull")
 
         if result.raw_result["n"] == 1:
             return {"queryStatus": "success"}
@@ -81,11 +91,19 @@ class PostControl(Resource):
         del post_info["_id"]
         post_info["date"] = dateutil.parser.parse(post_info["date"])
         
+        # 게시글 등록
         post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
 
         post = mongodb.find_one(query={"_id":post_id}, collection_name=board_type)
 
         convert_to_string(post=post)
+
+        # 회원활동정보 등록
+        post_activity = [post["boardType"], str(post_id)]
+        author = post_info["author"]
+
+        update_activity = ActivityUpdate(author=author, field="activity.posts", new_activity_info=post_activity)
+        update_activity.update_activity(operator="$addToSet")
 
         return post
 

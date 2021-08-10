@@ -108,7 +108,24 @@ class AuthRegister(Resource):
 
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
 
-        # 활동 알수없음으로 바꾸기
+        # # 활동 알수없음으로 바꾸기
+        # activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity":True, "_id":False})
+        # act_post = activity["activity"]["posts"]
+        # act_reply = activity["activity"]["reply"]
+        # # 게시글 알 수 없음
+        # if act_post:
+        #     for i in act_post:
+        #         board_type=i[0]
+        #         pk = i[1]
+        #         mongodb.update_one(query={"_id":pk}, collection_name=board_type, modify={"$set":{"author": None}})
+        
+        # if act_reply:
+        #     for i in act_reply:
+        #         board_type=i[0]
+        #         pk = i[2]
+        #         mongodb.update_one(query={"_id":pk}, collection_name=board_type, modify={"$set":{"reply.author": None}})
+
+
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": token_decoded["_id"]}, collection_name="user")
@@ -189,99 +206,40 @@ class AuthLogin(Resource):
         else:
             return {"queryStatus": "infomation update fail"}, 500
 
+class ActivityUpdate():
+    def __init__(self, author, field, new_activity_info):
+        self.author = author
+        self.field = field
+        self.new_activity_info = new_activity_info
 
-
-@Activity.route('')
-class ActivityControl(Resource):
-    """
-    공감, 스크랩, 댓글, 작성글
-    """
-    def put(self):  # 활동 추가
+    def update_activity(self, operator):  # 활동 추가
         """
         사용자 활동 추가하기
         """
-        header = request.headers.get("Authorization")  # 이 회원의 활동정보 변경
 
-        if header is None: 
-            return {"queryStatus": "please login"}, 404
-
-        token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)
-
-        new_activity_info = request.get_json()  
         """
-        {
-            "likes" : ["board_type", "content_id"]
-        } 
+        author : 유저 id
+        field : 활동 내용 posts, likes, reply, report
+        new_activity_info : 구체적인 내용["board_type", "post_id:]
         """
-
-        user_activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity": 1})
-        """
-        {
-         "activity" : {
-           "likes" : [["board_type", "content_id"], ["board_type", "content_id"]],
-           "posts" : [[], []]
-        }
-        """
-
-        for key in new_activity_info:
-            user_activity["activity"][key].append(new_activity_info[key])  # insert : 제일 앞으로 추가함
         
         
-        result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set" : user_activity})
+        result = mongodb.update_one(query={"_id": self.author}, collection_name="user", modify={operator: {self.field: self.new_activity_info}})
 
         if result.raw_result["n"] == 1:
             return {"queryStatus": "success"}
         else:
             return {"queryStatus": "activity update fail"}, 500
-    
-
-    def delete(self):  # 활동 제거(활동 취소 시, 게시글 삭제 시)
-        """
-        사용자 활동 지우기
-        """
-        header = request.headers.get("Authorization")  # 이 회원의 활동정보 변경
-
-        if header is None: 
-            return {"message": "Please Login"}, 404
-
-        token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)
-
-        new_activity_info = request.get_json()  
-        """
-        {
-            "like" : ["board_type", "post_id"]
-        } 
-        """
-        
-        user_activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity": 1})
-        """
-        {
-         "activity" : {
-           "likes" : [["board_type", "content_id"], ["board_type", "content_id"]],
-           "posts" : [[], []]
-        }
-        """
-
-        for key in new_activity_info:  # key : "likes" ,"posts"
-            post_id = new_activity_info[key][1]
-            user_activity["activity"][key]  # "likes"의 구체적인 내용 : 리스트로 이루어진 리스트
-            for post in user_activity["activity"][key]:  # post는 개별 활동 리스트(게시판, 게시글 조합)
-                if post_id in post:
-                    user_activity["activity"][key].remove(post)
-
-        result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set" : user_activity})
-
-        if result.raw_result["ok"] == 1:
-            return {"queryStatus": "success"}
-        else:
-            return {"queryStatus": "activity delete fail"}, 500
 
 
-    def get(self):  # 회원활동 탭에서 보여지는 정보 (게시글 리스트)
+@Activity.route("/<string:activity_type>")
+class ActivityControl(Resource):
+    """
+    공감, 스크랩, 댓글, 작성글
+    """
+    def get(self, activity_type):  # 회원활동 탭에서 보여지는 정보 (게시글 리스트)
         """
         사용자 활동과 관련된 게시글 보여주기
-        /activity?activity-type=likes
-        /activity?activity-type=posts
         """
         header = request.headers.get("Authorization")
 
@@ -290,9 +248,9 @@ class ActivityControl(Resource):
 
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
 
-        activity_type = request.args.get("activityType")       
+        activity_type = activity_type 
 
-        activity_info = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"_id":False, "activity":True})
+        activity_info = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user")
         # activity_info를 통해서 공감, 스크랩, 댓글, 게시글 별 content_id와 board_type을 얻을 수 있음
         # 이거 가지고 프론트가 get을 요청하거나 백에서 그거 까지 해서 주거나
 
@@ -303,10 +261,11 @@ class ActivityControl(Resource):
         for post in specific_activity:
             try :
                 board_type = post[0]+"_board"
-                content_id = post[1]
+                post_id = post[1]
 
-                result = mongodb.find_one(query={"_id": ObjectId(content_id)},collection_name=board_type)
+                result = mongodb.find_one(query={"_id": ObjectId(post_id)},collection_name=board_type)
                 result["_id"] = str(result["_id"])
+                result["date"] = str(result["date"])
 
                 post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
 
@@ -316,5 +275,5 @@ class ActivityControl(Resource):
                 pass
         
         return {
-            "post_list" : post_list
+            "postList" : post_list
         }
