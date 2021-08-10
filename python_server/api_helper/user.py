@@ -22,10 +22,9 @@ class AuthRegister(Resource):
     """
     (아이디, 닉네임)중복확인, 회원가입, 비밀번호변경, 회원탈퇴
     { 
-        "_id": ObjectId    
-        "id" : string,
+        "_id": string   
         "password": string
-        “information”: { 
+        “info”: { 
                 "name": string
                 "email": string
                 "birth": string
@@ -44,45 +43,39 @@ class AuthRegister(Resource):
     }
     """
 
-
     def get(self):
-        """
-        입력한 id의 중복여부를 확인합니다
-        http://0.0.0.0:5000/user/register?id=hello
-        http://0.0.0.0:5000/user/register?nickname=hello
-        """
         check_id = request.args.get("id")
         check_email = request.args.get("email")
         check_nickname = request.args.get("nickname")
         
         if check_id:
-            if mongodb.find_one(query={"id": check_id}, collection_name="user"):
+            if mongodb.find_one(query={"_id": check_id}, collection_name="user"):
                 return {
-                    "message": "The ID already exist"
+                    "queryStatus": "already exist"
                 }, 500
             else :
                 return{
-                    "message": "Possible"
+                    "queryStatus": "possible"
                 }, 200
 
-        elif check_email:
+        if check_email:
             if mongodb.find_one(query={"subinfo": {"email": check_email}}, collection_name="user"):
                 return {
-                    "message": "The email already exist"
+                    "queryStatus": "already exist"
                 }, 500
             else :
                 return{
-                    "message": "Possible"
+                    "queryStatus": "possible"
                 }, 200
 
-        elif check_nickname:
+        if check_nickname:
             if mongodb.find_one(query={"subinfo": {"nickname": check_nickname}}, collection_name="user"):
                 return {
-                    "message": "The nickname already exist"
+                    "queryStatus": "already exist"
                 }, 500
             else :
                 return{
-                    "message": "Possible"
+                    "queryStatus": "possible"
                 }, 200
         
 
@@ -95,11 +88,11 @@ class AuthRegister(Resource):
         encrypted_password = bcrypt.hashpw(str(user_info["password"]).encode("utf-8"), bcrypt.gensalt())  # 비밀번호를 암호화
         user_info["password"] = encrypted_password.decode("utf-8")  # 이를 또 UTF-8 방식으로 디코딩하여, str 객체로 데이터 베이스에 저장
         mongodb.insert_one(user_info, collection_name="user")  # 데이터베이스에 저장
-        token_encoded = jwt.encode({'id': user_info["id"]}, SECRET_KEY, ALGORITHM)  # user 의 id로 토큰 생성(고유한 정보가 id 이므로)
+        token_encoded = jwt.encode({'_id': user_info["_id"]}, SECRET_KEY, ALGORITHM)  # user 의 id로 토큰 생성(고유한 정보가 id 이므로)
 
         return {
             'Authorization': token_encoded,
-            "message": 'Register Success'
+            "queryStatus": 'success'
         }, 200
 
 
@@ -115,12 +108,12 @@ class AuthRegister(Resource):
         new_encrypted_password = bcrypt.hashpw(str(new_password["password"]).encode("utf-8"), bcrypt.gensalt())
         new_password["password"] = new_encrypted_password.decode('utf-8')  # db 저장시에는 디코드
 
-        result = mongodb.update_one(query={"id": token_decoded["id"]}, collection_name="user", modify={"$set": new_password})
+        result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set": {"password": new_password["password"]}})
 
         if result.raw_result["n"] == 1:
-            return {"query_status" : "비밀번호 변경을 완료했습니다"}
+            return {"queryStatus" : "success"}
         else:
-            return {"query_status": "해당 id의 사용자를 찾을 수 없습니다."}, 500
+            return {"queryStatus": "password update fail"}, 500
 
         
     def delete(self):
@@ -131,15 +124,19 @@ class AuthRegister(Resource):
         header = request.headers.get('Authorization')
         # header 에 token_encoded 를 넣어서 request
         if header is None: 
-            return {"message": "Please Login"}, 404
+            return {"queryStatus": "please login"}, 404
 
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
-        result = mongodb.delete_one(query={"id": token_decoded["id"]}, collection_name="user")
+
+        # 활동 알수없음으로 바꾸기
+
+        # 탈퇴하기
+        result = mongodb.delete_one(query={"_id": token_decoded["_id"]}, collection_name="user")
 
         if result.raw_result["n"] == 1:
-            return{"query _status": "success"}
+            return{"queryStatus": "success"}
         else :
-            return {"query_status": "해당 id의 사용자를 찾을 수 없습니다."}, 500
+            return {"queryStatus": "user delete fail"}, 500
     
 
 
@@ -154,26 +151,27 @@ class AuthLogin(Resource):
         """
         sign_info = request.get_json()  # 사용자가 로그인 시 입력한 아이디, 비밀번호
         input_password = sign_info["password"]
-        user_info = mongodb.find_one(query={"id": sign_info["id"]}, collection_name="user")  # 동일한 아이디불러오기
+
+        user_info = mongodb.find_one(query={"_id": sign_info["_id"]}, collection_name="user")  # 동일한 아이디불러오기
         
         if not user_info:
             # 해당 아이디가 없는 경우
             return {
-                "message": "Users Not Found"
+                "queryStatus": "not exist"
             }, 404
 
         elif not bcrypt.checkpw(input_password.encode("utf-8"), user_info["password"].encode("utf-8")):
             # 비밀번호가 일치하지 않는 경우
             return {
-                "message": "Wrong Password"
+                "queryStatus": "wrong password"
             }, 500
 
         else:
             # 비밀번호 일치한 경우
-            token_encoded = jwt.encode({'id': user_info["id"]}, SECRET_KEY, ALGORITHM)
+            token_encoded = jwt.encode({'_id': user_info["_id"]}, SECRET_KEY, ALGORITHM)
             return {
                 'Authorization': token_encoded, 
-                "message" : 'Login Success'
+                "queryStatus" : 'success'
             }, 200
 
 
@@ -184,32 +182,32 @@ class AuthLogin(Resource):
         header = request.headers.get('Authorization')
         # header 에 token_encoded 를 넣어서 request
         if header is None: 
-            return {"message": "Please Login"}, 404
+            return {"queryStatus": "please login"}, 404
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
-        user_info = mongodb.find_one(query={"id": token_decoded["id"]}, collection_name="user", projection_key={'_id': 0, "password": 0})
+        user_info = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user")
+        user_info["password"] = "비밀번호"
         
-        return user_info,200
+        return user_info
     
 
     def put(self):  # 회원정보수정
         """
         회원정보를 수정합니다
         """
-        header = request.headers.get('Authorization')
+        header = request.headers.get('Authorization')  # 아이디 비밀번호 확인해서 받은 토큰
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # 인코드된 토큰 받아서 디코드함
 
-        user_info = request.get_json()
-        result = mongodb.update_one(query={"id": token_decoded["id"]}, collection_name="user", modify={"$set": user_info})
+        new_user_info = request.get_json()
+        result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set": new_user_info})
 
         if result.raw_result["n"] == 1:
             modified_user = mongodb.find_one(query={"id": token_decoded["id"]},
-                                             collection_name="user",
-                                             projection_key={"_id": 0, "password":0})
+                                             collection_name="user")
+            modified_user["password"] = "비밀번호"
 
             return modified_user
         else:
-
-            return {"query_status": "해당 id의 사용자를 찾을 수 없습니다"}, 500
+            return {"queryStatus": "infomation update fail"}, 500
 
 
 
@@ -225,7 +223,7 @@ class ActivityControl(Resource):
         header = request.headers.get("Authorization")  # 이 회원의 활동정보 변경
 
         if header is None: 
-            return {"message": "Please Login"}, 404
+            return {"queryStatus": "please login"}, 404
 
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)
 
@@ -236,7 +234,7 @@ class ActivityControl(Resource):
         } 
         """
 
-        user_activity = mongodb.find_one(query={"id": token_decoded["id"]}, collection_name="user", projection_key={'_id': 0, "activity": 1})
+        user_activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity": 1})
         """
         {
          "activity" : {
@@ -246,15 +244,15 @@ class ActivityControl(Resource):
         """
 
         for key in new_activity_info:
-            specific_activity = user_activity["activity"][key]
-            specific_activity.append(new_activity_info[key])  # insert : 제일 앞으로 추가함
+            user_activity["activity"][key].append(new_activity_info[key])  # insert : 제일 앞으로 추가함
         
-        result = mongodb.update_one(query={"id": token_decoded["id"]}, collection_name="user", modify={"$set" : user_activity})
+        
+        result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set" : user_activity})
 
         if result.raw_result["n"] == 1:
-            return {"query_status": "활동을 저장했습니다"}
+            return {"queryStatus": "success"}
         else:
-            return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}, 500
+            return {"queryStatus": "activity update fail"}, 500
     
 
     def delete(self):  # 활동 제거(활동 취소 시, 게시글 삭제 시)
@@ -271,11 +269,11 @@ class ActivityControl(Resource):
         new_activity_info = request.get_json()  
         """
         {
-            "like" : ["board_type", "content_id"]
+            "like" : ["board_type", "post_id"]
         } 
         """
         
-        user_activity = mongodb.find_one(query={"id": token_decoded["id"]}, collection_name="user", projection_key={'_id': 0, "activity": 1})
+        user_activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity": 1})
         """
         {
          "activity" : {
@@ -285,18 +283,18 @@ class ActivityControl(Resource):
         """
 
         for key in new_activity_info:  # key : "likes" ,"posts"
-            content_id = new_activity_info[key][1]
-            specific_activity = user_activity["activity"][key]  # "likes"의 구체적인 내용 : 리스트로 이루어진 리스트
-            for post in specific_activity:  # post는 개별 게시글
-                if content_id in post:
-                    specific_activity.remove(post)
+            post_id = new_activity_info[key][1]
+            user_activity["activity"][key]  # "likes"의 구체적인 내용 : 리스트로 이루어진 리스트
+            for post in user_activity["activity"][key]:  # post는 개별 활동 리스트(게시판, 게시글 조합)
+                if post_id in post:
+                    user_activity["activity"][key].remove(post)
 
-        result = mongodb.update_one(query={"id": token_decoded["id"]}, collection_name="user", modify={"$set" : user_activity})
+        result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set" : user_activity})
 
         if result.raw_result["ok"] == 1:
-            return {"query_status": "활동을 제거했습니다"}
+            return {"queryStatus": "success"}
         else:
-            return {"query_status": "해당 id의 게시글을 찾을 수 없습니다."}, 500
+            return {"queryStatus": "activity delete fail"}, 500
 
 
     def get(self):  # 회원활동 탭에서 보여지는 정보 (게시글 리스트)
@@ -308,13 +306,13 @@ class ActivityControl(Resource):
         header = request.headers.get("Authorization")
 
         if header is None: 
-            return {"message": "Please Login"}, 404
+            return {"queryStatus": "please login"}, 404
 
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
 
-        activity_type = request.args.get("activity-type")       
+        activity_type = request.args.get("activityType")       
 
-        activity_info = mongodb.find_one(query={"id": token_decoded["id"]}, collection_name="user", projection_key={'_id': 0, "activity":1})
+        activity_info = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"_id":False, "activity":True})
         # activity_info를 통해서 공감, 스크랩, 댓글, 게시글 별 content_id와 board_type을 얻을 수 있음
         # 이거 가지고 프론트가 get을 요청하거나 백에서 그거 까지 해서 주거나
 

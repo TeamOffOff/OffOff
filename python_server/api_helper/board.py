@@ -19,6 +19,11 @@ PostList = Namespace(
     name="postlist",
     description="게시글목록을 불러오는 API")
 
+UserList = Namespace(
+    name="userlist",
+    description="유저목록을 불러오는 API"
+)
+
 
 
 @BoardList.route("")
@@ -81,6 +86,18 @@ class BoardListControl(Resource):
         return {"queryStatus": "게시판을 등록했습니다"}
 
 
+@UserList.route("")
+class UserListControl(Resource):
+    def get(self):
+        cursor = mongodb.find(collection_name="user")
+        
+        user_list = []
+        for user in cursor:
+            user_list.append(user)
+        
+        return user_list
+
+
 @PostList.route("/<string:board_type>")
 # 사용자가 특정 게시판을 클릭하는 경우
 class PostListControl(Resource):
@@ -94,20 +111,14 @@ class PostListControl(Resource):
             board_type = board_type + "_board"
             volume = int(request.args.get("volume", default=20))
             standard_id = request.args.get("standardId", default="")
-            direction = request.args.get("direction", default="old")
 
-            if not standard_id:  # 게시판에 처음 들어간 경우
+            if not standard_id:  # 게시판에 처음 들어간 경우, 새로 고침한 경우
                 cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(volume)
             
-            elif direction == "old":  # 과거 게시글 불러올 때
+            elif standard_id:  # 과거 게시글 불러올 때
                 standard_id = ObjectId(standard_id)
                 cursor = mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
                     [("_id", -1)]).limit(volume)
-            
-            elif direction == "new":  # 최신 게시글 불러올 때
-                standard_id = ObjectId(standard_id)
-                cursor = mongodb.find(query={'_id': {'$gt': standard_id}}, collection_name=board_type).sort(
-                        [("_id",1)]).limit(volume)
 
 
             post_list = []
@@ -117,10 +128,7 @@ class PostListControl(Resource):
                 if board_type != "hot_board":
                     post["date"] = str(post["date"])
                 
-                if direction == "new":
-                    post_list.insert(0,post)
-                else:
-                    post_list.append(post)
+                post_list.append(post)
 
             last_post_id = post_list[-1]["_id"]
 
@@ -135,6 +143,10 @@ class PostListControl(Resource):
                     post["date"] = str(post["date"])
 
                     hot_post_list.append(post)
+            
+            
+
+
                 
                 return {
                     "lastPostId": last_post_id,
@@ -163,6 +175,6 @@ class PostListControl(Resource):
         
         result= mongodb.drop(collection_name=board_type)
         
-        return result
+        return {"queryStatus" : result}
 
 
