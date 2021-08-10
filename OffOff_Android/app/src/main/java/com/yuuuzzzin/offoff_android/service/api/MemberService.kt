@@ -15,7 +15,7 @@ import retrofit2.http.Query
 interface MemberService {
 
     /* 로그인 */
-    @POST("signin")
+    @POST("user/login")
     suspend fun login(
         @Body loginInfo: LoginInfo
     ): Response<AuthResponse>
@@ -24,7 +24,7 @@ interface MemberService {
     @POST("user/register")
     suspend fun signup(
         @Body user: User
-    ): Response<AuthResponse>
+    ): Response<ResultResponse>
 
     /* id 중복 확인 */
     @GET("user/register")

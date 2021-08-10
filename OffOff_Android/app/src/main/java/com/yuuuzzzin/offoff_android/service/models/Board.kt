@@ -5,19 +5,23 @@ import com.yuuuzzzin.offoff_android.utils.Identifiable
 
 // 게시판 관련 객체 모델
 
+/* 게시판 리스트 */
 data class BoardList(
-    @SerializedName("board")
-    val board_list: List<Board>
+    @SerializedName("boardList")
+    val boardList: List<Board>
 )
 
+/* 게시판 */
 data class Board(
-    @SerializedName("board_type")
-    val board_type: String,
+    @SerializedName("boardType")
+    val boardType: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("icon")
-    val icon: String
+    val icon: String,
+    @SerializedName("newPost")
+    val newPost: String
 ) : Identifiable {
     override val identifier: Any
-        get() = board_type
+        get() = boardType
 }

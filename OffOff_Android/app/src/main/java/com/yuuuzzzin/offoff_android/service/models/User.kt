@@ -1,9 +1,8 @@
 package com.yuuuzzzin.offoff_android.service.models
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
+/* 사용자 */
 data class User(
     @SerializedName("id")
     val id: String,
@@ -17,6 +16,7 @@ data class User(
     val activity: com.yuuuzzzin.offoff_android.service.models.Activity,
 )
 
+/* 사용자 정보 */
 data class Info(
     @SerializedName("name")
     val name: String,
@@ -28,6 +28,7 @@ data class Info(
     val type: String?
 )
 
+/* 사용자 부가 정보 */
 data class SubInfo(
     @SerializedName("nickname")
     val nickname: String,
@@ -35,6 +36,7 @@ data class SubInfo(
     val profile: String?
 )
 
+/* 사용자 활동 */
 data class Activity(
     @SerializedName("posts")
     val posts: String?,
@@ -46,12 +48,12 @@ data class Activity(
     val bookmarks: String?
 )
 
-@Parcelize
+/* 로그인 정보 */
 data class LoginInfo(
     @SerializedName("id")
     val id: String,
     @SerializedName("password")
     val pw: String
-) : Parcelable
+)
 
 
