@@ -85,27 +85,47 @@ class PostControl(Resource):
 
     def post(self):  # 게시글 생성
         """게시글을 생성합니다."""
-        post_info = request.get_json()
-        board_type = post_info["boardType"] + "_board"
+        try:
+            post_info = request.get_json()
+            board_type = post_info["boardType"] + "_board"
 
-        del post_info["_id"]
-        post_info["date"] = dateutil.parser.parse(post_info["date"])
-        
-        # 게시글 등록
-        post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
+            del post_info["_id"]
+            post_info["date"] = dateutil.parser.parse(post_info["date"])
+            
+            # 게시글 등록
+            post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
 
-        post = mongodb.find_one(query={"_id":post_id}, collection_name=board_type)
+            post = mongodb.find_one(query={"_id":post_id}, collection_name=board_type)
 
-        convert_to_string(post=post)
+            convert_to_string(post=post)
 
-        # 회원활동정보 등록
-        post_activity = [post["boardType"], str(post_id)]
-        author = post_info["author"]
+            # 회원활동정보 등록
+            post_activity = [post["boardType"], str(post_id)]
+            author = post_info["author"]
 
-        update_activity = ActivityUpdate(author=author, field="activity.posts", new_activity_info=post_activity)
-        update_activity.update_activity(operator="$addToSet")
+            update_activity = ActivityUpdate(author=author, field="activity.posts", new_activity_info=post_activity)
+            update_activity.update_activity(operator="$addToSet")
 
-        return post
+            
+            return post
+            
+        except TypeError as t:
+            return {
+                "error" : str(t)
+            }
+        except AttributeError as a:
+            return {
+                "error": str(a)
+            }
+        except IndexError as i:
+            return {
+                "error": str(i)
+            } 
+        except dateutil.parser.ParserError as  p:
+            return {
+                "error": str(p)
+            } 
+
 
 
     def put(self):  # 게시글 수정
@@ -125,7 +145,7 @@ class PostControl(Resource):
         # string 관련 정보
         article_key = ["title", "content", "image"]
 
-        # integer 관련 정보
+        # integer 관련 정보 : bookmarkCount는 post에 필요 없음
         activity_key = ["likes", "viewCount", "reportCount", "replyCount"]
 
         modified_article = {}

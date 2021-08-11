@@ -13,8 +13,16 @@ from .utils import SECRET_KEY, ALGORITHM
 mongodb = mongo.MongoHelper()
 
 User = Namespace(name="user", description="유저 관련 API")
+
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
+
+# 중복확인 함수
+def check_duplicate(key, object):
+    if mongodb.find_one(query={key: object}, collection_name="user"):
+        return {
+            "queryStatus": "already exist"
+            }, 500
 
 
 @User.route('/register')
@@ -23,57 +31,64 @@ class AuthRegister(Resource):
     (아이디, 닉네임)중복확인, 회원가입, 비밀번호변경, 회원탈퇴
     """
 
-    def get(self):
+    def get(self):  # 중복확인
         check_id = request.args.get("id")
         check_email = request.args.get("email")
         check_nickname = request.args.get("nickname")
         
         if check_id:
-            if mongodb.find_one(query={"_id": check_id}, collection_name="user"):
-                return {
-                    "queryStatus": "already exist"
-                }, 500
-            else :
-                return{
-                    "queryStatus": "possible"
-                }, 200
+            result = check_duplicate(key="_id", object=check_id)
 
         if check_email:
-            if mongodb.find_one(query={"info.email": check_email}, collection_name="user"):
-                return {
-                    "queryStatus": "already exist"
-                }, 500
-            else :
-                return{
-                    "queryStatus": "possible"
-                }, 200
+            result = check_duplicate(key="information.email", object=check_email)
 
         if check_nickname:
-            if mongodb.find_one(query={"subinfo.nickname": check_nickname}, collection_name="user"):
-                return {
-                    "queryStatus": "already exist"
-                }, 500
-            else :
-                return{
-                    "queryStatus": "possible"
-                }, 200
+            result = check_duplicate(key="subInformation.nickname", object=check_nickname)
+        
+        if not result:
+            result = {"queryStatus": "possible"}
+        return result
         
 
-    def post(self):
+    def post(self):  # 회원가입
         """
         회원가입을 완료합니다.
         """
+        
         user_info = request.get_json()
 
-        encrypted_password = bcrypt.hashpw(str(user_info["password"]).encode("utf-8"), bcrypt.gensalt())  # 비밀번호를 암호화
-        user_info["password"] = encrypted_password.decode("utf-8")  # 이를 또 UTF-8 방식으로 디코딩하여, str 객체로 데이터 베이스에 저장
-        mongodb.insert_one(user_info, collection_name="user")  # 데이터베이스에 저장
-        token_encoded = jwt.encode({'_id': user_info["_id"]}, SECRET_KEY, ALGORITHM)  # user 의 id로 토큰 생성(고유한 정보가 id 이므로)
+        # 중복확인
+        if check_duplicate(key="_id", object=user_info["_id"]):
+            return{
+                "queryStatus": "id already exist"
+            }
+        if check_duplicate(key="information.email", object=user_info["information"]["email"]):
+            return{
+                "queryStatus": "email already exist"
+            }
+        if check_duplicate(key="subInformation.nickname", object=user_info["subInformation"]["nickname"]):
+            return{
+                "queryStatus": "nickname already exist"
+            }
+ 
+        # 비밀번호를 암호화: 암호화할 때는 string이면 안 되고 byte여야 해서 encode
+        encrypted_password = bcrypt.hashpw(str(user_info["password"]).encode("utf-8"), bcrypt.gensalt())  
 
-        return {
-            'Authorization': token_encoded,
-            "queryStatus": 'success'
-        }, 200
+        # 이를 또 UTF-8 방식으로 디코딩하여, str 객체로 데이터 베이스에 저장
+        user_info["password"] = encrypted_password.decode("utf-8")  
+
+        # user 의 id로 토큰 생성(고유한 정보가 id 이므로) : string 자료형
+        token_encoded = jwt.encode({'_id': user_info["_id"]}, SECRET_KEY, ALGORITHM)  
+
+        try: 
+            mongodb.insert_one(user_info, collection_name="user")  # 데이터베이스에 저장
+            return {
+                'Authorization': str(token_encoded),
+                "queryStatus": 'success'
+            }, 200
+        
+        except TypeError:
+            return TypeError
 
 
     def put(self):
@@ -206,6 +221,7 @@ class AuthLogin(Resource):
         else:
             return {"queryStatus": "infomation update fail"}, 500
 
+
 class ActivityUpdate():
     def __init__(self, author, field, new_activity_info):
         self.author = author
@@ -221,8 +237,7 @@ class ActivityUpdate():
         author : 유저 id
         field : 활동 내용 posts, likes, reply, report
         new_activity_info : 구체적인 내용["board_type", "post_id:]
-        """
-        
+        """   
         
         result = mongodb.update_one(query={"_id": self.author}, collection_name="user", modify={operator: {self.field: self.new_activity_info}})
 
