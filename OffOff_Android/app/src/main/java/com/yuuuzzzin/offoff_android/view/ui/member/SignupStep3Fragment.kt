@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep3Binding
 import com.yuuuzzzin.offoff_android.utils.Constants
+import com.yuuuzzzin.offoff_android.utils.Constants.toast
 import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -66,6 +67,7 @@ class SignupStep3Fragment :
                         ?.remove(this)
                         ?.commit()
                 }
+                requireContext().toast("가입 완료")
             }
         })
     }

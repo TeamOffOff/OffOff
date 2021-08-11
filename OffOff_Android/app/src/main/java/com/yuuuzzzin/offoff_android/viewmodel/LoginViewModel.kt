@@ -8,10 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.service.models.LoginInfo
 import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Event
+import com.yuuuzzzin.offoff_android.utils.SignupUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,8 +39,8 @@ constructor(
     val isPwError: LiveData<Event<String>> = _isPwError
 
     // 입력받은 정보가 모두 조건에 만족했는지지 완료었는지 여부
-    private val _infoChecked = MutableLiveData<Event<Unit>>()
-    val infoChecked: LiveData<Event<Unit>> = _infoChecked
+//    private val _infoChecked = MutableLiveData<Event<Unit>>()
+//    val infoChecked: LiveData<Event<Unit>> = _infoChecked
 
     // 입력받은 정보를 확인해 그에 따른 에러 메시지를 이벤트 처리
     private fun checkInfo(): Boolean {
@@ -53,8 +52,8 @@ constructor(
             _isIdError.value = Event("아이디를 입력해주세요")
             checkValue = false
         }
-        else if(!Pattern.matches("^[a-zA-Z0-9]{5,15}\$", id.value!!)) {
-            _isIdError.value = Event("아이디는 영문과 숫자를 조합한 5~15글자")
+        else if(!SignupUtils.validate(id, SignupUtils.ID_REGEX)) {
+            _isIdError.value = Event(SignupUtils.ID_ERROR)
             checkValue = false
         }
         // 비밀번호 값 확인
@@ -71,24 +70,25 @@ constructor(
 
         val userId = id.value ?: return
         val userPw = pw.value ?: return
+        val loginInfo = LoginInfo(userId, userPw)
 
-        // 입력받은 id와 pw를 서버에 보내고 응답받기
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.login(LoginInfo(userId, userPw)).let { response ->
-                // 서버 통신 성공
+        viewModelScope.launch {
+            repository.login(loginInfo).let { response ->
                 if(response.isSuccessful) {
-                    // 로그인 성공
                     if(response.body()!!.message == "success") {
                         _loginSuccess.postValue(Event(userId))
                         Log.d("tag_login_success", response.body().toString())
-                    } else { // 로그인 실패
+                        Log.d("tag_login_success", loginInfo.toString())
+                    } else {
                         Log.d("tag_login_fail", response.body().toString())
+                        Log.d("tag_login_fail", loginInfo.toString())
                         //alertMsg.postValue(response.body()!!.result)
                         _loginFail.postValue(Event(response.body()!!.message))
                     }
-                    // 서버 통신 실패
                 } else {
-                    Log.d("tag_server_fail", "서버 통신 실패: ${response.code()}")
+                    Log.d("tag_login_fail", loginInfo.toString())
+                    Log.d("tag_login_fail", response.body().toString())
+                    Log.d("tag_login_fail", "서버 통신 실패: ${response.code()}")
                 }
             }
         }

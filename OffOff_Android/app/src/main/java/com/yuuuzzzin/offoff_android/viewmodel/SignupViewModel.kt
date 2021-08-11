@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yuuuzzzin.offoff_android.service.models.*
+import com.yuuuzzzin.offoff_android.service.models.Activity
+import com.yuuuzzzin.offoff_android.service.models.Info
+import com.yuuuzzzin.offoff_android.service.models.SubInfo
+import com.yuuuzzzin.offoff_android.service.models.User
 import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Constants.get
 import com.yuuuzzzin.offoff_android.utils.Event
@@ -49,9 +52,6 @@ constructor(
     private var userEmail = ""
     private var userBirth = ""
     private var userNickname = ""
-
-    private val _response = MutableLiveData<ResultResponse>()
-    val response: LiveData<ResultResponse> get() = _response
 
     // 회원가입 단계별 성공 여부
     private val _step1Success = MutableLiveData<Event<Boolean>>()
@@ -102,7 +102,7 @@ constructor(
             if (response.isSuccessful) {
                 _isIdVerified.postValue("")
                 userId = id
-                Log.d("tag_success", response.body().toString())
+                Log.d("tag_success", "checkId: ${response.body()}")
             } else {
                 _isIdVerified.postValue(ID_DUP)
                 Log.d("tag_fail", "checkId Error: ${response.code()}")
@@ -175,13 +175,11 @@ constructor(
     fun validateNickname() {
 
         if (!validate(nickname, NICKNAME_REGEX)) {
-            Log.d("tag_닉넴유효성불통", nickname.get())
+            Log.d("tag_fail 닉네임 유효성", nickname.get())
             _isNicknameError.postValue(nickname.get() + NICKNAME_ERROR)
         } else {
-            Log.d("tag_닉넴유효성통", nickname.get())
+            Log.d("tag_success 닉네임 유효성", nickname.get())
             checkNickname(nickname.value!!)
-            //_isNicknameVerified.postValue(nickname.get() + NICKNAME_VALID)
-            //userNickname = nickname.value!!
         }
     }
 
@@ -190,7 +188,7 @@ constructor(
             if (response.isSuccessful) {
                 userNickname = nickname
                 _isNicknameVerified.postValue(nickname + NICKNAME_VALID)
-                Log.d("tag_success", response.body().toString())
+                Log.d("tag_success", "checkNickname: ${response.body()}")
             } else {
                 _isNicknameError.postValue(nickname + NICKNAME_ERROR)
                 Log.d("tag_fail", "checkNickname Error: ${response.code()}")
@@ -204,7 +202,7 @@ constructor(
             (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)
         ) {
             _step1Success.postValue(Event(true))
-            Log.d("tag_1단계 성공", userId + "/" + userPw + "/")
+            Log.d("tag_success 1단계", userId + "/" + userPw + "/")
         } else {
             validateId()
             validatePw()
@@ -218,9 +216,9 @@ constructor(
             (name.value == userName && email.value == userEmail)
         ) {
             _step2Success.postValue(Event(true))
-            Log.d("tag_2단계 성공", userName + "/" + userEmail + "/" + userBirth)
+            Log.d("tag_success 2단계", userName + "/" + userEmail + "/" + userBirth)
         } else {
-            Log.d("tag_2단계 실패", userName + "/" + userEmail + "/" + userBirth)
+            Log.d("tag_fail 2단계", userName + "/" + userEmail + "/" + userBirth)
 
             validateName()
             validateEmail()
@@ -229,12 +227,15 @@ constructor(
     }
 
     fun finishStep3() {
-        if (userNickname != "" &&
-            (nickname.value == userNickname)) {
-                signup()
-                Log.d("tag_3단계 성공", userId + "/" + userPw + "/" + userName + "/" + userEmail + "/" + userBirth + "/" + userNickname)
-            } else {
+        if (userNickname != "" && (nickname.value == userNickname)) {
+            signup()
 
+            Log.d(
+                "tag_success 3단계",
+                userId + "/" + userPw + "/" + userName + "/" + userEmail + "/" + userBirth + "/" + userNickname
+            )
+
+        } else {
             validateNickname()
         }
     }
@@ -254,17 +255,23 @@ constructor(
         return (pw.value == pwConfirm.value)
     }
 
-    private fun signup() = viewModelScope.launch {
-        val user = User(userId, userPw,
-            Info(userName, userEmail, userBirth, null),
-            SubInfo(userNickname, null),
-            Activity(null, null, null, null))
-        repository.signup(user).let { response ->
-            if (response.isSuccessful) {
-                Log.d("tag_success", response.body().toString())
-                _step3Success.postValue(Event(true))
-            } else {
-                Log.d("tag_fail", "checkSignup Error: ${response.code()}")
+    private fun signup() {
+
+        val user = User(
+            id = userId, password = userPw,
+            Info(name = userName, email = userEmail, birth = userBirth),
+            SubInfo(nickname = userNickname),
+            Activity()
+        )
+
+        viewModelScope.launch {
+            repository.signup(user).let { response ->
+                if (response.isSuccessful) {
+                    Log.d("tag_success", "signup: ${response.body()}")
+                    _step3Success.postValue(Event(true))
+                } else {
+                    Log.d("tag_fail", "signup Error: ${response.code()}")
+                }
             }
         }
     }

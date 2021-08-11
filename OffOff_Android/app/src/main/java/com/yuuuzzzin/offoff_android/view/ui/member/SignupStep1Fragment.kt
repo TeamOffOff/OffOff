@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
@@ -107,7 +106,6 @@ class SignupStep1Fragment :
         binding.etPwConfirm.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (hasFocus) {
                 if (signupViewModel.pw.value.isNullOrEmpty() || binding.tfPw.isError()) {
-                    Log.d("tag_pw", signupViewModel.pw.value.toString())
                     binding.tfPwConfirm.setTextFieldError("비밀번호를 확인해주세요")
                 } else if (!binding.tfPwConfirm.isError())
                     binding.tfPwConfirm.setTextFieldFocus()
