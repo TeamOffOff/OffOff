@@ -24,12 +24,14 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     private val viewModel: BoardViewModel by viewModels()
     private lateinit var boardAdapter: BoardAdapter
+    private lateinit var boardName: String
     private lateinit var searchIcon: FontDrawable
     private lateinit var writeIcon: FontDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        processIntent()
         initViewModel()
         initToolbar()
         initRV()
@@ -43,11 +45,15 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         })
     }
 
+    private fun processIntent() {
+        boardName = intent.getStringExtra("boardName").toString()
+    }
+
     private fun initToolbar() {
         val toolbar: MaterialToolbar = binding.appbarBoard // 상단 툴바
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            binding.tvToolbarTitle.text = intent.getStringExtra("boardName")
+            binding.tvToolbarTitle.text = boardName
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
             setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
@@ -62,11 +68,10 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
         boardAdapter = BoardAdapter(
             itemClick = { item ->
-                val appBarTitle = intent.getStringExtra("title").toString()
                 val intent = Intent(this@BoardActivity, PostActivity::class.java)
-                intent.putExtra("appBarTitle", appBarTitle)
                 intent.putExtra("id", item.id)
-                intent.putExtra("boardType", item.board_type)
+                intent.putExtra("boardName", boardName)
+                intent.putExtra("boardType", item.boardType)
                 startActivity(intent)
             }
         )
@@ -97,7 +102,9 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             }
             R.id.action_write -> {
                 //글쓰기 버튼 누를 시
+                val boardType = intent.getStringExtra("boardType")
                 val intent = Intent(applicationContext, PostWriteActivity::class.java)
+                intent.putExtra("boardType", boardType)
                 startActivity(intent)
                 true
             }

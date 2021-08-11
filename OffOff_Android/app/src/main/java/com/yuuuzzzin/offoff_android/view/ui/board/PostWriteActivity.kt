@@ -6,35 +6,27 @@ import android.text.style.ForegroundColorSpan
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostWriteBinding
-import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
+import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
+import com.yuuuzzzin.offoff_android.viewmodel.PostWriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PostWriteActivity : AppCompatActivity() {
+class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activity_post_write) {
 
-    private var mBinding: ActivityPostWriteBinding? = null
-    private val binding get() = mBinding!!
-    private val viewModel: BoardViewModel by viewModels()
+    private val viewModel: PostWriteViewModel by viewModels()
+    private lateinit var boardType: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        mBinding = ActivityPostWriteBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+        boardType = intent.getStringExtra("boardType").toString()
+
+        initViewModel()
         initToolbar()
         //initView()
-    }
-
-    // 액티비티가 Destroy될 때
-    override fun onDestroy() {
-        // onDestroy 에서 binding class 인스턴스 참조를 정리해주어야 함
-        mBinding = null
-        super.onDestroy()
     }
 
     private fun initToolbar() {
@@ -48,6 +40,15 @@ class PostWriteActivity : AppCompatActivity() {
             setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
             setDisplayShowHomeEnabled(true)
         }
+    }
+
+    private fun initViewModel() {
+        binding.viewModel = viewModel
+
+//        viewModel.alertMsg.observe(this, { event ->
+//            event.getContentIfNotHandled()?.let {
+//            }
+//        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -65,9 +66,7 @@ class PostWriteActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_done -> {
-                //검색 버튼 누를 시
-//                val intent = Intent(applicationContext, WriteActivity::class.java)
-//                startActivity(intent)
+                viewModel.writePost(boardType)
                 true
             }
             android.R.id.home -> {

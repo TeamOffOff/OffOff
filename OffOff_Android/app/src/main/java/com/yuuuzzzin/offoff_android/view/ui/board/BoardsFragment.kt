@@ -31,7 +31,7 @@ class BoardsFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is MainActivity) {
+        if (context is MainActivity) {
             this.mContext = context
         } else {
             throw RuntimeException("$context error")
@@ -42,7 +42,7 @@ class BoardsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentBoardsBinding.inflate(inflater, container, false)
 
         initViewModel()
@@ -66,7 +66,7 @@ class BoardsFragment : Fragment() {
         boardListAdapter = BoardListAdapter(
             itemClick = { item ->
                 val intent = Intent(mContext, BoardActivity::class.java)
-                intent.putExtra("boardType", item.board_type)
+                intent.putExtra("boardType", item.boardType)
                 intent.putExtra("boardName", item.name)
                 startActivity(intent)
             }

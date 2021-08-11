@@ -1,7 +1,6 @@
 package com.yuuuzzzin.offoff_android.view.ui.board
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -17,6 +16,7 @@ import info.androidhive.fontawesome.FontDrawable
 class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private val viewModel: PostViewModel by viewModels()
+    private lateinit var boardName: String
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
 
@@ -32,6 +32,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private fun processIntent() {
         val id = intent.getStringExtra("id")
         val boardType = intent.getStringExtra("boardType")
+        boardName = intent.getStringExtra("boardName").toString()
         viewModel.getPost(id!!, boardType!!)
     }
 
@@ -47,9 +48,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         val toolbar : MaterialToolbar = binding.appbar
 
         setSupportActionBar(toolbar)
-        Log.d("앱바타이틀_tag", intent.getStringExtra("appBarTitle").toString())
         supportActionBar?.apply {
-            binding.tvToolbarTitle.text = intent.getStringExtra("appBarTitle")
+            binding.tvToolbarTitle.text = boardName
 
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성

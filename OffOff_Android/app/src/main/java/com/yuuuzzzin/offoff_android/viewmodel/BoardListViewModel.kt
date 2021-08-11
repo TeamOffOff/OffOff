@@ -1,12 +1,10 @@
 package com.yuuuzzzin.offoff_android.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.service.models.Board
-import com.yuuuzzzin.offoff_android.service.models.BoardList
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -24,10 +22,6 @@ constructor(
         MutableLiveData<ArrayList<Board>>()
     }
 
-    private val _response = MutableLiveData<BoardList>()
-    val response: LiveData<BoardList>
-        get() = _response
-
     init {
         getBoardList()
     }
@@ -35,12 +29,13 @@ constructor(
     private fun getBoardList() = viewModelScope.launch {
         repository.getBoardList().let { response ->
             if (response.isSuccessful) {
-                for(board in response.body()!!.board_list){
+                Log.d("tag_success", "getBoardList: ${response.body()}")
+                for(board in response.body()!!.boardList){
                     _boardList.add(board)
                 }
                 boardList.postValue(_boardList)
             } else {
-                Log.d("tag", "getBoardList Error: ${response.code()}")
+                Log.d("tag_", "getBoardList Error: ${response.code()}")
             }
         }
     }
