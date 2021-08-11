@@ -32,6 +32,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -61,6 +62,9 @@ dependencies {
     def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.7'
 
     // Navigation
     def nav_version = "2.3.5"
@@ -97,4 +101,14 @@ dependencies {
     // CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    // Amplify
+    def amplify_version = "1.24.0"
+    implementation "com.amplifyframework:aws-analytics-pinpoint:$amplify_version"
+    implementation "com.amplifyframework:aws-api:$amplify_version"
+    implementation "com.amplifyframework:aws-auth-cognito:$amplify_version"
+    implementation "com.amplifyframework:aws-datastore:$amplify_version"
+    implementation "com.amplifyframework:aws-predictions:$amplify_version"
+    implementation "com.amplifyframework:aws-storage-s3:$amplify_version"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+    implementation 'com.amplifyframework:core-kotlin:0.2.0'
 }

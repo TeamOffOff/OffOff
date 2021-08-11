@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.di
 
+import com.google.gson.GsonBuilder
 import com.yuuuzzzin.offoff_android.BuildConfig
 import com.yuuuzzzin.offoff_android.service.api.BoardService
 import com.yuuuzzzin.offoff_android.service.api.MemberService
@@ -26,7 +27,7 @@ object NetworkModule {
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().setLenient().create()))
             .build()
     }
 
