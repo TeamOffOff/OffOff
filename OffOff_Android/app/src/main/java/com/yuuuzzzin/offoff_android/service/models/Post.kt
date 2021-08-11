@@ -16,7 +16,7 @@ data class PostList(
 /* 게시물 */
 data class Post(
     @SerializedName("_id")
-    val id: String,
+    val id: String = "",
     @SerializedName("boardType")
     val boardType: String,
     @SerializedName("author")
@@ -28,15 +28,15 @@ data class Post(
     @SerializedName("content")
     val content: String,
     @SerializedName("image")
-    val image: String?,
+    val image: String = "",
     @SerializedName("likes")
-    val likes: Int?,
+    val likes: Int? = 0,
     @SerializedName("viewCount")
-    val viewCount: Int?,
+    val viewCount: Int? = 0,
     @SerializedName("reportCount")
-    val reportCount: Int,
+    val reportCount: Int? = 0,
     @SerializedName("replyCount")
-    val replyCount: Int?
+    val replyCount: Int? = 0
 ) : Identifiable {
     override val identifier: Any
         get() = id
@@ -45,7 +45,7 @@ data class Post(
 /* 보내는 게시물 */
 data class PostSend(
     @SerializedName("_id")
-    val id: String? = null,
+    val _id: String? = null,
     @SerializedName("boardType")
     val boardType: String,
     @SerializedName("author")

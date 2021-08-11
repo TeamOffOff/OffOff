@@ -32,5 +32,5 @@ interface BoardService {
     @POST("post")
     suspend fun writePost(
         @Body post: PostSend
-   ): Response<Post>
+    ): Response<Post>
 }

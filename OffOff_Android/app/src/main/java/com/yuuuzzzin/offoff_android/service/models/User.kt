@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 /* 사용자 */
 data class User(
-    @SerializedName("id")
+    @SerializedName("_id")
     val id: String,
     @SerializedName("password")
     val password: String,
     @SerializedName("information")
     val info: Info,
-    @SerializedName("subinfo")
+    @SerializedName("subInformation")
     val subInfo: SubInfo,
     @SerializedName("activity")
     val activity: com.yuuuzzzin.offoff_android.service.models.Activity,
@@ -25,27 +25,29 @@ data class Info(
     @SerializedName("birth")
     val birth: String,
     @SerializedName("type")
-    val type: String?
+    val type: String? = null
 )
 
 /* 사용자 부가 정보 */
 data class SubInfo(
     @SerializedName("nickname")
     val nickname: String,
-    @SerializedName("profile_image")
-    val profile: String?
+    @SerializedName("profileImage")
+    val profile: String? = null
 )
 
 /* 사용자 활동 */
 data class Activity(
     @SerializedName("posts")
-    val posts: String?,
-    @SerializedName("comments")
-    val comments: String?,
+    val posts: String? = null,
+    @SerializedName("replies")
+    val replies: String? = null,
     @SerializedName("likes")
-    val likes: String?,
+    val likes: String? = null,
+    @SerializedName("reports")
+    val reports: String? = null,
     @SerializedName("bookmarks")
-    val bookmarks: String?
+    val bookmarks: String? = null
 )
 
 /* 로그인 정보 */
