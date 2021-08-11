@@ -80,10 +80,13 @@ class AuthRegister(Resource):
         # user 의 id로 토큰 생성(고유한 정보가 id 이므로) : string 자료형
         token_encoded = jwt.encode({'_id': user_info["_id"]}, SECRET_KEY, ALGORITHM)  
 
+        if not (type(token_encoded) is str):
+            token_encoded = token_encoded.decode("UTF-8")
+
         try: 
             mongodb.insert_one(user_info, collection_name="user")  # 데이터베이스에 저장
             return {
-                'Authorization': str(token_encoded),
+                'Authorization': token_encoded,
                 "queryStatus": 'success'
             }, 200
         
@@ -182,7 +185,7 @@ class AuthLogin(Resource):
             # 비밀번호 일치한 경우
             token_encoded = jwt.encode({'_id': user_info["_id"]}, SECRET_KEY, ALGORITHM)
             return {
-                'Authorization': token_encoded, 
+                'Authorization': str(token_encoded), 
                 "queryStatus" : 'success'
             }, 200
 

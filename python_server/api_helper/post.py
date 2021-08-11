@@ -88,6 +88,8 @@ class PostControl(Resource):
         try:
             post_info = request.get_json()
             board_type = post_info["boardType"] + "_board"
+            post_input = post_info
+            
 
             del post_info["_id"]
             post_info["date"] = dateutil.parser.parse(post_info["date"])
@@ -107,7 +109,7 @@ class PostControl(Resource):
             embeded_author_info["author"]["type"] = author_info["information"]["type"]
             embeded_author_info["author"]["profileImage"] = author_info["subInformation"]["profileImage"]
 
-            mongodb.update_one(query={"_id":post_id}, collection_name=board_type, modify={"$set":  embeded_author_info})
+            post_update_result = mongodb.update_one(query={"_id":post_id}, collection_name=board_type, modify={"$set":  embeded_author_info})
 
             post = mongodb.find_one(query={"_id":post_id}, collection_name=board_type)
 
@@ -118,7 +120,11 @@ class PostControl(Resource):
 
             update_activity = ActivityUpdate(author=author, field="activity.posts", new_activity_info=post_activity)
             update_activity.update_activity(operator="$addToSet")
-            
+
+            # if post_update_result["n"] == 1:
+
+
+
             return post
 
         except TypeError as t:
