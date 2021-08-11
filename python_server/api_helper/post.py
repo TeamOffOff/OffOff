@@ -95,35 +95,47 @@ class PostControl(Resource):
             # 게시글 등록
             post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
 
+            # 회원정보 embeded 형태로 return
+            author = post_info["author"]["_id"]
+
+            embeded_author_info = {
+                "author": {}
+            }
+            author_info = mongodb.find_one(query={"_id":author}, collection_name="user")
+            embeded_author_info["author"]["_id"] = author_info["_id"]
+            embeded_author_info["author"]["nickname"] = author_info["subInformation"]["nickname"]
+            embeded_author_info["author"]["type"] = author_info["information"]["type"]
+            embeded_author_info["author"]["profileImage"] = author_info["subInformation"]["profileImage"]
+
+            mongodb.update_one(query={"_id":post_id}, collection_name=board_type, modify={"$set":  embeded_author_info})
+
             post = mongodb.find_one(query={"_id":post_id}, collection_name=board_type)
 
             convert_to_string(post=post)
 
             # 회원활동정보 등록
             post_activity = [post["boardType"], str(post_id)]
-            author = post_info["author"]
 
             update_activity = ActivityUpdate(author=author, field="activity.posts", new_activity_info=post_activity)
             update_activity.update_activity(operator="$addToSet")
-
             
             return post
-            
+
         except TypeError as t:
             return {
-                "error" : str(t)
+                "TypeError" : str(t)
             }
         except AttributeError as a:
             return {
-                "error": str(a)
+                "AttributeError": str(a)
             }
         except IndexError as i:
             return {
-                "error": str(i)
+                "IndexError": str(i)
             } 
         except dateutil.parser.ParserError as  p:
             return {
-                "error": str(p)
+                "DatetimeError": str(p)
             } 
 
 
