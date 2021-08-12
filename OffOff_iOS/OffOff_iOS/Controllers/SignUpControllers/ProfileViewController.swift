@@ -54,12 +54,14 @@ class ProfileViewController: UIViewController {
         
         viewModel.signedUp
             .drive(onNext: { signedUp in
-                let alert = UIAlertController(title: "회원가입 완료", message: nil, preferredStyle: .alert)
-                let action = UIAlertAction(title: "확인", style: .default) { action in
-                    self.dismiss(animated: true, completion: nil)
+                if signedUp {
+                    let alert = UIAlertController(title: "회원가입 완료", message: nil, preferredStyle: .alert)
+                    let action = UIAlertAction(title: "확인", style: .default) { action in
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
                 }
-                alert.addAction(action)
-                self.present(alert, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
     }

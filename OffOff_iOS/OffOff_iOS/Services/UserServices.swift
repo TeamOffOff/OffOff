@@ -14,7 +14,7 @@ public class UserServices {
     static let provider = MoyaProvider<UserAPI>()
     
     struct Validation: Codable {
-        var message: String = "Impossible"
+        var queryStatus: String = "Impossible"
     }
     
     struct SignUpResult: Codable {
@@ -28,9 +28,8 @@ public class UserServices {
                 .rx.request(.idChek(id))
                 .asObservable()
                 .map {
-                    print(id)
                     let result = try JSONDecoder().decode(Validation.self, from: $0.data)
-                    return result.message == "possible"
+                    return result.queryStatus == "possible"
                 }
                 .catchErrorJustReturn(false)
         } else {
@@ -44,7 +43,6 @@ public class UserServices {
                 .rx.request(.emailCheck(email))
                 .asObservable()
                 .map {
-                    print($0)
                     return $0.statusCode == 200
 //                    let result = try JSONDecoder().decode(Validation.self, from: $0.data)
 //                    return result.message == "possible"
@@ -62,7 +60,7 @@ public class UserServices {
                 .asObservable()
                 .map {
                     let result = try JSONDecoder().decode(Validation.self, from: $0.data)
-                    return result.message == "possible"
+                    return result.queryStatus == "possible"
                 }
                 .catchErrorJustReturn(false)
                 
@@ -77,7 +75,6 @@ public class UserServices {
             .asObservable()
             .map {
                 let result = try JSONDecoder().decode(SignUpResult.self, from: $0.data)
-                print(result)
                 return $0.statusCode == 200
             }
             .catchErrorJustReturn(false)

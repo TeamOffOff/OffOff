@@ -38,21 +38,3 @@ struct PostModel: Codable {
         try container.encode(viewCount, forKey: .viewCount)
     }
 }
-
-@propertyWrapper
-struct NullCodable<T>: Codable where T: Codable {
-    
-    var wrappedValue: T?
-    
-    init(wrappedValue: T?) {
-        self.wrappedValue = wrappedValue
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch wrappedValue {
-        case .some(let value): try container.encode(value)
-        case .none: try container.encodeNil()
-        }
-    }
-}

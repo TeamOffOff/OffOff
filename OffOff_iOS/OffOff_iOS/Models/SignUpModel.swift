@@ -29,12 +29,12 @@ import Foundation
 //}
 
 class SharedSignUpModel {
-    static var model = SignUpModel(_id: nil, password: nil, information: Information(), subInformation: SubInformation(), activity: Activity())
+    static var model = SignUpModel(_id: "", password: "", information: Information(name: "", email: "", birth: "", type: nil), subInformation: SubInformation(nickname: "", profileImage: nil), activity: Activity())
 }
 
 struct SignUpModel: Codable {
-    var _id: String?
-    var password: String?
+    var _id: String
+    var password: String
     
     var information: Information
     var subInformation: SubInformation
@@ -42,14 +42,26 @@ struct SignUpModel: Codable {
 }
 
 struct Information: Codable {
-    var name: String?
-    var email: String?
-    var birth: String?
+    var name: String
+    var email: String
+    var birth: String
     var type: String?
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(email, forKey: .email)
+    }
 }
 struct SubInformation: Codable {
-    var nickname: String?
+    var nickname: String
     var profileImage: String?
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(nickname, forKey: .nickname)
+        try container.encode(profileImage, forKey: .profileImage)
+    }
 }
 struct Activity: Codable {
     var posts: [String] = []

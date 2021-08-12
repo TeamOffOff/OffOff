@@ -35,7 +35,7 @@ class IDPWViewController: UIViewController {
         idpwView.passwordRepeatField.delegate = self
         
         // Shared Model 초기화
-        SharedSignUpModel.model = SignUpModel(_id: nil, password: nil, information: Information(), subInformation: SubInformation(), activity: Activity())
+        SharedSignUpModel.model = SignUpModel(_id: "", password: "", information: Information(name: "", email: "", birth: "", type: nil), subInformation: SubInformation(nickname: "", profileImage: nil), activity: Activity())
         
         // input과 함께 viewModel 생성
         let viewModel = IDPWViewModel(
@@ -70,7 +70,7 @@ class IDPWViewController: UIViewController {
                     self.idpwView.idTextField.setTextFieldVerified()
                 } else {
                     self.idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
-                    SharedSignUpModel.model._id = nil
+                    SharedSignUpModel.model._id = ""
                 }
             })
             .disposed(by: disposeBag)
@@ -81,7 +81,7 @@ class IDPWViewController: UIViewController {
                     self.idpwView.passwordTextField.setTextFieldVerified()
                 } else {
                     self.idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
-                    SharedSignUpModel.model.password = nil
+                    SharedSignUpModel.model.password = ""
                 }
             })
             .disposed(by: disposeBag)
@@ -92,7 +92,7 @@ class IDPWViewController: UIViewController {
                     self.idpwView.passwordRepeatField.setTextFieldVerified()
                 } else {
                     self.idpwView.passwordRepeatField.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
-                    SharedSignUpModel.model.password = nil
+                    SharedSignUpModel.model.password = ""
                 }
             })
             .disposed(by: disposeBag)
@@ -110,11 +110,11 @@ class IDPWViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if let id = SharedSignUpModel.model._id {
-            idpwView.idTextField.text = id
+        if SharedSignUpModel.model._id != "" {
+            idpwView.idTextField.text = SharedSignUpModel.model._id
         }
-        if let pw = SharedSignUpModel.model.password {
-            idpwView.passwordTextField.text = pw
+        if SharedSignUpModel.model.password != "" {
+            idpwView.passwordTextField.text = SharedSignUpModel.model.password
         }
     }
     

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
 		EA07345526929C01007830ED /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345426929C01007830ED /* Post.swift */; };
 		EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */ = {isa = PBXBuildFile; fileRef = EA0734562692A0B8007830ED /* PostsDummyData.json */; };
 		EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
@@ -69,9 +70,6 @@
 		EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */; };
 		EACC258926A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */; };
 		EACC258A26A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258726A6B32D000B12B6 /* PrivacyInfoView.swift */; };
-		EACC258C26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
-		EACC258D26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
-		EACC258E26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
 		EACF1B3726B5A9DD00C153D3 /* BoardAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3626B5A9DD00C153D3 /* BoardAPI.swift */; };
 		EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3826B6698C00C153D3 /* BoardServices.swift */; };
 		EACF1B3B26B6710800C153D3 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3A26B6710800C153D3 /* Board.swift */; };
@@ -558,7 +556,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA2FDF4C26A7D88800AEC951 /* UserServices.swift in Sources */,
-				EACC258E26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258A26A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
@@ -570,7 +567,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */,
-				EACC258D26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EAAA212126BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258926A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
@@ -583,9 +579,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */,
-				EACC258C26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
+				EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EACF1B3726B5A9DD00C153D3 /* BoardAPI.swift in Sources */,
