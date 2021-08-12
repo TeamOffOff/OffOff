@@ -184,8 +184,11 @@ class AuthLogin(Resource):
         else:
             # 비밀번호 일치한 경우
             token_encoded = jwt.encode({'_id': user_info["_id"]}, SECRET_KEY, ALGORITHM)
+            if not (type(token_encoded) is str):
+                token_encoded = token_encoded.decode("UTF-8")
+
             return {
-                'Authorization': str(token_encoded), 
+                'Authorization': token_encoded, 
                 "queryStatus" : 'success'
             }, 200
 
@@ -223,31 +226,6 @@ class AuthLogin(Resource):
             return modified_user
         else:
             return {"queryStatus": "infomation update fail"}, 500
-
-
-class ActivityUpdate():
-    def __init__(self, author, field, new_activity_info):
-        self.author = author
-        self.field = field
-        self.new_activity_info = new_activity_info
-
-    def update_activity(self, operator):  # 활동 추가
-        """
-        사용자 활동 추가하기
-        """
-
-        """
-        author : 유저 id
-        field : 활동 내용 posts, likes, reply, report
-        new_activity_info : 구체적인 내용["board_type", "post_id:]
-        """   
-        
-        result = mongodb.update_one(query={"_id": self.author}, collection_name="user", modify={operator: {self.field: self.new_activity_info}})
-
-        if result.raw_result["n"] == 1:
-            return {"queryStatus": "success"}
-        else:
-            return {"queryStatus": "activity update fail"}, 500
 
 
 @Activity.route("/<string:activity_type>")
