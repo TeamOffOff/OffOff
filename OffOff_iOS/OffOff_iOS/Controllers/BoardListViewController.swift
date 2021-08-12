@@ -35,7 +35,7 @@ class BoardListViewController: UITableViewController {
             .modelSelected(Board.self)
             .subscribe(onNext: {
                 let vc = PostListViewController()
-                vc.boardType = $0.board_type
+                vc.boardType = $0.boardType
                 vc.boardName = $0.name
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen

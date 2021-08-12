@@ -55,7 +55,7 @@ final class IDPWViewModel {
         isValidatedToProgress = input.nextButtonTap.withLatestFrom(enabledAndValues)
             .flatMapLatest { pair in
                 if pair.enabled {
-                    SharedSignUpModel.model.id = pair.id
+                    SharedSignUpModel.model._id = pair.id
                     SharedSignUpModel.model.password = pair.password
                 }
                 return Driver.just(pair.enabled)

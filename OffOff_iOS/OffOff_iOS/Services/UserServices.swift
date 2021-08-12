@@ -28,8 +28,9 @@ public class UserServices {
                 .rx.request(.idChek(id))
                 .asObservable()
                 .map {
+                    print(id)
                     let result = try JSONDecoder().decode(Validation.self, from: $0.data)
-                    return result.message == "Possible"
+                    return result.message == "possible"
                 }
                 .catchErrorJustReturn(false)
         } else {
@@ -61,7 +62,7 @@ public class UserServices {
                 .asObservable()
                 .map {
                     let result = try JSONDecoder().decode(Validation.self, from: $0.data)
-                    return result.message == "Possible"
+                    return result.message == "possible"
                 }
                 .catchErrorJustReturn(false)
                 

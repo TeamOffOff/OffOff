@@ -35,7 +35,7 @@ class IDPWViewController: UIViewController {
         idpwView.passwordRepeatField.delegate = self
         
         // Shared Model 초기화
-        SharedSignUpModel.model = SignUpModel(id: nil, password: nil, information: Information(), subinfo: Subinfo(), activity: Activity())
+        SharedSignUpModel.model = SignUpModel(_id: nil, password: nil, information: Information(), subInformation: SubInformation(), activity: Activity())
         
         // input과 함께 viewModel 생성
         let viewModel = IDPWViewModel(
@@ -70,7 +70,7 @@ class IDPWViewController: UIViewController {
                     self.idpwView.idTextField.setTextFieldVerified()
                 } else {
                     self.idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
-                    SharedSignUpModel.model.id = nil
+                    SharedSignUpModel.model._id = nil
                 }
             })
             .disposed(by: disposeBag)
@@ -110,7 +110,7 @@ class IDPWViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if let id = SharedSignUpModel.model.id {
+        if let id = SharedSignUpModel.model._id {
             idpwView.idTextField.text = id
         }
         if let pw = SharedSignUpModel.model.password {

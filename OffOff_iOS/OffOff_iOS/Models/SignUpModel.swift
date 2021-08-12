@@ -29,16 +29,16 @@ import Foundation
 //}
 
 class SharedSignUpModel {
-    static var model = SignUpModel(id: nil, password: nil, information: Information(), subinfo: Subinfo(), activity: Activity())
+    static var model = SignUpModel(_id: nil, password: nil, information: Information(), subInformation: SubInformation(), activity: Activity())
 }
 
 struct SignUpModel: Codable {
-    var id: String?
+    var _id: String?
     var password: String?
     
-    var information: Information?
-    var subinfo: Subinfo?
-    var activity: Activity? = nil
+    var information: Information
+    var subInformation: SubInformation
+    var activity: Activity
 }
 
 struct Information: Codable {
@@ -47,15 +47,16 @@ struct Information: Codable {
     var birth: String?
     var type: String?
 }
-struct Subinfo: Codable {
+struct SubInformation: Codable {
     var nickname: String?
-    var profile_image: String?
+    var profileImage: String?
 }
 struct Activity: Codable {
-    var posts: String?
-    var commments: String?
-    var likes: String?
-    var bookmarks: String?
+    var posts: [String] = []
+    var replies: [String] = []
+    var likes: [String] = []
+    var reports: [String] = []
+    var bookmarks: [String] = []
 }
 
 struct IDPWModel {

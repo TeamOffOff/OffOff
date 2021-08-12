@@ -12,7 +12,7 @@ import Moya
 
 enum PostAPI {
     case getPost(content_id: String, board_type: String)
-    case makePost(post: Post)
+    case makePost(post: PostModel)
 //    case modifyPost
 //    case deletePost
 }
@@ -47,7 +47,7 @@ extension PostAPI: TargetType {
     var task: Task {
         switch self {
         case .getPost(let content_id, let board_type):
-            return .requestParameters(parameters: ["content-id": content_id, "board-type": board_type], encoding: URLEncoding.default)
+            return .requestParameters(parameters: ["postId": content_id, "boardType": board_type], encoding: URLEncoding.default)
         case .makePost(let post):
             return .requestJSONEncodable(post)
         }

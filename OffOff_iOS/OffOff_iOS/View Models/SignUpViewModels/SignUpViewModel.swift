@@ -30,7 +30,7 @@ class SignUpViewModel {
         signedUp = input.signUpButtonTap.withLatestFrom(nickNameAndProfileImage)
             .flatMapLatest { pair in
                 if pair.confirmed {
-                    SharedSignUpModel.model.subinfo?.nickname = pair.nickname
+                    SharedSignUpModel.model.subInformation.nickname = pair.nickname
                     return UserServices.signUp(with: SharedSignUpModel.model).asDriver(onErrorJustReturn: false)
                 } else {
                     return Driver.just(false)

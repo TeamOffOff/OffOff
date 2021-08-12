@@ -44,11 +44,11 @@ class PostListViewController: UITableViewController {
         // bind result
         viewModel.postList
             .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
-                cell.titleLabel.text = element.Title
-                cell.dateAuthorLabel.text = "\(element.Date) | \(element.Author)"
-                cell.previewTextView.text = element.Content
-                cell.likeLabel.label.text = "\(element.Likes) "
-                cell.commentLabel.label.text = "\(element.reply_count)"
+                cell.titleLabel.text = element.title
+                cell.dateAuthorLabel.text = "\(element.date) | \(element.author)"
+                cell.previewTextView.text = element.content
+                cell.likeLabel.label.text = "\(element.likes) "
+                cell.commentLabel.label.text = "\(element.replyCount)"
             }
             .disposed(by: disposeBag)
         
@@ -57,7 +57,7 @@ class PostListViewController: UITableViewController {
             .modelSelected(PostModel.self)
             .bind {
                 let vc = PostViewController()
-                vc.postInfo = (id: $0._id, type: $0.board_type)
+                vc.postInfo = (id: $0._id!, type: $0.boardType)
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)

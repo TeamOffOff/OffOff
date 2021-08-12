@@ -17,7 +17,6 @@
 		EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4C26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
-		EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */; };
 		EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* IDPWViewController.swift */; };
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
 		EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B36269BFBD200F6F903 /* PostServices.swift */; };
@@ -33,6 +32,7 @@
 		EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA975A5F26B045A600C6FB41 /* PostAPI.swift */; };
 		EA983F0B26C0DDF60070604E /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA983F0A26C0DDF60070604E /* PostViewModel.swift */; };
 		EA983F0D26C0E4980070604E /* NewPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA983F0C26C0E4980070604E /* NewPostViewModel.swift */; };
+		EA983F0F26C1183D0070604E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA983F0E26C1183D0070604E /* Constants.swift */; };
 		EA9D0AC426BA956200D571EC /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC326BA956200D571EC /* Moya */; };
 		EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC526BA956200D571EC /* RxMoya */; };
 		EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC726BA956200D571EC /* ReactiveMoya */; };
@@ -46,10 +46,13 @@
 		EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
 		EAAA212126BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
 		EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */; };
-		EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAFFBA0269F2DF4006D43D4 /* Constants.swift */; };
 		EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C426A2EA80001DE8BF /* LoginModel.swift */; };
 		EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */; };
 		EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */; };
+		EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */; };
+		EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */; };
+		EACB84F226C39B9800096E01 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84F126C39B9800096E01 /* Amplify */; };
+		EACB84F626C3A83C00096E01 /* swiftlogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EACB84F526C3A83C00096E01 /* swiftlogo.jpg */; };
 		EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */; };
 		EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
 		EACC257B26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
@@ -118,8 +121,6 @@
 		EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		EA2FDF4926A7D88800AEC951 /* UserServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServices.swift; sourceTree = "<group>"; };
 		EA3DA4BB26A58B510075819B /* OffOff_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffOff_iOSUITests.swift; sourceTree = "<group>"; };
-		EA3DA4BF26A58B510075819B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EA406A8D26A475CE00737F90 /* IDPWViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewController.swift; sourceTree = "<group>"; };
 		EA406A8F26A4769300737F90 /* IDPWView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWView.swift; sourceTree = "<group>"; };
 		EA420B36269BFBD200F6F903 /* PostServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostServices.swift; sourceTree = "<group>"; };
@@ -137,12 +138,13 @@
 		EA975A5F26B045A600C6FB41 /* PostAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostAPI.swift; sourceTree = "<group>"; };
 		EA983F0A26C0DDF60070604E /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		EA983F0C26C0E4980070604E /* NewPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewModel.swift; sourceTree = "<group>"; };
+		EA983F0E26C1183D0070604E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewModel.swift; sourceTree = "<group>"; };
 		EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoViewModel.swift; sourceTree = "<group>"; };
-		EAAFFBA0269F2DF4006D43D4 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
+		EACB84F526C3A83C00096E01 /* swiftlogo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = swiftlogo.jpg; sourceTree = "<group>"; };
 		EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
 		EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Free-Solid-900.otf"; sourceTree = "<group>"; };
 		EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Free-Regular-400.otf"; sourceTree = "<group>"; };
@@ -196,10 +198,13 @@
 				EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */,
 				EA9D0AD026BAC93100D571EC /* Then in Frameworks */,
 				EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */,
+				EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */,
 				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
 				EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */,
+				EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */,
 				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
+				EACB84F226C39B9800096E01 /* Amplify in Frameworks */,
 				EA9D0AC426BA956200D571EC /* Moya in Frameworks */,
 				EA9D0ACB26BA95A700D571EC /* RxCocoa in Frameworks */,
 			);
@@ -208,15 +213,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		EA3DA4BC26A58B510075819B /* OffOff_iOSUITests */ = {
-			isa = PBXGroup;
-			children = (
-				EA3DA4BD26A58B510075819B /* OffOff_iOSUITests.swift */,
-				EA3DA4BF26A58B510075819B /* Info.plist */,
-			);
-			path = OffOff_iOSUITests;
-			sourceTree = "<group>";
-		};
 		EA406A8C26A4759600737F90 /* SignUpControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -251,7 +247,6 @@
 			children = (
 				EAE502E12689E3D6002B1C6A /* OffOff_iOS */,
 				EA420B3F269C5F7D00F6F903 /* OffOff_iOSTests */,
-				EA3DA4BC26A58B510075819B /* OffOff_iOSUITests */,
 				EAE502E02689E3D6002B1C6A /* Products */,
 				EAE502F6268AA0E0002B1C6A /* Frameworks */,
 			);
@@ -279,6 +274,7 @@
 				EAE5030A268AB6F6002B1C6A /* Views */,
 				EAE50309268AB6DC002B1C6A /* Commons */,
 				EAE502EB2689E3D7002B1C6A /* Assets.xcassets */,
+				EACB84F526C3A83C00096E01 /* swiftlogo.jpg */,
 				EA929F2226AC66BE009352B9 /* default profile.png */,
 				EAE502F02689E3D7002B1C6A /* Info.plist */,
 			);
@@ -301,7 +297,7 @@
 				EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */,
 				EAF2127D268FEC6C00E47942 /* Box.swift */,
 				EA72D75F26987D5300EB07DA /* Extensions.swift */,
-				EAAFFBA0269F2DF4006D43D4 /* Constants.swift */,
+				EA983F0E26C1183D0070604E /* Constants.swift */,
 				EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */,
 				EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */,
 				EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */,
@@ -459,6 +455,9 @@
 				EA9D0AD226BAC96D00D571EC /* SnapKit */,
 				EA9D0AD526BAC97C00D571EC /* SkyFloatingLabelTextField */,
 				EA9D0AD826BAC9DF00D571EC /* FontAwesome */,
+				EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */,
+				EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */,
+				EACB84F126C39B9800096E01 /* Amplify */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -502,6 +501,7 @@
 				EA9D0AD126BAC96D00D571EC /* XCRemoteSwiftPackageReference "SnapKit" */,
 				EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
 				EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */,
+				EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -531,6 +531,7 @@
 			files = (
 				EACC257B26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */,
 				EACC258126A5CFB3000B12B6 /* Font Awesome 5 Brands-Regular-400.otf in Resources */,
+				EACB84F626C3A83C00096E01 /* swiftlogo.jpg in Resources */,
 				EACC257E26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -561,7 +562,6 @@
 				EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258A26A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
-				EA3DA4BE26A58B510075819B /* OffOff_iOSUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,7 +582,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAAFFBA1269F2DF4006D43D4 /* Constants.swift in Sources */,
 				EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */,
 				EACC258C26A71466000B12B6 /* PrivacyInfoViewController.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
@@ -628,6 +627,7 @@
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,
 				EAF212882690355B00E47942 /* HomeViewController.swift in Sources */,
+				EA983F0F26C1183D0070604E /* Constants.swift in Sources */,
 				EA975A5C26AFB87000C6FB41 /* CircularImageView.swift in Sources */,
 				EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */,
 			);
@@ -991,6 +991,14 @@
 				minimumVersion = 1.9.1;
 			};
 		};
+		EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aws-amplify/amplify-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.13.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1038,6 +1046,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */;
 			productName = FontAwesome;
+		};
+		EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */;
+			productName = AWSDataStorePlugin;
+		};
+		EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */;
+			productName = AWSS3StoragePlugin;
+		};
+		EACB84F126C39B9800096E01 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */;
+			productName = Amplify;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -14,7 +14,7 @@ class PostListViewModel {
     init(boardType: String) {
         postList = BoardServices.fetchPostList(board_type: boardType)
             .map {
-                $0?.post_list ?? []
+                return $0?.postList ?? []
             }
     }
     

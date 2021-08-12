@@ -16,7 +16,7 @@ class BoardListViewModel {
     init() {
         boardLists = BoardServices.fetchBoardList()
             .map {
-                return $0?.board ?? []
+                return $0?.boardList ?? []
                 
             }
     }

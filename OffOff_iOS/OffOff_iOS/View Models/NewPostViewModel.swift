@@ -14,7 +14,8 @@ class NewPostViewModel {
     let isTitleConfirmed: Driver<Bool>
     let isContentConfiremd: Driver<Bool>
     let postCreated: Observable<Bool>
-    
+    let newPost: PublishSubject<PostModel?> = PublishSubject<PostModel?>()
+
     init(
         input: (
             titleText: Driver<String>,
@@ -31,11 +32,22 @@ class NewPostViewModel {
         
         postCreation = input.createButtonTap.withLatestFrom(titleAndContent)
             .flatMap { pair in
-                Driver.just(pair.title != "" && pair.content != "")
+                return Driver.just(pair.title != "" && pair.content != "")
             }
         
-        postCreated = postCreation.asObservable().map {
-            $0
+        var postModel: PostModel?
+        postCreated = postCreation.asObservable().withLatestFrom(titleAndContent.asObservable()) {
+            print(#fileID, #function, #line, "")
+            if $0 {
+                print($1)
+                
+                // TODO: 현재 로그인하고 있는 회원정보, 현재 접속하고 있는 게시판 정보를 넣어서 새로운 포스트 작성
+                postModel = PostModel(_id: nil, author: "Test", boardType: "free", content: $1.1, date: "2021-08-11", image: nil, likes: 0, replyCount: 0, reportCount: 0, title: $1.0, viewCount: 0)
+            }
+        }
+        .debug()
+        .flatMap {
+            PostServices.createPost(post: postModel!).map { $0 }
         }
     }
 }

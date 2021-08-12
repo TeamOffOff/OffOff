@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 
 class PostViewModel {
-    let post: Observable<Post?>
+    let post: Observable<PostModel?>
     
     init(contentId: String, boardType: String) {
         post = PostServices.fetchPost(content_id: contentId, board_type: boardType)

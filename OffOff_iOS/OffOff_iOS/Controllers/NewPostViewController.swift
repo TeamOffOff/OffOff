@@ -7,8 +7,10 @@
 
 import UIKit
 import RxCocoa
+import RxSwift
 
 class NewPostViewController: UIViewController {
+    let disposeBag = DisposeBag()
     let newPostView = NewPostView()
     
     override func loadView() {
@@ -44,10 +46,14 @@ class NewPostViewController: UIViewController {
         )
         
         // bind results
-//        viewModel.postCreated
-//            .drive(onNext: {
-//                self.
-//            })
+        viewModel.postCreated
+            .debug()
+            .subscribe(onNext: {
+                if $0 {
+                    self.dismiss(animated: true, completion: nil)
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
 
