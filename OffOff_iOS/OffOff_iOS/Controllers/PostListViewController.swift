@@ -45,7 +45,7 @@ class PostListViewController: UITableViewController {
         viewModel.postList
             .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.titleLabel.text = element.title
-                cell.dateAuthorLabel.text = "\(element.date) | \(element.author)"
+                cell.dateAuthorLabel.text = "\(element.date) | \(element.author.nickname)"
                 cell.previewTextView.text = element.content
                 cell.likeLabel.label.text = "\(element.likes) "
                 cell.commentLabel.label.text = "\(element.replyCount)"

@@ -10,18 +10,33 @@ struct PostList: Codable {
     var postList: [PostModel]
 }
 
+struct Author: Codable {
+    var _id: String?
+    var nickname: String
+    var type: String
+    var profileImage: String?
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(nickname, forKey: .nickname)
+        try container.encode(type, forKey: .type)
+        try container.encode(profileImage, forKey: .profileImage)
+    }
+}
+
 struct PostModel: Codable {
     var _id: String?
-    var author: String
     var boardType: String
-    var content: String
+    var author: Author
     var date: String
+    var title: String
+    var content: String
     var image: String?
     var likes: Int
-    var replyCount: Int
-    var reportCount: Int
-    var title: String
     var viewCount: Int
+    var reportCount: Int
+    var replyCount: Int
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

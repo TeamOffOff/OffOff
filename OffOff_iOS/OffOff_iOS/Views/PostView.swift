@@ -132,7 +132,7 @@ class PostView: UIView {
     
     func setupView(post: PostModel) {
         titleLabel.text = post.title
-        authorLabel.text = post.author
+        authorLabel.text = post.author.nickname
         dateLabel.text = post.date
         contentTextView.text = post.content
     }

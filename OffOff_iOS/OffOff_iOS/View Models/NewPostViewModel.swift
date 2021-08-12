@@ -42,7 +42,7 @@ class NewPostViewModel {
                 print($1)
                 
                 // TODO: 현재 로그인하고 있는 회원정보, 현재 접속하고 있는 게시판 정보를 넣어서 새로운 포스트 작성
-                postModel = PostModel(_id: nil, author: "Test", boardType: "free", content: $1.1, date: "2021-08-11", image: nil, likes: 0, replyCount: 0, reportCount: 0, title: $1.0, viewCount: 0)
+                postModel = PostModel(_id: nil, boardType: "free", author: Author(_id: "admin", nickname: "admin", type: "admin", profileImage: nil), date: "2021-08-11", title: $1.0, content: $1.1,image: nil, likes: 0, viewCount: 0, reportCount: 0, replyCount: 0)
             }
         }
         .debug()

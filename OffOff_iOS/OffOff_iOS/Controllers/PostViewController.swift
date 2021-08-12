@@ -73,7 +73,7 @@ class PostViewController: UIViewController {
         viewModel.post
             .bind {
                 self.postView.titleLabel.text = $0?.title
-                self.postView.authorLabel.text = $0?.author
+                self.postView.authorLabel.text = $0?.author.nickname
                 self.postView.contentTextView.text = $0?.content
                 self.postView.dateLabel.text = $0?.date
                 self.postView.profileImageView.image = UIImage(systemName: "person.fil")
