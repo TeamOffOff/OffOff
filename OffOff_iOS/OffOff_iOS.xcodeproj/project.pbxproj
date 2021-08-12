@@ -14,6 +14,9 @@
 		EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345E2692CECA007830ED /* PostListViewController.swift */; };
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
+		EA285A6526C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
+		EA285A6626C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
+		EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA285A6726C565F000E65EB2 /* RxCocoa */; };
 		EA2FDF4826A7C7EF00AEC951 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */; };
 		EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
@@ -37,7 +40,6 @@
 		EA9D0AC426BA956200D571EC /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC326BA956200D571EC /* Moya */; };
 		EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC526BA956200D571EC /* RxMoya */; };
 		EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC726BA956200D571EC /* ReactiveMoya */; };
-		EA9D0ACB26BA95A700D571EC /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACA26BA95A700D571EC /* RxCocoa */; };
 		EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACC26BA95A700D571EC /* RxSwift */; };
 		EA9D0AD026BAC93100D571EC /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACF26BAC93100D571EC /* Then */; };
 		EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD226BAC96D00D571EC /* SnapKit */; };
@@ -199,12 +201,12 @@
 				EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */,
 				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
 				EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */,
+				EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */,
 				EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */,
 				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
 				EACB84F226C39B9800096E01 /* Amplify in Frameworks */,
 				EA9D0AC426BA956200D571EC /* Moya in Frameworks */,
-				EA9D0ACB26BA95A700D571EC /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,7 +449,6 @@
 				EA9D0AC326BA956200D571EC /* Moya */,
 				EA9D0AC526BA956200D571EC /* RxMoya */,
 				EA9D0AC726BA956200D571EC /* ReactiveMoya */,
-				EA9D0ACA26BA95A700D571EC /* RxCocoa */,
 				EA9D0ACC26BA95A700D571EC /* RxSwift */,
 				EA9D0ACF26BAC93100D571EC /* Then */,
 				EA9D0AD226BAC96D00D571EC /* SnapKit */,
@@ -456,6 +457,7 @@
 				EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */,
 				EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */,
 				EACB84F126C39B9800096E01 /* Amplify */,
+				EA285A6726C565F000E65EB2 /* RxCocoa */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -557,6 +559,7 @@
 			files = (
 				EA2FDF4C26A7D88800AEC951 /* UserServices.swift in Sources */,
 				EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */,
+				EA285A6626C5658A00E65EB2 /* PostListViewModel.swift in Sources */,
 				EACC258626A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258A26A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 			);
@@ -568,6 +571,7 @@
 			files = (
 				EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */,
 				EAAA212126BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */,
+				EA285A6526C5658A00E65EB2 /* PostListViewModel.swift in Sources */,
 				EACC258526A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EACC258926A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */,
@@ -775,6 +779,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -796,6 +801,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Debug;
 		};
@@ -836,6 +842,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -998,6 +1006,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		EA285A6726C565F000E65EB2 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
 		EA9D0AC326BA956200D571EC /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
@@ -1012,11 +1025,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = ReactiveMoya;
-		};
-		EA9D0ACA26BA95A700D571EC /* RxCocoa */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxCocoa;
 		};
 		EA9D0ACC26BA95A700D571EC /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;

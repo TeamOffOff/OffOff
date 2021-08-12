@@ -6,21 +6,44 @@
 //
 
 import Foundation
+import UIKit.UIRefreshControl
 import RxSwift
+import RxCocoa
 
 class PostListViewModel {
-    let postList: Observable<[PostModel]>
+    let disposeBag = DisposeBag()
+    
+    var postList = BehaviorRelay<[PostModel]>(value: [])
+    var isRefreshing = Observable.just(false)
+    var isRefreshed = Observable.just(false)
+    
+    var boardType = ""
+    
+    let reloadTrigger = PublishSubject<Void>()
+    let refreshing = BehaviorSubject<Bool>(value: false)
     
     init(boardType: String) {
-        postList = BoardServices.fetchPostList(board_type: boardType)
-            .map {
-                return $0?.postList ?? []
+        self.boardType = boardType
+        fetchPostList(boardType: self.boardType)
+        
+        self.reloadTrigger
+            .debug()
+            .do(onNext: { [weak self] in self?.refreshing.onNext(true)})
+            .delay(.seconds(3), scheduler: MainScheduler.instance)
+            .flatMapLatest { _ in
+                BoardServices.fetchPostList(board_type: boardType)
             }
+            .do(onNext: { [weak self] _ in self?.refreshing.onNext(false) })
+            .map { $0?.postList ?? [] }
+            .bind(to: self.postList)
+            .disposed(by: disposeBag)
     }
     
+    private func fetchPostList(boardType: String) {
+        _ = BoardServices.fetchPostList(board_type: boardType).map { $0?.postList ?? [] }.bind(to: self.postList)
+    }
+}
 //    func getPost(index: Int) -> PostModel? {
-//        return postList.value?.post_list[index]
-//    }
 //
 //    func fetchPost(index: Int, completion: @escaping (Post) -> Void) {
 //        fetchPost(content_id: postList.value?.post_list[index]._id ?? "", board_type: postList.value?.post_list[index].board_type ?? "", completion: completion)
@@ -38,7 +61,7 @@ class PostListViewModel {
 //            self.postList.value = postList
 //        }
 //    }
-    
+
 //    static func makeNewPost(title: String, content: String, board_type: String) {
 //        let metadata = Metadata(author: "홍길동", title: title, date: Date().toString(), board_type: board_type, preview: "preview")
 //        let newPost = PostModel(content_id: "MoyaTest", metadata: metadata, contents: Contents(content: content))
@@ -49,5 +72,5 @@ class PostListViewModel {
 //            }
 //        }
 //    }
-}
+
 

@@ -40,6 +40,7 @@ public class BoardServices {
             .rx.request(.getPostList(board_type, nil))
             .asObservable()
             .map {
+                print($0)
                 if $0.statusCode == 200 {
                     do {
                         let postList = try JSONDecoder().decode(PostList.self, from: $0.data)

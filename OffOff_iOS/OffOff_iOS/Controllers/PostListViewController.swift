@@ -14,6 +14,7 @@ class PostListViewController: UITableViewController {
     var boardType: String?
     var boardName: String?
     let disposeBag = DisposeBag()
+    var viewModel: PostListViewModel?
     
     override func loadView() {
         self.tableView = .init()
@@ -36,13 +37,18 @@ class PostListViewController: UITableViewController {
     }
     
     override func viewDidLoad() {
+        // view model
+        viewModel = PostListViewModel(boardType: boardType ?? "")
+        
         self.tableView.rx.setDelegate(self).disposed(by: disposeBag)
         
-        // view model
-        let viewModel = PostListViewModel(boardType: boardType ?? "")
+        // tableview refresh control
+        let refreshControl = UIRefreshControl()
+        self.tableView.refreshControl = refreshControl
         
         // bind result
-        viewModel.postList
+        viewModel!.postList
+            .do(onNext: { _ in refreshControl.endRefreshing() })
             .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.titleLabel.text = element.title
                 cell.dateAuthorLabel.text = "\(element.date) | \(element.author.nickname)"
@@ -52,6 +58,18 @@ class PostListViewController: UITableViewController {
             }
             .disposed(by: disposeBag)
         
+        
+        refreshControl.rx.controlEvent(.valueChanged)
+                    .bind(to: viewModel!.reloadTrigger)
+                    .disposed(by: disposeBag)
+        
+        viewModel!.refreshing
+                    .subscribe(onNext: { [weak self] refreshing in
+                        if refreshing { return }
+                        self?.tableView.refreshControl?.endRefreshing()
+                    })
+                    .disposed(by: disposeBag)
+
         // select row
         self.tableView.rx
             .modelSelected(PostModel.self)
