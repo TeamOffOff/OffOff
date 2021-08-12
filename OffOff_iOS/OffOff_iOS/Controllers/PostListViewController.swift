@@ -62,13 +62,6 @@ class PostListViewController: UITableViewController {
         refreshControl.rx.controlEvent(.valueChanged)
                     .bind(to: viewModel!.reloadTrigger)
                     .disposed(by: disposeBag)
-        
-        viewModel!.refreshing
-                    .subscribe(onNext: { [weak self] refreshing in
-                        if refreshing { return }
-                        self?.tableView.refreshControl?.endRefreshing()
-                    })
-                    .disposed(by: disposeBag)
 
         // select row
         self.tableView.rx
