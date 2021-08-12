@@ -26,20 +26,15 @@ def convert_to_string(post, *args):
 
 # author 정보 embed, 활동 정보 link
 class make_reference():
-    def __init__(self, object_id, board_type, author):
-        self.object_id = object_id
+    def __init__(self, board_type, author):
         self.board_type = board_type
         self.author = author
     
 
-    def embed_author_information_in_object(self, operator):
-            embeded_author_info = {
-                "author": {}
-            }
+    def embed_author_information_in_object(self):
+            embeded_author_info ={}
 
             total_author_info = mongodb.find_one(query={"_id":self.author}, collection_name="user")
-
-            embeded_author_info_field = embeded_author_info["author"]
 
             needed_author_info = ["_id", "subInformation.nickname", "information.type", "subInformation.profileImage"]
 
@@ -48,22 +43,19 @@ class make_reference():
                     temp = info.split(".")
                     field = temp[0]
                     key = temp[1]
-                    embeded_author_info_field[key] = total_author_info[field][key]
+                    embeded_author_info[key] = total_author_info[field][key]
                 else:
-                    embeded_author_info_field[info] = total_author_info[info]
+                    embeded_author_info[info] = total_author_info[info]
             
-
-            result = mongodb.update_one(query={"_id":self.object_id}, collection_name=self.board_type, modify={operator:  embeded_author_info})
-            
-            if result.raw_result["n"] == 1:
-                return {"queryStatus": "success"}
-            else:
-                return {"queryStatus": "embed fail"}, 500
+            return embeded_author_info
 
 
-    def link_activity_information_in_user(self, operator, field):
-        board_type = self.board_type.replace("_board","")
-        new_activity_info = [board_type, str(self.object_id)]
+    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None):
+        if reply_id:
+            board_type = self.board_type.replace("_board_reply", "")
+        else:
+            board_type = self.board_type.replace("_board","")
+        new_activity_info = [board_type, str(post_id), str(reply_id)]
         result = mongodb.update_one(query={"_id": self.author}, collection_name="user", modify={operator: {field: new_activity_info}})
 
         if result.raw_result["n"] == 1:
@@ -113,9 +105,11 @@ class PostControl(Resource):
         # 게시글 삭제
         result = mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
 
+        
+        making_reference = make_reference(board_type=board_type, author=author)
+
         # 회원활동정보 삭제
-        making_reference = make_reference(object_id=post_id, board_type=board_type, author=author)
-        making_reference.link_activity_information_in_user(field="posts", operator="$pull")
+        making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$pull")
 
 
         if result.raw_result["n"] == 1:
@@ -134,16 +128,19 @@ class PostControl(Resource):
             del post_info["_id"]
             post_info["date"] = dateutil.parser.parse(post_info["date"])
             
+            
+            making_reference = make_reference(board_type=board_type, author=author)
+           
+            # 회원정보 embeded 형태로 return
+            author = making_reference.embed_author_information_in_object()
+            post_info["author"] = author
+
             # 게시글 등록
             post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
 
-            # 회원정보 embeded 형태로 return
-            making_reference = make_reference(object_id=post_id, board_type=board_type, author=author)
-            making_reference.embed_author_information_in_object(operator="$set")
-
             # 회원활동 정보 등록
-            making_reference.link_activity_information_in_user(field="posts", operator="$addToSet")
-
+            making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$addToSet")
+            
             # 등록완료된 게시글 조회
             post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                   collection_name=board_type)
@@ -242,7 +239,7 @@ class PostControl(Resource):
 
 # 댓글 조회 함수
 def get_reply_list(post_id=None, board_type=None):
-    cursor = mongodb.find(query={"parentPost.postId": post_id},
+    cursor = mongodb.find(query={"parent.postId": post_id},
                                 collection_name=board_type)  # 댓글은 오름차순
 
     reply_list = []
@@ -264,19 +261,22 @@ class CommentControl(Resource):
         reply_info = request.get_json()
         del reply_info["_id"]
 
-        board_type = reply_info["parentPost"]["boardType"] + "_board_reply"
-        post_id = reply_info["parentPost"]["postId"]
+        board_type = reply_info["parent"]["boardType"] + "_board_reply"
+        post_id = reply_info["parent"]["postId"]
         author = reply_info["author"]["_id"]
+
+        
+        making_reference = make_reference(board_type=board_type, author=author)
+
+        # 회원정보 embeded 형태로 등록
+        author = making_reference.embed_author_information_in_object()
+        reply_info["author"] = author
 
         # 댓글 db에 저장
         reply_id = mongodb.insert_one(data=reply_info, collection_name=board_type)
         
-        # 회원정보 embeded 형태로 등록
-        making_reference = make_reference(object_id=reply_id, board_type=board_type, author=author)
-        making_reference.embed_author_information_in_object(operator="$set")
-
         # 회원활동 정보 link 형태로 등록
-        making_reference.link_activity_information_in_user(field="replies", operator="$addToSet")
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
 
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
@@ -303,28 +303,35 @@ class CommentControl(Resource):
     def delete(self):  # 댓글 삭제
         """댓글을 삭제합니다."""
         reply_info = request.get_json()
-        post_id = reply_info["postId"]
-        board_type = reply_info["boardType"] + "_board_reply"
-        reply_id = reply_info["_id"]  # 댓글 조회시 해당 댓글 고유의 _id를 포함해서 리턴함
-        whether_subreply = reply_info["subReply"]
+
+        board_type = reply_info["parent"]["boardType"] + "_board_reply"
+        post_id = reply_info["parent"]["postId"]
+        reply_id = reply_info["_id"]
+        author = reply_info["author"]["_id"]
+        whether_subreply = reply_info["subReplies"]
+
 
         if not whether_subreply:  # 대댓글이 없는 경우
             result = mongodb.delete_one(query={"_id": ObjectId(reply_id)},
                                         collection_name=board_type)
-        else:
+        else:  # 대댓글이 있는 경우
             alert_delete = {
-                "reply": {
-                    "author": None,
-                    "content": None,
-                    "date": None,
-                    "likes": None
-                }
+                "author":{},
+                "content": None,
+                "date": None,
+                "likes": None
             }
             result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
                                         collection_name=board_type,
                                         modify={"$set": alert_delete})
         
+        # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
+
+        making_reference = make_reference(board_type=board_type, author=author)
+
+        # 회원활동정보 삭제
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
 
         if result.raw_result["n"] == 1:
             return {
@@ -337,12 +344,12 @@ class CommentControl(Resource):
 # 대댓글 변수 설정 함수
 def get_subreply_variable():
     sub_reply_info = request.get_json()
-    post_id = sub_reply_info["parentPost"]["postId"]
-    reply_id = sub_reply_info["_id"]
-    board_type = sub_reply_info["parentPost"]["boardType"] + "_board_reply"
-    sub_reply = sub_reply_info["subReplies"][0]
+    post_id = sub_reply_info["parent"]["postId"]
+    reply_id = sub_reply_info["parent"]["replyId"]
+    board_type = sub_reply_info["parent"]["boardType"] + "_board_reply"
+    author = sub_reply_info["author"]["_id"]
 
-    return post_id, reply_id, board_type, sub_reply
+    return post_id, reply_id, board_type, sub_reply_info, author
 
 
 # 대댓글 관련 API
@@ -354,12 +361,22 @@ class SubcommentControl(Resource):
         """
         대댓글 추가
         """
-        post_id, reply_id, board_type, sub_reply= get_subreply_variable()
+        post_id, reply_id, board_type, sub_reply_info, author = get_subreply_variable()
 
+        making_reference = make_reference(board_type=board_type, author=author)
+           
+        # 회원정보 embeded 형태로 return
+        author = making_reference.embed_author_information_in_object()
+        sub_reply_info["author"] = author
+        
         result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
                                     collection_name=board_type,
-                                    modify={"$push": {"subReplies": sub_reply}})
+                                    modify={"$push": {"subReplies": sub_reply_info}})
 
+        # 회원활동 정보 link 형태로 등록
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
+
+        # 댓글 리스트 불러주기
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
 
         if result.raw_result["n"] == 1:
@@ -374,13 +391,19 @@ class SubcommentControl(Resource):
         """
         대댓글 삭제
         """
-        post_id, reply_id, board_type, subreply = get_subreply_variable()
+        post_id, reply_id, board_type, sub_reply_info, author = get_subreply_variable()
 
+        # 삭제
         result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
                                     collection_name=board_type,
-                                    modify={"$pull": {"subReply": subreply}})
+                                    modify={"$pull": {"subReplies": sub_reply_info}})
 
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
+
+        making_reference = make_reference(board_type=board_type, author=author)
+
+        # 회원활동정보 삭제
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
 
         if result.raw_result["n"] == 1:
             return {
