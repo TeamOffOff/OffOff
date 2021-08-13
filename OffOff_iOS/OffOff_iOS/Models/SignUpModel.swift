@@ -29,33 +29,46 @@ import Foundation
 //}
 
 class SharedSignUpModel {
-    static var model = SignUpModel(id: nil, password: nil, information: Information(), subinfo: Subinfo(), activity: Activity())
+    static var model = SignUpModel(_id: "", password: "", information: Information(name: "", email: "", birth: "", type: nil), subInformation: SubInformation(nickname: "", profileImage: nil), activity: Activity())
 }
 
 struct SignUpModel: Codable {
-    var id: String?
-    var password: String?
+    var _id: String
+    var password: String
     
-    var information: Information?
-    var subinfo: Subinfo?
-    var activity: Activity? = nil
+    var information: Information
+    var subInformation: SubInformation
+    var activity: Activity
 }
 
 struct Information: Codable {
-    var name: String?
-    var email: String?
-    var birth: String?
+    var name: String
+    var email: String
+    var birth: String
     var type: String?
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(email, forKey: .email)
+    }
 }
-struct Subinfo: Codable {
-    var nickname: String?
-    var profile_image: String?
+struct SubInformation: Codable {
+    var nickname: String
+    var profileImage: String?
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(nickname, forKey: .nickname)
+        try container.encode(profileImage, forKey: .profileImage)
+    }
 }
 struct Activity: Codable {
-    var posts: String?
-    var commments: String?
-    var likes: String?
-    var bookmarks: String?
+    var posts: [String] = []
+    var replies: [String] = []
+    var likes: [String] = []
+    var reports: [String] = []
+    var bookmarks: [String] = []
 }
 
 struct IDPWModel {

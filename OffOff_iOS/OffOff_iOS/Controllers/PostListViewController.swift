@@ -14,6 +14,7 @@ class PostListViewController: UITableViewController {
     var boardType: String?
     var boardName: String?
     let disposeBag = DisposeBag()
+    var viewModel: PostListViewModel?
     
     override func loadView() {
         self.tableView = .init()
@@ -36,28 +37,38 @@ class PostListViewController: UITableViewController {
     }
     
     override func viewDidLoad() {
+        // view model
+        viewModel = PostListViewModel(boardType: boardType ?? "")
+        
         self.tableView.rx.setDelegate(self).disposed(by: disposeBag)
         
-        // view model
-        let viewModel = PostListViewModel(boardType: boardType ?? "")
+        // tableview refresh control
+        let refreshControl = UIRefreshControl()
+        self.tableView.refreshControl = refreshControl
         
         // bind result
-        viewModel.postList
+        viewModel!.postList
+            .do(onNext: { _ in refreshControl.endRefreshing() })
             .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
-                cell.titleLabel.text = element.Title
-                cell.dateAuthorLabel.text = "\(element.Date) | \(element.Author)"
-                cell.previewTextView.text = element.Content
-                cell.likeLabel.label.text = "\(element.Likes) "
-                cell.commentLabel.label.text = "\(element.reply_count)"
+                cell.titleLabel.text = element.title
+                cell.dateAuthorLabel.text = "\(element.date) | \(element.author.nickname)"
+                cell.previewTextView.text = element.content
+                cell.likeLabel.label.text = "\(element.likes) "
+                cell.commentLabel.label.text = "\(element.replyCount)"
             }
             .disposed(by: disposeBag)
         
+        
+        refreshControl.rx.controlEvent(.valueChanged)
+                    .bind(to: viewModel!.reloadTrigger)
+                    .disposed(by: disposeBag)
+
         // select row
         self.tableView.rx
             .modelSelected(PostModel.self)
             .bind {
                 let vc = PostViewController()
-                vc.postInfo = (id: $0._id, type: $0.board_type)
+                vc.postInfo = (id: $0._id!, type: $0.boardType)
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)

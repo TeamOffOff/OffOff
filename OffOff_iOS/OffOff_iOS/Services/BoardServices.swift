@@ -36,13 +36,20 @@ public class BoardServices {
     }
     
     static func fetchPostList(board_type: String) -> Observable<PostList?> {
-        PostServices.provider
-            .rx.request(.getPostList(board_type))
+        BoardServices.provider
+            .rx.request(.getPostList(board_type, nil))
             .asObservable()
             .map {
+                print($0)
                 if $0.statusCode == 200 {
-                    let postList = try JSONDecoder().decode(PostList.self, from: $0.data)
-                    return postList
+                    do {
+                        let postList = try JSONDecoder().decode(PostList.self, from: $0.data)
+                        return postList
+                    } catch {
+                        print(error)
+                    }
+                    
+                    
                 }
                 return nil
             }

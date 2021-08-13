@@ -18,11 +18,12 @@ import Foundation
 //}
 
 struct BoardList: Codable {
-    var board: [Board]
+    var boardList: [Board]
 }
 
 struct Board: Codable {
-    var board_type: String
+    var boardType: String
     var name: String
     var icon: String?
+    var newPost: Bool
 }

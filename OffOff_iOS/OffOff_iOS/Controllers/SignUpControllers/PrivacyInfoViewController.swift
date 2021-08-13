@@ -61,7 +61,7 @@ class PrivacyInfoViewController: UIViewController {
                     self.privacyView.nameTextField.setTextFieldVerified()
                 } else {
                     self.privacyView.nameTextField.setTextFieldFail(errorMessage: Constants.NAME_ERROR_MESSAGE)
-                    SharedSignUpModel.model.information?.name = nil
+                    SharedSignUpModel.model.information.name = ""
                 }
             })
             .disposed(by: disposeBag)
@@ -72,7 +72,7 @@ class PrivacyInfoViewController: UIViewController {
                     self.privacyView.emailTextField.setTextFieldVerified()
                 } else {
                     self.privacyView.emailTextField.setTextFieldFail(errorMessage: Constants.EMAIL_ERROR_MESSAGE)
-                    SharedSignUpModel.model.information?.email = nil
+                    SharedSignUpModel.model.information.email = ""
                 }
             })
             .disposed(by: disposeBag)
@@ -83,7 +83,7 @@ class PrivacyInfoViewController: UIViewController {
                     self.privacyView.birthdayTextField.setTextFieldVerified()
                 } else {
                     self.privacyView.birthdayTextField.setTextFieldFail(errorMessage: Constants.BIRTH_ERROR_MESSAGE)
-                    SharedSignUpModel.model.information?.birth = nil
+                    SharedSignUpModel.model.information.birth = ""
                 }
             })
             .disposed(by: disposeBag)
@@ -101,16 +101,16 @@ class PrivacyInfoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let name = SharedSignUpModel.model.information?.name {
-            privacyView.nameTextField.text = name
+        if SharedSignUpModel.model.information.name != "" {
+            privacyView.nameTextField.text = SharedSignUpModel.model.information.name
         }
          
-        if let email = SharedSignUpModel.model.information?.email {
-            privacyView.emailTextField.text = email
+        if SharedSignUpModel.model.information.email != "" {
+            privacyView.emailTextField.text = SharedSignUpModel.model.information.email
         }
         
-        if let birth = SharedSignUpModel.model.information?.birth {
-            privacyView.birthdayTextField.text = birth
+        if SharedSignUpModel.model.information.birth != "" {
+            privacyView.birthdayTextField.text = SharedSignUpModel.model.information.birth
         }
     }
 }

@@ -72,10 +72,12 @@ class PostViewController: UIViewController {
         // bind result
         viewModel.post
             .bind {
-                self.postView.authorLabel.text = $0?.Author
-                self.postView.contentTextView.text = $0?.Content
-                self.postView.dateLabel.text = $0?.Date
+                self.postView.titleLabel.text = $0?.title
+                self.postView.authorLabel.text = $0?.author.nickname
+                self.postView.contentTextView.text = $0?.content
+                self.postView.dateLabel.text = $0?.date
                 self.postView.profileImageView.image = UIImage(systemName: "person.fil")
+                self.postView.likeButton.setTitle("\($0?.likes ?? 0)", for: .normal)
             }
             .disposed(by: disposeBag)
     }

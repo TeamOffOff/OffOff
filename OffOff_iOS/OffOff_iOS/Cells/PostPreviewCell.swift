@@ -77,11 +77,11 @@ class PostPreviewCell: UITableViewCell {
     }
     
     func setData(post: PostModel) {
-        titleLabel.text = post.Title
-        previewTextView.text = post.Content
-        dateAuthorLabel.text = "\(post.Date) | \(post.Author)"
-        likeLabel.label.text = "\(post.Likes) | "
-        commentLabel.label.text = "\(post.reply_count)"
+        titleLabel.text = post.title
+        previewTextView.text = post.content
+        dateAuthorLabel.text = "\(post.date) | \(post.author)"
+        likeLabel.label.text = "\(post.likes) | "
+        commentLabel.label.text = "\(post.replyCount)"
     }
     
     private func addViews() {

@@ -13,13 +13,13 @@ import RxSwift
 public class PostServices {
     static let provider = MoyaProvider<PostAPI>()
     
-    static func fetchPost(content_id: String, board_type: String) -> Observable<Post?> {
+    static func fetchPost(content_id: String, board_type: String) -> Observable<PostModel?> {
         PostServices.provider
             .rx.request(.getPost(content_id: content_id, board_type: board_type))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
-                    let response = try JSONDecoder().decode(Post.self, from: $0.data)
+                    let response = try JSONDecoder().decode(PostModel.self, from: $0.data)
                     return response
                 }
                 return nil
@@ -27,7 +27,7 @@ public class PostServices {
             .catchErrorJustReturn(nil)
     }
     
-    static func createPost(post: Post) -> Observable<Bool> {
+    static func createPost(post: PostModel) -> Observable<Bool> {
         PostServices.provider
             .rx.request(.makePost(post: post))
             .asObservable()

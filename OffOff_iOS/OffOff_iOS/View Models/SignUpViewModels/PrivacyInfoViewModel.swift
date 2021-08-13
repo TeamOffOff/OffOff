@@ -54,9 +54,9 @@ class PrivacyInfoViewModel {
         isValidatedToProgress = input.nextButtonTap.withLatestFrom(enabledAndValues)
             .flatMapLatest { pair in
                 if pair.enabled {
-                    SharedSignUpModel.model.information?.name = pair.name
-                    SharedSignUpModel.model.information?.email = pair.email
-                    SharedSignUpModel.model.information?.birth = pair.birthday
+                    SharedSignUpModel.model.information.name = pair.name
+                    SharedSignUpModel.model.information.email = pair.email
+                    SharedSignUpModel.model.information.birth = pair.birthday
                 }
                 
                 return Driver.just(pair.enabled)
