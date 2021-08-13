@@ -1,10 +1,7 @@
-from api_helper.user import ActivityControl
+from re import X
 from flask import request
-from flask_restx import Resource, Namespace, fields
+from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
-from bson import json_util
-import json
-# from api_helper.user import ActivityUpdate
 
 import mongo
 
@@ -17,11 +14,19 @@ Reply = Namespace("reply", description="댓글 관련 API")
 SubReply = Namespace("subreply", description="대댓글 관련 API")
 
 
+# 게시글 변수 설정 함수
+def get_post_variables(post_info):
+    post_id = post_info["_id"]
+    board_type = post_info["boardType"] + "_board"
+    author = post_info["author"]["_id"]
+    
+    return post_id, board_type, author
+
+
 # JSON 형태로 response하기 위해 string 타입으로 변환하는 함수
 def convert_to_string(post, *args):
     for key in args:
         post[key] = str(post[key])
-
 
 
 # author 정보 embed, 활동 정보 link
@@ -30,7 +35,7 @@ class make_reference():
         self.board_type = board_type
         self.author = author
     
-
+    # author 정보 embed
     def embed_author_information_in_object(self):
             embeded_author_info ={}
 
@@ -40,49 +45,50 @@ class make_reference():
 
             for info in needed_author_info:
                 if "." in info:
-                    temp = info.split(".")
-                    field = temp[0]
-                    key = temp[1]
+                    field, key = info.split(".")
                     embeded_author_info[key] = total_author_info[field][key]
                 else:
                     embeded_author_info[info] = total_author_info[info]
             
             return embeded_author_info
 
-
-    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None):
+    # 활동 정보 link
+    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None, user=None):
         if reply_id:
             board_type = self.board_type.replace("_board_reply", "")
         else:
             board_type = self.board_type.replace("_board","")
-        new_activity_info = [board_type, str(post_id), str(reply_id)]
-        result = mongodb.update_one(query={"_id": self.author}, collection_name="user", modify={operator: {field: new_activity_info}})
-
-        if result.raw_result["n"] == 1:
-            return {"queryStatus": "success"}
+        
+        if user:
+            user = user
         else:
-            return {"queryStatus": "activity update fail"}, 500
+            user = self.author
+
+        new_activity_info = [board_type, str(post_id), str(reply_id)]
+
+        result = mongodb.update_one(query={"_id": user}, collection_name="user", modify={operator: {field: new_activity_info}})
+
+        return result
 
 
 
 # 게시글 관련 API
 @Post.route("")
 class PostControl(Resource):
-    def get(self):  # 게시글 조회 / viewcount+1
+    def get(self):  # 게시글 조회
         post_id = request.args.get("postId")
         board_type = request.args.get("boardType") + "_board"
-
-        # 게시글 조회
-        post = mongodb.find_one(query={"_id": ObjectId(post_id)},
-                                  collection_name=board_type)
-        
 
         # viewCount +1
         update_status = mongodb.update_one(query={"_id": ObjectId(post_id)},
                                            collection_name=board_type,
                                            modify={"$inc": {"viewCount": 1}})
 
+        # 게시글 조회
+        post = mongodb.find_one(query={"_id": ObjectId(post_id)},
+                                  collection_name=board_type)
         
+    
         if not post:
             return {"queryStatus": "not found"}, 500
 
@@ -98,40 +104,37 @@ class PostControl(Resource):
     def delete(self):  # 게시글 삭제
         """특정 id의 게시글을 삭제합니다."""
         post_info = request.get_json()
-        post_id = post_info["_id"]
-        board_type = post_info["boardType"] + "_board"
-        author = post_info["author"]["_id"]
+        post_id, board_type, author = get_post_variables(post_info)
 
         # 게시글 삭제
         result = mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
 
-        
-        making_reference = make_reference(board_type=board_type, author=author)
-
         # 회원활동정보 삭제
-        making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$pull")
+        making_reference = make_reference(board_type=board_type, author=author)
+        activity_result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$pull")
 
 
-        if result.raw_result["n"] == 1:
-            return {"queryStatus": "success"}
+        if result.raw_result["n"] == 0 :
+            return {"queryStatus": "post delete fail"}
+        elif activity_result.raw_result["n"] == 0:
+            return {"queryStatus": "delete activity fail"}
         else:
-            return {"queryStatus": "post delete fail"}, 500
+            return {"queryStatus": "success"}, 500
+
 
 
     def post(self):  # 게시글 생성
         """게시글을 생성합니다."""
         try:
             post_info = request.get_json()
-            board_type = post_info["boardType"] + "_board"
-            author = post_info["author"]["_id"]
+            post_id, board_type, author = get_post_variables(post_info)
             
             del post_info["_id"]
             post_info["date"] = dateutil.parser.parse(post_info["date"])
             
-            
-            making_reference = make_reference(board_type=board_type, author=author)
            
             # 회원정보 embeded 형태로 return
+            making_reference = make_reference(board_type=board_type, author=author)
             author = making_reference.embed_author_information_in_object()
             post_info["author"] = author
 
@@ -139,14 +142,17 @@ class PostControl(Resource):
             post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
 
             # 회원활동 정보 등록
-            making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$addToSet")
+            result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$addToSet")
             
             # 등록완료된 게시글 조회
-            post = mongodb.find_one(query={"_id": ObjectId(post_id)},
-                                  collection_name=board_type)
-            convert_to_string(post, "_id", "date")
+            if result.raw_result["n"] == 0:
+                return {"queryStatus": "update activity fail"}
+            else:
+                post = mongodb.find_one(query={"_id": ObjectId(post_id)},
+                                    collection_name=board_type)
+                convert_to_string(post, "_id", "date")
 
-            return post
+                return post
 
         except TypeError as t:
             return {
@@ -168,51 +174,58 @@ class PostControl(Resource):
 
     def put(self):  # 게시글 수정
         """특정 id의 게시글을 수정합니다."""
+
         post_info = request.get_json()
-        post_id = post_info["_id"]
-        board_type = post_info["boardType"] + "_board"
-        
-        # 직전 좋아요 수 저장
-        past_likes = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id":False, "likes":True})
+        if not("user" in post_info.keys()): # string을 수정하는 경우
+            post_id, board_type, author = get_post_variables(post_info)
+            article_key = ["title", "content", "image"]
 
-        past_likes = past_likes["likes"]
-
-        # 프론트에서 받은 JSON의 _id 삭제
-        del post_info["_id"]
-
-        # string 관련 정보
-        article_key = ["title", "content", "image"]
-
-        # integer 관련 정보 : bookmarkCount는 post에 필요 없음
-        activity_key = ["likes", "viewCount", "reportCount", "replyCount"]
-
-        modified_article = {}
-        modified_activity = {}
-
-        for key in post_info.keys():
-            if key in article_key:
+            modified_article = {}
+            for key in article_key:
                 modified_article[key] = post_info[key]
-            elif key in activity_key:
-                modified_activity[key] = post_info[key]
-
-        # string 수정
-        if None in list(modified_activity.values()):
+            
+            # 게시글 정보 업데이트
             result = mongodb.update_one(query={"_id": ObjectId(post_id)},
-                                        collection_name=board_type,
-                                        modify={"$set": modified_article})
+                                    collection_name=board_type,
+                                    modify={"$set": modified_article})
+            
 
-        # integer 수정
-        else:
+        else: # integer을 수정하는 경우
+            post_id = post_info["_id"]
+            board_type = post_info["boardType"]+"_board"
+            user = post_info["user"]
+
+            past_likes = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id":False, "likes":True})["likes"]
+            
+            activity_key = ["likes", "viewCount", "reportCount", "replyCount"]
+
+            modified_activity = {}
+            for key in activity_key:
+                if post_info[key]:
+                    field = key
+                    modified_activity[key] = post_info[key]
+                    if post_info[key]>0:
+                        operator = "$addToSet"
+                    else:
+                        operator = "$pull"
+
+            
+            # 게시글 정보 업데이트
             result = mongodb.update_one(query={"_id": ObjectId(post_id)},
                                         collection_name=board_type,
                                         modify={"$inc": modified_activity})
-        
 
+            # 활동 업데이트
+            making_reference = make_reference(board_type=board_type, author=None)
+            field = "activity." + field
+            
+            activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator, user=user)
+            if activity_result.raw_result["n"] == 0:
+                return {"queryStatus": "activity update fail"}
 
-        if result.raw_result["n"] == 1:
             modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
-                                             collection_name=board_type)
-
+                                            collection_name=board_type)
+            
             # 인기게시판 관련
             if (past_likes < 10) and (modified_post["likes"] == 10) :
                 hot_post_info={}
@@ -227,13 +240,17 @@ class PostControl(Resource):
             
             elif (past_likes >= 10) and (modified_post["likes"] < 10):
                 mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name="hot_board")
-            
-            convert_to_string(modified_post, "_id", "date")
-            
-            return modified_post
 
+
+
+        if result.raw_result["n"] == 0:  # 게시글 정보 업데이트 실패한 경우
+            return {"queryStatus": "post update fail"}
         else:
-            return {"queryStatus": "post modify fail"}, 500
+            modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
+                                            collection_name=board_type)
+
+            convert_to_string(modified_post, "_id", "date")
+            return modified_post
 
 
 
