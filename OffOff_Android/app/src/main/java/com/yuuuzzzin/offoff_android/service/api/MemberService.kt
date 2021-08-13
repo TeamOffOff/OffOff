@@ -1,6 +1,5 @@
 package com.yuuuzzzin.offoff_android.service.api
 
-import com.yuuuzzzin.offoff_android.service.models.AuthResponse
 import com.yuuuzzzin.offoff_android.service.models.LoginInfo
 import com.yuuuzzzin.offoff_android.service.models.ResultResponse
 import com.yuuuzzzin.offoff_android.service.models.User
@@ -18,7 +17,7 @@ interface MemberService {
     @POST("user/login")
     suspend fun login(
         @Body loginInfo: LoginInfo
-    ): Response<AuthResponse>
+    ): Response<ResultResponse>
 
     /* 회원가입 */
     @POST("user/register")

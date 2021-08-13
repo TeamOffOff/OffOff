@@ -13,7 +13,7 @@ data class User(
     @SerializedName("subInformation")
     val subInfo: SubInfo,
     @SerializedName("activity")
-    val activity: com.yuuuzzzin.offoff_android.service.models.Activity,
+    val activity: com.yuuuzzzin.offoff_android.service.models.Activity? = null,
 )
 
 /* 사용자 정보 */
@@ -25,7 +25,7 @@ data class Info(
     @SerializedName("birth")
     val birth: String,
     @SerializedName("type")
-    val type: String? = null
+    val type: String? = "student"
 )
 
 /* 사용자 부가 정보 */
@@ -39,23 +39,38 @@ data class SubInfo(
 /* 사용자 활동 */
 data class Activity(
     @SerializedName("posts")
-    val posts: String? = null,
+    val posts: List<Post>?= emptyList(),
     @SerializedName("replies")
-    val replies: String? = null,
+    val replies: List<ReplyDetail>?= emptyList(),
     @SerializedName("likes")
-    val likes: String? = null,
+    val likes: List<Like>?= emptyList(),
     @SerializedName("reports")
-    val reports: String? = null,
+    val reports: List<Report>?= emptyList(),
     @SerializedName("bookmarks")
-    val bookmarks: String? = null
+    val bookmarks: List<Bookmark>?= emptyList()
 )
 
 /* 로그인 정보 */
 data class LoginInfo(
-    @SerializedName("id")
+    @SerializedName("_id")
     val id: String,
     @SerializedName("password")
     val pw: String
 )
 
+/* 임시 data class */
+data class Like(
+    @SerializedName("_id")
+    val id: String
+)
+
+data class Report(
+    @SerializedName("_id")
+    val id: String
+)
+
+data class Bookmark(
+    @SerializedName("_id")
+    val id: String
+)
 

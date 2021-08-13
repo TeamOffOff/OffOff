@@ -20,7 +20,7 @@ data class Post(
     @SerializedName("boardType")
     val boardType: String,
     @SerializedName("author")
-    val author: String,
+    val author: Author,
     @SerializedName("date")
     val date: String,
     @SerializedName("title")
@@ -45,11 +45,11 @@ data class Post(
 /* 보내는 게시물 */
 data class PostSend(
     @SerializedName("_id")
-    val _id: String? = null,
+    val id: String? = null,
     @SerializedName("boardType")
     val boardType: String,
     @SerializedName("author")
-    val author: String,
+    val author: Author,
     @SerializedName("date")
     val date: String,
     @SerializedName("title")
@@ -66,6 +66,18 @@ data class PostSend(
     val reportCount: Int? = 0,
     @SerializedName("replyCount")
     val replyCount: Int? = 0
+)
+
+/* 작성자 */
+data class Author(
+    @SerializedName("_id")
+    val id: String,
+    @SerializedName("nickname")
+    val nickname: String? = null,
+    @SerializedName("type")
+    val type: String? = null,
+    @SerializedName("profileImage")
+    val profile: String? = null
 )
 
 /* 댓글 리스트 */
