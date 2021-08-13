@@ -133,6 +133,8 @@ class PostListControl(Resource):
             last_post_id = post_list[-1]["_id"]
 
             if board_type == "hot_board":  # 인기게시판인 경우
+                print("여기는 인기게시판")
+                print(post_list)
                 hot_post_list = []
                 for temp_post in post_list:
                     post_id = temp_post["_id"]
@@ -143,9 +145,6 @@ class PostListControl(Resource):
                     post["date"] = str(post["date"])
 
                     hot_post_list.append(post)
-            
-            
-
 
                 
                 return {

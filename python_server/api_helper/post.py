@@ -177,6 +177,7 @@ class PostControl(Resource):
 
         post_info = request.get_json()
         if not("user" in post_info.keys()): # string을 수정하는 경우
+            print("user가 없는 경우")
             post_id, board_type, author = get_post_variables(post_info)
             article_key = ["title", "content", "image"]
 
@@ -191,6 +192,7 @@ class PostControl(Resource):
             
 
         else: # integer을 수정하는 경우
+            print("user가 있는 경우")
             post_id = post_info["_id"]
             board_type = post_info["boardType"]+"_board"
             user = post_info["user"]
@@ -228,6 +230,7 @@ class PostControl(Resource):
             
             # 인기게시판 관련
             if (past_likes < 10) and (modified_post["likes"] == 10) :
+                print("여기 좋아요 10 넘음")
                 hot_post_info={}
                 
                 # hot_board 컬렉션에 저장할 key 값
@@ -235,6 +238,7 @@ class PostControl(Resource):
     
                 for key in hot_board_element:
                     hot_post_info[key] = modified_post[key]
+                print(hot_post_info)
                 
                 mongodb.insert_one(data=hot_post_info, collection_name="hot_board")
             
