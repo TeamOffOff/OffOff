@@ -10,7 +10,6 @@ class MongoHelper:
         self.client = MongoClient(self.host, self.port)
         self.db = self.client[db_name]
         self.collection = None
-    
 
     def insert_one(self, data=None, collection_name=None):
         self.collection = self.db[collection_name]

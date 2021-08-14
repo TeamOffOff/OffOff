@@ -17,8 +17,8 @@ Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
 
 # 중복확인 함수
-def check_duplicate(key, object):
-    if mongodb.find_one(query={key: object}, collection_name="user"):
+def check_duplicate(key, target):
+    if mongodb.find_one(query={key: target}, collection_name="user"):
         return {
             "queryStatus": "already exist"
             }, 500
@@ -36,13 +36,13 @@ class AuthRegister(Resource):
         check_nickname = request.args.get("nickname")
         
         if check_id:
-            result = check_duplicate(key="_id", object=check_id)
+            result = check_duplicate(key="_id", target=check_id)
 
         if check_email:
-            result = check_duplicate(key="information.email", object=check_email)
+            result = check_duplicate(key="information.email", target=check_email)
 
         if check_nickname:
-            result = check_duplicate(key="subInformation.nickname", object=check_nickname)
+            result = check_duplicate(key="subInformation.nickname", target=check_nickname)
         
         if not result:
             result = {"queryStatus": "possible"}
@@ -56,15 +56,15 @@ class AuthRegister(Resource):
         user_info = request.get_json()
 
         # 중복확인
-        if check_duplicate(key="_id", object=user_info["_id"]):
+        if check_duplicate(key="_id", target=user_info["_id"]):
             return{
                 "queryStatus": "id already exist"
             }
-        if check_duplicate(key="information.email", object=user_info["information"]["email"]):
+        if check_duplicate(key="information.email", target=user_info["information"]["email"]):
             return{
                 "queryStatus": "email already exist"
             }
-        if check_duplicate(key="subInformation.nickname", object=user_info["subInformation"]["nickname"]):
+        if check_duplicate(key="subInformation.nickname", target=user_info["subInformation"]["nickname"]):
             return{
                 "queryStatus": "nickname already exist"
             }
@@ -182,7 +182,7 @@ class AuthLogin(Resource):
 
             return {
                 'Authorization': token_encoded, 
-                "queryStatus" : 'success'
+                "queryStatus": 'success'
             }, 200
 
     def get(self):  # 회원정보조회
@@ -241,12 +241,12 @@ class ActivityControl(Resource):
         # activity_info를 통해서 공감, 스크랩, 댓글, 게시글 별 content_id와 board_type을 얻을 수 있음
         # 이거 가지고 프론트가 get을 요청하거나 백에서 그거 까지 해서 주거나
 
-        specific_activity =  activity_info["activity"][activity_type]
+        specific_activity = activity_info["activity"][activity_type]
         # 리스트로 이루어진 리스트  "like" : [["board_type", "content_id"], ["board_type", "content_id"]
 
         post_list = []
         for post in specific_activity:
-            try :
+            try:
                 board_type = post[0]+"_board"
                 post_id = post[1]
 
@@ -256,11 +256,11 @@ class ActivityControl(Resource):
 
                 post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
 
-                post_list.sort(key=lambda x:x["_id"], reverse=True )
+                post_list.sort(key=lambda x: x["_id"], reverse=True )
             
             except TypeError:
                 pass
         
         return {
-            "postList" : post_list
+            "postList": post_list
         }

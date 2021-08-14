@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 
 from pymongo import collection
 
-
 import mongo
 
 mongodb = mongo.MongoHelper()

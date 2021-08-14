@@ -148,7 +148,7 @@ class PostControl(Resource):
 
         except TypeError as t:
             return {
-                "TypeError" : str(t)
+                "TypeError": str(t)
             }
         except AttributeError as a:
             return {
@@ -158,7 +158,7 @@ class PostControl(Resource):
             return {
                 "IndexError": str(i)
             }
-        except dateutil.parser.ParserError as  p:
+        except dateutil.parser.ParserError as p:
             return {
                 "DatetimeError": str(p)
             }
