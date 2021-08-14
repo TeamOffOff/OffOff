@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.view.ui.board
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -17,6 +18,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private val viewModel: PostViewModel by viewModels()
     private lateinit var boardName: String
+    private lateinit var boardType: String
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
 
@@ -31,7 +33,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private fun processIntent() {
         val id = intent.getStringExtra("id")
-        val boardType = intent.getStringExtra("boardType")
+        boardType = intent.getStringExtra("boardType").toString()
         boardName = intent.getStringExtra("boardName").toString()
         viewModel.getPost(id!!, boardType!!)
     }
@@ -39,13 +41,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private fun initViewModel() {
         binding.viewModel = viewModel
 
-        viewModel.response.observe(binding.lifecycleOwner!!,{
+        viewModel.response.observe(binding.lifecycleOwner!!, {
             binding.post = it
         })
     }
 
     private fun initToolbar() {
-        val toolbar : MaterialToolbar = binding.appbar
+        val toolbar: MaterialToolbar = binding.appbar
 
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
@@ -72,7 +74,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                if (intent.getStringExtra("update") == "true") {
+                    val intent = Intent(applicationContext, BoardActivity::class.java)
+                    intent.putExtra("boardType", boardType)
+                    intent.putExtra("boardName", boardName)
+                    startActivity(intent)
+                } else
+                    finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)

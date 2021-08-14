@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
@@ -85,8 +87,21 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         binding.refreshLayout.setOnRefreshListener {
             //viewModel.refreshList()
             viewModel.getPosts(boardType)
-
         }
+
+        binding.rvPostPreview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val lastPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
+                val totalCount = recyclerView.adapter!!.itemCount - 1
+
+                // 스크롤이 끝에 도달하면
+                if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
+                    Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -110,6 +125,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 //글쓰기 버튼 누를 시
                 val intent = Intent(applicationContext, PostWriteActivity::class.java)
                 intent.putExtra("boardType", boardType)
+                intent.putExtra("boardName", boardName)
                 startActivity(intent)
                 true
             }

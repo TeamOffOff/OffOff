@@ -1,5 +1,7 @@
 package com.yuuuzzzin.offoff_android.view.ui.board
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -18,6 +20,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
     private val viewModel: PostWriteViewModel by viewModels()
     private lateinit var boardType: String
+    private lateinit var boardName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +28,14 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         boardType = intent.getStringExtra("boardType").toString()
 
         initViewModel()
+        processIntent()
         initToolbar()
         //initView()
+    }
+
+    private fun processIntent() {
+        boardName = intent.getStringExtra("boardName").toString()
+        boardType = intent.getStringExtra("boardType").toString()
     }
 
     private fun initToolbar() {
@@ -45,10 +54,31 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     private fun initViewModel() {
         binding.viewModel = viewModel
 
-//        viewModel.alertMsg.observe(this, { event ->
-//            event.getContentIfNotHandled()?.let {
-//            }
-//        })
+        viewModel.alertMsg.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                showDialog(it)
+            }
+        })
+
+        viewModel.successEvent.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                val intent = Intent(this@PostWriteActivity, PostActivity::class.java)
+                intent.putExtra("id", it)
+                intent.putExtra("boardType", boardType)
+                intent.putExtra("boardType", boardName)
+                intent.putExtra("update", "true")
+                startActivity(intent)
+            }
+        })
+    }
+
+    fun showDialog(message : String) {
+        var dialog = AlertDialog.Builder(this)
+        dialog.setMessage(message)
+        dialog.setIcon(android.R.drawable.ic_dialog_alert)
+        dialog.setNegativeButton("확인",null)
+        dialog.show()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
