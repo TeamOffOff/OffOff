@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="item"
-            type="com.yuuuzzzin.offoff_android.service.models.Post"/>
+            type="com.yuuuzzzin.offoff_android.service.models.Post" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="1"
@@ -60,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@{item.author}"
+            android:text="@{item.author.nickname}"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@id/view"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
@@ -124,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="@{Integer.toString(item.reply_count)}"
+            android:text="@{Integer.toString(item.replyCount)}"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />

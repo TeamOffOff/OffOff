@@ -9,8 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
@@ -25,6 +23,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private val viewModel: BoardViewModel by viewModels()
     private lateinit var boardAdapter: BoardAdapter
     private lateinit var boardName: String
+    private lateinit var boardType: String
     private lateinit var searchIcon: FontDrawable
     private lateinit var writeIcon: FontDrawable
 
@@ -37,21 +36,26 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         initRV()
     }
 
-    private fun initViewModel() {
-        binding.viewModel = viewModel
-        viewModel.getPosts(intent.getStringExtra("boardType").toString())
-        viewModel.postList.observe(binding.lifecycleOwner!!, {
-            with(boardAdapter) { submitList(it.toMutableList()) }
-        })
-    }
-
     private fun processIntent() {
         boardName = intent.getStringExtra("boardName").toString()
+        boardType = intent.getStringExtra("boardType").toString()
+    }
+
+    private fun initViewModel() {
+        binding.viewModel = viewModel
+        viewModel.getPosts(boardType)
+
+        viewModel.postList.observe(binding.lifecycleOwner!!, {
+            boardAdapter.submitList(it.toMutableList()) {
+                binding.rvPostPreview.scrollToPosition(0)
+            }
+            binding.refreshLayout.isRefreshing = false
+        })
+
     }
 
     private fun initToolbar() {
-        val toolbar: MaterialToolbar = binding.appbarBoard // 상단 툴바
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.appbarBoard)
         supportActionBar?.apply {
             binding.tvToolbarTitle.text = boardName
             setDisplayShowTitleEnabled(false)
@@ -62,10 +66,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     }
 
     private fun initRV() {
-        val boardRecyclerView: RecyclerView = binding.rvPostPreview
-        val linearLayoutManager = LinearLayoutManager(this)
-        val decoration = DividerItemDecoration(this, VERTICAL)
-
         boardAdapter = BoardAdapter(
             itemClick = { item ->
                 val intent = Intent(this@BoardActivity, PostActivity::class.java)
@@ -76,10 +76,16 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             }
         )
 
-        boardRecyclerView.apply {
+        binding.rvPostPreview.apply {
             adapter = boardAdapter
-            layoutManager = linearLayoutManager
-            addItemDecoration(decoration)
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration(context, VERTICAL))
+        }
+
+        binding.refreshLayout.setOnRefreshListener {
+            //viewModel.refreshList()
+            viewModel.getPosts(boardType)
+
         }
     }
 
@@ -102,7 +108,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             }
             R.id.action_write -> {
                 //글쓰기 버튼 누를 시
-                val boardType = intent.getStringExtra("boardType")
                 val intent = Intent(applicationContext, PostWriteActivity::class.java)
                 intent.putExtra("boardType", boardType)
                 startActivity(intent)

@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.MainActivity
 import com.yuuuzzzin.offoff_android.databinding.FragmentBoardsBinding
 import com.yuuuzzzin.offoff_android.view.adapter.BoardListAdapter
@@ -25,8 +24,7 @@ class BoardsFragment : Fragment() {
     private var mBinding: FragmentBoardsBinding? = null
     private val binding get() = mBinding!!
     private val viewModel: BoardListViewModel by viewModels()
-    lateinit var mContext: Context
-
+    private lateinit var mContext: Context
     private lateinit var boardListAdapter: BoardListAdapter
 
     override fun onAttach(context: Context) {
@@ -59,10 +57,6 @@ class BoardsFragment : Fragment() {
     }
 
     private fun initRV() {
-        val boardListRecyclerView: RecyclerView = binding.rvBoards
-        val linearLayoutManager = LinearLayoutManager(mContext)
-        val decoration = DividerItemDecoration(mContext, VERTICAL)
-
         boardListAdapter = BoardListAdapter(
             itemClick = { item ->
                 val intent = Intent(mContext, BoardActivity::class.java)
@@ -72,10 +66,10 @@ class BoardsFragment : Fragment() {
             }
         )
 
-        boardListRecyclerView.apply {
+        binding.rvBoards.apply {
             adapter = boardListAdapter
-            layoutManager = linearLayoutManager
-            addItemDecoration(decoration)
+            layoutManager = LinearLayoutManager(mContext)
+            addItemDecoration(DividerItemDecoration(mContext, VERTICAL))
         }
     }
 
