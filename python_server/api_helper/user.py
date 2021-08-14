@@ -5,7 +5,6 @@ import bcrypt
 from pymongo import encryption
 from bson.objectid import ObjectId
 
-
 import mongo
 
 from .utils import SECRET_KEY, ALGORITHM
@@ -48,7 +47,6 @@ class AuthRegister(Resource):
         if not result:
             result = {"queryStatus": "possible"}
         return result
-        
 
     def post(self):  # 회원가입
         """
@@ -93,7 +91,6 @@ class AuthRegister(Resource):
         except TypeError:
             return TypeError
 
-
     def put(self):
         """
         비밀번호를 변경합니다 
@@ -112,7 +109,6 @@ class AuthRegister(Resource):
             return {"queryStatus" : "success"}
         else:
             return {"queryStatus": "password update fail"}, 500
-
         
     def delete(self):
         """
@@ -143,8 +139,6 @@ class AuthRegister(Resource):
         #         pk = i[2]
         #         mongodb.update_one(query={"_id":pk}, collection_name=board_type, modify={"$set":{"reply.author": None}})
 
-
-
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": token_decoded["_id"]}, collection_name="user")
 
@@ -152,7 +146,6 @@ class AuthRegister(Resource):
             return{"queryStatus": "success"}
         else :
             return {"queryStatus": "user delete fail"}, 500
-    
 
 
 @User.route('/login')
@@ -192,7 +185,6 @@ class AuthLogin(Resource):
                 "queryStatus" : 'success'
             }, 200
 
-
     def get(self):  # 회원정보조회
         """
         회원정보를 조회합니다.
@@ -206,7 +198,6 @@ class AuthLogin(Resource):
         user_info["password"] = "비밀번호"
         
         return user_info
-    
 
     def put(self):  # 회원정보수정
         """

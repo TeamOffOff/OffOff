@@ -25,7 +25,6 @@ UserList = Namespace(
 )
 
 
-
 @BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우
 class BoardListControl(Resource):
@@ -37,13 +36,12 @@ class BoardListControl(Resource):
         access_on = datetime.now()
         standard = access_on - timedelta(hours=3)
 
-        
-        board_list= []
+        board_list = []
         for board in cursor:
             
             board_type = board["boardType"]+"_board"
             
-            result = mongodb.find_one(collection_name=board_type, query={"date":{"$gte": standard}})
+            result = mongodb.find_one(collection_name=board_type, query={"date": {"$gte": standard}})
             
             if result:
                 board["newPost"] = True
@@ -57,13 +55,11 @@ class BoardListControl(Resource):
             #     board["newPost"] = True
             
             board_list.append(board)
-                
- 
+
         return {
             "boardList": board_list
         }
-    
-    
+
     def delete(self):  # 게시판 목록 삭제
         """특정 게시판 정보를 삭제합니다."""
         board_info = request.get_json()
@@ -75,7 +71,6 @@ class BoardListControl(Resource):
             return {"queryStatus": "해당 게시판을 삭제했습니다."}
         else:
             return {"queryStatus": "게시판 삭제를 실패했습니다."}, 500
-
 
     def post(self):  # 게시판 목록 등록
         """특정 게시판 정보를 등록합니다."""
@@ -120,7 +115,6 @@ class PostListControl(Resource):
                 cursor = mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
                     [("_id", -1)]).limit(volume)
 
-
             post_list = []
             for post in cursor:
                 post["_id"] = str(post["_id"])
@@ -146,7 +140,6 @@ class PostListControl(Resource):
 
                     hot_post_list.append(post)
 
-                
                 return {
                     "lastPostId": last_post_id,
                     "postList": hot_post_list
@@ -157,7 +150,6 @@ class PostListControl(Resource):
                     "lastPostId": last_post_id,
                     "postList": post_list
                 }
-
 
         except IndexError:  # 일반 게시판 더 이상 없는 경우
             return {
@@ -172,8 +164,8 @@ class PostListControl(Resource):
     
     def delete(self, board_type):  # 컬렉션 자체를 삭제
         
-        result= mongodb.drop(collection_name=board_type)
+        result = mongodb.drop(collection_name=board_type)
         
-        return {"queryStatus" : result}
+        return {"queryStatus": result}
 
 

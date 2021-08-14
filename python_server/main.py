@@ -21,7 +21,6 @@ api.add_namespace(User, "/user")
 api.add_namespace(Activity, "/activity")
 
 
-
 if __name__ == "__main__":
     mongodb = mongo.MongoHelper()
     app.run(debug=True, host="0.0.0.0", port=5000)

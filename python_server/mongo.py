@@ -63,7 +63,6 @@ class MongoHelper:
         return result
 
 
-
 if __name__ == "__main__":
     mongodb = MongoHelper()
     print(mongodb.insert_one({"test": "hi"}))
