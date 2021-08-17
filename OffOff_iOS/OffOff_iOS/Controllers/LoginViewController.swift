@@ -11,7 +11,6 @@ import RxSwift
 class LoginViewController: UIViewController {
     
     lazy var loginView = LoginView(frame: .zero)
-    private lazy var loginStatus = Box(LoginStatus.none)
     
     let disposeBag = DisposeBag()
     
