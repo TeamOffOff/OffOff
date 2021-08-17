@@ -11,6 +11,7 @@ import com.yuuuzzzin.offoff_android.MainActivity
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityLoginBinding
 import com.yuuuzzzin.offoff_android.utils.setDefaultColor
+import com.yuuuzzzin.offoff_android.utils.setErrorColor
 import com.yuuuzzzin.offoff_android.utils.setVerifiedColor
 import com.yuuuzzzin.offoff_android.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var idIconFocus: FontDrawable
     private lateinit var pwIcon: FontDrawable
     private lateinit var pwIconFocus: FontDrawable
+    private lateinit var errorIcon: FontDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
         initViewModel()
     }
 
-    fun initIcon() {
+    private fun initIcon() {
         // id 아이콘
         idIcon = FontDrawable(this, R.string.fa_user, true, false)
         idIcon.setTextColor(ContextCompat.getColor(this, R.color.material_on_surface_disabled))
@@ -48,6 +50,9 @@ class LoginActivity : AppCompatActivity() {
         pwIconFocus = FontDrawable(this, R.string.fa_lock_solid, true, false)
         pwIconFocus.setTextColor(ContextCompat.getColor(this, R.color.green))
 
+        // error 아이콘
+        errorIcon = FontDrawable(this, R.string.fa_exclamation_solid, true, false)
+        errorIcon.setTextColor(ContextCompat.getColor(this, R.color.design_default_color_error))
     }
 
     private fun initView() {
@@ -57,29 +62,33 @@ class LoginActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = loginViewModel
 
+        // 기본 에러 아이콘 제거
+        binding.apply {
+            tfId.setErrorIconDrawable(0)
+            tfId.setTextFieldDefault()
+            tfPw.setErrorIconDrawable(0)
+            tfPw.setTextFieldDefault()
+        }
+
         binding.etId.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
-                if(binding.etId.text != null)
+                if(binding.etId.text!!.isEmpty())
                     binding.tfId.setTextFieldDefault()
                 else
                     binding.tfId.setTextFieldFocus()
-            } else {
-                if (!binding.tfId.isError())
-                    binding.tfId.setTextFieldFocus()
-            }
+            } else
+                binding.tfId.setTextFieldFocus()
         }
 
         binding.etPw.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
-                if(binding.etPw.text != null)
+                if(binding.etPw.text!!.isEmpty())
                     binding.tfPw.setTextFieldDefault()
                 else
                     binding.tfPw.setTextFieldFocus()
-            } else {
-                if (!binding.tfPw.isError()) {
-                    binding.tfPw.setTextFieldFocus()
-                }
-            }
+            } else
+                binding.tfPw.setTextFieldFocus()
+
         }
 
         binding.btSignup.setOnClickListener {
@@ -92,17 +101,17 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.isIdError.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-                binding.tfId.error = it
+                binding.tfId.setTextFieldError(it)
             }
         })
 
         loginViewModel.isPwError.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-                binding.tfPw.error = it
+                binding.tfPw.setTextFieldError(it)
             }
         })
 
-        // 로그인 시도 후 실패하면 버튼 위 에러메시지 텍스트뷰를 visible 상태로 바꿈꿈
+        // 로그인 시도 후 실패하면 버튼 위 에러메시지 텍스트뷰를 visible 상태로 바꿈
        loginViewModel.loginFail.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
                 binding.tvAlertMsg.visibility = View.VISIBLE
@@ -149,6 +158,13 @@ class LoginActivity : AppCompatActivity() {
             R.id.tf_id -> startIconDrawable = idIconFocus
             R.id.tf_pw -> startIconDrawable = pwIconFocus
         }
+    }
+
+    // TextField error 상태
+    fun TextInputLayout.setTextFieldError(errorMsg: String?) {
+        error = errorMsg
+        startIconDrawable = errorIcon
+        setErrorColor()
     }
 
     // TextField error 여부
