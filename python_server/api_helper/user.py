@@ -241,26 +241,31 @@ class ActivityControl(Resource):
         # activity_info를 통해서 공감, 스크랩, 댓글, 게시글 별 content_id와 board_type을 얻을 수 있음
         # 이거 가지고 프론트가 get을 요청하거나 백에서 그거 까지 해서 주거나
 
-        specific_activity = activity_info["activity"][activity_type]
-        # 리스트로 이루어진 리스트  "like" : [["board_type", "content_id"], ["board_type", "content_id"]
+        try:
+            specific_activity = activity_info["activity"][activity_type]
+            # 리스트로 이루어진 리스트  "like" : [["board_type", "content_id"], ["board_type", "content_id"]
 
-        post_list = []
-        for post in specific_activity:
-            try:
-                board_type = post[0]+"_board"
-                post_id = post[1]
+            post_list = []
+            for post in specific_activity:
+                try:
+                    board_type = post[0]+"_board"
+                    post_id = post[1]
 
-                result = mongodb.find_one(query={"_id": ObjectId(post_id)},collection_name=board_type)
-                result["_id"] = str(result["_id"])
-                result["date"] = str(result["date"])
+                    result = mongodb.find_one(query={"_id": ObjectId(post_id)},collection_name=board_type)
+                    result["_id"] = str(result["_id"])
+                    result["date"] = str(result["date"])
 
-                post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
+                    post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
 
-                post_list.sort(key=lambda x: x["_id"], reverse=True )
+                    post_list.sort(key=lambda x: x["_id"], reverse=True )
+                
+                except TypeError:
+                    pass
             
-            except TypeError:
-                pass
-        
-        return {
-            "postList": post_list
-        }
+            return {
+                "{}List" .format(activity_type): post_list
+            }
+        except TypeError:
+            return{
+                "{}List" .format(activity_type): None
+            }
