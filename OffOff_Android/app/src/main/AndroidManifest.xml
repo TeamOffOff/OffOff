@@ -14,7 +14,8 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".view.ui.member.SignupActivity"></activity>
+        <activity android:name=".view.ui.board.PostWriteActivity"/>
+        <activity android:name=".view.ui.member.SignupActivity" />
         <activity android:name=".view.ui.member.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

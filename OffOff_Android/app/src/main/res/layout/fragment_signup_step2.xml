@@ -92,6 +92,7 @@
                 android:hint="@string/email_hint"
                 app:boxStrokeWidthFocused="2dp"
                 app:errorEnabled="true"
+                app:helperTextTextColor="@color/green"
                 app:hintTextColor="@color/material_on_background_disabled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

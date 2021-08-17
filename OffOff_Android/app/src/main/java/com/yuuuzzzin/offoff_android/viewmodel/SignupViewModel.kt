@@ -4,27 +4,38 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.yuuuzzzin.offoff_android.service.repository.AuthRepository
-import com.yuuuzzzin.offoff_android.utils.Constants.EMAIL_REGEX
-import com.yuuuzzzin.offoff_android.utils.Constants.ID_REGEX
-import com.yuuuzzzin.offoff_android.utils.Constants.NAME_REGEX
-import com.yuuuzzzin.offoff_android.utils.Constants.NICKNAME_REGEX
-import com.yuuuzzzin.offoff_android.utils.Constants.PW_REGEX
+import androidx.lifecycle.viewModelScope
+import com.yuuuzzzin.offoff_android.service.models.Activity
+import com.yuuuzzzin.offoff_android.service.models.Info
+import com.yuuuzzzin.offoff_android.service.models.SubInfo
+import com.yuuuzzzin.offoff_android.service.models.User
+import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Constants.get
-import com.yuuuzzzin.offoff_android.utils.Constants.validate
 import com.yuuuzzzin.offoff_android.utils.Event
-import com.yuuuzzzin.offoff_android.utils.Strings
-import com.yuuuzzzin.offoff_android.utils.Strings.id_error
-import com.yuuuzzzin.offoff_android.utils.Strings.pw_confirm_error
-import com.yuuuzzzin.offoff_android.utils.Strings.pw_error
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.BIRTH_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.EMAIL_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.EMAIL_REGEX
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.ID_DUP
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.ID_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.ID_REGEX
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.NAME_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.NAME_REGEX
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.NICKNAME_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.NICKNAME_REGEX
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.NICKNAME_VALID
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.PW_CONFIRM_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.PW_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.PW_REGEX
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.validate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel
 @Inject
 constructor(
-    private val repository: AuthRepository
+    private val repository: MemberRepository
 ) : ViewModel() {
 
     val id = MutableLiveData("")
@@ -32,15 +43,15 @@ constructor(
     val pwConfirm = MutableLiveData("")
     val name = MutableLiveData("")
     val email = MutableLiveData("")
-    val nickname = MutableLiveData("")
     val birth = MutableLiveData("")
+    val nickname = MutableLiveData("")
 
     private var userId = ""
     private var userPw = ""
     private var userName = ""
     private var userEmail = ""
-    private var userNickname = ""
     private var userBirth = ""
+    private var userNickname = ""
 
     // 회원가입 단계별 성공 여부
     private val _step1Success = MutableLiveData<Event<Boolean>>()
@@ -53,58 +64,67 @@ constructor(
     val step3Success: LiveData<Event<Boolean>> = _step3Success
 
     // 입력 항목별 verified 여부
-    private val _isIdVerified = MutableLiveData<Event<String>?>()
-    val isIdVerified: MutableLiveData<Event<String>?> = _isIdVerified
+    private val _isIdVerified = MutableLiveData<String>()
+    val isIdVerified: LiveData<String> get() = _isIdVerified
 
-    private val _isPwVerified = MutableLiveData<Event<String>?>()
-    val isPwVerified: MutableLiveData<Event<String>?> = _isPwVerified
+    private val _isPwVerified = MutableLiveData<String>()
+    val isPwVerified: LiveData<String> get() = _isPwVerified
 
-    private val _isPwConfirmVerified = MutableLiveData<Event<String>?>()
-    val isPwConfirmVerified: MutableLiveData<Event<String>?> = _isPwConfirmVerified
+    private val _isPwConfirmVerified = MutableLiveData<String>()
+    val isPwConfirmVerified: LiveData<String> get() = _isPwConfirmVerified
 
-    private val _isNameVerified = MutableLiveData<Event<String>?>()
-    val isNameVerified: MutableLiveData<Event<String>?> = _isNameVerified
+    private val _isNameVerified = MutableLiveData<String>()
+    val isNameVerified: LiveData<String> get() = _isNameVerified
 
-    private val _isEmailVerified = MutableLiveData<Event<String>?>()
-    val isEmailVerified: MutableLiveData<Event<String>?> = _isEmailVerified
+    private val _isEmailVerified = MutableLiveData<String>()
+    val isEmailVerified: LiveData<String> get() = _isEmailVerified
 
-    private val _isBirthVerified = MutableLiveData<Event<String>?>()
-    val isBirthVerified: MutableLiveData<Event<String>?> = _isBirthVerified
+    private val _isBirthVerified = MutableLiveData<String>()
+    val isBirthVerified: LiveData<String> get() = _isBirthVerified
 
-    private val _isNicknameVerified = MutableLiveData<Event<String>?>()
-    val isNicknameVerified: MutableLiveData<Event<String>?> = _isNicknameVerified
+    private val _isNicknameVerified = MutableLiveData<String>()
+    val isNicknameVerified: LiveData<String> get() = _isNicknameVerified
 
-    // 입력받은 정보가 모두 조건에 만족했는지지 완료었는지 여부
-    private val _infoChecked = MutableLiveData<Event<Unit>>()
-    val infoChecked: LiveData<Event<Unit>> = _infoChecked
+    private val _isNicknameError = MutableLiveData<String>()
+    val isNicknameError: LiveData<String> get() = _isNicknameError
 
-    // 유효성 검사
     fun validateId() {
 
         if (!validate(id, ID_REGEX)) {
-            _isIdVerified.value = Event(id_error)
+            _isIdVerified.postValue(ID_ERROR)
         } else {
-            _isIdVerified.value = Event("")
-            userId = id.value!!
+            checkId(id.value!!)
+        }
+    }
+
+    private fun checkId(id: String) = viewModelScope.launch {
+        repository.checkId(id).let { response ->
+            if (response.isSuccessful) {
+                _isIdVerified.postValue("")
+                userId = id
+                Log.d("tag_success", "checkId: ${response.body()}")
+            } else {
+                _isIdVerified.postValue(ID_DUP)
+                Log.d("tag_fail", "checkId Error: ${response.code()}")
+            }
         }
     }
 
     fun validatePw() {
 
         if (!validate(pw, PW_REGEX)) {
-            _isPwVerified.value = Event(pw_error)
+            _isPwVerified.postValue(PW_ERROR)
         } else {
-            _isPwVerified.value = Event("")
+            _isPwVerified.postValue("")
         }
     }
 
     fun validatePwConfirm() {
 
-        if (pwConfirm.value?.isBlank() == true || pw.get() != pwConfirm.get()) {
-            Log.d("비번확인검사_tag", pw.get() + " / " + pwConfirm.get())
-            _isPwConfirmVerified.value = Event(pw_confirm_error)
+        if (pwConfirm.get().isNullOrEmpty() || pw.get() != pwConfirm.get()) {
+            _isPwConfirmVerified.postValue(PW_CONFIRM_ERROR)
         } else {
-            _isPwConfirmVerified.value = Event("")
+            _isPwConfirmVerified.postValue("")
             userPw = pw.value!!
         }
     }
@@ -112,9 +132,9 @@ constructor(
     fun validateName() {
 
         if (!validate(name, NAME_REGEX)) {
-            _isNameVerified.value = Event(Strings.name_error)
+            _isNameVerified.postValue(NAME_ERROR)
         } else {
-            _isNameVerified.value = Event("")
+            _isNameVerified.postValue("")
             userName = name.value!!
         }
     }
@@ -122,19 +142,32 @@ constructor(
     fun validateEmail() {
 
         if (!validate(email, EMAIL_REGEX)) {
-            _isEmailVerified.value = Event(Strings.email_error)
+            _isEmailVerified.postValue(EMAIL_ERROR)
         } else {
-            _isEmailVerified.value = Event("")
+            _isEmailVerified.postValue("")
             userEmail = email.value!!
         }
     }
 
+//    private fun checkEmail(email: String) = viewModelScope.launch {
+//        repository.checkEmail(email).let { response ->
+//            if (response.isSuccessful) {
+//                _isEmailVerified.postValue("")
+//                userEmail = email
+//                Log.d("tag_success", response.body().toString())
+//            } else {
+//                _isEmailVerified.postValue(ID_DUP)
+//                Log.d("tag_fail", "checkEmail Error: ${response.code()}")
+//            }
+//        }
+//    }
+
     fun validateBirth() {
 
         if (birth.value?.isBlank() == true) {
-            _isBirthVerified.value = Event(Strings.birth_error)
+            _isBirthVerified.postValue(BIRTH_ERROR)
         } else {
-            _isBirthVerified.value = Event("")
+            _isBirthVerified.postValue("")
             userBirth = birth.value!!
         }
     }
@@ -142,20 +175,35 @@ constructor(
     fun validateNickname() {
 
         if (!validate(nickname, NICKNAME_REGEX)) {
-            // _isNicknameVerified.value = Event(Strings.nickname_error)
+            Log.d("tag_fail 닉네임 유효성", nickname.get())
+            _isNicknameError.postValue(nickname.get() + NICKNAME_ERROR)
         } else {
-            _isBirthVerified.value = Event("")
-            userBirth = birth.value!!
+            Log.d("tag_success 닉네임 유효성", nickname.get())
+            checkNickname(nickname.value!!)
+        }
+    }
+
+    private fun checkNickname(nickname: String) = viewModelScope.launch {
+        repository.checkNickname(nickname).let { response ->
+            if (response.isSuccessful) {
+                userNickname = nickname
+                _isNicknameVerified.postValue(nickname + NICKNAME_VALID)
+                Log.d("tag_success", "checkNickname: ${response.body()}")
+            } else {
+                _isNicknameError.postValue(nickname + NICKNAME_ERROR)
+                Log.d("tag_fail", "checkNickname Error: ${response.code()}")
+            }
         }
     }
 
     fun finishStep1() {
-
-        if((userId!="" && userPw!="")&&
-            (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)) {
+        //_step1Success.postValue(Event(true))
+        if ((userId != "" && userPw != "") &&
+            (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)
+        ) {
             _step1Success.postValue(Event(true))
-        }
-        else {
+            Log.d("tag_success 1단계", userId + "/" + userPw + "/")
+        } else {
             validateId()
             validatePw()
             validatePwConfirm()
@@ -163,11 +211,15 @@ constructor(
     }
 
     fun finishStep2() {
-
+        //_step2Success.postValue(Event(true))
         if ((userName != "" && userEmail != "" && userBirth != "") &&
-            (name.value == userName && email.value == userEmail)) {
+            (name.value == userName && email.value == userEmail)
+        ) {
             _step2Success.postValue(Event(true))
+            Log.d("tag_success 2단계", userName + "/" + userEmail + "/" + userBirth)
         } else {
+            Log.d("tag_fail 2단계", userName + "/" + userEmail + "/" + userBirth)
+
             validateName()
             validateEmail()
             validateBirth()
@@ -175,7 +227,17 @@ constructor(
     }
 
     fun finishStep3() {
+        if (userNickname != "" && (nickname.value == userNickname)) {
+            signup()
 
+            Log.d(
+                "tag_success 3단계",
+                userId + "/" + userPw + "/" + userName + "/" + userEmail + "/" + userBirth + "/" + userNickname
+            )
+
+        } else {
+            validateNickname()
+        }
     }
 
     fun setStep1State(): Boolean {
@@ -191,5 +253,26 @@ constructor(
     // 하기 위해 비교
     fun comparePw(): Boolean {
         return (pw.value == pwConfirm.value)
+    }
+
+    private fun signup() {
+
+        val user = User(
+            id = userId, password = userPw,
+            Info(name = userName, email = userEmail, birth = userBirth),
+            SubInfo(nickname = userNickname),
+            Activity()
+        )
+
+        viewModelScope.launch {
+            repository.signup(user).let { response ->
+                if (response.isSuccessful) {
+                    Log.d("tag_success", "signup: ${response.body()}")
+                    _step3Success.postValue(Event(true))
+                } else {
+                    Log.d("tag_fail", "signup Error: ${response.code()}")
+                }
+            }
+        }
     }
 }

@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.05" />
+                app:layout_constraintGuide_begin="20dp" />
 
             <RelativeLayout
                 android:id="@+id/layout_profile"
@@ -70,8 +70,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/iv_profile"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
+                    android:layout_width="145dp"
+                    android:layout_height="145dp"
                     android:src="@drawable/hf" />
 
                 <Button
@@ -94,8 +94,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:hint="@string/nickname"
+                android:hint="@string/nickname_pattern"
                 app:errorEnabled="true"
+                app:helperTextTextColor="@color/green"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_profile">

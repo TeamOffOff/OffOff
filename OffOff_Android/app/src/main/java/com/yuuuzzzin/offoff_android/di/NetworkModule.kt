@@ -1,8 +1,9 @@
 package com.yuuuzzzin.offoff_android.di
 
+import com.google.gson.GsonBuilder
 import com.yuuuzzzin.offoff_android.BuildConfig
-import com.yuuuzzzin.offoff_android.service.api.AuthService
 import com.yuuuzzzin.offoff_android.service.api.BoardService
+import com.yuuuzzzin.offoff_android.service.api.MemberService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,12 +14,12 @@ import javax.inject.Singleton
 
 /* 네트워크 통신을 위한 모듈 */
 
-// const val BASE_URL = "http:10.0.2.2:3000/"
-const val BASE_URL = BuildConfig.BASE_URL
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    // private const val BASE_URL = "http:10.0.2.2:3000/" // 로컬 가상 서버 주소
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     /* Retrofit2 통신 모듈 */
     @Singleton
@@ -26,7 +27,7 @@ object NetworkModule {
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().setLenient().create()))
             .build()
     }
 
@@ -39,7 +40,7 @@ object NetworkModule {
     /* 로그인 응답을 위한 모듈 */
     @Singleton
     @Provides
-    fun provideAuthService(retrofit: Retrofit): AuthService =
-        retrofit.create(AuthService::class.java)
+    fun provideMemberService(retrofit: Retrofit): MemberService =
+        retrofit.create(MemberService::class.java)
 
 }

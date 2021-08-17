@@ -12,7 +12,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class SignupStep2Fragment : BaseSignupFragment<FragmentSignupStep2Binding>(R.layout.fragment_signup_step2) {
+class SignupStep2Fragment :
+    BaseSignupFragment<FragmentSignupStep2Binding>(R.layout.fragment_signup_step2) {
     lateinit var datePicker: DatePickerHelper
 
     override fun initView() {
@@ -49,24 +50,47 @@ class SignupStep2Fragment : BaseSignupFragment<FragmentSignupStep2Binding>(R.lay
                 signupViewModel.validateEmail()
         }
 
+        /* 이름 파트 */
         binding.etName.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 signupViewModel.validateName()
             } else {
-                if(!binding.tfName.isError())
+                if (!binding.tfName.isError())
                     binding.tfName.setTextFieldFocus()
             }
         }
 
+        signupViewModel.name.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateName()
+            }
+        })
+
+        signupViewModel.isNameVerified.observe(viewLifecycleOwner, {
+            binding.tfName.validate(it)
+        })
+
+        /* 이메일 파트 */
         binding.etEmail.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 signupViewModel.validateEmail()
             } else {
-                if(!binding.tfEmail.isError())
+                if (!binding.tfEmail.isError())
                     binding.tfEmail.setTextFieldFocus()
             }
         }
 
+        signupViewModel.email.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateEmail()
+            }
+        })
+
+        signupViewModel.isEmailVerified.observe(viewLifecycleOwner, {
+            binding.tfEmail.validate(it)
+        })
+
+        /* 생년월일 파트 */
         signupViewModel.birth.observe(viewLifecycleOwner, {
             if (!binding.etBirth.text.isNullOrEmpty()) {
                 binding.tfBirth.setTextFieldVerified()
@@ -75,22 +99,14 @@ class SignupStep2Fragment : BaseSignupFragment<FragmentSignupStep2Binding>(R.lay
             }
         })
 
-        signupViewModel.isNameVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfName.validate(it)
+        signupViewModel.birth.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateBirth()
             }
         })
 
-        signupViewModel.isEmailVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfEmail.validate(it)
-            }
-        })
-
-        signupViewModel.isBirthVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfBirth.validate(it)
-            }
+        signupViewModel.isBirthVerified.observe(viewLifecycleOwner, {
+            binding.tfBirth.validate(it)
         })
 
         signupViewModel.step2Success.observe(viewLifecycleOwner, { event ->

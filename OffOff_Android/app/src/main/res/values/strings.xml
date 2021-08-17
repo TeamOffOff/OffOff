@@ -32,6 +32,7 @@
     <string name="empty_pw">비밀번호를 입력해주세요</string>
     <string name="id_pattern">아이디 (5-20자, 영문, 숫자 사용 가능)</string>
     <string name="pw_pattern">비밀번호 (8-16자, 영문, 숫자, 기호 포함)</string>
+    <string name="nickname_pattern">닉네임 (2-10자, 한글, 영어, 숫자 사용 가능)</string>
     <string name="next">다음</string>
     <string name="signup_step1">아이디 및 비밀번호</string>
     <string name="signup_step2">개인 정보</string>
@@ -39,6 +40,14 @@
     <string name="edit">편집</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <!--    <string name=""></string>-->
     <!--    <string name=""></string>-->
 

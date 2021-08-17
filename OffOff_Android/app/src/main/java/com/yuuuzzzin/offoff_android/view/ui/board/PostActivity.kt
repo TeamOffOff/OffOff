@@ -1,71 +1,89 @@
 package com.yuuuzzzin.offoff_android.view.ui.board
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
+import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import info.androidhive.fontawesome.FontDrawable
 
 @AndroidEntryPoint
-class PostActivity : AppCompatActivity() {
+class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
-    private var mBinding: ActivityPostBinding? = null
-    private val binding get() = mBinding!!
     private val viewModel: PostViewModel by viewModels()
+    private lateinit var boardName: String
+    private lateinit var boardType: String
+    private lateinit var writeIcon: FontDrawable
+    private lateinit var likeIcon: FontDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        mBinding = ActivityPostBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+        initViewModel()
+        processIntent()
         initToolbar()
-        initPost()
-
+        initView()
     }
 
-    private fun initPost() {
+    private fun processIntent() {
+        val id = intent.getStringExtra("id")
+        boardType = intent.getStringExtra("boardType").toString()
+        boardName = intent.getStringExtra("boardName").toString()
+        viewModel.getPost(id!!, boardType!!)
+    }
 
-        viewModel.responsePost.observe(this, { post ->
-            binding.apply {
-                tvAuthor.text = post.metadata.author
-                tvDate.text = post.metadata.date
-                tvTitle.text = post.metadata.title
-                tvContent.text = post.contents.content
-            }
+    private fun initViewModel() {
+        binding.viewModel = viewModel
+
+        viewModel.response.observe(binding.lifecycleOwner!!, {
+            binding.post = it
         })
     }
 
     private fun initToolbar() {
-        val toolbar : MaterialToolbar = binding.appbarPost
+        val toolbar: MaterialToolbar = binding.appbar
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         supportActionBar?.apply {
-            toolbar.title = intent.getStringExtra("appBarTitle")
+            binding.tvToolbarTitle.text = boardName
 
-            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
+            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
             setDisplayShowHomeEnabled(true)
         }
 
     }
 
+    private fun initView() {
+        writeIcon = FontDrawable(this, R.string.fa_pen_solid, true, false)
+        writeIcon.setTextColor(ContextCompat.getColor(this, R.color.green))
+
+        likeIcon = FontDrawable(this, R.string.fa_thumbs_up_solid, true, false)
+        likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
+
+        binding.tfId.endIconDrawable = writeIcon
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                if (intent.getStringExtra("update") == "true") {
+                    val intent = Intent(applicationContext, BoardActivity::class.java)
+                    intent.putExtra("boardType", boardType)
+                    intent.putExtra("boardName", boardName)
+                    startActivity(intent)
+                } else
+                    finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onDestroy() {
-        mBinding = null
-        super.onDestroy()
     }
 }

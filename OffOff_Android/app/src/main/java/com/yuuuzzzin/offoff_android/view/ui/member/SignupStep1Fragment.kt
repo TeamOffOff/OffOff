@@ -10,11 +10,11 @@ import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep1Binding
 import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
-import com.yuuuzzzin.offoff_android.utils.setDefaultColor
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.layout.fragment_signup_step1) {
+class SignupStep1Fragment :
+    BaseSignupFragment<FragmentSignupStep1Binding>(R.layout.fragment_signup_step1) {
 
     override fun initView() {
         binding.viewModel = signupViewModel
@@ -40,77 +40,87 @@ class SignupStep1Fragment : BaseSignupFragment<FragmentSignupStep1Binding>(R.lay
             }
         }
 
+        /* ID 파트 */
         binding.etId.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 signupViewModel.validateId()
             } else {
-                if(!binding.tfId.isError())
+                if (!binding.tfId.isError())
                     binding.tfId.setTextFieldFocus()
             }
         }
 
+        signupViewModel.id.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validateId()
+            }
+        })
+
+        signupViewModel.isIdVerified.observe(viewLifecycleOwner, {
+            binding.tfId.validate(it)
+        })
+
+        /* PW 파트 */
         binding.etPw.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 signupViewModel.validatePw()
             } else {
-                if(!binding.tfPw.isError()) {
+                if (!binding.tfPw.isError()) {
                     binding.tfPw.setTextFieldFocus()
-                    binding.etPw.addTextChangedListener(object : TextWatcher {
-
-                    override fun afterTextChanged(s: Editable) { }
-                    override fun beforeTextChanged(
-                        s: CharSequence, start: Int,
-                        count: Int, after: Int
-                    ) { }
-                    override fun onTextChanged(
-                        s: CharSequence, start: Int,
-                        before: Int, count: Int
-                    ) {
-                        if (!signupViewModel.comparePw()) {
-                            signupViewModel.pwConfirm.postValue("")
-                            binding.tfPwConfirm.setDefaultColor()
-                            }
-                        }
-                    })
                 }
             }
         }
 
+        signupViewModel.pw.observe(viewLifecycleOwner, {
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validatePw()
+            }
+        })
+
+        signupViewModel.isPwVerified.observe(viewLifecycleOwner, {
+            binding.tfPw.validate(it)
+        })
+
+        binding.etPw.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+                if (binding.etPwConfirm.text != null) {
+                    signupViewModel.pwConfirm.postValue("")
+                    if (!binding.tfPwConfirm.isError())
+                        binding.tfPwConfirm.setTextFieldDefault()
+                }
+            }
+        })
+
+        /* PW 확인 파트 */
         binding.etPwConfirm.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (hasFocus) {
-                if(!binding.tfPwConfirm.isError())
+                if (signupViewModel.pw.value.isNullOrEmpty() || binding.tfPw.isError()) {
+                    binding.tfPwConfirm.setTextFieldError("비밀번호를 확인해주세요")
+                } else if (!binding.tfPwConfirm.isError())
                     binding.tfPwConfirm.setTextFieldFocus()
-
-                signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) { event ->
-                    event?.getContentIfNotHandled()?.let {
-                        binding.tfPwConfirm.validate(it)
-                    }
-                }
             }
         }
 
         signupViewModel.pwConfirm.observe(viewLifecycleOwner, {
-            signupViewModel.validatePwConfirm()
-        })
-
-        signupViewModel.isIdVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                binding.tfId.validate(it)
+            if (!it.isNullOrEmpty()) {
+                signupViewModel.validatePwConfirm()
             }
         })
 
-        signupViewModel.isPwVerified.observe(viewLifecycleOwner, { event ->
-            event?.getContentIfNotHandled()?.let {
-                if(!it.isNullOrEmpty())
-                binding.tfPw.validate(it)
-            }
-        })
-
-//        signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) { event ->
-//            event?.getContentIfNotHandled()?.let {
-//                binding.tfPwConfirm.validate(it)
-//            }
-//        }
+        signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) {
+            binding.tfPwConfirm.validate(it)
+        }
 
         signupViewModel.step1Success.observe(viewLifecycleOwner, { event ->
             event.getContentIfNotHandled()?.let {
