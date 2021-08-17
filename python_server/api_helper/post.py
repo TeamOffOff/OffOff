@@ -55,7 +55,7 @@ class make_reference():
 
 
     # 활동 정보 link
-    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None, user=None):
+    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None, whether_sub_reply=False, user=None):
         if reply_id:
             board_type = self.board_type.replace("_board_reply", "")
         else:
@@ -67,6 +67,9 @@ class make_reference():
             user = self.author
 
         new_activity_info = [board_type, str(post_id), str(reply_id)]
+        
+        if whether_sub_reply:
+            new_activity_info.append(True)
 
         result = mongodb.update_one(query={"_id": user}, collection_name="user", modify={operator: {field: new_activity_info}})
 
@@ -341,6 +344,7 @@ class CommentControl(Resource):
         }
 
 
+    @ownership_required
     def delete(self):  # 댓글 삭제
         """댓글을 삭제합니다."""
         reply_info = request.get_json()
@@ -415,7 +419,7 @@ class SubcommentControl(Resource):
                                     modify={"$push": {"subReplies": sub_reply_info}})
 
         # 회원활동 정보 link 형태로 등록
-        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, whether_sub_reply=True, operator="$addToSet")
 
         # 댓글 리스트 불러주기
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
@@ -428,6 +432,7 @@ class SubcommentControl(Resource):
             return {"queryStatus": "subreply register fail"}, 500
 
 
+    @ownership_required
     def delete(self):  # 대댓글 삭제
         """
         대댓글 삭제
@@ -444,7 +449,8 @@ class SubcommentControl(Resource):
         making_reference = make_reference(board_type=board_type, author=author)
 
         # 회원활동정보 삭제
-        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, whether_sub_reply=True, operator="$pull")
+        # pull 은 완전히 같을 때만 빼냄
 
         if result.raw_result["n"] == 1:
             return {

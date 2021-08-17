@@ -2,7 +2,7 @@ from flask import request
 from flask_restx import Resource, Api, Namespace, fields
 import jwt
 import bcrypt
-from pymongo import encryption
+from pymongo import collection, encryption
 from bson.objectid import ObjectId
 
 import mongo
@@ -122,22 +122,50 @@ class AuthRegister(Resource):
 
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
 
-        # # 활동 알수없음으로 바꾸기
-        # activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity":True, "_id":False})
-        # act_post = activity["activity"]["posts"]
-        # act_reply = activity["activity"]["reply"]
-        # # 게시글 알 수 없음
-        # if act_post:
-        #     for i in act_post:
-        #         board_type=i[0]
-        #         pk = i[1]
-        #         mongodb.update_one(query={"_id":pk}, collection_name=board_type, modify={"$set":{"author": None}})
+        # 활동 알수없음으로 바꾸기
+        print("author을 알 수 없음으로 바꾸는 과정 진입")
+        activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity":True, "_id":False})
+        act_post = activity["activity"]["posts"]
+        act_reply = activity["activity"]["replies"]
+        print("게시글 작성: ", act_post)
+        print("댓글 or 대댓글 작성:" , act_reply)
+
+        # 게시글 알 수 없음
+        if act_post:
+            print("작성한 게시물이 있는 경우")
+            for post in act_post:
+                board_type=post[0]+"_board"
+                pk = post[1]
+                print(board_type, pk)
+                post = mongodb.find_one(query={"_id":ObjectId(pk)}, collection_name=board_type)
+                print("게시글:", post)
+                post_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set":{"author": None}})
+                print(post_change_result.raw_result)
+                if post_change_result.raw_result["n"] == 0:
+                    return{"queryStatus": "author information change fail"}
         
-        # if act_reply:
-        #     for i in act_reply:
-        #         board_type=i[0]
-        #         pk = i[2]
-        #         mongodb.update_one(query={"_id":pk}, collection_name=board_type, modify={"$set":{"reply.author": None}})
+        if act_reply:
+            for reply in act_reply:
+                print("댓글: ", reply)
+                board_type = reply[0]+"_board_reply"
+                pk = reply[2]
+                print(board_type, pk)
+
+                if True in reply:  # 대댓글인 경우
+                    print("작성한 대댓글인 경우")
+                    sub_reply = mongodb.find_one(query={"_id":ObjectId(pk)}, collection_name=board_type, projection_key={"subReplies":1})
+                    print(sub_reply)
+                    sub_reply_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set": {"subReplies.$[reply].author": None}}, upsert=False, array_filters=[{'reply.author._id': token_decoded["_id"]}])
+                    print(sub_reply_change_result.raw_result["n"])
+                    if sub_reply_change_result.raw_result["n"] == 0:
+                        return{"queryStatus": "subReply author information change fail"}
+                else:  # 대댓글이 아닌 경우
+                    print("작성한 댓글인 경우")
+                    reply_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set":{"author": None}})
+                    if reply_change_result.raw_result["n"]==0:
+                        return{"queryStatus": "reply author information change fail"}
+                    else:
+                        print("댓글 author 은 변경함")
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": token_decoded["_id"]}, collection_name="user")
@@ -254,8 +282,9 @@ class ActivityControl(Resource):
                     result = mongodb.find_one(query={"_id": ObjectId(post_id)},collection_name=board_type)
                     result["_id"] = str(result["_id"])
                     result["date"] = str(result["date"])
-
-                    post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
+                    
+                    if result not in post_list:
+                        post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
 
                     post_list.sort(key=lambda x: x["_id"], reverse=True )
                 
