@@ -44,7 +44,8 @@ class PrivacyInfoView: UIView {
     }
     
     var nextButton = UIButton().then {
-        $0.backgroundColor = .mainColor
+        $0.backgroundColor = .lightGray
+        $0.isUserInteractionEnabled = false
         $0.setTitle("다음", for: .normal)
         $0.setTitleColor(.white, for: .normal)
     }

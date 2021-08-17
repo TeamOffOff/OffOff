@@ -17,11 +17,6 @@ public class UserServices {
         var queryStatus: String = "Impossible"
     }
     
-    struct SignUpResult: Codable {
-        var Authorization: String
-        var message: String
-    }
-    
     static func idDuplicationCheck(id: String) -> Observable<Bool> {
         if Constants.isValidString(str: id, regEx: Constants.USERID_RULE) {
             return UserServices.provider
@@ -78,7 +73,6 @@ public class UserServices {
             .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                let result = try JSONDecoder().decode(SignUpResult.self, from: $0.data)
                 return $0.statusCode == 200
             }
             .catchErrorJustReturn(false)

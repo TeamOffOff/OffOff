@@ -97,6 +97,13 @@ class IDPWViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
+        viewModel.isNextEnabled
+            .drive(onNext: {
+                self.idpwView.nextButton.isUserInteractionEnabled = $0
+                self.idpwView.nextButton.backgroundColor = $0 ? .mainColor : .lightGray
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.isValidatedToProgress
             .drive(onNext: {
                 if $0 {

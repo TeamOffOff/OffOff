@@ -26,7 +26,8 @@ class ProfileMakeView: UIView {
     }
     
     var signUpButton = UIButton().then {
-        $0.backgroundColor = .mainColor
+        $0.backgroundColor = .lightGray
+        $0.isUserInteractionEnabled = false
         $0.setTitle("가입", for: .normal)
         $0.setTitleColor(.white, for: .normal)
     }

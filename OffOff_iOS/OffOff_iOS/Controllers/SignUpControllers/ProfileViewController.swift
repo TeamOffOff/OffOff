@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 
 class ProfileViewController: UIViewController {
-
+    
     let profileView = ProfileMakeView()
     let disposeBag = DisposeBag()
     
@@ -34,26 +34,28 @@ class ProfileViewController: UIViewController {
                     .debounce(.milliseconds(5), scheduler: ConcurrentMainScheduler.instance)
                     .asDriver(onErrorJustReturn: ""),
                 signUpButtonTap: profileView.signUpButton.rx.tap.asSignal()
-                )
+            )
         )
         
         // bind results
         viewModel.isNickNameConfirmed
-            .drive(onNext: { isNicknameVerified in
-                if isNicknameVerified {
-                    self.profileView.nickNameTextField.selectedLineColor = .mainColor
-                    self.profileView.nickNameTextField.selectedTitleColor = .mainColor
-                    self.profileView.nickNameTextField.title = "\(self.profileView.nickNameTextField.text!)은(는) 사용가능한 닉네임입니다."
-                } else {
-                    self.profileView.nickNameTextField.selectedLineColor = .red
-                    self.profileView.nickNameTextField.selectedTitleColor = .red
-                    self.profileView.nickNameTextField.title = "\(self.profileView.nickNameTextField.text!)은(는) 사용할 수 없습니다."
-                }
+            .drive(onNext: {
+                self.profileView.nickNameTextField.selectedLineColor
+                    = $0 ? .mainColor : .red
+                self.profileView.nickNameTextField.selectedTitleColor
+                    = $0 ? .mainColor : .red
+                self.profileView.nickNameTextField.title
+                    = $0 ?
+                    "\(self.profileView.nickNameTextField.text!)은(는) 사용가능한 닉네임입니다."
+                    : "\(self.profileView.nickNameTextField.text!)은(는) 사용할 수 없습니다."
+                self.profileView.signUpButton.isUserInteractionEnabled = $0
+                self.profileView.signUpButton.backgroundColor = $0 ? .mainColor : .lightGray
             })
             .disposed(by: disposeBag)
         
         viewModel.signedUp
             .drive(onNext: { signedUp in
+                print(signedUp)
                 if signedUp {
                     let alert = UIAlertController(title: "회원가입 완료", message: nil, preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default) { action in
@@ -72,7 +74,7 @@ extension ProfileViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let str = textField.text ?? ""
         let max = Constants.USERNICKNAME_MAXLENGTH
-       
+        
         guard let stringRange = Range(range, in: str) else { return false }
         let updatedText = str.replacingCharacters(in: stringRange, with: string)
         
