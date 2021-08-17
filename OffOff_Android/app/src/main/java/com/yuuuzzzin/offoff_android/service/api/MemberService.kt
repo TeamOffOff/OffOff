@@ -37,4 +37,10 @@ interface MemberService {
         @Query("nickname") nickname: String
     ): Response<ResultResponse>
 
+    /* 이메일 중복 확인 */
+    @GET("user/register")
+    suspend fun checkEmail(
+        @Query("email") email: String
+    ): Response<ResultResponse>
+
 }

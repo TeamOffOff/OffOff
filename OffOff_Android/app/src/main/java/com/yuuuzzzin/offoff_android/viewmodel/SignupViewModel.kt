@@ -1,10 +1,7 @@
 package com.yuuuzzzin.offoff_android.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.yuuuzzzin.offoff_android.service.models.Activity
 import com.yuuuzzzin.offoff_android.service.models.Info
 import com.yuuuzzzin.offoff_android.service.models.SubInfo
@@ -13,6 +10,7 @@ import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Constants.get
 import com.yuuuzzzin.offoff_android.utils.Event
 import com.yuuuzzzin.offoff_android.utils.SignupUtils.BIRTH_ERROR
+import com.yuuuzzzin.offoff_android.utils.SignupUtils.EMAIL_DUP
 import com.yuuuzzzin.offoff_android.utils.SignupUtils.EMAIL_ERROR
 import com.yuuuzzzin.offoff_android.utils.SignupUtils.EMAIL_REGEX
 import com.yuuuzzzin.offoff_android.utils.SignupUtils.ID_DUP
@@ -28,6 +26,9 @@ import com.yuuuzzzin.offoff_android.utils.SignupUtils.PW_ERROR
 import com.yuuuzzzin.offoff_android.utils.SignupUtils.PW_REGEX
 import com.yuuuzzzin.offoff_android.utils.SignupUtils.validate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,13 +39,27 @@ constructor(
     private val repository: MemberRepository
 ) : ViewModel() {
 
-    val id = MutableLiveData("")
-    val pw = MutableLiveData("")
-    val pwConfirm = MutableLiveData("")
-    val name = MutableLiveData("")
-    val email = MutableLiveData("")
-    val birth = MutableLiveData("")
-    val nickname = MutableLiveData("")
+    val id: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val pw: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val pwConfirm: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val name: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val email: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val birth: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val nickname: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
 
     private var userId = ""
     private var userPw = ""
@@ -52,16 +67,6 @@ constructor(
     private var userEmail = ""
     private var userBirth = ""
     private var userNickname = ""
-
-    // 회원가입 단계별 성공 여부
-    private val _step1Success = MutableLiveData<Event<Boolean>>()
-    val step1Success: LiveData<Event<Boolean>> = _step1Success
-
-    private val _step2Success = MutableLiveData<Event<Boolean>>()
-    val step2Success: LiveData<Event<Boolean>> = _step2Success
-
-    private val _step3Success = MutableLiveData<Event<Boolean>>()
-    val step3Success: LiveData<Event<Boolean>> = _step3Success
 
     // 입력 항목별 verified 여부
     private val _isIdVerified = MutableLiveData<String>()
@@ -88,8 +93,29 @@ constructor(
     private val _isNicknameError = MutableLiveData<String>()
     val isNicknameError: LiveData<String> get() = _isNicknameError
 
-    fun validateId() {
+    // 회원가입 단계별 성공 여부
+    private val _step1Success = combine(
+        isIdVerified.asFlow(),
+        isPwVerified.asFlow(),
+        isPwConfirmVerified.asFlow()
+    ) { id, pw, pwConfirm ->
+        id == "" && pw == "" && pwConfirm == ""
+    }.onStart { emit(false) }.asLiveData()
+    val step1Success: LiveData<Boolean> get() = _step1Success
 
+    private val _step2Success = combine(
+        isNameVerified.asFlow(),
+        isEmailVerified.asFlow(),
+        isBirthVerified.asFlow()
+    ) { name, email, birth ->
+        name == "" && email == "" && birth == ""
+    }.onStart { emit(false) }.asLiveData()
+    val step2Success: LiveData<Boolean> get() = _step2Success
+
+    private val _step3Success = MutableLiveData<Event<Boolean>>()
+    val step3Success: LiveData<Event<Boolean>> = _step3Success
+
+    fun validateId() {
         if (!validate(id, ID_REGEX)) {
             _isIdVerified.postValue(ID_ERROR)
         } else {
@@ -97,7 +123,7 @@ constructor(
         }
     }
 
-    private fun checkId(id: String) = viewModelScope.launch {
+    private fun checkId(id: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.checkId(id).let { response ->
             if (response.isSuccessful) {
                 _isIdVerified.postValue("")
@@ -111,7 +137,6 @@ constructor(
     }
 
     fun validatePw() {
-
         if (!validate(pw, PW_REGEX)) {
             _isPwVerified.postValue(PW_ERROR)
         } else {
@@ -120,7 +145,6 @@ constructor(
     }
 
     fun validatePwConfirm() {
-
         if (pwConfirm.get().isNullOrEmpty() || pw.get() != pwConfirm.get()) {
             _isPwConfirmVerified.postValue(PW_CONFIRM_ERROR)
         } else {
@@ -130,7 +154,6 @@ constructor(
     }
 
     fun validateName() {
-
         if (!validate(name, NAME_REGEX)) {
             _isNameVerified.postValue(NAME_ERROR)
         } else {
@@ -140,30 +163,27 @@ constructor(
     }
 
     fun validateEmail() {
-
         if (!validate(email, EMAIL_REGEX)) {
             _isEmailVerified.postValue(EMAIL_ERROR)
         } else {
-            _isEmailVerified.postValue("")
-            userEmail = email.value!!
+            checkEmail(email.value!!)
         }
     }
 
-//    private fun checkEmail(email: String) = viewModelScope.launch {
-//        repository.checkEmail(email).let { response ->
-//            if (response.isSuccessful) {
-//                _isEmailVerified.postValue("")
-//                userEmail = email
-//                Log.d("tag_success", response.body().toString())
-//            } else {
-//                _isEmailVerified.postValue(ID_DUP)
-//                Log.d("tag_fail", "checkEmail Error: ${response.code()}")
-//            }
-//        }
-//    }
+    private fun checkEmail(email: String) = viewModelScope.launch(Dispatchers.IO) {
+        repository.checkEmail(email).let { response ->
+            if (response.isSuccessful) {
+                _isEmailVerified.postValue("")
+                userEmail = email
+                Log.d("tag_success", response.body().toString())
+            } else {
+                _isEmailVerified.postValue(EMAIL_DUP)
+                Log.d("tag_fail", "checkEmail Error: ${response.code()}")
+            }
+        }
+    }
 
     fun validateBirth() {
-
         if (birth.value?.isBlank() == true) {
             _isBirthVerified.postValue(BIRTH_ERROR)
         } else {
@@ -173,17 +193,14 @@ constructor(
     }
 
     fun validateNickname() {
-
         if (!validate(nickname, NICKNAME_REGEX)) {
-            Log.d("tag_fail 닉네임 유효성", nickname.get())
             _isNicknameError.postValue(nickname.get() + NICKNAME_ERROR)
         } else {
-            Log.d("tag_success 닉네임 유효성", nickname.get())
             checkNickname(nickname.value!!)
         }
     }
 
-    private fun checkNickname(nickname: String) = viewModelScope.launch {
+    private fun checkNickname(nickname: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.checkNickname(nickname).let { response ->
             if (response.isSuccessful) {
                 userNickname = nickname
@@ -193,36 +210,6 @@ constructor(
                 _isNicknameError.postValue(nickname + NICKNAME_ERROR)
                 Log.d("tag_fail", "checkNickname Error: ${response.code()}")
             }
-        }
-    }
-
-    fun finishStep1() {
-        //_step1Success.postValue(Event(true))
-        if ((userId != "" && userPw != "") &&
-            (id.value == userId && pw.value == userPw && pwConfirm.value == userPw)
-        ) {
-            _step1Success.postValue(Event(true))
-            Log.d("tag_success 1단계", userId + "/" + userPw + "/")
-        } else {
-            validateId()
-            validatePw()
-            validatePwConfirm()
-        }
-    }
-
-    fun finishStep2() {
-        //_step2Success.postValue(Event(true))
-        if ((userName != "" && userEmail != "" && userBirth != "") &&
-            (name.value == userName && email.value == userEmail)
-        ) {
-            _step2Success.postValue(Event(true))
-            Log.d("tag_success 2단계", userName + "/" + userEmail + "/" + userBirth)
-        } else {
-            Log.d("tag_fail 2단계", userName + "/" + userEmail + "/" + userBirth)
-
-            validateName()
-            validateEmail()
-            validateBirth()
         }
     }
 
@@ -254,8 +241,7 @@ constructor(
     fun comparePw(): Boolean {
         return (pw.value == pwConfirm.value)
     }
-
-    private fun signup() {
+fun signup() {
 
         val user = User(
             id = userId, password = userPw,
@@ -264,7 +250,7 @@ constructor(
             Activity()
         )
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.signup(user).let { response ->
                 if (response.isSuccessful) {
                     Log.d("tag_success", "signup: ${response.body()}")

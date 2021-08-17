@@ -129,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_marginTop="8dp"
-                android:onClick="@{()-> viewModel.finishStep1()}"
+                android:enabled="@{viewModel.step1Success}"
                 android:text="@string/next"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/guideline"

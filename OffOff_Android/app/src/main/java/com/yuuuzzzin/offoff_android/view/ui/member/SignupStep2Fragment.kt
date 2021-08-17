@@ -61,9 +61,7 @@ class SignupStep2Fragment :
         }
 
         signupViewModel.name.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                signupViewModel.validateName()
-            }
+            signupViewModel.validateName()
         })
 
         signupViewModel.isNameVerified.observe(viewLifecycleOwner, {
@@ -81,9 +79,7 @@ class SignupStep2Fragment :
         }
 
         signupViewModel.email.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                signupViewModel.validateEmail()
-            }
+            signupViewModel.validateEmail()
         })
 
         signupViewModel.isEmailVerified.observe(viewLifecycleOwner, {
@@ -100,22 +96,17 @@ class SignupStep2Fragment :
         })
 
         signupViewModel.birth.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                signupViewModel.validateBirth()
-            }
+            signupViewModel.validateBirth()
         })
 
         signupViewModel.isBirthVerified.observe(viewLifecycleOwner, {
             binding.tfBirth.validate(it)
         })
 
-        signupViewModel.step2Success.observe(viewLifecycleOwner, { event ->
-            event.getContentIfNotHandled()?.let {
-                if (it) {
-                    findNavController().navigate(R.id.action_signupStep2Fragment_to_signupStep3Fragment)
-                }
-            }
-        })
+        // step2 -> step3 이동
+        binding.btNext.setOnClickListener {
+            findNavController().navigate(R.id.action_signupStep2Fragment_to_signupStep3Fragment)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

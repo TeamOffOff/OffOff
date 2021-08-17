@@ -115,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_marginTop="8dp"
-                android:onClick="@{()-> viewModel.finishStep3()}"
+                android:enabled="@{viewModel.isNicknameVerified != null ? true : false }"
                 android:text="@string/next"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/guideline"

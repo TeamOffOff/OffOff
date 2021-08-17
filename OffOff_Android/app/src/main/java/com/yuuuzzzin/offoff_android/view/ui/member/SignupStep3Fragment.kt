@@ -21,6 +21,7 @@ class SignupStep3Fragment :
 
         // 기본 에러 아이콘 제거
         binding.tfNickname.setErrorIconDrawable(0)
+
         binding.btProfile.setOnClickListener {
             showProfileDialog()
         }
@@ -59,17 +60,12 @@ class SignupStep3Fragment :
             }
         })
 
-        signupViewModel.step3Success.observe(viewLifecycleOwner, { event ->
-            event.getContentIfNotHandled()?.let {
-                if (it) {
-                    activity?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.remove(this)
-                        ?.commit()
-                }
-                requireContext().toast("가입 완료")
-            }
-        })
+        // signup 액티비티 종료
+        binding.btSignup.setOnClickListener {
+            signupViewModel.signup()
+            requireActivity().finish()
+            requireContext().toast("가입 완료")
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
