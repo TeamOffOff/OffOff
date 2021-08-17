@@ -78,7 +78,7 @@ def ownership_required(func):
     def wrapper(self):
         post_info = request.get_json()
         if not("user" in post_info):
-            return "user의 정보가 필요합니다"
+            return {"queryStatus": "user의 정보가 필요합니다"}
         elif not("author" in post_info):
             print("게시글 integer 수정하는 경우 author 없음")
             result = func(self)
@@ -91,7 +91,7 @@ def ownership_required(func):
                 result = func(self)
                 return result
             else:
-                return "작성자가 아닙니다"
+                return {"queryStatus": "작성자가 아닙니다"}
     return wrapper
 
 
