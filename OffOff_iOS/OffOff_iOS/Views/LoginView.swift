@@ -40,8 +40,9 @@ class LoginView: UIView {
 
     var loginButton = UIButton().then {
         $0.setTitle("로그인", for: .normal)
-        $0.backgroundColor = .mainColor
+        $0.backgroundColor = .lightGray
         $0.setTitleColor(.white, for: .normal)
+        $0.isUserInteractionEnabled = false
     }
     
     var signupButton = UIButton().then {

@@ -91,7 +91,7 @@ extension UserAPI: TargetType {
         case .passwordChange(let password):
             return .requestParameters(parameters: ["password": password], encoding: JSONEncoding.default)
         case .login(let id, let password):
-            return .requestParameters(parameters: ["id": id, "password": password], encoding: JSONEncoding.default)
+            return .requestParameters(parameters: ["_id": id, "password": password], encoding: JSONEncoding.default)
         case .getMemberInfo:
             return .requestPlain
         case .resign:
