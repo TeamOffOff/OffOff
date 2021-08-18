@@ -72,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.etId.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
-                if(binding.etId.text!!.isEmpty())
+                if (binding.etId.text!!.isEmpty())
                     binding.tfId.setTextFieldDefault()
                 else
                     binding.tfId.setTextFieldFocus()
@@ -82,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.etPw.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (!hasFocus) {
-                if(binding.etPw.text!!.isEmpty())
+                if (binding.etPw.text!!.isEmpty())
                     binding.tfPw.setTextFieldDefault()
                 else
                     binding.tfPw.setTextFieldFocus()
@@ -112,7 +112,7 @@ class LoginActivity : AppCompatActivity() {
         })
 
         // 로그인 시도 후 실패하면 버튼 위 에러메시지 텍스트뷰를 visible 상태로 바꿈
-       loginViewModel.loginFail.observe(this, { event ->
+        loginViewModel.loginFail.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
                 binding.tvAlertMsg.visibility = View.VISIBLE
                 binding.tvAlertMsg.text = it
@@ -145,7 +145,7 @@ class LoginActivity : AppCompatActivity() {
     fun TextInputLayout.setTextFieldDefault() {
         this.error = null
         setDefaultColor()
-        when(this.id) {
+        when (this.id) {
             R.id.tf_id -> startIconDrawable = idIcon
             R.id.tf_pw -> startIconDrawable = pwIcon
         }
@@ -154,7 +154,7 @@ class LoginActivity : AppCompatActivity() {
     // TextField focus 상태
     fun TextInputLayout.setTextFieldFocus() {
         setVerifiedColor()
-        when(this.id) {
+        when (this.id) {
             R.id.tf_id -> startIconDrawable = idIconFocus
             R.id.tf_pw -> startIconDrawable = pwIconFocus
         }

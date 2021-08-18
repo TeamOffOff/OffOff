@@ -1,9 +1,11 @@
 package com.yuuuzzzin.offoff_android.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.LoginInfo
 import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Event
@@ -68,13 +70,30 @@ constructor(
             repository.login(loginInfo).let { response ->
                 if (response.isSuccessful) {
                     _loginSuccess.postValue(Event(userId))
+                    OffoffApplication.pref.token = response.body()!!.auth
+                    Log.d("tag_success", "login: ${response.body()}")
+                    Log.d("tag_success", "token: ${OffoffApplication.pref.token}")
                 } else {
+                    Log.d("tag_fail", "login Error: ${response.code()}")
                     when (response.code()) {
                         NOT_EXIST -> {
                             _isIdError.postValue(Event("존재하지 않는 아이디입니다."))
                         }
                         WRONG_INFO -> _loginFail.postValue(Event("아이디와 비밀번호를 확인해주세요."))
                     }
+                }
+            }
+        }
+    }
+
+    fun checkUserInfo(auth: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getUserInfo(auth).let { response ->
+                if (response.isSuccessful) {
+                    _loginSuccess.postValue(Event("true"))
+                    Log.d("tag_success", "getUserInfo: ${response.body()}")
+                } else {
+                    Log.d("tag_fail", "getUserInfo Error: ${response.code()}")
                 }
             }
         }
