@@ -249,7 +249,7 @@ class PostControl(Resource):
                     # 인기게시판 관련
                     modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                             collection_name=board_type)
-                    if (past_likes < 10) and (modified_post["likes"] == 10) :
+                    if (past_likes < 10) and (len(modified_post["likes"]) == 10) :
                         print("여기 좋아요 10 넘음")
                         hot_post_info={}
                         
@@ -261,9 +261,6 @@ class PostControl(Resource):
                         print(hot_post_info)
                         
                         mongodb.insert_one(data=hot_post_info, collection_name="hot_board")
-                    
-                    elif (past_likes >= 10) and (modified_post["likes"] < 10):
-                        mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name="hot_board")
 
             # 활동 업데이트
             making_reference = make_reference(board_type=board_type, author=None)
@@ -290,7 +287,7 @@ class PostControl(Resource):
 
 # 댓글 조회 함수
 def get_reply_list(post_id=None, board_type=None):
-    cursor = mongodb.find(query={"parent.postId": post_id},
+    cursor = mongodb.find(query={"postId": post_id},
                                 collection_name=board_type)  # 댓글은 오름차순
 
     reply_list = []
@@ -311,8 +308,8 @@ class CommentControl(Resource):
         reply_info = request.get_json()
         del reply_info["_id"]
 
-        board_type = reply_info["parent"]["boardType"] + "_board_reply"
-        post_id = reply_info["parent"]["postId"]
+        board_type = reply_info["boardType"] + "_board_reply"
+        post_id = reply_info["postId"]
         author = reply_info["author"]["_id"]
 
         
@@ -324,9 +321,12 @@ class CommentControl(Resource):
 
         # 댓글 db에 저장
         reply_id = mongodb.insert_one(data=reply_info, collection_name=board_type)
+        print(reply_id)
         
+        print(post_id)
         # 회원활동 정보 link 형태로 등록
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
+
 
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
@@ -348,7 +348,26 @@ class CommentControl(Resource):
         return {
             "replyList": reply_list
         }
-    
+
+
+    def put(self):  # 좋아요
+        """좋아요를 저장합니다"""
+        reply_info = request.get_json()
+        reply_id = reply_info["_id"]
+        board_type = reply_info["boardType"]+"_board_reply"
+        user = reply_info["user"]
+
+        past_likes_list = mongodb.find_one(query={"_id":ObjectId(reply_id)}, collection_name=board_type, projection_key={"_id":False, "likes":True})["likes"]
+       
+        if user in past_likes_list:
+            return{"queryStatus": "already like"}
+        else:
+            update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$addToSet": {"likes": user}})
+        
+        if update_status.raw_result["n"]==0:
+            return{"queryStatus": "likes update fail"}
+        else:
+            return{"queryStatus": "likes update success"}
 
 
     @ownership_required
@@ -356,11 +375,11 @@ class CommentControl(Resource):
         """댓글을 삭제합니다."""
         reply_info = request.get_json()
 
-        board_type = reply_info["parent"]["boardType"] + "_board_reply"
-        post_id = reply_info["parent"]["postId"]
+        board_type = reply_info["boardType"] + "_board_reply"
+        post_id = reply_info["postId"]
         reply_id = reply_info["_id"]
         author = reply_info["author"]["_id"]
-        whether_subreply = reply_info["subReplies"]
+        whether_subreply = mongodb.find_one(query={"parentReplyId": reply_id}, collection_name=board_type)
 
 
         if not whether_subreply:  # 대댓글이 없는 경우
@@ -391,113 +410,3 @@ class CommentControl(Resource):
         }
         else:
             return {"queryStatus": "reply delete failed"}, 500
-        
-        
-    def put(self):  # 좋아요 저장
-        """좋아요를 저장합니다"""
-        reply_info = request.get_json()
-        modified_like = {"likes": reply_info["likes"]}
-        reply_id = reply_info["_id"]
-        board_type = reply_info["parent"]["boardType"]+"_board_reply"
-       
-        update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$inc": modified_like})
-        
-        if update_status.raw_result["n"]==0:
-            return{"queryStatus": "likes update fail"}
-        else:
-            return{"queryStatus": "likes update success"}
-
-
-
-# 대댓글 변수 설정 함수
-def get_subreply_variable():
-    sub_reply_info = request.get_json()
-    post_id = sub_reply_info["parent"]["postId"]
-    reply_id = sub_reply_info["parent"]["replyId"]
-    board_type = sub_reply_info["parent"]["boardType"] + "_board_reply"
-    if sub_reply_info["author"]:
-        print("author이 None 이 아닌 경우")
-        author = sub_reply_info["author"]["_id"]
-    else:
-        author = sub_reply_info["author"]
-
-    return post_id, reply_id, board_type, sub_reply_info, author
-
-
-# 대댓글 관련 API
-@SubReply.route("")
-class SubcommentControl(Resource):
-    # 함수명이랑 실제 method랑 불일치 문제
-    # 대댓글 삭제하려면 삭제 버튼 눌렀을 때 해당 대댓글 전체를 알려줘야함(pull)
-    def post(self):  # 대댓글 작성
-        """
-        대댓글 추가
-        """
-        post_id, reply_id, board_type, sub_reply_info, author = get_subreply_variable()
-
-        making_reference = make_reference(board_type=board_type, author=author)
-           
-        # 회원정보 embeded 형태로 return
-        author = making_reference.embed_author_information_in_object()
-        sub_reply_info["author"] = author
-        
-        result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
-                                    collection_name=board_type,
-                                    modify={"$push": {"subReplies": sub_reply_info}})
-
-        # 회원활동 정보 link 형태로 등록
-        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, whether_sub_reply=True, operator="$addToSet")
-
-        # 댓글 리스트 불러주기
-        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
-
-        if result.raw_result["n"] == 1:
-            return {
-            "replyList": reply_list
-        }
-        else:
-            return {"queryStatus": "subreply register fail"}, 500
-
-
-    @ownership_required
-    def delete(self):  # 대댓글 삭제
-        """
-        대댓글 삭제
-        """
-        post_id, reply_id, board_type, sub_reply_info, author = get_subreply_variable()
-
-        # 삭제
-        result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
-                                    collection_name=board_type,
-                                    modify={"$pull": {"subReplies": sub_reply_info}})
-
-        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
-
-        making_reference = make_reference(board_type=board_type, author=author)
-
-        # 회원활동정보 삭제
-        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, whether_sub_reply=True, operator="$pull")
-        # pull 은 완전히 같을 때만 빼냄
-
-        if result.raw_result["n"] == 1:
-            return {
-            "replyList": reply_list
-        }
-        else:
-            return {"queryStatus": "subreply delete failed"}, 500
-        
-    
-    def put(self):
-        post_id, reply_id, board_type, sub_reply_info, author = get_subreply_variable()
-
-        content = sub_reply_info["content"]
-        date = sub_reply_info["date"]
-        modified_like = sub_reply_info["likes"]
-        print(modified_like)
-
-        update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$inc":{"subReplies.$[subreply].likes": modified_like}},upsert=False, array_filters=[{"subreply.content":content, "subreply.date":date}])
-        
-        if update_status.raw_result["n"] == 0:
-            return{"queryStatus": "likes update fail"}
-        else:
-            return{"queryStatus": "likes update success"}

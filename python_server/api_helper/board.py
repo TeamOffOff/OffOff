@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from pymongo import collection
 
+
 import mongo
 
 mongodb = mongo.MongoHelper()
@@ -24,6 +25,7 @@ UserList = Namespace(
 )
 
 
+
 @BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우
 class BoardListControl(Resource):
@@ -35,12 +37,13 @@ class BoardListControl(Resource):
         access_on = datetime.now()
         standard = access_on - timedelta(hours=3)
 
-        board_list = []
+        
+        board_list= []
         for board in cursor:
             
             board_type = board["boardType"]+"_board"
             
-            result = mongodb.find_one(collection_name=board_type, query={"date": {"$gte": standard}})
+            result = mongodb.find_one(collection_name=board_type, query={"date":{"$gte": standard}})
             
             if result:
                 board["newPost"] = True
@@ -54,11 +57,13 @@ class BoardListControl(Resource):
             #     board["newPost"] = True
             
             board_list.append(board)
-
+                
+ 
         return {
             "boardList": board_list
         }
-
+    
+    
     def delete(self):  # 게시판 목록 삭제
         """특정 게시판 정보를 삭제합니다."""
         board_info = request.get_json()
@@ -70,6 +75,7 @@ class BoardListControl(Resource):
             return {"queryStatus": "해당 게시판을 삭제했습니다."}
         else:
             return {"queryStatus": "게시판 삭제를 실패했습니다."}, 500
+
 
     def post(self):  # 게시판 목록 등록
         """특정 게시판 정보를 등록합니다."""
@@ -114,6 +120,7 @@ class PostListControl(Resource):
                 cursor = mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
                     [("_id", -1)]).limit(volume)
 
+
             post_list = []
             for post in cursor:
                 post["_id"] = str(post["_id"])
@@ -127,7 +134,8 @@ class PostListControl(Resource):
 
             if board_type == "hot_board":  # 인기게시판인 경우
                 print("여기는 인기게시판")
-                print(post_list)
+                print("인기게시판db에 있는 정보", post_list)
+
                 hot_post_list = []
                 for temp_post in post_list:
                     post_id = temp_post["_id"]
@@ -136,8 +144,12 @@ class PostListControl(Resource):
                     post = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
                     post["_id"] = str(post["_id"])
                     post["date"] = str(post["date"])
+                    
 
                     hot_post_list.append(post)
+                    
+                
+                print("인기게시판에 들어간 각 게시글의 정보:",hot_post_list)
 
                 return {
                     "lastPostId": last_post_id,
@@ -150,12 +162,14 @@ class PostListControl(Resource):
                     "postList": post_list
                 }
 
+
         except IndexError:  # 일반 게시판 더 이상 없는 경우
             return {
                 "lastPostId": None,
                 "postList": None
             }
         except TypeError:  # 인기 게시판 더 이상 없는 경우
+            print("에러 발생")
             return {
                 "lastPostId": None,
                 "postList": None
@@ -163,8 +177,8 @@ class PostListControl(Resource):
     
     def delete(self, board_type):  # 컬렉션 자체를 삭제
         
-        result = mongodb.drop(collection_name=board_type)
+        result= mongodb.drop(collection_name=board_type)
         
-        return {"queryStatus": result}
+        return {"queryStatus" : result}
 
 

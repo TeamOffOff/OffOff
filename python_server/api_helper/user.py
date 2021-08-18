@@ -181,21 +181,11 @@ class AuthRegister(Resource):
                 pk = reply[2]
                 print(board_type, pk)
 
-                if True in reply:  # 대댓글인 경우
-                    print("작성한 대댓글인 경우")
-                    sub_reply = mongodb.find_one(query={"_id":ObjectId(pk)}, collection_name=board_type, projection_key={"subReplies":1})
-                    print(sub_reply)
-                    sub_reply_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set": {"subReplies.$[reply].author": None}}, upsert=False, array_filters=[{'reply.author._id': token_decoded["_id"]}])
-                    print(sub_reply_change_result.raw_result["n"])
-                    if sub_reply_change_result.raw_result["n"] == 0:
-                        return{"queryStatus": "subReply author information change fail"}
-                else:  # 대댓글이 아닌 경우
-                    print("작성한 댓글인 경우")
-                    reply_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set":{"author": None}})
-                    if reply_change_result.raw_result["n"]==0:
-                        return{"queryStatus": "reply author information change fail"}
-                    else:
-                        print("댓글 author 은 변경함")
+                reply_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set":{"author": None}})
+                print(reply_change_result.raw_result)
+                if reply_change_result.raw_result["n"] == 0:
+                    return{"queryStatus": "author information change fail"}
+
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": token_decoded["_id"]}, collection_name="user")
