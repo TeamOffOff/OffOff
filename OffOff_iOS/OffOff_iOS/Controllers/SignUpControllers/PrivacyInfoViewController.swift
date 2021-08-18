@@ -88,6 +88,13 @@ class PrivacyInfoViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
+        viewModel.isNextEnabled
+            .drive(onNext: {
+                self.privacyView.nextButton.isUserInteractionEnabled = $0
+                self.privacyView.nextButton.backgroundColor = $0 ? .mainColor : .lightGray
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.isValidatedToProgress
             .drive(onNext: {
                 if $0 {

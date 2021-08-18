@@ -34,7 +34,7 @@ class IDPWView: UIView {
         $0.clearButtonMode = .whileEditing
         
         $0.textContentType = .oneTimeCode
-//        $0.isSecureTextEntry = true   // Strong Password가 TextField를 가리는 문제
+        $0.isSecureTextEntry = true   // Strong Password가 TextField를 가리는 문제
         
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_LOCK_GRAY, errorColor: .red)
         $0.tag = 1
@@ -52,7 +52,7 @@ class IDPWView: UIView {
         $0.clearButtonMode = .whileEditing
         
         $0.textContentType = .oneTimeCode
-//        $0.isSecureTextEntry = true
+        $0.isSecureTextEntry = true
         
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_LOCK_GRAY, errorColor: .red)
         $0.tag = 2
@@ -65,7 +65,8 @@ class IDPWView: UIView {
     }
     
     var nextButton = UIButton().then {
-        $0.backgroundColor = .mainColor
+        $0.backgroundColor = .lightGray
+        $0.isUserInteractionEnabled = false
         $0.setTitle("다음", for: .normal)
         $0.setTitleColor(.white, for: .normal)
     }

@@ -14,12 +14,12 @@ enum UserAPI {
     case idChek(_ id: String)
     case emailCheck(_ email: String)
     case nicknameCheck(_ nickname: String)
-    case signUp(_ signUpModel: SignUpModel)
+    case signUp(_ signUpModel: UserModel)
     case passwordChange(_ password: String)
     case resign
     case login(_ id: String, _ password: String)
-    case getMemberInfo
-    case modifyMemberInfo(_ signUpModel: SignUpModel)
+    case getUserInfo(_ token: String)
+    case modifyMemberInfo(_ signUpModel: UserModel)
     
 }
 
@@ -42,8 +42,8 @@ extension UserAPI: TargetType {
             return "/register"
         case .login(_, _):
             return "/login"
-        case .getMemberInfo:
-            return "/TODO"
+        case .getUserInfo(_):
+            return "/login"
         case .resign:
             return "/TODO"
         case .modifyMemberInfo(_):
@@ -65,7 +65,7 @@ extension UserAPI: TargetType {
             return .put
         case .login(_, _):
             return .post
-        case .getMemberInfo:
+        case .getUserInfo(_):
             return .get
         case .resign:
             return .get
@@ -91,8 +91,8 @@ extension UserAPI: TargetType {
         case .passwordChange(let password):
             return .requestParameters(parameters: ["password": password], encoding: JSONEncoding.default)
         case .login(let id, let password):
-            return .requestParameters(parameters: ["id": id, "password": password], encoding: JSONEncoding.default)
-        case .getMemberInfo:
+            return .requestParameters(parameters: ["_id": id, "password": password], encoding: JSONEncoding.default)
+        case .getUserInfo(_):
             return .requestPlain
         case .resign:
             return .requestPlain
@@ -105,6 +105,8 @@ extension UserAPI: TargetType {
         switch self {
         case .passwordChange(_), .resign, .modifyMemberInfo(_):
             return ["Authorization": "token_encoded"]
+        case .getUserInfo(let token):
+            return ["Authorization": token]
         default:
             return ["Content-type": "application/json"]
         }

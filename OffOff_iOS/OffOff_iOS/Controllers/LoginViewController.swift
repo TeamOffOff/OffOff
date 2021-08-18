@@ -11,7 +11,6 @@ import RxSwift
 class LoginViewController: UIViewController {
     
     lazy var loginView = LoginView(frame: .zero)
-    private lazy var loginStatus = Box(LoginStatus.none)
     
     let disposeBag = DisposeBag()
     
@@ -57,23 +56,31 @@ class LoginViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // bind to results
-        viewModel.isIdConfirmed
-            .drive(onNext: {
-                print($0)
-            })
-            .disposed(by: disposeBag)
-        viewModel.isPasswordConfirmed
-            .drive(onNext: {
-                print($0)
-            })
-            .disposed(by: disposeBag)
-        viewModel.isSignedIn
+        viewModel.loginButtonAvailable
             .drive(onNext: {
                 if $0 {
+                    self.loginView.loginButton.isUserInteractionEnabled = true
+                    self.loginView.loginButton.backgroundColor = .mainColor
+                } else {
+                    self.loginView.loginButton.isUserInteractionEnabled = false
+                    self.loginView.loginButton.backgroundColor = .lightGray
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.isSignedIn
+            .drive(onNext: { result in
+                switch result {
+                case .Success:
                     let controller = TabBarController()
                     controller.modalPresentationStyle = .fullScreen
                     self.present(controller, animated: true, completion: nil)
-                } else {
+                case .NotExist:
+                    let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "확인", style: .default, handler: nil)
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                case .PasswordNotCorrect:
                     let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default, handler: nil)
                     alert.addAction(action)

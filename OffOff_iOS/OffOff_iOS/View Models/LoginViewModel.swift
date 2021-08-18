@@ -12,9 +12,8 @@ import RxCocoa
 class LoginViewModel {
     
     // outputs
-    let isIdConfirmed: Driver<Bool>
-    let isPasswordConfirmed: Driver<Bool>
-    let isSignedIn: Driver<Bool>
+    let loginButtonAvailable: Driver<Bool>
+    let isSignedIn: Driver<LoginResult>
     
     init(
         input: (
@@ -23,18 +22,15 @@ class LoginViewModel {
             loginButtonTap: Signal<()>
         )
     ) {
-        isIdConfirmed = input.idText
-            .map { $0 != "" }
-            .asDriver(onErrorJustReturn: false)
+        loginButtonAvailable = Driver.combineLatest(input.idText, input.passwordText)
+            .map { $0 != "" && $1 != ""}
         
-        isPasswordConfirmed = input.idText
-            .map { $0 != "" }
-            .asDriver()
+        let idAndPassword = Driver.combineLatest(input.idText, input.passwordText)
         
-        let idAndPassword = Driver.combineLatest(isIdConfirmed, isPasswordConfirmed)
         isSignedIn = input.loginButtonTap.withLatestFrom(idAndPassword)
-            .map { $0 && $1 }
-            .asDriver(onErrorJustReturn: false)
+            .flatMapLatest {
+                return UserServices.login(id: $0, password: $1).asDriver(onErrorJustReturn: .NotExist)
+            }
     }
     
 //    func login(loginStatus: Box<LoginStatus>) {

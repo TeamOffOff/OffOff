@@ -20,6 +20,7 @@ class LoginView: UIView {
         $0.tintColor = .mainColor
         $0.backgroundColor = .white
         $0.autocapitalizationType = .none
+        $0.autocorrectionType = .no
         $0.clearButtonMode = .whileEditing
         
         $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .personFill, errorColor: .red)
@@ -40,8 +41,9 @@ class LoginView: UIView {
 
     var loginButton = UIButton().then {
         $0.setTitle("로그인", for: .normal)
-        $0.backgroundColor = .mainColor
+        $0.backgroundColor = .lightGray
         $0.setTitleColor(.white, for: .normal)
+        $0.isUserInteractionEnabled = false
     }
     
     var signupButton = UIButton().then {
