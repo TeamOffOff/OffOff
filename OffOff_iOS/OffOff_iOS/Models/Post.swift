@@ -13,7 +13,7 @@ struct PostList: Codable {
 struct Author: Codable {
     var _id: String?
     var nickname: String
-    var type: String
+    var type: String?
     var profileImage: String?
     
     func encode(to encoder: Encoder) throws {
