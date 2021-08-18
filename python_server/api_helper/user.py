@@ -54,6 +54,7 @@ class AuthRegister(Resource):
         """
         
         user_info = request.get_json()
+        print(user_info)
 
         # 중복확인
         if check_duplicate(key="_id", target=user_info["_id"]):
@@ -82,7 +83,36 @@ class AuthRegister(Resource):
             token_encoded = token_encoded.decode("UTF-8")
 
         try: 
-            mongodb.insert_one(user_info, collection_name="user")  # 데이터베이스에 저장
+            print(user_info)
+
+            # 순서 고정
+
+            info_key = ["name", "email", "birth", "type"]
+
+            real_user_information = {}
+            for i in info_key:
+                real_user_information[i]=user_info["information"][i]
+
+            sub_info_key = ["nickname", "profileImage"]
+            real_user_sub_information={}
+            for i in sub_info_key:
+                real_user_sub_information[i]=user_info["subInformation"][i]
+            
+            activity_key = ["posts", "replies", "likes", "reports", "bookmarks"]
+            real_user_activity = {}
+            for i in activity_key:
+                real_user_activity[i] = user_info["activity"][i]
+
+            real_user_info = {}
+            real_user_info["_id"] = user_info["_id"]
+            real_user_info["password"] = user_info["password"]
+            real_user_info["information"] = real_user_information
+            real_user_info["subInformation"] = real_user_sub_information
+            real_user_info["activity"] = real_user_activity
+
+            print(real_user_info)            
+
+            mongodb.insert_one(real_user_info, collection_name="user")  # 데이터베이스에 저장
             return {
                 'Authorization': token_encoded,
                 "queryStatus": 'success'
@@ -194,7 +224,7 @@ class AuthLogin(Resource):
             # 해당 아이디가 없는 경우
             return {
                 "queryStatus": "not exist"
-            }, 404
+            }, 4
 
         elif not bcrypt.checkpw(input_password.encode("utf-8"), user_info["password"].encode("utf-8")):
             # 비밀번호가 일치하지 않는 경우
@@ -213,19 +243,25 @@ class AuthLogin(Resource):
                 "queryStatus": 'success'
             }, 200
 
+
     def get(self):  # 회원정보조회
         """
         회원정보를 조회합니다.
         """
         header = request.headers.get('Authorization')
         # header 에 token_encoded 를 넣어서 request
-        if header is None: 
-            return {"queryStatus": "please login"}, 404
-        token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
-        user_info = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user")
-        user_info["password"] = "비밀번호"
-        
-        return user_info
+
+        try:
+            if header is None: 
+                return {"queryStatus": "please login"}, 500
+            token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
+            user_info = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user")
+            user_info["password"] = "비밀번호"
+            
+            return user_info
+        except TypeError:
+            return{"queryStatus": "token expired"}, 500
+
 
     def put(self):  # 회원정보수정
         """
@@ -235,7 +271,10 @@ class AuthLogin(Resource):
         token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # 인코드된 토큰 받아서 디코드함
 
         new_user_info = request.get_json()
+        del (new_user_info["activity"])
+
         result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set": new_user_info})
+        
 
         if result.raw_result["n"] == 1:
             modified_user = mongodb.find_one(query={"_id": token_decoded["_id"]},
@@ -283,7 +322,7 @@ class ActivityControl(Resource):
                     result["_id"] = str(result["_id"])
                     result["date"] = str(result["date"])
                     
-                    if result not in post_list:
+                    if result not in post_list:  # 중복 피하기 위함
                         post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
 
                     post_list.sort(key=lambda x: x["_id"], reverse=True )
