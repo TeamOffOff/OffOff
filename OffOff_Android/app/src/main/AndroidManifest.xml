@@ -14,26 +14,38 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".view.ui.board.PostWriteActivity"/>
-        <activity android:name=".view.ui.member.SignupActivity" />
-        <activity android:name=".view.ui.member.LoginActivity">
+        <activity android:name=".view.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.ui.board.PostWriteActivity" /> <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
+        <activity android:name=".view.ui.member.SignupActivity" />
+        <activity android:name=".view.ui.member.LoginActivity"/>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        -->
         <activity android:name=".view.ui.board.PostActivity" />
         <activity android:name=".view.ui.board.BoardActivity" />
         <activity android:name=".view.ui.UserActivity" />
         <activity android:name=".view.ui.SearchActivity" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".MainActivity"/>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
     </application>
 
 </manifest>

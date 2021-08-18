@@ -86,19 +86,6 @@ constructor(
         }
     }
 
-    fun checkUserInfo(auth: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getUserInfo(auth).let { response ->
-                if (response.isSuccessful) {
-                    _loginSuccess.postValue(Event("true"))
-                    Log.d("tag_success", "getUserInfo: ${response.body()}")
-                } else {
-                    Log.d("tag_fail", "getUserInfo Error: ${response.code()}")
-                }
-            }
-        }
-    }
-
     companion object {
         const val NOT_EXIST = 404
         const val WRONG_INFO = 500
