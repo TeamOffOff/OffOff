@@ -1,5 +1,5 @@
 //
-//  SignUpModel.swift
+//  UserModel.swift
 //  OffOff_iOS
 //
 //  Created by Lee Nam Jun on 2021/07/19.
@@ -29,10 +29,10 @@ import Foundation
 //}
 
 class SharedSignUpModel {
-    static var model = SignUpModel(_id: "", password: "", information: Information(name: "", email: "", birth: "", type: nil), subInformation: SubInformation(nickname: "", profileImage: nil), activity: Activity())
+    static var model = UserModel(_id: "", password: "", information: Information(name: "", email: "", birth: "", type: nil), subInformation: SubInformation(nickname: "", profileImage: nil), activity: Activity())
 }
 
-struct SignUpModel: Codable {
+struct UserModel: Codable {
     var _id: String
     var password: String
     
@@ -51,6 +51,8 @@ struct Information: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encode(email, forKey: .email)
+        try container.encode(birth, forKey: .birth)
+        try container.encode(type, forKey: .type)
     }
 }
 struct SubInformation: Codable {

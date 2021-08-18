@@ -17,6 +17,11 @@ public class UserServices {
         var queryStatus: String = "Impossible"
     }
     
+    struct LoginResponse: Codable {
+        var Authorization: String
+        var queryStatus: String
+    }
+    
     static func idDuplicationCheck(id: String) -> Observable<Bool> {
         if Constants.isValidString(str: id, regEx: Constants.USERID_RULE) {
             return UserServices.provider
@@ -67,7 +72,7 @@ public class UserServices {
         }
     }
     
-    static func signUp(with signUpModel: SignUpModel) -> Observable<Bool> {
+    static func signUp(with signUpModel: UserModel) -> Observable<Bool> {
         return UserServices.provider
             .rx.request(.signUp(signUpModel))
             .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
@@ -84,8 +89,23 @@ public class UserServices {
             .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
+                let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
+                UserDefaults.standard.set(response.Authorization, forKey: "loginToken")
                 return LoginResult(rawValue: $0.statusCode)!
             }
+            .catchErrorJustReturn(.NotExist)
+    }
+    
+    static func getUserInfo(token: String) -> Observable<UserModel?> {
+        return UserServices.provider
+            .rx.request(.getUserInfo(token))
+            .observeOn(MainScheduler.instance)
+            .asObservable()
+            .map {
+                let response = try JSONDecoder().decode(UserModel.self, from: $0.data)
+                return response
+            }
+            .catchErrorJustReturn(nil)
     }
 }
 

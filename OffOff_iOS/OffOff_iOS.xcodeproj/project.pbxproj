@@ -25,6 +25,7 @@
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
 		EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B36269BFBD200F6F903 /* PostServices.swift */; };
 		EA420B41269C5F7D00F6F903 /* OffOff_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B40269C5F7D00F6F903 /* OffOff_iOSTests.swift */; };
+		EA526E1D26CD0A100059A90C /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA526E1C26CD0A100059A90C /* FirstViewController.swift */; };
 		EA72D75B2698276C00EB07DA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75A2698276C00EB07DA /* PostView.swift */; };
 		EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */; };
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
@@ -49,14 +50,13 @@
 		EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
 		EAAA212126BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
 		EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */; };
-		EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C426A2EA80001DE8BF /* LoginModel.swift */; };
 		EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */; };
 		EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */; };
 		EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */; };
 		EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */; };
 		EACB84F226C39B9800096E01 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84F126C39B9800096E01 /* Amplify */; };
 		EACB84F626C3A83C00096E01 /* swiftlogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EACB84F526C3A83C00096E01 /* swiftlogo.jpg */; };
-		EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */; };
+		EACC255B26A5B3B0000B12B6 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC255A26A5B3B0000B12B6 /* UserModel.swift */; };
 		EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
 		EACC257B26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
 		EACC257C26A5CFB3000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
@@ -85,7 +85,6 @@
 		EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6525E269416B600D8F7BB /* PostPreviewCell.swift */; };
 		EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE652602694182D00D8F7BB /* PostViewController.swift */; };
 		EAF2127E268FEC6C00E47942 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2127D268FEC6C00E47942 /* Box.swift */; };
-		EAF21280268FEE6500E47942 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2127F268FEE6500E47942 /* Account.swift */; };
 		EAF212842690133500E47942 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF212832690133500E47942 /* HomeView.swift */; };
 		EAF212862690158100E47942 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF212852690158100E47942 /* TabBarController.swift */; };
 		EAF212882690355B00E47942 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF212872690355B00E47942 /* HomeViewController.swift */; };
@@ -127,6 +126,7 @@
 		EA420B3E269C5F7D00F6F903 /* OffOff_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA420B40269C5F7D00F6F903 /* OffOff_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffOff_iOSTests.swift; sourceTree = "<group>"; };
 		EA420B42269C5F7D00F6F903 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EA526E1C26CD0A100059A90C /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		EA72D75A2698276C00EB07DA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -141,11 +141,10 @@
 		EA983F0E26C1183D0070604E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewModel.swift; sourceTree = "<group>"; };
 		EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoViewModel.swift; sourceTree = "<group>"; };
-		EABD99C426A2EA80001DE8BF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
 		EACB84F526C3A83C00096E01 /* swiftlogo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = swiftlogo.jpg; sourceTree = "<group>"; };
-		EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
+		EACC255A26A5B3B0000B12B6 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Free-Solid-900.otf"; sourceTree = "<group>"; };
 		EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Free-Regular-400.otf"; sourceTree = "<group>"; };
 		EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Brands-Regular-400.otf"; sourceTree = "<group>"; };
@@ -167,7 +166,6 @@
 		EAE6525E269416B600D8F7BB /* PostPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostPreviewCell.swift; sourceTree = "<group>"; };
 		EAE652602694182D00D8F7BB /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		EAF2127D268FEC6C00E47942 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
-		EAF2127F268FEE6500E47942 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		EAF212832690133500E47942 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EAF212852690158100E47942 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		EAF212872690355B00E47942 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -346,11 +344,9 @@
 		EAF2127A268FEC2500E47942 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EAF2127F268FEE6500E47942 /* Account.swift */,
 				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 				EA07345426929C01007830ED /* Post.swift */,
-				EABD99C426A2EA80001DE8BF /* LoginModel.swift */,
-				EACC255A26A5B3B0000B12B6 /* SignUpModel.swift */,
+				EACC255A26A5B3B0000B12B6 /* UserModel.swift */,
 				EACF1B3A26B6710800C153D3 /* Board.swift */,
 			);
 			path = Models;
@@ -380,6 +376,7 @@
 				EA07345E2692CECA007830ED /* PostListViewController.swift */,
 				EAE652602694182D00D8F7BB /* PostViewController.swift */,
 				EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */,
+				EA526E1C26CD0A100059A90C /* FirstViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -605,7 +602,7 @@
 				EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
 				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
-				EACC255B26A5B3B0000B12B6 /* SignUpModel.swift in Sources */,
+				EACC255B26A5B3B0000B12B6 /* UserModel.swift in Sources */,
 				EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
 				EA983F0B26C0DDF60070604E /* PostViewModel.swift in Sources */,
@@ -614,13 +611,12 @@
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
-				EAF21280268FEE6500E47942 /* Account.swift in Sources */,
 				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
 				EA07345526929C01007830ED /* Post.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
+				EA526E1D26CD0A100059A90C /* FirstViewController.swift in Sources */,
 				EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
-				EABD99C526A2EA80001DE8BF /* LoginModel.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */,
 				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */,
