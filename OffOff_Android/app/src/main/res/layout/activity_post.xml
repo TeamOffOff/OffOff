@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.yuuuzzzin.offoff_android.viewmodel.PostViewModel" />
+            type="com.yuuuzzzin.offoff_android.viewmodel.PostViewModel"/>
         <variable
             name="post"
             type="com.yuuuzzzin.offoff_android.service.models.Post"/>

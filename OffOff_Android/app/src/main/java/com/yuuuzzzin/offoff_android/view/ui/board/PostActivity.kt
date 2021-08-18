@@ -58,7 +58,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
             setDisplayShowHomeEnabled(true)
         }
-
     }
 
     private fun initView() {
@@ -76,9 +75,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             android.R.id.home -> {
                 if (intent.getStringExtra("update") == "true") {
                     val intent = Intent(applicationContext, BoardActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     intent.putExtra("boardType", boardType)
                     intent.putExtra("boardName", boardName)
                     startActivity(intent)
+                    finish()
                 } else
                     finish()
                 true
