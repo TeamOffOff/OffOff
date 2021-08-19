@@ -2,6 +2,7 @@ package com.yuuuzzzin.offoff_android.view.ui.board
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -19,6 +20,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private val viewModel: PostViewModel by viewModels()
     private lateinit var boardName: String
     private lateinit var boardType: String
+    private lateinit var update: String
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
 
@@ -35,6 +37,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         val id = intent.getStringExtra("id")
         boardType = intent.getStringExtra("boardType").toString()
         boardName = intent.getStringExtra("boardName").toString()
+        update = intent.getStringExtra("update").toString()
+
         viewModel.getPost(id!!, boardType!!)
     }
 
@@ -68,6 +72,20 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
 
         binding.tfId.endIconDrawable = writeIcon
+    }
+
+    override fun onBackPressed() {
+        Log.d("tag_log", "back누름")
+        Log.d("tag_log", intent.getStringExtra("update").toString())
+        if (intent.getStringExtra("update") == "true") {
+            val intent = Intent(applicationContext, BoardActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.putExtra("boardType", boardType)
+            intent.putExtra("boardName", boardName)
+            startActivity(intent)
+            finish()
+        } else
+            super.onBackPressed()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

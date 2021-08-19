@@ -85,7 +85,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         }
 
         binding.refreshLayout.setOnRefreshListener {
-            //viewModel.refreshList()
             viewModel.getPosts(boardType)
         }
 

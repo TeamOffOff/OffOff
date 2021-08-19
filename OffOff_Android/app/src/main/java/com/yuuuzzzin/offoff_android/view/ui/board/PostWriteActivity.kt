@@ -25,8 +25,6 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        boardType = intent.getStringExtra("boardType").toString()
-
         initViewModel()
         processIntent()
         initToolbar()
@@ -63,11 +61,13 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         viewModel.successEvent.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
                 val intent = Intent(this@PostWriteActivity, PostActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 intent.putExtra("id", it)
                 intent.putExtra("boardType", boardType)
-                intent.putExtra("boardType", boardName)
+                intent.putExtra("boardName", boardName)
                 intent.putExtra("update", "true")
                 startActivity(intent)
+                finish()
             }
         })
     }

@@ -53,7 +53,7 @@ constructor(
         val post = PostSend(
             boardType = boardType,
             author = Author(
-                id = "yujin123"
+                id = "yujin12"
             ),
             date = dateFormat.format(currentTime),
             title = title.value!!,
