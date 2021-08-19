@@ -91,12 +91,12 @@ class AuthRegister(Resource):
 
             real_user_information = {}
             for i in info_key:
-                real_user_information[i]=user_info["information"][i]
+                real_user_information[i] = user_info["information"][i]
 
             sub_info_key = ["nickname", "profileImage"]
-            real_user_sub_information={}
+            real_user_sub_information = {}
             for i in sub_info_key:
-                real_user_sub_information[i]=user_info["subInformation"][i]
+                real_user_sub_information[i] = user_info["subInformation"][i]
             
             activity_key = ["posts", "replies", "likes", "reports", "bookmarks"]
             real_user_activity = {}
@@ -154,11 +154,11 @@ class AuthRegister(Resource):
 
         # 활동 알수없음으로 바꾸기
         print("author을 알 수 없음으로 바꾸는 과정 진입")
-        activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity":True, "_id":False})
+        activity = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user", projection_key={"activity": True, "_id": False})
         act_post = activity["activity"]["posts"]
         act_reply = activity["activity"]["replies"]
         print("게시글 작성: ", act_post)
-        print("댓글 or 대댓글 작성:" , act_reply)
+        print("댓글 or 대댓글 작성:", act_reply)
 
         # 게시글 알 수 없음
         if act_post:
@@ -167,9 +167,9 @@ class AuthRegister(Resource):
                 board_type=post[0]+"_board"
                 pk = post[1]
                 print(board_type, pk)
-                post = mongodb.find_one(query={"_id":ObjectId(pk)}, collection_name=board_type)
+                post = mongodb.find_one(query={"_id": ObjectId(pk)}, collection_name=board_type)
                 print("게시글:", post)
-                post_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set":{"author": None}})
+                post_change_result = mongodb.update_one(query={"_id": ObjectId(pk)}, collection_name=board_type, modify={"$set": {"author": None}})
                 print(post_change_result.raw_result)
                 if post_change_result.raw_result["n"] == 0:
                     return{"queryStatus": "author information change fail"}
@@ -181,7 +181,7 @@ class AuthRegister(Resource):
                 pk = reply[2]
                 print(board_type, pk)
 
-                reply_change_result = mongodb.update_one(query={"_id":ObjectId(pk)}, collection_name=board_type, modify={"$set":{"author": None}})
+                reply_change_result = mongodb.update_one(query={"_id": ObjectId(pk)}, collection_name=board_type, modify={"$set": {"author": None}})
                 print(reply_change_result.raw_result)
                 if reply_change_result.raw_result["n"] == 0:
                     return{"queryStatus": "author information change fail"}
@@ -233,7 +233,6 @@ class AuthLogin(Resource):
                 "queryStatus": 'success'
             }, 200
 
-
     def get(self):  # 회원정보조회
         """
         회원정보를 조회합니다.
@@ -252,7 +251,6 @@ class AuthLogin(Resource):
         except TypeError:
             return{"queryStatus": "token expired"}, 500
 
-
     def put(self):  # 회원정보수정
         """
         회원정보를 수정합니다
@@ -264,7 +262,6 @@ class AuthLogin(Resource):
         del (new_user_info["activity"])
 
         result = mongodb.update_one(query={"_id": token_decoded["_id"]}, collection_name="user", modify={"$set": new_user_info})
-        
 
         if result.raw_result["n"] == 1:
             modified_user = mongodb.find_one(query={"_id": token_decoded["_id"]},
