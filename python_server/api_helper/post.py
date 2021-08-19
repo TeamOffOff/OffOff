@@ -38,9 +38,9 @@ class make_reference():
 
     # author 정보 embed
     def embed_author_information_in_object(self):
-        embeded_author_info ={}
+        embeded_author_info = {}
 
-        total_author_info = mongodb.find_one(query={"_id":self.author}, collection_name="user")
+        total_author_info = mongodb.find_one(query={"_id": self.author}, collection_name="user")
 
         needed_author_info = ["_id", "subInformation.nickname", "information.type", "subInformation.profileImage"]
 
@@ -58,7 +58,7 @@ class make_reference():
         if reply_id:
             board_type = self.board_type.replace("_board_reply", "")
         else:
-            board_type = self.board_type.replace("_board","")
+            board_type = self.board_type.replace("_board", "")
 
         if user:
             user = user
@@ -77,9 +77,9 @@ class make_reference():
 def ownership_required(func):
     def wrapper(self):
         json_info = request.get_json()
-        if not("user" in json_info):
+        if not ("user" in json_info):
             return {"queryStatus": "user의 정보가 필요합니다"}
-        elif not("author" in json_info):
+        elif not ("author" in json_info):
             print("게시글 integer 수정하는 경우 author 없음")
             result = func(self)
             return result
@@ -92,6 +92,7 @@ def ownership_required(func):
                 return result
             else:
                 return {"queryStatus": "작성자가 아닙니다"}
+
     return wrapper
 
 
@@ -134,7 +135,7 @@ class PostControl(Resource):
         making_reference = make_reference(board_type=board_type, author=author)
         activity_result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$pull")
 
-        if result.raw_result["n"] == 0 :
+        if result.raw_result["n"] == 0:
             return {"queryStatus": "post delete fail"}
         elif activity_result.raw_result["n"] == 0:
             return {"queryStatus": "delete activity fail"}
@@ -193,7 +194,7 @@ class PostControl(Resource):
         """특정 id의 게시글을 수정합니다."""
 
         post_info = request.get_json()
-        if "author" in post_info: # string을 수정하는 경우
+        if "author" in post_info:  # string을 수정하는 경우
             print("String 수정하는 경우")
             post_id, board_type, author = get_post_variables(post_info)
             article_key = ["title", "content", "image"]
@@ -207,10 +208,10 @@ class PostControl(Resource):
                                         collection_name=board_type,
                                         modify={"$set": modified_article})
 
-        else: # integer을 수정하는 경우
+        else:  # integer을 수정하는 경우
             print("integer 수정하는 경우")
             post_id = post_info["_id"]
-            board_type = post_info["boardType"]+"_board"
+            board_type = post_info["boardType"] + "_board"
             user = post_info["user"]
             activity = post_info["activity"]
 
@@ -219,7 +220,7 @@ class PostControl(Resource):
 
             if user in past_user_list:
                 if activity == "likes":
-                    return{"queryStatus": "already like"}
+                    return {"queryStatus": "already like"}
                 else:
                     operator = "$pull"
                     result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
@@ -334,20 +335,20 @@ class CommentControl(Resource):
         """좋아요를 저장합니다"""
         reply_info = request.get_json()
         reply_id = reply_info["_id"]
-        board_type = reply_info["boardType"]+"_board_reply"
+        board_type = reply_info["boardType"] + "_board_reply"
         user = reply_info["user"]
 
-        past_likes_list = mongodb.find_one(query={"_id":ObjectId(reply_id)}, collection_name=board_type, projection_key={"_id": False, "likes": True})["likes"]
+        past_likes_list = mongodb.find_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, projection_key={"_id": False, "likes": True})["likes"]
 
         if user in past_likes_list:
-            return{"queryStatus": "already like"}
+            return {"queryStatus": "already like"}
         else:
             update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$addToSet": {"likes": user}})
 
         if update_status.raw_result["n"] == 0:
-            return{"queryStatus": "likes update fail"}
+            return {"queryStatus": "likes update fail"}
         else:
-            return{"queryStatus": "likes update success"}
+            return {"queryStatus": "likes update success"}
 
     @ownership_required
     def delete(self):  # 댓글 삭제
@@ -365,7 +366,7 @@ class CommentControl(Resource):
                                         collection_name=board_type)
         else:  # 대댓글이 있는 경우
             alert_delete = {
-                "author":{},
+                "author": {},
                 "content": None,
                 "date": None,
                 "likes": None
