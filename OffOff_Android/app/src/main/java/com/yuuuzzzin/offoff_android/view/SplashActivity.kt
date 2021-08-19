@@ -16,29 +16,19 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 토큰이 저장된 자동로그인 상태라면 메인 화면으로 이동
         splashViewModel.autoLogin.observe(this, {
             if (it) {
-                Intent(
-                    baseContext,
-                    MainActivity::class.java
-                ).run {
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(this)
-                }
-                finish()
+                val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                startActivity(intent)
             }
         })
 
+        // 토큰이 없거나 유효하지 않은 상태라면 로그인 화면으로 이동
         splashViewModel.moveLogin.observe(this, {
             if (it) {
-                Intent(
-                    baseContext,
-                    LoginActivity::class.java
-                ).run {
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(this)
-                    finish()
-                }
+                val intent = Intent(this@SplashActivity, LoginActivity::class.java)
+                startActivity(intent)
             }
         })
     }
