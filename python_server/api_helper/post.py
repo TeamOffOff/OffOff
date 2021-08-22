@@ -31,14 +31,14 @@ def convert_to_string(post, *args):
 
 
 # author 정보 embed, 활동 정보 link
-class make_reference():
+class MakeReference:
     def __init__(self, board_type, author):
         self.board_type = board_type
         self.author = author
 
     # author 정보 embed
     def embed_author_information_in_object(self):
-        embeded_author_info = {}
+        embedded_author_info = {}
 
         total_author_info = mongodb.find_one(query={"_id": self.author}, collection_name="user")
 
@@ -47,11 +47,11 @@ class make_reference():
         for info in needed_author_info:
             if "." in info:
                 field, key = info.split(".")
-                embeded_author_info[key] = total_author_info[field][key]
+                embedded_author_info[key] = total_author_info[field][key]
             else:
-                embeded_author_info[info] = total_author_info[info]
+                embedded_author_info[info] = total_author_info[info]
 
-        return embeded_author_info
+        return embedded_author_info
 
     # 활동 정보 link
     def link_activity_information_in_user(self, operator, field, post_id, reply_id=None, user=None):
@@ -60,9 +60,7 @@ class make_reference():
         else:
             board_type = self.board_type.replace("_board", "")
 
-        if user:
-            user = user
-        else:
+        if not user:
             user = self.author
 
         # 회원탈퇴 시 댓글, 대댓글의 author을 None으로 바꾸려면 reply_id 필요함
@@ -132,7 +130,7 @@ class PostControl(Resource):
         result = mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
 
         # 회원활동정보 삭제
-        making_reference = make_reference(board_type=board_type, author=author)
+        making_reference = MakeReference(board_type=board_type, author=author)
         activity_result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$pull")
 
         if result.raw_result["n"] == 0:
@@ -151,8 +149,8 @@ class PostControl(Resource):
             del post_info["_id"]
             post_info["date"] = dateutil.parser.parse(post_info["date"])
 
-            # 회원정보 embeded 형태로 return
-            making_reference = make_reference(board_type=board_type, author=author)
+            # 회원정보 embedded 형태로 return
+            making_reference = MakeReference(board_type=board_type, author=author)
             author = making_reference.embed_author_information_in_object()
             post_info["author"] = author
 
@@ -254,7 +252,7 @@ class PostControl(Resource):
                         mongodb.insert_one(data=hot_post_info, collection_name="hot_board")
 
             # 활동 업데이트
-            making_reference = make_reference(board_type=board_type, author=None)
+            making_reference = MakeReference(board_type=board_type, author=None)
             field = "activity." + activity
 
             activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator, user=user)
@@ -298,9 +296,9 @@ class CommentControl(Resource):
         post_id = reply_info["postId"]
         author = reply_info["author"]["_id"]
 
-        making_reference = make_reference(board_type=board_type, author=author)
+        making_reference = MakeReference(board_type=board_type, author=author)
 
-        # 회원정보 embeded 형태로 등록
+        # 회원정보 embedded 형태로 등록
         author = making_reference.embed_author_information_in_object()
         reply_info["author"] = author
 
@@ -378,7 +376,7 @@ class CommentControl(Resource):
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
 
-        making_reference = make_reference(board_type=board_type, author=author)
+        making_reference = MakeReference(board_type=board_type, author=author)
 
         # 회원활동정보 삭제
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")

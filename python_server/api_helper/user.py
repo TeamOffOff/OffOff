@@ -34,19 +34,17 @@ class AuthRegister(Resource):
         check_id = request.args.get("id")
         check_email = request.args.get("email")
         check_nickname = request.args.get("nickname")
-        
+
         if check_id:
-            result = check_duplicate(key="_id", target=check_id)
+            return check_duplicate(key="_id", target=check_id)
 
         if check_email:
-            result = check_duplicate(key="information.email", target=check_email)
+            return check_duplicate(key="information.email", target=check_email)
 
         if check_nickname:
-            result = check_duplicate(key="subInformation.nickname", target=check_nickname)
-        
-        if not result:
-            result = {"queryStatus": "possible"}
-        return result
+            return check_duplicate(key="subInformation.nickname", target=check_nickname)
+
+        return {"queryStatus": "possible"}
 
     def post(self):  # 회원가입
         """
@@ -103,12 +101,11 @@ class AuthRegister(Resource):
             for i in activity_key:
                 real_user_activity[i] = user_info["activity"][i]
 
-            real_user_info = {}
-            real_user_info["_id"] = user_info["_id"]
-            real_user_info["password"] = user_info["password"]
-            real_user_info["information"] = real_user_information
-            real_user_info["subInformation"] = real_user_sub_information
-            real_user_info["activity"] = real_user_activity
+            real_user_info = {"_id": user_info["_id"],
+                              "password": user_info["password"],
+                              "information": real_user_information,
+                              "subInformation": real_user_sub_information,
+                              "activity": real_user_activity}
 
             print(real_user_info)            
 
