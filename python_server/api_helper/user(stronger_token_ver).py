@@ -110,7 +110,7 @@ class AuthRegister(Resource):
 
             real_user_information = {}
             for key in info_key:
-                real_user_information[key]=user_info["information"][key]
+                real_user_information[key] = user_info["information"][key]
 
             sub_info_key = ["nickname", "profileImage"]
             real_user_sub_information={}

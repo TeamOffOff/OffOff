@@ -242,9 +242,30 @@ class AuthLogin(Resource):
                 return {"queryStatus": "please login"}, 500
             token_decoded = jwt.decode(header, SECRET_KEY, ALGORITHM)  # {'id':실제 id} 딕셔너리형태로 돌려줌
             user_info = mongodb.find_one(query={"_id": token_decoded["_id"]}, collection_name="user")
-            user_info["password"] = "비밀번호"
+
+            info_key = ["name", "email", "birth", "type"]
+
+            real_user_information = {}
+            for i in info_key:
+                real_user_information[i] = user_info["information"][i]
+
+            sub_info_key = ["nickname", "profileImage"]
+            real_user_sub_information = {}
+            for i in sub_info_key:
+                real_user_sub_information[i] = user_info["subInformation"][i]
+
+            activity_key = ["posts", "replies", "likes", "reports", "bookmarks"]
+            real_user_activity = {}
+            for i in activity_key:
+                real_user_activity[i] = user_info["activity"][i]
+
+            real_user_info = {"_id": user_info["_id"],
+                              "password": "비밀번호",
+                              "information": real_user_information,
+                              "subInformation": real_user_sub_information,
+                              "activity": real_user_activity}
             
-            return user_info
+            return real_user_info
         except TypeError:
             return{"queryStatus": "token expired"}, 500
 
