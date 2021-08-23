@@ -29,6 +29,8 @@
 		EA72D75B2698276C00EB07DA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75A2698276C00EB07DA /* PostView.swift */; };
 		EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */; };
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
+		EA83564226D3727100D60C46 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = EA83564126D3727100D60C46 /* FSCalendar */; };
+		EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564326D3729100D60C46 /* ScheduleViewController.swift */; };
 		EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */; };
 		EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F2026A9D12A009352B9 /* ProfileViewController.swift */; };
 		EA929F2326AC66BE009352B9 /* default profile.png in Resources */ = {isa = PBXBuildFile; fileRef = EA929F2226AC66BE009352B9 /* default profile.png */; };
@@ -130,6 +132,8 @@
 		EA72D75A2698276C00EB07DA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		EA83564326D3729100D60C46 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		EA83564526D373FD00D60C46 /* OffOff_iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OffOff_iOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMakeView.swift; sourceTree = "<group>"; };
 		EA929F2026A9D12A009352B9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		EA929F2226AC66BE009352B9 /* default profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default profile.png"; sourceTree = "<group>"; };
@@ -194,6 +198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */,
+				EA83564226D3727100D60C46 /* FSCalendar in Frameworks */,
 				EA9D0AD026BAC93100D571EC /* Then in Frameworks */,
 				EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */,
 				EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */,
@@ -243,6 +248,7 @@
 		EAE502D62689E3D6002B1C6A = {
 			isa = PBXGroup;
 			children = (
+				EA83564526D373FD00D60C46 /* OffOff_iOS-Bridging-Header.h */,
 				EAE502E12689E3D6002B1C6A /* OffOff_iOS */,
 				EA420B3F269C5F7D00F6F903 /* OffOff_iOSTests */,
 				EAE502E02689E3D6002B1C6A /* Products */,
@@ -377,6 +383,7 @@
 				EAE652602694182D00D8F7BB /* PostViewController.swift */,
 				EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */,
 				EA526E1C26CD0A100059A90C /* FirstViewController.swift */,
+				EA83564326D3729100D60C46 /* ScheduleViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -455,6 +462,7 @@
 				EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */,
 				EACB84F126C39B9800096E01 /* Amplify */,
 				EA285A6726C565F000E65EB2 /* RxCocoa */,
+				EA83564126D3727100D60C46 /* FSCalendar */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -499,6 +507,7 @@
 				EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
 				EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */,
 				EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */,
+				EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -582,6 +591,7 @@
 				EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
+				EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */,
 				EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
@@ -874,6 +884,7 @@
 				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -895,6 +906,7 @@
 				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -942,6 +954,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.2;
+			};
+		};
 		EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
@@ -1006,6 +1026,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxCocoa;
+		};
+		EA83564126D3727100D60C46 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
 		};
 		EA9D0AC326BA956200D571EC /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
