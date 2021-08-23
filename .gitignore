@@ -116,3 +116,6 @@ rebel.xml
 
 # Python server 보안성 자료
 python_server/api_helper/utils.py
+python_server/api_helper/__pycache__/board.cpython-38.pyc
+python_server/api_helper/__pycache__/post.cpython-38.pyc
+python_server/api_helper/__pycache__/user.cpython-38.pyc

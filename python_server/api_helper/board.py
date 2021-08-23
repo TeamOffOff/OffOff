@@ -7,6 +7,8 @@ from pymongo import collection
 
 import mongo
 
+import pprint
+
 mongodb = mongo.MongoHelper()
 
 BoardList = Namespace(
@@ -22,6 +24,24 @@ UserList = Namespace(
     description="유저목록을 불러오는 API"
 )
 
+def fix_index(target, *args):
+    real = {}
+    if not args: 
+        args = target.keys()
+    
+    print(args)
+
+    for i in args:
+        if type(target[i]) is dict:
+            temp = {}
+            for j in target[i]:
+                temp[j] = target[i][j]
+            real[i] = temp
+
+        else: real[i] = target[i]
+    
+    return real
+
 
 @BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우
@@ -29,34 +49,29 @@ class BoardListControl(Resource):
 
     def get(self):  # 게시판 목록 불러오기
 
-        cursor = mongodb.find(collection_name="board_list", projection_key={"_id": 0})
+        total_list = list(mongodb.find(collection_name="board_list", projection_key={"_id": 0}))
 
+        # 요청 시점
         access_on = datetime.now()
+
+        # 기준 시점 = 요청 시점 - 3시간
         standard = access_on - timedelta(hours=3)
 
-        board_list = []
-        for board in cursor:
+
+        # 해당 board의 컬렉션에 date가 3시간 이전인 게시글이 있는지
+        for board in total_list:
 
             board_type = board["boardType"] + "_board"
 
             result = mongodb.find_one(collection_name=board_type, query={"date": {"$gte": standard}})
-
             if result:
                 board["newPost"] = True
-
-            # result = mongodb.aggregate(collection_name=board_type, pipeline=[{"$match": {"date": {"$gte":standard}}}])
-            # temp_board_list = []
-            # for new_post in result:
-            #     temp_board_list.append(new_post)
-
-            # if temp_board_list:
-            #     board["newPost"] = True
-
-            board_list.append(board)
-
+            
+        
         return {
-            "boardList": board_list
+            "boardList": total_list
         }
+
 
     def delete(self):  # 게시판 목록 삭제
         """특정 게시판 정보를 삭제합니다."""
@@ -81,6 +96,7 @@ class BoardListControl(Resource):
 
 @UserList.route("")
 class UserListControl(Resource):
+
     def get(self):
         cursor = mongodb.find(collection_name="user")
 
@@ -99,41 +115,39 @@ class PostListControl(Resource):
         """
         DB > 해당 게시판의 컬랙션(free_board)에서 게시글을 조회합니다
         """
-        try:
 
-            board_type = board_type + "_board"
-            volume = int(request.args.get("volume", default=20))
-            standard_id = request.args.get("standardId", default="")
+        board_type = board_type + "_board"
+        volume = int(request.args.get("volume", default=20))
+        standard_id = request.args.get("standardId", default="")
 
-            if not standard_id:  # 게시판에 처음 들어간 경우, 새로 고침한 경우
-                cursor = mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(volume)
+        if not standard_id:  # 게시판에 처음 들어간 경우, 새로 고침한 경우
 
-            elif standard_id:  # 과거 게시글 불러올 때
-                standard_id = ObjectId(standard_id)
-                cursor = mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
-                    [("_id", -1)]).limit(volume)
+            total_list = list(mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(volume))
 
-            post_list = []
-            for post in cursor:
+        elif standard_id:  # 과거 게시글 불러올 때
+
+            standard_id = ObjectId(standard_id)
+            total_list = list(mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
+                [("_id", -1)]).limit(volume))
+
+        if total_list:  # 불러올 게시글이 남아있는 경우
+            for post in total_list:
                 post["_id"] = str(post["_id"])
+                post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
 
-                if board_type != "hot_board":
-                    post["date"] = str(post["date"])
 
-                post_list.append(post)
-
-            last_post_id = post_list[-1]["_id"]
+            last_post_id = total_list[-1]["_id"]
 
             if board_type == "hot_board":  # 인기게시판인 경우
                 print("여기는 인기게시판")
-                print("인기게시판db에 있는 정보", post_list)
+                print("인기게시판db에 있는 정보", total_list)
 
                 hot_post_list = []
-                for temp_post in post_list:
-                    post_id = temp_post["_id"]
+                for temp_post in total_list:
+                    post_id = ObjectId(temp_post["_id"])
                     board_type = temp_post["boardType"] + "_board"
 
-                    post = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
+                    post = mongodb.find_one(query={"_id": post_id}, collection_name=board_type)
                     post["_id"] = str(post["_id"])
                     post["date"] = str(post["date"])
 
@@ -149,20 +163,14 @@ class PostListControl(Resource):
             else:
                 return {
                     "lastPostId": last_post_id,
-                    "postList": post_list
+                    "postList": total_list
                 }
+        else:
+            return {
+            "lastPostId": None,
+            "postList": None
+        }
 
-        except IndexError:  # 일반 게시판 더 이상 없는 경우
-            return {
-                "lastPostId": None,
-                "postList": None
-            }
-        except TypeError:  # 인기 게시판 더 이상 없는 경우
-            print("에러 발생")
-            return {
-                "lastPostId": None,
-                "postList": None
-            }
 
     def delete(self, board_type):  # 컬렉션 자체를 삭제
 

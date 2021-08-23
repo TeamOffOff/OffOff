@@ -1,27 +1,35 @@
-from re import X, sub
+from datetime import datetime
 from flask import request
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
-from pymongo.message import update
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 import mongo
 
-import dateutil.parser
 
 mongodb = mongo.MongoHelper()
 
 Post = Namespace("post", description="게시물 관련 API")
 Reply = Namespace("reply", description="댓글 관련 API")
-SubReply = Namespace("subreply", description="대댓글 관련 API")
 
 
-# 게시글 변수 설정 함수
-def get_post_variables(post_info):
-    post_id = post_info["_id"]
-    board_type = post_info["boardType"] + "_board"
-    author = post_info["author"]["_id"]
 
-    return post_id, board_type, author
+# 변수 추출하는 함수
+@jwt_required()
+def get_variables():
+    # body에서 JSON 
+    request_info = request.get_json()
+    if "_id" in request_info:  # 게시글 작성, 게시글 수정/좋아요, 게시글 삭제 댓글/대댓글 좋아요, 댓글/대댓글의 삭제인 경우
+        pk = request_info["_id"]
+    else:  # 댓글 작성인 경우
+        pk = request_info["postId"]
+
+    board_type = request_info["boardType"]
+
+    user_id = get_jwt_identity()
+
+    return request_info, pk, board_type, user_id
 
 
 # JSON 형태로 response하기 위해 string 타입으로 변환하는 함수
@@ -32,15 +40,17 @@ def convert_to_string(post, *args):
 
 # author 정보 embed, 활동 정보 link
 class MakeReference:
-    def __init__(self, board_type, author):
+    def __init__(self, board_type, user):
         self.board_type = board_type
-        self.author = author
+        self.user = user
+
 
     # author 정보 embed
     def embed_author_information_in_object(self):
+
         embedded_author_info = {}
 
-        total_author_info = mongodb.find_one(query={"_id": self.author}, collection_name="user")
+        total_author_info = mongodb.find_one(query={"_id": self.user}, collection_name="user")
 
         needed_author_info = ["_id", "subInformation.nickname", "information.type", "subInformation.profileImage"]
 
@@ -53,43 +63,41 @@ class MakeReference:
 
         return embedded_author_info
 
+
     # 활동 정보 link
-    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None, user=None):
+    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None):
         if reply_id:
             board_type = self.board_type.replace("_board_reply", "")
         else:
             board_type = self.board_type.replace("_board", "")
 
-        if not user:
-            user = self.author
-
         # 회원탈퇴 시 댓글, 대댓글의 author을 None으로 바꾸려면 reply_id 필요함
         new_activity_info = [board_type, str(post_id), str(reply_id)]
 
-        result = mongodb.update_one(query={"_id": user}, collection_name="user", modify={operator: {field: new_activity_info}})
+        result = mongodb.update_one(query={"_id": self.user}, collection_name="user", modify={operator: {field: new_activity_info}})
 
         return result
 
 
 # 수정, 삭제 시 작성자 확인
 def ownership_required(func):
+    @jwt_required()
     def wrapper(self):
-        json_info = request.get_json()
-        if not ("user" in json_info):
-            return {"queryStatus": "user의 정보가 필요합니다"}
-        elif not ("author" in json_info):
-            print("게시글 integer 수정하는 경우 author 없음")
-            result = func(self)
-            return result
-        else:
-            print("게시글 string 수정, 게시글 삭제하는 경우")
-            author = json_info["author"]["_id"]
-            user = json_info["user"]
-            if author == user:
+        request_info = request.get_json()
+
+        if "author" in request_info:  # 삭제, 수정은 author 넘겨받음
+            author = (request.get_json())["author"]
+            user_id = get_jwt_identity()
+
+            if author == user_id:
                 result = func(self)
                 return result
             else:
-                return {"queryStatus": "작성자가 아닙니다"}
+                return {"queryStatus": "작성자가 아닙니다"}, 500
+
+        else:  # 게시글, 댓글 좋아요
+            result = func(self)
+            return result
 
     return wrapper
 
@@ -117,128 +125,135 @@ class PostControl(Resource):
             return {"queryStatus": "views update fail"}, 500
 
         else:
-            convert_to_string(post, "_id", "date")
+            post["_id"] = str(post["_id"])
+            post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
             return post
+
 
     @ownership_required
     def delete(self):  # 게시글 삭제
         """특정 id의 게시글을 삭제합니다."""
-        post_info = request.get_json()
-        post_id, board_type, author = get_post_variables(post_info)
+
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, post_id, board_type, user = get_variables()
+
+        # db 컬랙션 명으로 변경
+        board_type = board_type + "_board"
 
         # 게시글 삭제
         result = mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
 
         # 회원활동정보 삭제
-        making_reference = MakeReference(board_type=board_type, author=author)
+        making_reference = MakeReference(board_type=board_type, user=user)
         activity_result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$pull")
 
         if result.raw_result["n"] == 0:
-            return {"queryStatus": "post delete fail"}
+            return {"queryStatus": "post delete fail"}, 500
         elif activity_result.raw_result["n"] == 0:
-            return {"queryStatus": "delete activity fail"}
+            return {"queryStatus": "delete activity fail"}, 500
         else:
-            return {"queryStatus": "success"}, 500
+            return {"queryStatus": "success"}, 200
+
 
     def post(self):  # 게시글 생성
         """게시글을 생성합니다."""
-        try:
-            post_info = request.get_json()
-            post_id, board_type, author = get_post_variables(post_info)
 
-            del post_info["_id"]
-            post_info["date"] = dateutil.parser.parse(post_info["date"])
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, post_id, board_type, user = get_variables()
+        
+        # db 컬랙션 명으로 변경
+        board_type = board_type + "_board"
 
-            # 회원정보 embedded 형태로 return
-            making_reference = MakeReference(board_type=board_type, author=author)
-            author = making_reference.embed_author_information_in_object()
-            post_info["author"] = author
+        # _id를 지움
+        del request_info["_id"]
 
-            # 게시글 등록
-            post_id = mongodb.insert_one(data=post_info, collection_name=board_type)
+        # date 추가
+        request_info["date"] = datetime.now()
 
-            # 회원활동 정보 등록
-            result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$addToSet")
+        # 회원정보 embedded 형태로 return
+        making_reference = MakeReference(board_type=board_type, user=user)
+        author = making_reference.embed_author_information_in_object()
+        request_info["author"] = author
 
-            # 등록완료된 게시글 조회
-            if result.raw_result["n"] == 0:
-                return {"queryStatus": "update activity fail"}
-            else:
-                post = mongodb.find_one(query={"_id": ObjectId(post_id)},
-                                        collection_name=board_type)
-                convert_to_string(post, "_id", "date")
+        # views, likes, reports, bookmarks 추가
+        request_info["views"] = 0
+        request_info["likes"] = []
+        request_info["reports"] = []
+        request_info["bookmarks"] = []
 
-                return post
+        # 게시글 저장
+        post_id = mongodb.insert_one(data=request_info, collection_name=board_type)
 
-        except TypeError as t:
-            return {
-                "TypeError": str(t)
-            }
-        except AttributeError as a:
-            return {
-                "AttributeError": str(a)
-            }
-        except IndexError as i:
-            return {
-                "IndexError": str(i)
-            }
-        except dateutil.parser.ParserError as p:
-            return {
-                "DatetimeError": str(p)
-            }
+        # 회원활동 정보 등록
+        result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$addToSet")
+
+        # 등록완료된 게시글 조회
+        if result.raw_result["n"] == 0:
+            return {"queryStatus": "update activity fail"}, 500
+        else:
+            post = mongodb.find_one(query={"_id": ObjectId(post_id)},
+                                    collection_name=board_type)
+            post["_id"] = str(post["_id"])
+            post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
+            return post, 200
+
 
     @ownership_required
     def put(self):  # 게시글 수정
         """특정 id의 게시글을 수정합니다."""
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, post_id, board_type, user = get_variables()
+        
+        # db 컬랙션 명으로 변경
+        board_type = board_type + "_board"
 
-        post_info = request.get_json()
-        if "author" in post_info:  # string을 수정하는 경우
+        if "author" in request_info:  # string을 수정하는 경우
             print("String 수정하는 경우")
-            post_id, board_type, author = get_post_variables(post_info)
             article_key = ["title", "content", "image"]
 
-            modified_article = {}
-            for key in article_key:
-                modified_article[key] = post_info[key]
+            # _id 는 수정할 수 없는 정보이므로 삭제
+            del request_info["_id"]
+            
+            # author는 데코레이터에서 역할이 끝났으므로 삭제
+            del request_info["author"]
 
             # 게시글 정보 업데이트
             result = mongodb.update_one(query={"_id": ObjectId(post_id)},
                                         collection_name=board_type,
-                                        modify={"$set": modified_article})
+                                        modify={"$set": request_info})
 
         else:  # integer을 수정하는 경우
             print("integer 수정하는 경우")
-            post_id = post_info["_id"]
-            board_type = post_info["boardType"] + "_board"
-            user = post_info["user"]
-            activity = post_info["activity"]
 
-            past_user_list = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id": False, activity: True})[activity]
-            print(past_user_list)
+            activity = request_info["activity"]
 
-            if user in past_user_list:
+    
+            if activity == "likes":
+                past_user_list = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id": False, activity: True})[activity]
+                print(past_user_list)
+                past_likes = len(past_user_list)
+                print(past_likes)
+
+            if user in past_user_list:  # 해당 활동을 한 적이 있는 경우
                 if activity == "likes":
                     return {"queryStatus": "already like"}
                 else:
                     operator = "$pull"
                     result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
 
-            else:
-                if activity == "likes":
-                    past_likes = len(mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id": False, "likes": True})["likes"])
-                    print("past_likes : ", past_likes)
-
-                past_user_list.append(user)
-                print(past_user_list)
-
+            else:  # 해당활동을 한 적이 없는 경우
                 operator = "$addToSet"
                 result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
 
+                # 인기게시판 관련   
                 if activity == "likes":
-                    # 인기게시판 관련
+                    
                     modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                                      collection_name=board_type)
-                    if (past_likes < 10) and (len(modified_post["likes"]) == 10):
+                    present_likes = len(modified_post["likes"])
+                    print(present_likes)
+                    if (past_likes < 10) and (present_likes == 10):
                         print("여기 좋아요 10 넘음")
                         hot_post_info = {}
 
@@ -252,34 +267,36 @@ class PostControl(Resource):
                         mongodb.insert_one(data=hot_post_info, collection_name="hot_board")
 
             # 활동 업데이트
-            making_reference = MakeReference(board_type=board_type, author=None)
+            making_reference = MakeReference(board_type=board_type, user=user)
             field = "activity." + activity
 
-            activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator, user=user)
+            activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator)
             if activity_result.raw_result["n"] == 0:
-                return {"queryStatus": "user activity update fail"}
+                return {"queryStatus": "user activity update fail"}, 500
 
         if result.raw_result["n"] == 0:  # 게시글 정보(string, likes, reports, bookmarks) 업데이트 실패한 경우
-            return {"queryStatus": "post update fail"}
+            return {"queryStatus": "post update fail"}, 500
         else:
             modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                              collection_name=board_type)
+            
+            modified_post["_id"] = str(modified_post["_id"])
+            modified_post["date"] = (modified_post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
 
-            convert_to_string(modified_post, "_id", "date")
             return modified_post
 
 
 # 댓글 조회 함수
 def get_reply_list(post_id=None, board_type=None):
-    cursor = mongodb.find(query={"postId": post_id},
-                          collection_name=board_type)  # 댓글은 오름차순
+    total_list = list(mongodb.find(query={"postId": post_id},
+                          collection_name=board_type))  # 댓글은 오름차순
 
-    reply_list = []
-    for reply in cursor:
+    for reply in total_list:
         reply["_id"] = str(reply["_id"])
-        reply_list.append(reply)
+        if reply["date"]:
+            reply["date"] = (reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
 
-    return reply_list
+    return total_list
 
 
 # 댓글 관련 API
@@ -289,24 +306,27 @@ class CommentControl(Resource):
 
     def post(self):  # 댓글 작성
         """댓글을 생성합니다."""
-        reply_info = request.get_json()
-        del reply_info["_id"]
 
-        board_type = reply_info["boardType"] + "_board_reply"
-        post_id = reply_info["postId"]
-        author = reply_info["author"]["_id"]
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, post_id, board_type, user = get_variables()
+        
+        # db 컬랙션 명으로 변경
+        board_type = board_type + "_board_reply"
 
-        making_reference = MakeReference(board_type=board_type, author=author)
-
+        # date 추가
+        request_info["date"] = datetime.now()
+        
         # 회원정보 embedded 형태로 등록
+        making_reference = MakeReference(board_type=board_type, user=user)        
         author = making_reference.embed_author_information_in_object()
-        reply_info["author"] = author
+        request_info["author"] = author
+
+        # likes 추가
+        request_info["likes"] = []
 
         # 댓글 db에 저장
-        reply_id = mongodb.insert_one(data=reply_info, collection_name=board_type)
-        print(reply_id)
-
-        print(post_id)
+        reply_id = mongodb.insert_one(data=request_info, collection_name=board_type)
+       
         # 회원활동 정보 link 형태로 등록
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
 
@@ -316,6 +336,7 @@ class CommentControl(Resource):
         return {
             "replyList": reply_list
         }
+
 
     def get(self):  # 댓글 조회
         """댓글을 조회합니다."""
@@ -329,12 +350,15 @@ class CommentControl(Resource):
             "replyList": reply_list
         }
 
+
     def put(self):  # 좋아요
         """좋아요를 저장합니다"""
-        reply_info = request.get_json()
-        reply_id = reply_info["_id"]
-        board_type = reply_info["boardType"] + "_board_reply"
-        user = reply_info["user"]
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, reply_id, board_type, user = get_variables()
+        
+        # db 컬랙션 명으로 변경
+        board_type = board_type + "_board_reply"
+
 
         past_likes_list = mongodb.find_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, projection_key={"_id": False, "likes": True})["likes"]
 
@@ -344,19 +368,19 @@ class CommentControl(Resource):
             update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$addToSet": {"likes": user}})
 
         if update_status.raw_result["n"] == 0:
-            return {"queryStatus": "likes update fail"}
+            return {"queryStatus": "likes update fail"}, 500
         else:
-            return {"queryStatus": "likes update success"}
+            return {"queryStatus": "likes update success"}, 200
 
     @ownership_required
     def delete(self):  # 댓글 삭제
         """댓글을 삭제합니다."""
-        reply_info = request.get_json()
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, reply_id, board_type, user = get_variables()
+        
+        # db 컬랙션 명으로 변경
+        board_type = board_type + "_board_reply"
 
-        board_type = reply_info["boardType"] + "_board_reply"
-        post_id = reply_info["postId"]
-        reply_id = reply_info["_id"]
-        author = reply_info["author"]["_id"]
         whether_subreply = mongodb.find_one(query={"parentReplyId": reply_id}, collection_name=board_type)
 
         if not whether_subreply:  # 대댓글이 없는 경우
@@ -364,7 +388,7 @@ class CommentControl(Resource):
                                         collection_name=board_type)
         else:  # 대댓글이 있는 경우
             alert_delete = {
-                "author": {},
+                "author": {"_id":None, "nickname":None, "type":None, "profileImage":None},
                 "content": None,
                 "date": None,
                 "likes": None
@@ -374,16 +398,16 @@ class CommentControl(Resource):
                                         modify={"$set": alert_delete})
 
         # 댓글 조회
+        post_id = request_info["postId"]
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
-
-        making_reference = MakeReference(board_type=board_type, author=author)
-
+        
         # 회원활동정보 삭제
+        making_reference = MakeReference(board_type=board_type, user=user)
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
 
         if result.raw_result["n"] == 1:
             return {
                 "replyList": reply_list
-            }
+            }, 200
         else:
             return {"queryStatus": "reply delete failed"}, 500
