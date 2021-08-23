@@ -37,8 +37,4 @@ constructor(
             }
         }
     }
-
-//    fun refreshList() {
-//        _postList.clear()
-//    }
 }

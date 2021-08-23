@@ -241,7 +241,8 @@ constructor(
     fun comparePw(): Boolean {
         return (pw.value == pwConfirm.value)
     }
-fun signup() {
+
+    fun signup() {
 
         val user = User(
             id = userId, password = userPw,

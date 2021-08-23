@@ -28,7 +28,7 @@ data class Post(
     @SerializedName("content")
     val content: String,
     @SerializedName("image")
-    val image: String = "",
+    val image: String? = null,
     @SerializedName("likes")
     val likes: Int? = 0,
     @SerializedName("viewCount")
@@ -50,6 +50,8 @@ data class PostSend(
     val boardType: String,
     @SerializedName("author")
     val author: Author,
+    @SerializedName("user")
+    val user: String? = null,
     @SerializedName("date")
     val date: String,
     @SerializedName("title")
@@ -78,51 +80,4 @@ data class Author(
     val type: String? = null,
     @SerializedName("profileImage")
     val profile: String? = null
-)
-
-/* 댓글 리스트 */
-data class ReplyList(
-    @SerializedName("replyList")
-    val replyList: List<Reply>
-)
-
-/* 댓글 */
-data class Reply(
-    @SerializedName("_id")
-    val id: String,
-    @SerializedName("boardType")
-    val boardType: String,
-    @SerializedName("postId")
-    val postId: String,
-    @SerializedName("reply")
-    val replyDetail: List<ReplyDetail>,
-    @SerializedName("subReply")
-    val subReply: List<SubReply>
-) : Identifiable {
-    override val identifier: Any
-        get() = id
-}
-
-/* 댓글 상세 */
-data class ReplyDetail(
-    @SerializedName("author")
-    val id: String,
-    @SerializedName("content")
-    val content: String,
-    @SerializedName("date")
-    val date: String,
-    @SerializedName("reply")
-    val likes: Int
-)
-
-/* 대댓글 */
-data class SubReply(
-    @SerializedName("author")
-    val id: String,
-    @SerializedName("content")
-    val content: String,
-    @SerializedName("date")
-    val date: String,
-    @SerializedName("reply")
-    val likes: Int
 )

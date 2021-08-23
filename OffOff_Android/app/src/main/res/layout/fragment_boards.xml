@@ -48,12 +48,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
+                    android:outlineProvider="bounds"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:listitem="@layout/rv_item_board"
-                    android:outlineProvider="bounds" />
+                    tools:listitem="@layout/rv_item_board" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

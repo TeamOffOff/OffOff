@@ -21,7 +21,7 @@ class SharedPreferenceController(context: Context) {
     fun deleteToken() {
         val edit = pref.edit()
         edit.clear()
-        edit.commit()
+        edit.apply()
     }
 
 //

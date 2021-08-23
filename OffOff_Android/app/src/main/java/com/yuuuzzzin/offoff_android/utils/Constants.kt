@@ -21,3 +21,8 @@ object Constants {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
+
+object PostWriteType {
+    const val WRITE = 0 // post 작성
+    const val EDIT = 1 // post 수정
+}

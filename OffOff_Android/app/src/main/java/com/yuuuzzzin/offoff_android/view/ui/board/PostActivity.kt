@@ -2,13 +2,14 @@ package com.yuuuzzzin.offoff_android.view.ui.board
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
+import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,9 +19,9 @@ import info.androidhive.fontawesome.FontDrawable
 class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private val viewModel: PostViewModel by viewModels()
+    private lateinit var postId: String
     private lateinit var boardName: String
     private lateinit var boardType: String
-    private lateinit var update: String
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
 
@@ -34,12 +35,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun processIntent() {
-        val id = intent.getStringExtra("id")
+        postId = intent.getStringExtra("id").toString()
         boardType = intent.getStringExtra("boardType").toString()
         boardName = intent.getStringExtra("boardName").toString()
-        update = intent.getStringExtra("update").toString()
 
-        viewModel.getPost(id!!, boardType!!)
+        viewModel.getPost(postId, boardType)
     }
 
     private fun initViewModel() {
@@ -75,8 +75,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     override fun onBackPressed() {
-        Log.d("tag_log", "back누름")
-        Log.d("tag_log", intent.getStringExtra("update").toString())
         if (intent.getStringExtra("update") == "true") {
             val intent = Intent(applicationContext, BoardActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -88,8 +86,34 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             super.onBackPressed()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_post, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_edit -> {
+                // 수정 버튼 누를 시
+                val intent = Intent(applicationContext, PostWriteActivity::class.java)
+                intent.putExtra("boardType", boardType)
+                intent.putExtra("boardName", boardName)
+                intent.putExtra("postWriteType", PostWriteType.EDIT)
+                intent.putExtra("postId", postId)
+                intent.putExtra("postTitle", binding.post!!.title)
+                intent.putExtra("postContent", binding.post!!.content)
+                startActivity(intent)
+                true
+            }
+            R.id.action_delete -> {
+                // 삭제 버튼 누를 시
+
+                true
+            }
+            R.id.action_report -> {
+                // 신고 버튼 누를 시
+                true
+            }
             android.R.id.home -> {
                 if (intent.getStringExtra("update") == "true") {
                     val intent = Intent(applicationContext, BoardActivity::class.java)
@@ -106,3 +130,4 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         }
     }
 }
+

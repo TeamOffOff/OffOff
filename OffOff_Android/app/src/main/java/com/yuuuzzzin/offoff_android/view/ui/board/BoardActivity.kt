@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
+import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.view.adapter.BoardAdapter
 import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
@@ -125,6 +126,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 val intent = Intent(applicationContext, PostWriteActivity::class.java)
                 intent.putExtra("boardType", boardType)
                 intent.putExtra("boardName", boardName)
+                intent.putExtra("postWriteType", PostWriteType.WRITE)
                 startActivity(intent)
                 true
             }

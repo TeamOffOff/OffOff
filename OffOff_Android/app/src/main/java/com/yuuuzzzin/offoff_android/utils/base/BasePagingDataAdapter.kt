@@ -5,16 +5,16 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.BR
 import com.yuuuzzzin.offoff_android.utils.Identifiable
 
-abstract class BaseRVAdapter<T : Identifiable, VB : ViewDataBinding>(
+abstract class BasePagingDataAdapter <T : Identifiable, VB : ViewDataBinding>(
     private val itemClick: (T) -> Unit,
     @LayoutRes private val layoutRes: Int
-) : ListAdapter<T, BaseRVAdapter.BaseViewHolder<T>>(object : DiffUtil.ItemCallback<T>() {
+) : PagingDataAdapter<T, BasePagingDataAdapter.BaseViewHolder<T>>(object : DiffUtil.ItemCallback<T>() {
     /*
     * DiffUtil의 ItemCallback을 이용해
     * 갱신 전 데이터와 갱신 후 데이터의 차이점을 계산해
@@ -44,7 +44,9 @@ abstract class BaseRVAdapter<T : Identifiable, VB : ViewDataBinding>(
 
     /* (뷰가 재활용될 때) 뷰홀더가 뷰에 그려졌을 때 데이터를 바인드해주는 함수 */
     override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
-        holder.bind(getItem(position))
+        getItem(position)?.let { post ->
+            holder.bind(post)
+        }
     }
 
     open class BaseViewHolder<T>(

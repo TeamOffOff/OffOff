@@ -1,9 +1,6 @@
 package com.yuuuzzzin.offoff_android.service.api
 
-import com.yuuuzzzin.offoff_android.service.models.BoardList
-import com.yuuuzzzin.offoff_android.service.models.Post
-import com.yuuuzzzin.offoff_android.service.models.PostList
-import com.yuuuzzzin.offoff_android.service.models.PostSend
+import com.yuuuzzzin.offoff_android.service.models.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -33,4 +30,29 @@ interface BoardService {
     suspend fun writePost(
         @Body post: PostSend
     ): Response<Post>
+
+    /* 게시물 수정 */
+    @PUT("post")
+    suspend fun editPost(
+        @Body post: PostSend
+    ): Response<Post>
+
+    /* 게시물 삭제 */
+    @PUT("post")
+    suspend fun deletePost(
+        @Body post: PostSend
+    ): Response<ResultResponse>
+
+    /* 댓글 조회 */
+    @GET("reply")
+    suspend fun getComment(
+        @Query("postId") postId: String,
+        @Query("boardType") boardType: String
+    ): Response<CommentList>
+
+    /* 댓글 작성 */
+    @POST("reply")
+    suspend fun writeComment(
+        @Body comment: CommentSend
+    ): Response<CommentList>
 }

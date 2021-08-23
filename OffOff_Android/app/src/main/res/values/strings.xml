@@ -8,7 +8,7 @@
     <string name="appbar_boards">게시판</string>
     <string name="appbar_schedule">스케줄표</string>
     <string name="appbar_notification">알림</string>
-    <string name="appbar_settings">설정</string>
+    <string name="appbar_settings">환경설정</string>
 
     <!-- 홈 프래그먼트 앱바 메뉴 이름 -->
     <string name="appbar_home_search">검색</string>
