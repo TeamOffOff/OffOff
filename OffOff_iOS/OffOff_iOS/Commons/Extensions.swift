@@ -36,8 +36,9 @@ extension String {
 }
 
 extension Date {
-    func toString() -> String {
-        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+    func toString(_ format: String = "yyyy년 MM월 dd일") -> String {
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = format
         return dateFormatter.string(from: self)
     }
 }

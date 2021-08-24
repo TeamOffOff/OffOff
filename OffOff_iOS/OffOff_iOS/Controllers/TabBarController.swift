@@ -40,7 +40,7 @@ class TabBarController: UITabBarController {
             createNavController(for: BoardListViewController(), title: NSLocalizedString("커뮤니티", comment: ""), image: UIImage(systemName: "house")!),
 //            createNavController(for: PostListViewController(), title: NSLocalizedString("Community", comment: ""), image: UIImage(systemName: "text.justify")!),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
-            createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
+            createNavController(for: ScheduleViewController(), title: NSLocalizedString("스케쥴", comment: ""), image: UIImage(systemName: "person")!),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!)
         ]
