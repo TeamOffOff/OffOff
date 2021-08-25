@@ -23,4 +23,10 @@ constructor(private val memberService: MemberService) {
 
     suspend fun checkNickname(nickname: String) =
         memberService.checkNickname(nickname)
+
+    suspend fun checkEmail(email: String) =
+        memberService.checkEmail(email)
+
+    suspend fun getUserInfo(auth: String) =
+        memberService.getUserInfo(auth)
 }

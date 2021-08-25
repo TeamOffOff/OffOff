@@ -1,6 +1,7 @@
 package com.yuuuzzzin.offoff_android.service.repository
 
 import com.yuuuzzzin.offoff_android.service.api.BoardService
+import com.yuuuzzzin.offoff_android.service.models.CommentSend
 import com.yuuuzzzin.offoff_android.service.models.PostSend
 import javax.inject.Inject
 
@@ -16,4 +17,9 @@ constructor(private val boardService: BoardService) {
         boardService.getPost(postId, boardType)
 
     suspend fun writePost(post: PostSend) = boardService.writePost(post)
+    suspend fun editPost(post: PostSend) = boardService.editPost(post)
+    suspend fun deletePost(post: PostSend) = boardService.deletePost(post)
+
+    suspend fun getComment(postId: String, boardType: String) = boardService.getComment(postId, boardType)
+    suspend fun writeComment(comment: CommentSend) = boardService.writeComment(comment)
 }

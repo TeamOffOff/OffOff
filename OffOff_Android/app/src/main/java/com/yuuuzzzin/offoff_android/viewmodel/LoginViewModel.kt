@@ -5,11 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.LoginInfo
 import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Event
-import com.yuuuzzzin.offoff_android.utils.SignupUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class LoginViewModel
 @Inject
 constructor(
     private val repository: MemberRepository
-): ViewModel() {
+) : ViewModel() {
 
     val id = MutableLiveData("")
     val pw = MutableLiveData("")
@@ -38,26 +39,19 @@ constructor(
     private val _isPwError = MutableLiveData<Event<String>>()
     val isPwError: LiveData<Event<String>> = _isPwError
 
-    // 입력받은 정보가 모두 조건에 만족했는지지 완료었는지 여부
-//    private val _infoChecked = MutableLiveData<Event<Unit>>()
-//    val infoChecked: LiveData<Event<Unit>> = _infoChecked
-
     // 입력받은 정보를 확인해 그에 따른 에러 메시지를 이벤트 처리
     private fun checkInfo(): Boolean {
 
         var checkValue = true
 
         // 아이디 값 확인
-        if(id.value?.isBlank() == true) {
+        if (id.value?.isBlank() == true) {
             _isIdError.value = Event("아이디를 입력해주세요")
             checkValue = false
         }
-        else if(!SignupUtils.validate(id, SignupUtils.ID_REGEX)) {
-            _isIdError.value = Event(SignupUtils.ID_ERROR)
-            checkValue = false
-        }
+
         // 비밀번호 값 확인
-        if(pw.value?.isBlank() == true) {
+        if (pw.value?.isBlank() == true) {
             _isPwError.value = Event("비밀번호를 입력해주세요")
             checkValue = false
         }
@@ -72,25 +66,28 @@ constructor(
         val userPw = pw.value ?: return
         val loginInfo = LoginInfo(userId, userPw)
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.login(loginInfo).let { response ->
-                if(response.isSuccessful) {
-                    if(response.body()!!.message == "success") {
-                        _loginSuccess.postValue(Event(userId))
-                        Log.d("tag_login_success", response.body().toString())
-                        Log.d("tag_login_success", loginInfo.toString())
-                    } else {
-                        Log.d("tag_login_fail", response.body().toString())
-                        Log.d("tag_login_fail", loginInfo.toString())
-                        //alertMsg.postValue(response.body()!!.result)
-                        _loginFail.postValue(Event(response.body()!!.message))
-                    }
+                if (response.isSuccessful) {
+                    _loginSuccess.postValue(Event(userId))
+                    OffoffApplication.pref.token = response.body()!!.auth
+                    Log.d("tag_success", "login: ${response.body()}")
+                    Log.d("tag_success", "token: ${OffoffApplication.pref.token}")
                 } else {
-                    Log.d("tag_login_fail", loginInfo.toString())
-                    Log.d("tag_login_fail", response.body().toString())
-                    Log.d("tag_login_fail", "서버 통신 실패: ${response.code()}")
+                    Log.d("tag_fail", "login Error: ${response.code()}")
+                    when (response.code()) {
+                        NOT_EXIST -> {
+                            _isIdError.postValue(Event("존재하지 않는 아이디입니다."))
+                        }
+                        WRONG_INFO -> _loginFail.postValue(Event("아이디와 비밀번호를 확인해주세요."))
+                    }
                 }
             }
         }
+    }
+
+    companion object {
+        const val NOT_EXIST = 404
+        const val WRONG_INFO = 500
     }
 }

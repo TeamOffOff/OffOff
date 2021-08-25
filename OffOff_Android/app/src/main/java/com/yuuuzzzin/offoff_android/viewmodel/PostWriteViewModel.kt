@@ -23,6 +23,14 @@ constructor(
     private val repository: BoardRepository
 ) : ViewModel() {
 
+//    val title: MutableLiveData<String> by lazy {
+//        MutableLiveData<String>()
+//    }
+//
+//    val content: MutableLiveData<String> by lazy {
+//        MutableLiveData<String>()
+//    }
+
     val title = MutableLiveData("")
     val content = MutableLiveData("")
 
@@ -31,6 +39,11 @@ constructor(
 
     private val _successEvent = MutableLiveData<Event<String>>()
     val successEvent: LiveData<Event<String>> = _successEvent
+
+    fun setPostText(title:String, content:String) {
+        this.title.postValue(title)
+        this.content.postValue(content)
+    }
 
     private fun check(): Boolean {
 
@@ -53,7 +66,7 @@ constructor(
         val post = PostSend(
             boardType = boardType,
             author = Author(
-                id = "yujin123"
+                id = "yujin12"
             ),
             date = dateFormat.format(currentTime),
             title = title.value!!,
@@ -67,6 +80,35 @@ constructor(
                     Log.d("tag_success", "writePost: ${response.body()}")
                 } else {
                     Log.d("tag_fail", "writePost Error: ${response.code()}")
+                }
+            }
+        }
+    }
+
+    fun editPost(boardType: String, postId: String) {
+        if (!check()) return
+
+        val post = PostSend(
+            id = postId,
+            boardType = boardType,
+            author = Author(
+                id = "yujin12",
+                nickname = "박유진",
+                type = "student"
+            ),
+            user = "박유진",
+            date = dateFormat.format(currentTime),
+            title = title.value!!,
+            content = content.value!!
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.editPost(post).let { response ->
+                if (response.isSuccessful) {
+                    _successEvent.postValue(Event(response.body()!!.id))
+                    Log.d("tag_success", "editPost: ${response.body()}")
+                } else {
+                    Log.d("tag_fail", "editPost Error: ${response.code()}")
                 }
             }
         }

@@ -51,9 +51,7 @@ class SignupStep1Fragment :
         }
 
         signupViewModel.id.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                signupViewModel.validateId()
-            }
+            signupViewModel.validateId()
         })
 
         signupViewModel.isIdVerified.observe(viewLifecycleOwner, {
@@ -72,9 +70,7 @@ class SignupStep1Fragment :
         }
 
         signupViewModel.pw.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                signupViewModel.validatePw()
-            }
+            signupViewModel.validatePw()
         })
 
         signupViewModel.isPwVerified.observe(viewLifecycleOwner, {
@@ -83,7 +79,14 @@ class SignupStep1Fragment :
 
         binding.etPw.addTextChangedListener(object : TextWatcher {
 
-            override fun afterTextChanged(s: Editable) {}
+            override fun afterTextChanged(s: Editable) {
+                if (!binding.etPwConfirm.text.isNullOrEmpty() && !signupViewModel.comparePw()) {
+                    signupViewModel.pwConfirm.value = ""
+                    if (!binding.tfPwConfirm.isError())
+                        binding.tfPwConfirm.setTextFieldDefault()
+                }
+            }
+
             override fun beforeTextChanged(
                 s: CharSequence, start: Int,
                 count: Int, after: Int
@@ -94,11 +97,6 @@ class SignupStep1Fragment :
                 s: CharSequence, start: Int,
                 before: Int, count: Int
             ) {
-                if (binding.etPwConfirm.text != null) {
-                    signupViewModel.pwConfirm.postValue("")
-                    if (!binding.tfPwConfirm.isError())
-                        binding.tfPwConfirm.setTextFieldDefault()
-                }
             }
         })
 
@@ -113,22 +111,18 @@ class SignupStep1Fragment :
         }
 
         signupViewModel.pwConfirm.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
-                signupViewModel.validatePwConfirm()
-            }
+            signupViewModel.validatePwConfirm()
+
         })
 
         signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) {
             binding.tfPwConfirm.validate(it)
         }
 
-        signupViewModel.step1Success.observe(viewLifecycleOwner, { event ->
-            event.getContentIfNotHandled()?.let {
-                if (it) {
-                    findNavController().navigate(R.id.action_signupStep1Fragment_to_signupStep2Fragment)
-                }
-            }
-        })
+        // step1 -> step2 이동
+        binding.btNext.setOnClickListener {
+            findNavController().navigate(R.id.action_signupStep1Fragment_to_signupStep2Fragment)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

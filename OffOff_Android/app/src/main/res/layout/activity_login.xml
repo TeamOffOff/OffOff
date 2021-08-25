@@ -49,13 +49,11 @@
             app:boxStrokeErrorColor="@color/design_default_color_error"
             app:endIconMode="clear_text"
             app:errorEnabled="true"
-            app:errorIconDrawable="@drawable/ic_baseline_error_24"
             app:helperTextTextColor="@color/design_default_color_error"
             app:hintTextColor="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline2"
-            app:startIconDrawable="@drawable/ic_round_person_24">
+            app:layout_constraintTop_toBottomOf="@id/guideline2">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_id"
@@ -78,13 +76,11 @@
             app:boxStrokeWidthFocused="2dp"
             app:endIconMode="password_toggle"
             app:errorEnabled="true"
-            app:errorIconDrawable="@drawable/ic_baseline_error_24"
             app:helperTextTextColor="@color/design_default_color_error"
             app:hintTextColor="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tf_id"
-            app:startIconDrawable="@drawable/ic_outline_lock_24">
+            app:layout_constraintTop_toBottomOf="@id/tf_id">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_pw"
@@ -110,6 +106,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_login"
             android:layout_width="match_parent"
+            android:enabled="@{etId.text.length() > 0 &amp;&amp; etPw.text.length() > 0}"
             android:layout_height="56dp"
             android:onClick="@{()-> viewModel.login()}"
             android:text="@string/login"

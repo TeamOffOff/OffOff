@@ -39,9 +39,9 @@ data class SubInfo(
 /* 사용자 활동 */
 data class Activity(
     @SerializedName("posts")
-    val posts: List<Post>?= emptyList(),
+    val posts: List<Any> = emptyList(),
     @SerializedName("replies")
-    val replies: List<ReplyDetail>?= emptyList(),
+    val replies: List<Any>?= emptyList(),
     @SerializedName("likes")
     val likes: List<Like>?= emptyList(),
     @SerializedName("reports")
