@@ -1,7 +1,7 @@
 from os import access
 from flask import request
 from flask_restx import Resource, Api, Namespace, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 import bcrypt
 from pymongo import collection, encryption
 from bson.objectid import ObjectId
@@ -38,6 +38,11 @@ class TokenControl(Resource):
     @jwt_required(refresh=True)
     def get(self):
         user_id = get_jwt_identity()
+        refresh_token = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["refreshToken"]
+        if not refresh_token:  # refresh token이 탈취되어서 db에서 삭제한 경우
+            return {
+                "queryStatus": "refresh token was taken"
+            }
         delta = timedelta(minutes=1)
         access_token = create_access_token(identity=user_id, expires_delta=delta)
     
@@ -46,6 +51,10 @@ class TokenControl(Resource):
                 "accessToken": access_token,
                 "queryStatus": 'success'
             }, 200
+    
+    def delete(self):
+        pass
+
 
 
 @User.route('/register')
@@ -252,7 +261,7 @@ class AuthLogin(Resource):
 
             if add_token.raw_result["n"] != 1:
                 return{"queryStatus": "add token fail"}
-                
+
             return {
                 "accessToken": access_token,
                 "refreshToken": refresh_token,
