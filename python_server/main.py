@@ -6,7 +6,7 @@ import mongo
 
 from api_helper.board import BoardList, PostList, UserList
 from api_helper.post import Post, Reply
-from api_helper.user import Activity, User
+from api_helper.user import Activity, User, Token
 from api_helper.utils import SECRET_KEY
 
 app = Flask(__name__)
@@ -28,6 +28,7 @@ api.add_namespace(Post, "/post")
 api.add_namespace(Reply, "/reply")
 
 api.add_namespace(User, "/user")
+api.add_namespace(Token, '/refresh')
 api.add_namespace(Activity, "/activity")
 
 

@@ -1,3 +1,4 @@
+from os import access
 from flask import request
 from flask_restx import Resource, Api, Namespace, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, get_jwt
@@ -11,6 +12,7 @@ import mongo
 mongodb = mongo.MongoHelper()
 
 User = Namespace(name="user", description="유저 관련 API")
+Token = Namespace(name="token", description="access토큰 재발급 API")
 
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
@@ -30,6 +32,20 @@ def fix_index(target, key):
         real[i] = target[i]
 
     return real
+
+@Token.route('/')
+class TokenControl(Resource):
+    @jwt_required(refresh=True)
+    def get(self):
+        user_id = get_jwt_identity()
+        delta = timedelta(minutes=1)
+        access_token = create_access_token(identity=user_id, expires_delta=delta)
+    
+
+        return {
+                "accessToken": access_token,
+                "queryStatus": 'success'
+            }, 200
 
 
 @User.route('/register')
@@ -231,8 +247,12 @@ class AuthLogin(Resource):
             # 비밀번호 일치한 경우
             access_token = create_access_token(identity=request_info["_id"], expires_delta=False)
             refresh_token = create_refresh_token(identity=request_info["_id"], expires_delta=False)
+            
+            add_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":{"refreshToken": refresh_token}})
 
-
+            if add_token.raw_result["n"] != 1:
+                return{"queryStatus": "add token fail"}
+                
             return {
                 "accessToken": access_token,
                 "refreshToken": refresh_token,
