@@ -45,7 +45,6 @@ class BoardsFragment : Fragment() {
 
         initViewModel()
         initRV()
-
         return binding.root
     }
 

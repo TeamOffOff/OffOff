@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id "com.google.protobuf" version "0.8.12"
 }
 
 Properties properties = new Properties()
@@ -15,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.yuuuzzzin.offoff_android"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "0.1"
@@ -120,4 +121,27 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     implementation "androidx.preference:preference-ktx:1.1.1"
+
+    // CalendarView
+    implementation "jp.kuluna:calendarviewpager:2.1.2"
+
+    // DataStore
+    implementation  "androidx.datastore:datastore-core:1.0.0-alpha04"
+    implementation  "com.google.protobuf:protobuf-javalite:3.10.0"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.10.0"
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }

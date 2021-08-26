@@ -6,7 +6,7 @@
     <!-- 앱바에 띄울 프래그먼트 이름 -->
     <string name="appbar_home">ㅇㅍㅇㅍ</string>
     <string name="appbar_boards">게시판</string>
-    <string name="appbar_schedule">스케줄표</string>
+    <string name="appbar_schedule">스케줄</string>
     <string name="appbar_notification">알림</string>
     <string name="appbar_settings">환경설정</string>
 
@@ -50,6 +50,16 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <!--    <string name=""></string>-->
     <!--    <string name=""></string>-->
+
+    <string-array name = "week_day">
+        <item>(월)</item>
+        <item>(화)</item>
+        <item>(수)</item>
+        <item>(목)</item>
+        <item>(금)</item>
+        <item>(토)</item>
+        <item>(일)</item>
+    </string-array>
 
 
 </resources>

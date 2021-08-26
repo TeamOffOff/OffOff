@@ -14,9 +14,12 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".view.SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:noHistory="true" >
+        <activity android:name=".view.ui.schedule.ScheduleSetActivity"></activity>
+        <activity android:name=".view.ui.schedule.AddScheduleActivity" />
+        <activity
+            android:name=".view.SplashActivity"
+            android:noHistory="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,24 +32,16 @@
         <!-- </intent-filter> -->
         <!-- </activity> -->
         <activity android:name=".view.ui.member.SignupActivity" />
-        <activity android:name=".view.ui.member.LoginActivity"/>
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        -->
+        <activity android:name=".view.ui.member.LoginActivity" /> <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!--  -->
         <activity android:name=".view.ui.board.PostActivity" />
         <activity android:name=".view.ui.board.BoardActivity" />
         <activity android:name=".view.ui.UserActivity" />
         <activity android:name=".view.ui.SearchActivity" />
-        <activity android:name=".MainActivity"/>
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
