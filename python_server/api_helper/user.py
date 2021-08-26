@@ -1,5 +1,7 @@
 from os import access
-from flask import request
+from flask import request, jsonify
+from flask.helpers import make_response
+from flask_jwt_extended.utils import set_refresh_cookies
 from flask_restx import Resource, Api, Namespace, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 import bcrypt
@@ -36,7 +38,7 @@ def fix_index(target, key):
 @Token.route('/')
 class TokenControl(Resource):
     @jwt_required(refresh=True)
-    def get(self):
+    def get(self):  # refresh 로 access 발급
         user_id = get_jwt_identity()
         refresh_token = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["refreshToken"]
         if not refresh_token:  # refresh token이 탈취되어서 db에서 삭제한 경우
@@ -52,7 +54,7 @@ class TokenControl(Resource):
                 "queryStatus": 'success'
             }, 200
     
-    def delete(self):
+    def delete(self):  # refresh 가 탈취된 경우 or 로그아웃하는 경우 현재 access 와 refresh 블랙리스트에 추가 + 현재 refresh db 에서 삭제
         pass
 
 
@@ -258,15 +260,16 @@ class AuthLogin(Resource):
             refresh_token = create_refresh_token(identity=request_info["_id"], expires_delta=False)
             
             add_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":{"refreshToken": refresh_token}})
+            
+            resp = jsonify(accessToken= access_token, queryStatus= "success")
+            set_refresh_cookies(resp, refresh_token)  # http only 쿠키로 refresh token 줌 
+
+            print(resp)
 
             if add_token.raw_result["n"] != 1:
                 return{"queryStatus": "add token fail"}
 
-            return {
-                "accessToken": access_token,
-                "refreshToken": refresh_token,
-                "queryStatus": 'success'
-            }, 200
+            return resp  # type Response 는 status code 따로 설정하면 에러 발생
 
 
     @jwt_required()
