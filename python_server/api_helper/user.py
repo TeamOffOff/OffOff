@@ -1,14 +1,17 @@
 from os import access
 from flask import request, jsonify
 from flask.helpers import make_response
-from flask_jwt_extended.utils import set_refresh_cookies
+from flask_jwt_extended.utils import get_jwt
 from flask_restx import Resource, Api, Namespace, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 import bcrypt
 from pymongo import collection, encryption
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
+
+
 import mongo
+import redis
 
 
 mongodb = mongo.MongoHelper()
@@ -17,6 +20,9 @@ User = Namespace(name="user", description="유저 관련 API")
 Token = Namespace(name="token", description="access토큰 재발급 API")
 
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
+
+
+
 
 
 # 중복확인 함수
@@ -35,7 +41,15 @@ def fix_index(target, key):
 
     return real
 
-@Token.route('/')
+
+# blocklist에 있는지 체크하는 함수 (jwt_required 데코레이터가 있는 모든 곳에 있어야함) => 라이브러리 내에 있는 데코레이터 아님
+def check_if_token_is_revoked(jti):
+    rd = redis.StrictRedis(host="localhost", port="6379", db=0, decode_responses=True)
+    token_in_redis = rd.get(jti)
+    return token_in_redis
+
+
+@Token.route('')
 class TokenControl(Resource):
     @jwt_required(refresh=True)
     def get(self):  # refresh 로 access 발급
@@ -54,9 +68,34 @@ class TokenControl(Resource):
                 "queryStatus": 'success'
             }, 200
     
-    def delete(self):  # refresh 가 탈취된 경우 or 로그아웃하는 경우 현재 access 와 refresh 블랙리스트에 추가 + 현재 refresh db 에서 삭제
-        pass
+    @jwt_required()
+    def delete(self):  # access or refresh 가 탈취된 경우 or 로그아웃하는 경우 => 현재 access blocklist에 추가 + 현재 refresh db 에서 삭제
+        user_id = get_jwt_identity()
+        print("user_id: ", user_id)
+        jti = get_jwt()["jti"]
+        print(jti)
+        
+        # 레디스 연결
+        rd = redis.StrictRedis(host="localhost", port="6379", db=0, decode_responses=True)  # 만료 시간 설정해야함
+        result1 = rd.set(jti, "")  # jti : "" 이런 형식으로 저장됨 => 저장되는 경우 True
 
+        result2 = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": ""}})  # unset으로 아예 삭제할 수도 있음
+        
+        rd.connection_pool.disconnect()
+
+        if not result1:
+            return{
+                "queryStatus": "add accessToken fail"
+            }, 500 
+
+        if result2.raw_result["n"] == 0:
+            return{
+                "queryStatus": "delete refreshToken fail"
+            }, 500
+        
+        return{
+            "queryStatus": "success"
+        }, 200
 
 
 @User.route('/register')
@@ -143,6 +182,8 @@ class AuthRegister(Resource):
         비밀번호 변경 클릭 -> 아이디 비밀번호 한 번 더 확인 -> 새로운 비밀번호 입력 후 변경
         """
         user_id = get_jwt_identity()
+        jti = get_jwt()["jti"]
+        print(check_if_token_is_revoked(jti))
         if not user_id:
             return{"queryStatus": "token is wrong"}, 500
 
@@ -259,17 +300,18 @@ class AuthLogin(Resource):
             access_token = create_access_token(identity=request_info["_id"], expires_delta=False)
             refresh_token = create_refresh_token(identity=request_info["_id"], expires_delta=False)
             
-            add_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":{"refreshToken": refresh_token}})
+            add_refresh_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":{"refreshToken": refresh_token}})
             
-            resp = jsonify(accessToken= access_token, queryStatus= "success")
-            set_refresh_cookies(resp, refresh_token)  # http only 쿠키로 refresh token 줌 
 
-            print(resp)
-
-            if add_token.raw_result["n"] != 1:
+            if add_refresh_token.raw_result["n"] != 1:
                 return{"queryStatus": "add token fail"}
 
-            return resp  # type Response 는 status code 따로 설정하면 에러 발생
+            return {
+                "accessToken": access_token,
+                "refreshToken": refresh_token,
+                "queryStatus": "success"
+
+            }, 200
 
 
     @jwt_required()
@@ -277,9 +319,16 @@ class AuthLogin(Resource):
         """
         회원정보를 조회합니다.
         """
-        user_id = get_jwt_identity()
 
-        if not user_id:
+        # 아래 8줄 리펙토링할 것 !!
+        user_id = get_jwt_identity()
+        jti = get_jwt()["jti"]
+        blocklist = check_if_token_is_revoked(jti)
+        print("결과", blocklist)
+        if blocklist is not None:  # blocklist 에 추가된 토큰
+            return{"queryStatus": "wrong token"}
+
+        if not user_id:  # jwt_required()를 뚫고 왔는데도 문제가 있는 경우
             return{"queryStatus": "token is wrong"}, 500
         
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
