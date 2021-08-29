@@ -23,14 +23,12 @@ Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
 
 
-
-
-# 중복확인 함수
+# 중복확인 함수 => 데코레이터 고민 중
 def check_duplicate(key, target):
     if mongodb.find_one(query={key: target}, collection_name="user"):
         return {
             "queryStatus": "already exist"
-            }, 500
+            }, 409
 
 
 # 순서 고정 함수
@@ -43,10 +41,16 @@ def fix_index(target, key):
 
 
 # blocklist에 있는지 체크하는 함수 (jwt_required 데코레이터가 있는 모든 곳에 있어야함) => 라이브러리 내에 있는 데코레이터 아님
-def check_if_token_is_revoked(jti):
+def check_jwt():
+    user_id = get_jwt_identity()
+    jti = get_jwt()["jti"]
     rd = redis.StrictRedis(host="localhost", port="6379", db=0, decode_responses=True)
     token_in_redis = rd.get(jti)
-    return token_in_redis
+    if (not user_id) or (token_in_redis is not None):
+        return False
+    else:
+        return user_id
+
 
 
 @Token.route('')
@@ -58,7 +62,7 @@ class TokenControl(Resource):
         if not refresh_token:  # refresh token이 탈취되어서 db에서 삭제한 경우
             return {
                 "queryStatus": "refresh token was taken"
-            }
+            }, 403
         delta = timedelta(minutes=1)
         access_token = create_access_token(identity=user_id, expires_delta=delta)
     
@@ -70,8 +74,12 @@ class TokenControl(Resource):
     
     @jwt_required()
     def delete(self):  # access or refresh 가 탈취된 경우 or 로그아웃하는 경우 => 현재 access blocklist에 추가 + 현재 refresh db 에서 삭제
-        user_id = get_jwt_identity()
+        
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         print("user_id: ", user_id)
+        if not user_id:
+            return{"queryStatus": "wrong Token"}, 403
+        
         jti = get_jwt()["jti"]
         print(jti)
         
@@ -181,11 +189,9 @@ class AuthRegister(Resource):
         비밀번호를 변경합니다 
         비밀번호 변경 클릭 -> 아이디 비밀번호 한 번 더 확인 -> 새로운 비밀번호 입력 후 변경
         """
-        user_id = get_jwt_identity()
-        jti = get_jwt()["jti"]
-        print(check_if_token_is_revoked(jti))
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "token is wrong"}, 500
+            return{"queryStatus": "wrong Token"}, 403
 
         new_password = (request.get_json())["password"]
         new_encrypted_password = bcrypt.hashpw(str(new_password).encode("utf-8"), bcrypt.gensalt())
@@ -205,9 +211,9 @@ class AuthRegister(Resource):
         회원정보를 삭제합니다(회원탈퇴)
         회원탈퇴 클릭 -> 아이디 비밀번호 한 번 더 확인 -> 회원탈퇴
         """
-        user_id = get_jwt_identity()
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "token is wrong"}, 500
+            return{"queryStatus": "wrong Token"}, 403
 
         # 활동 알수없음으로 바꾸기
         print("author을 알 수 없음으로 바꾸는 과정 진입")
@@ -236,7 +242,7 @@ class AuthRegister(Resource):
                 post_change_result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={"$set": alert_delete})
 
                 if post_change_result.raw_result["n"] == 0:
-                    return{"queryStatus": "author information change fail"}
+                    return{"queryStatus": "author information change fail"}, 500
         
         if replies:
             print("작성한 댓글이 있는 경우")
@@ -255,14 +261,14 @@ class AuthRegister(Resource):
                 reply_change_result = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$set": alert_delete})
 
                 if reply_change_result.raw_result["n"] == 0:
-                    return{"queryStatus": "author information change fail"}
+                    return{"queryStatus": "author information change fail"}, 500
 
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": user_id}, collection_name="user")
 
         if result.raw_result["n"] == 1:
-            return{"queryStatus": "success"}
+            return{"queryStatus": "success"}, 200
         else :
             return {"queryStatus": "user delete fail"}, 500
 
@@ -287,13 +293,13 @@ class AuthLogin(Resource):
             # 해당 아이디가 없는 경우
             return {
                 "queryStatus": "not exist"
-            }, 400
+            }, 403
 
         elif not bcrypt.checkpw((user_pw).encode("utf-8"), user_info["password"].encode("utf-8")):
             # 비밀번호가 일치하지 않는 경우
             return {
                 "queryStatus": "wrong password"
-            }, 500
+            }, 401
 
         else:
             # 비밀번호 일치한 경우
@@ -304,7 +310,7 @@ class AuthLogin(Resource):
             
 
             if add_refresh_token.raw_result["n"] != 1:
-                return{"queryStatus": "add token fail"}
+                return{"queryStatus": "add token fail"}, 500
 
             return {
                 "accessToken": access_token,
@@ -314,22 +320,15 @@ class AuthLogin(Resource):
             }, 200
 
 
-    @jwt_required()
+    @jwt_required()  # jwt 보냈는지, 만료된 건 아닌지
     def get(self):  # 회원정보조회
         """
         회원정보를 조회합니다.
         """
 
-        # 아래 8줄 리펙토링할 것 !!
-        user_id = get_jwt_identity()
-        jti = get_jwt()["jti"]
-        blocklist = check_if_token_is_revoked(jti)
-        print("결과", blocklist)
-        if blocklist is not None:  # blocklist 에 추가된 토큰
-            return{"queryStatus": "wrong token"}
-
-        if not user_id:  # jwt_required()를 뚫고 왔는데도 문제가 있는 경우
-            return{"queryStatus": "token is wrong"}, 500
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return{"queryStatus": "wrong Token"}, 403
         
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
@@ -355,10 +354,9 @@ class AuthLogin(Resource):
         회원정보를 수정합니다
         """
 
-        user_id = get_jwt_identity()
-
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "token is wrong"}, 500
+            return{"queryStatus": "wrong Token"}, 403
 
         request_info = request.get_json()
         del (request_info["activity"])
@@ -385,10 +383,9 @@ class ActivityControl(Resource):
         """
         사용자 활동과 관련된 게시글 보여주기
         """
-        user_id = get_jwt_identity()
-
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "token is wrong"}, 500
+            return{"queryStatus": "wrong Token"}, 403
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
        
@@ -398,7 +395,7 @@ class ActivityControl(Resource):
             # 리스트로 이루어진 리스트  "likes" : [["board_type", "content_id"], ["board_type", "content_id"]
             return {
                 "{}List" .format(activity_type) :None
-            }
+            }, 200
         else:
             post_list = []
             for post in target_activity:
@@ -419,4 +416,4 @@ class ActivityControl(Resource):
           
             return {
                 "{}List" .format(activity_type): post_list
-            }
+            }, 200

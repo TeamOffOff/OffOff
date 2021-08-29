@@ -4,6 +4,7 @@ from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from .user import check_jwt
 
 import mongo
 
@@ -14,12 +15,19 @@ Post = Namespace("post", description="게시물 관련 API")
 Reply = Namespace("reply", description="댓글 관련 API")
 
 
+""" 리펙토링 """
 
-# 변수 추출하는 함수
+"""변수 추출하는 함수"""
 @jwt_required()
 def get_variables():
-    # body에서 JSON 
+    user_id = check_jwt()  
+    # user_id가 있는지, blocklist는 아닌지
+    # onwership_requried 데코레이터가 없는 곳에는
+    # if not user_id:
+        # return{"queryStatus": "wrong Token"}, 403 있어야함
+
     request_info = request.get_json()
+
     if "_id" in request_info:  # 게시글 작성, 게시글 수정/좋아요, 게시글 삭제 댓글/대댓글 좋아요, 댓글/대댓글의 삭제인 경우
         pk = request_info["_id"]
     else:  # 댓글 작성인 경우
@@ -27,18 +35,16 @@ def get_variables():
 
     board_type = request_info["boardType"]
 
-    user_id = get_jwt_identity()
-
     return request_info, pk, board_type, user_id
 
 
-# JSON 형태로 response하기 위해 string 타입으로 변환하는 함수
+"""JSON 형태로 response하기 위해 string 타입으로 변환하는 함수"""
 def convert_to_string(post, *args):
     for key in args:
         post[key] = str(post[key])
 
 
-# author 정보 embed, 활동 정보 link
+"""author 정보 embed, 활동 정보 link 클래스"""
 class MakeReference:
     def __init__(self, board_type, user):
         self.board_type = board_type
@@ -79,21 +85,24 @@ class MakeReference:
         return result
 
 
-# 수정, 삭제 시 작성자 확인
+"""수정, 삭제 시 작성자 확인""" 
 def ownership_required(func):
     @jwt_required()
     def wrapper(self):
         request_info = request.get_json()
+        
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return{"queryStatus": "wrong Token"}, 403
 
         if "author" in request_info:  # 삭제, 수정은 author 넘겨받음
             author = (request.get_json())["author"]
-            user_id = get_jwt_identity()
 
             if author == user_id:
                 result = func(self)
                 return result
             else:
-                return {"queryStatus": "작성자가 아닙니다"}, 500
+                return {"queryStatus": "작성자가 아닙니다"}, 403
 
         else:  # 게시글, 댓글 좋아요
             result = func(self)
@@ -102,10 +111,13 @@ def ownership_required(func):
     return wrapper
 
 
-# 게시글 관련 API
+"""API 기능 구현"""
+
+"""게시글 관련 API"""
 @Post.route("")
 class PostControl(Resource):
-    def get(self):  # 게시글 조회
+    def get(self): 
+        """특정 id의 게시글을 조회합니다."""
         post_id = request.args.get("postId")
         board_type = request.args.get("boardType") + "_board"
 
@@ -119,7 +131,7 @@ class PostControl(Resource):
                                 collection_name=board_type)
 
         if not post:
-            return {"queryStatus": "not found"}, 500
+            return {"queryStatus": "not found"}, 404
 
         elif update_status.raw_result["n"] == 0:
             return {"queryStatus": "views update fail"}, 500
@@ -127,11 +139,11 @@ class PostControl(Resource):
         else:
             post["_id"] = str(post["_id"])
             post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-            return post
+            return post, 200
 
 
     @ownership_required
-    def delete(self):  # 게시글 삭제
+    def delete(self):
         """특정 id의 게시글을 삭제합니다."""
 
         # 클라이언트에서 받은 변수 가져오기
@@ -155,11 +167,13 @@ class PostControl(Resource):
             return {"queryStatus": "success"}, 200
 
 
-    def post(self):  # 게시글 생성
+    def post(self): 
         """게시글을 생성합니다."""
 
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
+        if not user:
+            return{"queryStatus": "wrong Token"}, 403
         
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board"
@@ -309,6 +323,8 @@ class CommentControl(Resource):
 
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
+        if not user:
+            return{"queryStatus": "wrong Token"}, 403
         
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board_reply"
@@ -355,6 +371,8 @@ class CommentControl(Resource):
         """좋아요를 저장합니다"""
         # 클라이언트에서 받은 변수 가져오기
         request_info, reply_id, board_type, user = get_variables()
+        if not user:
+            return{"queryStatus": "wrong Token"}, 403
         
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board_reply"
