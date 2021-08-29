@@ -10,9 +10,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
-import com.yuuuzzzin.offoff_android.databinding.CalendarDayLayoutBinding
+import com.yuuuzzzin.offoff_android.databinding.CalendarDayBinding
 import com.yuuuzzzin.offoff_android.databinding.FragmentScheduleBinding
-import com.yuuuzzzin.offoff_android.view.ui.BottomDialog
 import jp.kuluna.calendarviewpager.CalendarPagerAdapter
 import jp.kuluna.calendarviewpager.CalendarViewPager
 import jp.kuluna.calendarviewpager.Day
@@ -25,7 +24,7 @@ class ScheduleFragment : Fragment() {
     private val binding get() = mBinding!!
 
     lateinit var calendar: CalendarViewPager
-    private val bottomDialog = BottomDialog()
+    private val bottomDialog = CalendarBottomDialog()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +48,7 @@ class ScheduleFragment : Fragment() {
                     true
                 }
                 R.id.action_set -> {
-                    startActivity(Intent(context, ScheduleTypeActivity::class.java))
+                    startActivity(Intent(context, ScheduleTypeSettingActivity::class.java))
                     true
                 }
                 else -> false
@@ -59,21 +58,18 @@ class ScheduleFragment : Fragment() {
 
     private fun initCalendar() {
         calendar = binding.cvCalendar
-        calendar.adapter = CalendarAdapter(requireContext(), startingAt = CalendarPagerAdapter.DayOfWeek.Monday)
+        calendar.adapter = CalendarAdapter(requireContext())
         setDateHeader(Calendar.getInstance())
 
         // 캘린더 셀 클릭 리스너
         calendar.onDayClickListener = { day: Day ->
             val bundle = Bundle()
-            bundle.putString("month", day.calendar.get(Calendar.MONTH).toString())
+            bundle.putString("month",(day.calendar.get(Calendar.MONTH) + 1).toString())
             bundle.putString("day", day.calendar.get(Calendar.DAY_OF_MONTH).toString())
             bundle.putInt("dayOfWeek", day.calendar.get(Calendar.DAY_OF_WEEK))
             bottomDialog.arguments = bundle
             bottomDialog.show(parentFragmentManager, "custom_dialog")
         }
-
-
-
 
         calendar.onDayLongClickListener = { day: Day ->
 
@@ -100,23 +96,24 @@ class ScheduleFragment : Fragment() {
 
 }
 
-class CalendarAdapter(context: Context, startingAt: DayOfWeek) : CalendarPagerAdapter(context) {
+class CalendarAdapter(context: Context) : CalendarPagerAdapter(context) {
     override fun onCreateView(parent: ViewGroup, viewType: Int): View {
-        return LayoutInflater.from(context).inflate(R.layout.calendar_day_layout, parent, false)
+        return LayoutInflater.from(context).inflate(R.layout.calendar_day, parent, false)
     }
 
     override fun onBindView(view: View, day: Day) {
-        val tvDate = CalendarDayLayoutBinding.bind(view).tvDate
-        //val icon = CalendarDayLayoutBinding.bind(view).tvScheduleType
+        val tvDate = CalendarDayBinding.bind(view).tvDate
+        val icon = CalendarDayBinding.bind(view).tvScheduleType
 
         if (day.state == DayState.ThisMonth) {
             view.visibility = View.VISIBLE
             tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
-            //icon.visibility = if (day.isSelected) View.VISIBLE else View.GONE
+            icon.visibility = if (day.calendar.get(Calendar.DAY_OF_MONTH) == 1 || day.calendar.get(Calendar.DAY_OF_MONTH) ==3 || day.calendar.get(Calendar.DAY_OF_MONTH) ==12 ||
+                day.calendar.get(Calendar.DAY_OF_MONTH) ==16 || day.calendar.get(Calendar.DAY_OF_MONTH) ==  20 || day.calendar.get(Calendar.DAY_OF_MONTH) == 28 ||
+                day.calendar.get(Calendar.DAY_OF_MONTH) ==25 || day.calendar.get(Calendar.DAY_OF_MONTH) ==  29 || day.calendar.get(Calendar.DAY_OF_MONTH) == 30) View.VISIBLE else View.GONE
         } else {
             view.visibility = View.INVISIBLE
         }
     }
 
 }
-

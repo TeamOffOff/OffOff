@@ -14,7 +14,7 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".view.ui.schedule.ScheduleSetActivity"></activity>
+        <activity android:name=".view.ui.schedule.ScheduleTypeSettingActivity"></activity>
         <activity android:name=".view.ui.schedule.AddScheduleActivity" />
         <activity
             android:name=".view.SplashActivity"

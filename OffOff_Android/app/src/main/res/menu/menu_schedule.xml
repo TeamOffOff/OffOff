@@ -8,6 +8,6 @@
 
     <item
         android:id="@+id/action_set"
-        android:title="설정"/>
+        android:title="스케줄 편집"/>
 
 </menu>
