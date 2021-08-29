@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
+		EA0624D926DBB1B6004FF91A /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624D826DBB1B6004FF91A /* Realm */; };
+		EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624DA26DBB1B6004FF91A /* RealmSwift */; };
 		EA07345526929C01007830ED /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345426929C01007830ED /* Post.swift */; };
 		EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */ = {isa = PBXBuildFile; fileRef = EA0734562692A0B8007830ED /* PostsDummyData.json */; };
 		EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
@@ -226,7 +228,9 @@
 				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
 				EA8A334226D61B5F0014D97C /* RxGesture in Frameworks */,
 				EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */,
+				EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */,
 				EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */,
+				EA0624D926DBB1B6004FF91A /* Realm in Frameworks */,
 				EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */,
 				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
@@ -496,6 +500,8 @@
 				EA285A6726C565F000E65EB2 /* RxCocoa */,
 				EA83564126D3727100D60C46 /* FSCalendar */,
 				EA8A334126D61B5F0014D97C /* RxGesture */,
+				EA0624D826DBB1B6004FF91A /* Realm */,
+				EA0624DA26DBB1B6004FF91A /* RealmSwift */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -542,6 +548,7 @@
 				EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */,
 				EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */,
+				EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -998,6 +1005,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.13.0;
+			};
+		};
 		EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
@@ -1075,6 +1090,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		EA0624D826DBB1B6004FF91A /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = Realm;
+		};
+		EA0624DA26DBB1B6004FF91A /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
 		EA285A6726C565F000E65EB2 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
