@@ -31,9 +31,21 @@ class ScheduleViewController: UIViewController {
         self.calendar.dataSource = self
         self.calendar.register(ScheduleCalendarCell.self, forCellReuseIdentifier: ScheduleCalendarCell.identifier)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+        let addScheduleButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+        let editScheduleButton = UIBarButtonItem(barButtonSystemItem: .edit, target: nil, action: nil)
         
-        self.navigationItem.rightBarButtonItem!
+        self.navigationItem.rightBarButtonItems = [editScheduleButton, addScheduleButton]
+        
+        editScheduleButton
+            .rx.tap
+            .bind {
+                let vc = EditScheduleViewController()
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true, completion: nil)
+            }
+            .disposed(by: disposeBag)
+        
+        addScheduleButton
             .rx.tap
             .bind {
                 // + 버튼을 누르면 설정 해둔 근무 일정들을 표시
@@ -43,8 +55,6 @@ class ScheduleViewController: UIViewController {
                 self.present(controller, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
-        
-        
     }
 }
 
@@ -70,3 +80,16 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
         vc.viewModel.date.onNext(date)
     }
 }
+
+//enum colors {
+//    case color1 = (bg: red, text: yellow)
+//    case color2
+//    case color3
+//}
+//
+//struct data {
+//    var title: String
+//    var startDate: Date
+//    var endDate: Date
+//    var color: colors
+//}

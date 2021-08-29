@@ -25,6 +25,8 @@ class SetRoutineView: UIView {
     lazy var routineCollection = UICollectionView(frame: .zero, collectionViewLayout: routineCollectionLayout).then {
         $0.backgroundColor = .white
         $0.allowsMultipleSelection = true
+        $0.showsHorizontalScrollIndicator = false
+        routineCollectionLayout.scrollDirection = .horizontal
     }
     
     override init(frame: CGRect) {
@@ -59,7 +61,5 @@ class SetRoutineView: UIView {
             $0.left.equalToSuperview().inset(12)
             $0.right.equalToSuperview()
         }
-        
-//        routineCollection.contentInset.top = (routineCollection.bounds.height - Constants.RoutineCellSize) / 2.0
     }
 }

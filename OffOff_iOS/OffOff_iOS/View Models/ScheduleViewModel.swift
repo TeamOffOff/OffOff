@@ -19,10 +19,10 @@ class ScheduleViewModel {
     
     init() {
         authorizationCheck()
-        deleteAllRoutines()
+//        deleteAllRoutines()
 //        saveNewRoutine(title: "A", startDate: Date(), endDate: Date())
 //        saveNewRoutine(title: "B", startDate: Date().addingTimeInterval(10), endDate: Date())
-        fetchRoutines()
+//        fetchRoutines()
     }
     
     private func authorizationCheck() {
@@ -46,21 +46,14 @@ class ScheduleViewModel {
     }
     
     private func saveNewRoutine(title: String, startDate: Date, endDate: Date) {
-        CoreDataManager.shared.saveRoutine(title: title, startDate: startDate, endDate: endDate) { print($0) }
+        
     }
     
     private func fetchRoutines() {
-        let routines = CoreDataManager.shared.getRutines()
-        print(routines.count)
-        routines.forEach {
-            print($0.title)
-        }
+        
     }
     
     private func deleteAllRoutines() {
         
-        CoreDataManager.shared.deleteAllRoutine()
-        
-
     }
 }

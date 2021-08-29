@@ -7,28 +7,42 @@
 
 import UIKit
 import RxSwift
+import RxGesture
 
 class SetRoutineViewController: UIViewController {
     let customView = SetRoutineView()
     var viewModel = SetRoutineViewModel()
     let disposeBag = DisposeBag()
     
+    let outterView = UIView().then { $0.backgroundColor = .clear }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(customView)
-        self.view.backgroundColor = .gray.withAlphaComponent(0.5)
-
-        customView.routineCollection.register(RoutineCell.self, forCellWithReuseIdentifier: RoutineCell.identifier)
-        customView.routineCollection.rx.setDelegate(self).disposed(by: disposeBag)
+        makeView()
         
-        customView.snp.makeConstraints {
-            $0.height.equalToSuperview().multipliedBy(0.25)
-            $0.left.right.bottom.equalToSuperview()
-        }
+        // bind inputs
+        customView.routineCollection
+            .rx.modelSelected(RoutineModel.self)
+            .subscribe(onNext: {
+                print($0)
+            })
+            .disposed(by: disposeBag)
         
+        outterView.rx
+            .tapGesture()
+            .when(.recognized)
+            .subscribe(onNext: { _ in
+                self.dismiss(animated: true, completion: nil)
+            })
+            .disposed(by: disposeBag)
+        
+        // bind outputs
         viewModel.routines
-            .bind(to: customView.routineCollection.rx.items(cellIdentifier: RoutineCell.identifier, cellType: RoutineCell.self)) { (row, element, cell) in
-                cell.titleLabel.text = element
+            .bind(to: customView.routineCollection
+                    .rx.items(cellIdentifier: RoutineCell.identifier, cellType: RoutineCell.self)) { (row, element, cell) in
+                cell.titleLabel.text = element.title
+                cell.titleLabel.textColor = element.textColor
+                cell.backgroundColor = element.backgroundColor
             }
             .disposed(by: disposeBag)
         
@@ -40,6 +54,25 @@ class SetRoutineViewController: UIViewController {
             .disposed(by: disposeBag)
     
         customView.makeView()
+    }
+    
+    //MARK: - Private functions
+    private func makeView() {
+        self.view.addSubview(customView)
+        self.view.addSubview(outterView)
+        self.view.backgroundColor = .clear
+
+        customView.routineCollection.register(RoutineCell.self, forCellWithReuseIdentifier: RoutineCell.identifier)
+        customView.routineCollection.rx.setDelegate(self).disposed(by: disposeBag)
+        
+        customView.snp.makeConstraints {
+            $0.height.equalToSuperview().multipliedBy(0.25)
+            $0.left.right.bottom.equalToSuperview()
+        }
+        outterView.snp.makeConstraints {
+            $0.left.right.top.equalToSuperview()
+            $0.bottom.equalTo(customView.snp.top)
+        }
     }
 }
 

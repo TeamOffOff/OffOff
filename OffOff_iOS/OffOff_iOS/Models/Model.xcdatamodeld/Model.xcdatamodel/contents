@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20E232" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="WorkRoutine" representedClassName="WorkRoutine" syncable="YES" codeGenerationType="category">
+        <attribute name="backgroundColor" optional="YES" attributeType="String"/>
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="textColor" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="WorkRoutine" positionX="-63" positionY="-18" width="128" height="74"/>
+        <element name="WorkRoutine" positionX="-63" positionY="-18" width="128" height="118"/>
     </elements>
 </model>
