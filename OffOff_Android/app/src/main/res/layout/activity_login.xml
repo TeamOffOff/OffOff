@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
-        tools:context=".view.ui.member.LoginActivity">
+        tools:context=".views.ui.member.LoginActivity">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline1"

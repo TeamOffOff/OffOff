@@ -5,7 +5,7 @@
     android:id="@+id/settingsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ui.SettingsFragment">
+    tools:context=".views.ui.SettingsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

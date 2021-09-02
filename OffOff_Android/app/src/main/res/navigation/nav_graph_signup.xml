@@ -8,13 +8,13 @@
 
     <activity
         android:id="@+id/loginActivity"
-        android:name="com.yuuuzzzin.offoff_android.view.ui.member.LoginActivity"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.member.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login"/>
 
     <fragment
         android:id="@+id/signupStep1Fragment"
-        android:name="com.yuuuzzzin.offoff_android.view.ui.member.SignupStep1Fragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.member.SignupStep1Fragment"
         android:label="fragment_signup_step1"
         tools:layout="@layout/fragment_signup_step1" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/signupStep2Fragment"
-        android:name="com.yuuuzzzin.offoff_android.view.ui.member.SignupStep2Fragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.member.SignupStep2Fragment"
         android:label="fragment_signup_step2"
         tools:layout="@layout/fragment_signup_step2">
         <action
@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/signupStep3Fragment"
-        android:name="com.yuuuzzzin.offoff_android.view.ui.member.SignupStep3Fragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.member.SignupStep3Fragment"
         android:label="fragment_signup_step3"
         tools:layout="@layout/fragment_signup_step3" >
         <action

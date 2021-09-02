@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
-    tools:context=".view.ui.schedule.ScheduleTypeSettingActivity">
+    tools:context=".views.ui.schedule.ScheduleTypeSettingActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_layout"

@@ -12,7 +12,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.ui.board.BoardsFragment"
+        tools:context=".views.ui.board.BoardsFragment"
         android:id="@+id/boardsFragment">
 
         <com.google.android.material.appbar.AppBarLayout

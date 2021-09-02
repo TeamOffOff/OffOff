@@ -16,7 +16,7 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.utils.setDefaultColor
 import com.yuuuzzzin.offoff_android.utils.setErrorColor
 import com.yuuuzzzin.offoff_android.utils.setVerifiedColor
-import com.yuuuzzzin.offoff_android.view.ui.member.SignupActivity
+import com.yuuuzzzin.offoff_android.views.ui.member.SignupActivity
 import com.yuuuzzzin.offoff_android.viewmodel.SignupViewModel
 import info.androidhive.fontawesome.FontDrawable
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ui.member.SignupActivity">
+    tools:context=".views.ui.member.SignupActivity">
 
     <!-- 프래그먼트들이 보여질 컨테이너뷰 -->
     <androidx.fragment.app.FragmentContainerView
