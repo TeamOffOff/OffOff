@@ -1,5 +1,5 @@
 //
-//  SetRoutineViewController.swift
+//  SetShiftViewController.swift
 //  OffOff_iOS
 //
 //  Created by Lee Nam Jun on 2021/08/24.
@@ -9,9 +9,9 @@ import UIKit
 import RxSwift
 import RxGesture
 
-class SetRoutineViewController: UIViewController {
+class SetShiftViewController: UIViewController {
     let customView = SetRoutineView()
-    var viewModel = SetRoutineViewModel()
+    var viewModel = SetShiftViewModel()
     let disposeBag = DisposeBag()
     
     let outterView = UIView().then { $0.backgroundColor = .clear }
@@ -21,12 +21,12 @@ class SetRoutineViewController: UIViewController {
         makeView()
         
         // bind inputs
-        customView.routineCollection
-            .rx.modelSelected(RoutineModel.self)
-            .subscribe(onNext: {
-                print($0)
-            })
-            .disposed(by: disposeBag)
+//        customView.routineCollection
+//            .rx.modelSelected(RoutineModel.self)
+//            .subscribe(onNext: {
+//                print($0)
+//            })
+//            .disposed(by: disposeBag)
         
         outterView.rx
             .tapGesture()
@@ -37,12 +37,12 @@ class SetRoutineViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // bind outputs
-        viewModel.routines
+        viewModel.shifts
             .bind(to: customView.routineCollection
                     .rx.items(cellIdentifier: RoutineCell.identifier, cellType: RoutineCell.self)) { (row, element, cell) in
                 cell.titleLabel.text = element.title
-                cell.titleLabel.textColor = element.textColor
-                cell.backgroundColor = element.backgroundColor
+                cell.titleLabel.textColor = UIColor(hex: element.textColor)
+                cell.backgroundColor = UIColor(hex: element.backgroundColor)
             }
             .disposed(by: disposeBag)
         
@@ -76,7 +76,7 @@ class SetRoutineViewController: UIViewController {
     }
 }
 
-extension SetRoutineViewController: UICollectionViewDelegateFlowLayout {
+extension SetShiftViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 //        let width = collectionView.bounds.width
         let cellWidth = Constants.RoutineCellSize

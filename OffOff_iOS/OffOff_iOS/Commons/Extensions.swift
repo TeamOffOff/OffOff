@@ -5,10 +5,7 @@
 //  Created by Lee Nam Jun on 2021/07/09.
 //
 
-import Foundation
-import UIKit.UIView
-import UIKit.UIColor
-import UIKit.UITextField
+import RealmSwift
 import SkyFloatingLabelTextField
 import FontAwesome
 import RxSwift
@@ -31,6 +28,11 @@ protocol ViewModelType {
 extension String {
     func toDate() -> Date? {
         dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.date(from: self)
+    }
+    
+    func toDate(_ format: String) -> Date? {
+        dateFormatter.dateFormat = format
         return dateFormatter.date(from: self)
     }
 }
@@ -227,5 +229,20 @@ extension UIFont {
 
     func italic() -> UIFont {
         return withTraits(traits: .traitItalic)
+    }
+}
+
+
+extension Results {
+    // Realm Result를 Array로 convert
+    func toArray<T>(ofType: T.Type) -> [T] {
+        var array = [T]()
+        for i in 0 ..< count {
+            if let result = self[i] as? T {
+                array.append(result)
+            }
+        }
+        
+        return array
     }
 }

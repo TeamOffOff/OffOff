@@ -13,37 +13,35 @@ class EditScheduleViewController: UIViewController {
     let disposeBag = DisposeBag()
     let viewModel = EditScheduleViewModel()
     
-    var addRoutineButton = UIButton().then {
-        $0.setTitle("근무타입 추가", for: .normal)
-        $0.backgroundColor = .lightGray
-        $0.setTitleColor(.black, for: .normal)
-    }
-    var routineTable = UITableView()
+    let customView = EditScheduleView()
     
     override func loadView() {
-        self.view = UIView()
-        self.view.backgroundColor = .white
-        self.view.addSubview(addRoutineButton)
-        self.view.addSubview(routineTable)
+        self.view = customView
+        self.view.backgroundColor = .lightGray
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        viewModel.savedRutines
-//            .bind { print($0) }
-//            .disposed(by: disposeBag)
+        customView.routineTable.rowHeight = 80
         
-        makeView()
+        customView.closeButton.rx.tap
+            .bind {
+                self.dismiss(animated: true, completion: nil)
+            }
+            .disposed(by: disposeBag)
+        
+        // bind outputs
+        viewModel.shifts
+            .observeOn(MainScheduler.instance)
+            .bind(to: customView.routineTable.rx.items(cellIdentifier: RoutineTableViewCell.identifier, cellType: RoutineTableViewCell.self)) { row, element, cell  in
+                cell.titleLabel.text = String(element.title.first!)
+                cell.timeLabel.text = UserRoutineManager.shared.getRoutineTime(startDate: element.startDate, endDate: element.endDate)
+            }
+            .disposed(by: disposeBag)
+        
+        customView.makeView()
     }
     
-    private func makeView() {
-        addRoutineButton.snp.makeConstraints {
-            $0.right.top.equalTo(self.view.safeAreaLayoutGuide).inset(12)
-        }
-        routineTable.snp.makeConstraints {
-            $0.top.equalTo(addRoutineButton.snp.bottom).offset(12)
-            $0.left.right.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(8)
-        }
-    }
+    
 }

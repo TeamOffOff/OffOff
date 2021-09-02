@@ -155,6 +155,15 @@
         }
       },
       {
+        "package": "RxRealm",
+        "repositoryURL": "https://github.com/RxSwiftCommunity/RxRealm",
+        "state": {
+          "branch": null,
+          "revision": "8806d235b3df1d66bda1fbccf164573698afc2a7",
+          "version": "4.0.3"
+        }
+      },
+      {
         "package": "RxSwift",
         "repositoryURL": "https://github.com/ReactiveX/RxSwift.git",
         "state": {

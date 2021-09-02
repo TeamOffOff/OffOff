@@ -61,7 +61,11 @@ class ScheduleViewController: UIViewController {
 extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
         if let cell = cell as? ScheduleCalendarCell {
-            cell.eventTitleLabel.text = ["D", "N", "", "", ""].randomElement()
+            let savedShift = viewModel.getSavedShift(of: date)
+            savedShift.bind {
+                cell.savedShift.onNext($0)
+            }
+            .dispose()
         } else {
             return
         }
@@ -73,23 +77,10 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        let vc = SetRoutineViewController()
+        let vc = SetShiftViewController()
         vc.modalTransitionStyle = .coverVertical
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true, completion: nil)
         vc.viewModel.date.onNext(date)
     }
 }
-
-//enum colors {
-//    case color1 = (bg: red, text: yellow)
-//    case color2
-//    case color3
-//}
-//
-//struct data {
-//    var title: String
-//    var startDate: Date
-//    var endDate: Date
-//    var color: colors
-//}

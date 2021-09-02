@@ -11,7 +11,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import EventKit
-import CoreData
+import RealmSwift
 
 class ScheduleViewModel {
     private let eventStore = EKEventStore()
@@ -19,10 +19,7 @@ class ScheduleViewModel {
     
     init() {
         authorizationCheck()
-//        deleteAllRoutines()
-//        saveNewRoutine(title: "A", startDate: Date(), endDate: Date())
-//        saveNewRoutine(title: "B", startDate: Date().addingTimeInterval(10), endDate: Date())
-//        fetchRoutines()
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
     }
     
     private func authorizationCheck() {
@@ -45,12 +42,17 @@ class ScheduleViewModel {
         }
     }
     
+    func getSavedShift(of day: Date) -> Observable<SavedShift?> {
+        UserRoutineManager.shared.getSavedShift(of: day).map { $0.isEmpty ? nil : $0.first!}
+    }
+    
     private func saveNewRoutine(title: String, startDate: Date, endDate: Date) {
         
     }
     
-    private func fetchRoutines() {
-        
+    private func fetchRoutines() -> [SavedShift] {
+//        UserRoutineManager.shared.getSavedRoutines(by: "Test")
+        return []
     }
     
     private func deleteAllRoutines() {
