@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 
 object Constants {
 
+    const val DATABASE_NAME = "offoff-db"
+    const val SCHEDULE_DATA_FILENAME = "schedule.json"
+
     // 프로필 사진 설정
     const val PROFILE_OPTION1 = "기본 이미지로 설정"
     const val PROFILE_OPTION2 = "사진 찍기"

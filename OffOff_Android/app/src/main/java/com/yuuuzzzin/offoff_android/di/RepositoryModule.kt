@@ -26,4 +26,10 @@ object RepositoryModule {
         return MemberRepository(memberService)
     }
 
+//    @Provides
+//    @ViewModelScoped
+//    fun provideScheduleServiceRepository(shiftDao: ShiftDao): ScheduleServiceRepository {
+//        return ScheduleServiceRepository(shiftDao)
+//    }
+
 }

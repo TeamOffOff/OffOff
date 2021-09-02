@@ -4,11 +4,8 @@ import android.content.Context
 import androidx.multidex.MultiDexApplication
 import com.yuuuzzzin.offoff_android.service.SharedPreferenceController
 import dagger.hilt.android.HiltAndroidApp
-
-/* Hilt 애플리케이션 클래스
-* Hilt를 사용하기 위해서는 무조건 @HiltAndroidApp annotation을 가진
-* Application 클래스가 존재해야 한다.
-* */
+import io.realm.Realm
+import io.realm.RealmConfiguration
 
 @HiltAndroidApp
 class OffoffApplication : MultiDexApplication() {
@@ -16,18 +13,17 @@ class OffoffApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         pref = SharedPreferenceController(applicationContext)
+
+        // Realm 초기화
+        Realm.init(this)
+        val config : RealmConfiguration = RealmConfiguration.Builder()
+            .allowWritesOnUiThread(true)
+            .name("schedule.realm")
+            .deleteRealmIfMigrationNeeded()
+            .build()
+
+        Realm.setDefaultConfiguration(config)
     }
-
-/*    override fun onCreate() {
-        super.onCreate()
-
-        try {
-            Amplify.configure(applicationContext)
-            Log.i("MyAmplifyApp", "Initialized Amplify")
-        } catch (error: AmplifyException) {
-            Log.e("MyAmplifyApp", "Could not initialize Amplify", error)
-        }
-    }*/
 
     init {
         instance = this
