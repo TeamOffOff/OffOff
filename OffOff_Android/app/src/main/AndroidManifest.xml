@@ -14,10 +14,10 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".view.ui.schedule.ScheduleTypeSettingActivity"></activity>
-        <activity android:name=".view.ui.schedule.AddScheduleActivity" />
+        <activity android:name=".views.ui.schedule.ScheduleTypeSettingActivity"></activity>
+        <activity android:name=".views.ui.schedule.AddScheduleActivity" />
         <activity
-            android:name=".view.SplashActivity"
+            android:name=".views.SplashActivity"
             android:noHistory="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -26,21 +26,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ui.board.PostWriteActivity" /> <!-- <intent-filter> -->
+        <activity android:name=".views.ui.board.PostWriteActivity" /> <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.MAIN" /> -->
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
         <!-- </activity> -->
-        <activity android:name=".view.ui.member.SignupActivity" />
-        <activity android:name=".view.ui.member.LoginActivity" /> <!-- <intent-filter> -->
+        <activity android:name=".views.ui.member.SignupActivity" />
+        <activity android:name=".views.ui.member.LoginActivity" /> <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.MAIN" /> -->
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
         <!--  -->
-        <activity android:name=".view.ui.board.PostActivity" />
-        <activity android:name=".view.ui.board.BoardActivity" />
-        <activity android:name=".view.ui.UserActivity" />
-        <activity android:name=".view.ui.SearchActivity" />
+        <activity android:name=".views.ui.board.PostActivity" />
+        <activity android:name=".views.ui.board.BoardActivity" />
+        <activity android:name=".views.ui.UserActivity" />
+        <activity android:name=".views.ui.SearchActivity" />
         <activity android:name=".MainActivity" />
     </application>
 

@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id "com.google.protobuf" version "0.8.12"
+    id "realm-android"
 }
 
 Properties properties = new Properties()
@@ -44,6 +45,9 @@ android {
         viewBinding true
         dataBinding true
     }
+    realm {
+        syncEnabled = true
+    }
 }
 
 dependencies {
@@ -67,12 +71,6 @@ dependencies {
     // Gson
     implementation 'com.google.code.gson:gson:2.8.7'
 
-    // Room
-    def room_version = "2.3.0"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-
     // Navigation
     def nav_version = "2.3.5"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -81,6 +79,7 @@ dependencies {
     // recyclerview
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation"androidx.recyclerview:recyclerview-selection:1.1.0"
+    implementation 'io.realm:android-adapters:2.0.0'
 
     // Coroutines
     def coroutines_version = "1.5.1"
@@ -135,6 +134,11 @@ dependencies {
     // DataStore
     implementation  "androidx.datastore:datastore-core:1.0.0-alpha04"
     implementation  "com.google.protobuf:protobuf-javalite:3.10.0"
+
+    // CoroutineWorker
+    def work_version = "2.5.0"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
 }
 
 protobuf {
