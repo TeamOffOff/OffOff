@@ -10,7 +10,7 @@ class MongoHelper:
         self.client = MongoClient(self.host, self.port)
         self.db = self.client[db_name]
         self.collection = None
-
+    
     def insert_one(self, data=None, collection_name=None):
         self.collection = self.db[collection_name]
         result = self.collection.insert_one(data).inserted_id
@@ -51,6 +51,12 @@ class MongoHelper:
         result = self.collection.update_many(query, modify, upsert=False)
         return result
     
+    def create_index(self, standard, expire_time, collection_name=None):
+        self.db.create_collection(collection_name)
+        self.collection = self.db[collection_name]
+        result = self.collection.create_index(standard, expireAfterSeconds= expire_time)
+        return result
+    
     def aggregate(self, pipeline=None, collection_name=None):
         self.collection = self.db[collection_name]
         result = self.collection.aggregate(pipeline)
@@ -60,6 +66,8 @@ class MongoHelper:
         self.collection = self.db[collection_name]
         result = self.collection.drop()
         return result
+
+
 
 
 if __name__ == "__main__":

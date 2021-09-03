@@ -19,9 +19,9 @@ PostList = Namespace(
     name="postlist",
     description="게시글목록을 불러오는 API")
 
-UserList = Namespace(
-    name="userlist",
-    description="유저목록을 불러오는 API"
+UserControl = Namespace(
+    name="usercontrol",
+    description="유저관련 기능"
 )
 
 def fix_index(target, *args):
@@ -94,17 +94,36 @@ class BoardListControl(Resource):
         return {"queryStatus": "게시판을 등록했습니다"}
 
 
-@UserList.route("")
+@UserControl.route("")
 class UserListControl(Resource):
 
     def get(self):
-        cursor = mongodb.find(collection_name="user")
+        """
+        유저 리스트 불러오는 api
+        """
+        func = request.args.get("func")
+        if func == "userlist": 
+            result = list(mongodb.find(collection_name="user"))
+        
+        elif func == "blocklist":
+            result = list(mongodb.find(collection_name="block_list"))
+            for i in result:
+                i["createdAt"] = str(i["createdAt"])
+        
+        return result
 
-        user_list = []
-        for user in cursor:
-            user_list.append(user)
 
-        return user_list
+    
+    def post(self):
+        """
+        token block 설정 위한 block_list 컬렉션 설정
+        """
+        result = mongodb.create_index(standard="createdAt", collection_name="block_list", expire_time=10)
+        return {
+            "queryStatus": result
+        }
+        
+
 
 
 @PostList.route("/<string:board_type>")

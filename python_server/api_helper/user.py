@@ -1,4 +1,5 @@
 from os import access
+from time import timezone
 from flask import request, jsonify
 from flask.helpers import make_response
 from flask_jwt_extended.utils import get_jwt
@@ -11,7 +12,6 @@ from datetime import datetime, timedelta
 
 
 import mongo
-import redis
 
 
 mongodb = mongo.MongoHelper()
@@ -43,10 +43,12 @@ def fix_index(target, key):
 # blocklist에 있는지 체크하는 함수 (jwt_required 데코레이터가 있는 모든 곳에 있어야함) => 라이브러리 내에 있는 데코레이터 아님
 def check_jwt():
     user_id = get_jwt_identity()
+    print(user_id)
     jti = get_jwt()["jti"]
-    rd = redis.StrictRedis(host="localhost", port="6379", db=0, decode_responses=True)
-    token_in_redis = rd.get(jti)
-    if (not user_id) or (token_in_redis is not None):
+    result = mongodb.find_one(query={"_id":jti}, collection_name="block_list")  # 없으면 null(None) 반환
+
+    if (not user_id) or (result):
+        # user_id 가 없거나 block로 설정되어 있는 경우
         return False
     else:
         return user_id
@@ -82,14 +84,19 @@ class TokenControl(Resource):
         
         jti = get_jwt()["jti"]
         print(jti)
+
+        # createdAt이 block_list의 index임
+        data = {
+            "_id": jti,
+            "createdAt": datetime.utcnow()
+        }
         
-        # 레디스 연결
-        rd = redis.StrictRedis(host="localhost", port="6379", db=0, decode_responses=True)  # 만료 시간 설정해야함
-        result1 = rd.set(jti, "")  # jti : "" 이런 형식으로 저장됨 => 저장되는 경우 True
+        result1 = mongodb.insert_one(data=data, collection_name="block_list")  # result1은 _id
+        print(result1)
+        
 
         result2 = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": ""}})  # unset으로 아예 삭제할 수도 있음
         
-        rd.connection_pool.disconnect()
 
         if not result1:
             return{
@@ -142,15 +149,15 @@ class AuthRegister(Resource):
         if check_duplicate(key="_id", target=user_info["_id"]):
             return{
                 "queryStatus": "id already exist"
-            }
+            }, 409 
         if check_duplicate(key="information.email", target=user_info["information"]["email"]):
             return{
                 "queryStatus": "email already exist"
-            }
+            }, 409
         if check_duplicate(key="subInformation.nickname", target=user_info["subInformation"]["nickname"]):
             return{
                 "queryStatus": "nickname already exist"
-            }
+            }, 409
  
         # 비밀번호를 암호화: 암호화할 때는 string이면 안 되고 byte여야 해서 encode
         encrypted_password = bcrypt.hashpw(str(user_info["password"]).encode("utf-8"), bcrypt.gensalt())  
