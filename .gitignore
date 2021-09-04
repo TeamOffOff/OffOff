@@ -106,7 +106,7 @@ Constants.swift
 # End of https://www.toptal.com/developers/gitignore/api/swift,carthage,cocoapods
 
 # IntelliJ project files
-.idea
+.idea/
 .idea/*.xml
 *.iml
 out
@@ -114,8 +114,14 @@ gen
 build
 rebel.xml
 
+
 # Python server 보안성 자료
 python_server/api_helper/utils.py
-python_server/api_helper/__pycache__/board.cpython-38.pyc
-python_server/api_helper/__pycache__/post.cpython-38.pyc
-python_server/api_helper/__pycache__/user.cpython-38.pyc
+
+# __pycache__
+python_server/api_helper/__pycache__/
+python_server/__pycache__/
+__pycache__/
+
+# 가상환경
+venv/

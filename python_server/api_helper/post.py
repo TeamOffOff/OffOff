@@ -201,9 +201,13 @@ class PostControl(Resource):
         request_info["likes"] = []
         request_info["reports"] = []
         request_info["bookmarks"] = []
-
-        save_image(request_info["img"], "post")
-        del request_info["img"]["body"]
+        
+        if request_info["image"]:
+            print("here")
+            save_image(request_info["image"], "post")
+            del request_info["image"]["body"]
+        
+        print(request_info)
 
         # 게시글 저장
         post_id = mongodb.insert_one(data=request_info, collection_name=board_type)
