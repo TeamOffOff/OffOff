@@ -1,9 +1,10 @@
 package com.yuuuzzzin.offoff_android.views.ui.schedule
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.yuuuzzzin.offoff_android.databinding.ActivityScheduleTypeSettingBinding
-import com.yuuuzzzin.offoff_android.proto.models.ScheduleType
+import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.ScheduleTypeSettingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -12,6 +13,7 @@ class ScheduleTypeSettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityScheduleTypeSettingBinding
     private lateinit var scheduleTypeSettingListAdapter: ScheduleTypeSettingListAdapter
+    private val viewModel: ScheduleViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,27 +21,13 @@ class ScheduleTypeSettingActivity : AppCompatActivity() {
 
         initRV()
         initView()
+        initViewModel()
 
         setContentView(binding.root)
     }
 
     private fun initRV() {
-        scheduleTypeSettingListAdapter = ScheduleTypeSettingListAdapter()
-        binding.rvScheduleType.adapter =scheduleTypeSettingListAdapter
 
-        scheduleTypeSettingListAdapter.scheduleTypeList.addAll(
-            listOf(
-                ScheduleType("주", "14:00", "21:00"),
-                ScheduleType("야", "14:00", "21:00"),
-                ScheduleType("휴", "14:00", "21:00"),
-                ScheduleType("주", "14:00", "21:00"),
-                ScheduleType("야", "14:00", "21:00"),
-                ScheduleType("휴", "14:00", "21:00"),
-                ScheduleType("주", "14:00", "21:00"),
-                ScheduleType("야", "14:00", "21:00"),
-                ScheduleType("휴", "14:00", "21:00")
-            )
-        )
     }
 
     private fun initView() {
@@ -48,4 +36,16 @@ class ScheduleTypeSettingActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, "custom_dialog")
         }
     }
+
+    private fun initViewModel() {
+        binding.viewModel = viewModel
+
+        scheduleTypeSettingListAdapter = ScheduleTypeSettingListAdapter()
+        binding.rvScheduleType.adapter =scheduleTypeSettingListAdapter
+
+//        scheduleTypeSettingListAdapter.shiftList.addAll(
+//            viewModel.allShifts
+//        )
+    }
 }
+

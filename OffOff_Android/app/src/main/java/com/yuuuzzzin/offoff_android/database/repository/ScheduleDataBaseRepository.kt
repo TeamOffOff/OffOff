@@ -7,8 +7,9 @@ import com.yuuuzzzin.offoff_android.database.models.Shift
 * ViewModel <-> Repository <-> DAO
 */
 
-class ScheduleDataBaseRepository
-(private val shiftDao: ShiftDao) {
+class ScheduleDataBaseRepository(
+    private val shiftDao: ShiftDao
+) {
 
     val allShifts = shiftDao.getAllShifts()
 

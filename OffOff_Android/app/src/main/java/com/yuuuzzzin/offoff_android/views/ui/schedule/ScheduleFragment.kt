@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,10 @@ class ScheduleFragment : Fragment() {
 
     private fun initViewModel() {
         binding.viewModel = viewModel
+        realm.executeTransaction {
+            val data = viewModel.allShifts.value
+            Log.d("tag_realm_test", data.toString())
+        }
     }
 
 //    private fun addDb() {

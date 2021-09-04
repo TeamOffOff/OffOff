@@ -14,7 +14,7 @@ class ShiftDao(private val realm: Realm) {
         .findAllAsync()
         .asLiveData()
 
-    // 근무타입 추가가
+    // 근무타입 추가
    fun insertShift(shift: Shift) {
         realm.executeTransactionAsync {
             it.insert(shift)
