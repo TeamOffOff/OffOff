@@ -13,8 +13,17 @@ class EditScheduleViewModel {
     
     // outputs
     var shifts = Observable<[Shift]>.just([])
+    var addingShift: Observable<Bool>
+    var shiftSelected: Observable<Shift>
     
-    init() {
+    init(
+        input: (
+            selectedShift: Observable<Shift>,
+            addButtonTapped: Signal<()>
+        )
+    ) {
+        addingShift = input.addButtonTapped.asObservable().map { _ in true }
+        shiftSelected = input.selectedShift.map { $0 }
         fetchRoutines()
     }
     

@@ -11,7 +11,7 @@ import RxGesture
 
 class SetShiftViewController: UIViewController {
     let customView = SetRoutineView()
-    var viewModel = SetShiftViewModel()
+    var viewModel: SetShiftViewModel!
     let disposeBag = DisposeBag()
     
     let outterView = UIView().then { $0.backgroundColor = .clear }
@@ -19,14 +19,13 @@ class SetShiftViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         makeView()
-        
-        // bind inputs
-//        customView.routineCollection
-//            .rx.modelSelected(RoutineModel.self)
-//            .subscribe(onNext: {
-//                print($0)
-//            })
-//            .disposed(by: disposeBag)
+        viewModel = SetShiftViewModel(
+            input: (
+                leftButtonTapped: customView.leftButton.rx.tap.asSignal(),
+                rightButtonTapped: customView.rightButton.rx.tap.asSignal(),
+                selectedShift: customView.routineCollection.rx.modelSelected(Shift.self).map { $0 }
+            )
+        )
         
         outterView.rx
             .tapGesture()
@@ -50,6 +49,18 @@ class SetShiftViewController: UIViewController {
             .debug()
             .bind {
                 self.customView.dateLabel.text = $0
+            }
+            .disposed(by: disposeBag)
+        
+        // 새로운 시프트 저장처리
+        viewModel.shiftSaved
+            .bind {
+                if $0 {
+                    print("saved")
+                    self.dismiss(animated: true, completion: nil)
+                } else {
+                    print("failed")
+                }
             }
             .disposed(by: disposeBag)
     

@@ -20,10 +20,10 @@ class ScheduleCalendarCell: FSCalendarCell {
     override init!(frame: CGRect) {
         super.init(frame: frame)
         self.contentView.addSubview(eventTitleLabel)
-        
         eventTitleLabel.snp.makeConstraints {
-            $0.left.right.equalToSuperview()
-            $0.centerY.equalToSuperview()
+            $0.top.equalTo(self.titleLabel.snp.bottom).offset(2.5)
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(self.contentView.snp.height).dividedBy(2.0)
         }
         self.titleLabel.snp.removeConstraints()
         self.titleLabel.snp.makeConstraints {
@@ -40,6 +40,8 @@ class ScheduleCalendarCell: FSCalendarCell {
                     self.eventTitleLabel.backgroundColor = UIColor(hex: $0!.shift!.backgroundColor)
                 } else {
                     self.eventTitleLabel.text = nil
+                    self.eventTitleLabel.backgroundColor = .white
+                    self.eventTitleLabel.textColor = .black
                 }
                 
             }

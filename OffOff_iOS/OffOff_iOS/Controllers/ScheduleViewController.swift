@@ -55,6 +55,18 @@ class ScheduleViewController: UIViewController {
                 self.present(controller, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
+        
+        // bind outputs
+        viewModel.savedShiftsChanged
+            .observeOn(MainScheduler.instance)
+            .debug()
+            .bind {
+                if $0 {
+                    self.customView.calendar.reloadData()
+                }
+            }
+            .disposed(by: disposeBag)
+            
     }
 }
 

@@ -12,13 +12,10 @@ class RoutineTableViewCell: UITableViewCell {
     static let identifier = "RoutineTableViewCell"
     
     var titleLabel = UILabel().then {
-        $0.backgroundColor = .blue
-        $0.textColor = .white
         $0.textAlignment = .center
     }
     
     var timeLabel = UILabel().then {
-        $0.backgroundColor = .yellow
         $0.textAlignment = .right
     }
     

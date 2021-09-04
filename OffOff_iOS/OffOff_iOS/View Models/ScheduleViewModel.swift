@@ -17,6 +17,8 @@ class ScheduleViewModel {
     private let eventStore = EKEventStore()
     private var calendarAuth = EKEventStore.authorizationStatus(for: .event)
     
+    var savedShiftsChanged = UserRoutineManager.shared.savedShiftsChanged
+    
     init() {
         authorizationCheck()
         print(Realm.Configuration.defaultConfiguration.fileURL!)

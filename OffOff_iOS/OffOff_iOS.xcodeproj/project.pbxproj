@@ -28,6 +28,7 @@
 		EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4C26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
+		EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */; };
 		EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* IDPWViewController.swift */; };
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
 		EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B36269BFBD200F6F903 /* PostServices.swift */; };
@@ -143,6 +144,7 @@
 		EA2C4DF326DFD4890056A93C /* RoutineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineTableViewCell.swift; sourceTree = "<group>"; };
 		EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		EA2FDF4926A7D88800AEC951 /* UserServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServices.swift; sourceTree = "<group>"; };
+		EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftViewController.swift; sourceTree = "<group>"; };
 		EA3DA4BB26A58B510075819B /* OffOff_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA406A8D26A475CE00737F90 /* IDPWViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewController.swift; sourceTree = "<group>"; };
 		EA406A8F26A4769300737F90 /* IDPWView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWView.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 				EA8A333826D4C7540014D97C /* SetShiftViewController.swift */,
 				EA8A334626D63ADD0014D97C /* EditScheduleViewController.swift */,
 				EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */,
+				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -698,6 +701,7 @@
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */,
 				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
+				EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */,
 				EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */,
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
 				EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */,

@@ -31,7 +31,7 @@ class SetRoutineView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = .lightGray
         self.addSubview(dateLabel)
         self.addSubview(leftButton)
         self.addSubview(rightButton)
@@ -59,7 +59,7 @@ class SetRoutineView: UIView {
             $0.centerY.equalToSuperview()
             $0.height.equalTo(Constants.RoutineCellSize)
             $0.left.equalToSuperview().inset(12)
-            $0.right.equalToSuperview()
+            $0.right.equalToSuperview().inset(12)
         }
     }
 }

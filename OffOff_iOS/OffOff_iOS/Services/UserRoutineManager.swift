@@ -13,6 +13,14 @@ class UserRoutineManager {
     static let shared = UserRoutineManager()
     let realm = try! Realm()
     
+    // Object ID
+    func savedShiftID() -> String {
+        "SavedShift\(realm.objects(SavedShift.self).count)"
+    }
+    
+    // Observing changing
+    var savedShiftsChanged = BehaviorSubject<Bool>(value: false)
+    
     // Create
     func createShift() {
         let shift = Shift(id: "Shift00", title: "주", textColor: "#000000", backgroundColor: "#FFFFFF", startDate: "2021-09-02 09:00", endDate: "2021-09-02 18:00")
@@ -22,12 +30,18 @@ class UserRoutineManager {
         }
     }
     
-    func createSavedShift(shift: Shift) {
-        let savedShift = SavedShift(id: "SavedShift00", date: "2021-09-02", shift: shift)
-        
-        try! realm.write {
-            realm.add(savedShift)
+    func createSavedShift(shift: Shift, date: Date) -> Observable<Bool> {
+        let savedShift = SavedShift(id: savedShiftID(), date: date.toString("yyyy-MM-dd"), shift: shift)
+        do {
+            try realm.write {
+                realm.add(savedShift)
+            }
+            savedShiftsChanged.onNext(true)
+            return Observable.just(true)
+        } catch {
+            return Observable.just(false)
         }
+        
     }
     
     // Read
@@ -55,8 +69,17 @@ class UserRoutineManager {
     func addSavedShift(savedShift: SavedShift) {
         Observable.from(object: savedShift).subscribe(realm.rx.add()).dispose()
     }
-//
-//    // Delete
+
+    // Delete
+    func deleteAllSavedShifts() {
+        do {
+            try realm.write {
+                realm.delete(realm.objects(SavedShift.self))
+            }
+        } catch {
+            print("Failed to delete SavedShift")
+        }
+    }
 //    func deleteRoutine(of userId: String, by routineId: String) {
 //        if let userRoutine = getUserRoutine(by: userId) {
 //            try! realm.write {

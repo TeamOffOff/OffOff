@@ -43,6 +43,23 @@ extension Date {
         dateFormatter.dateFormat = format
         return dateFormatter.string(from: self)
     }
+    
+    func adjustDate(amount: Int, component: Calendar.Component) -> Date? {
+        var dayComponent = DateComponents()
+        
+        switch component {
+        case .day:
+            dayComponent.day = amount
+        case .month:
+            dayComponent.month = amount
+        case .year:
+            dayComponent.year = amount
+        default:
+            return nil
+        }
+        let theCalendar = Calendar.current
+        return theCalendar.date(byAdding: dayComponent, to: self)
+    }
 }
 
 extension UIView {
