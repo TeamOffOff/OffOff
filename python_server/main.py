@@ -4,7 +4,7 @@ from flask_restx import Api
 from flask_jwt_extended import JWTManager
 import mongo
 
-from api_helper.board import BoardList, PostList, UserList
+from api_helper.board import BoardList, PostList, UserControl
 from api_helper.post import Post, Reply
 from api_helper.user import Activity, User, Token
 from api_helper.utils import SECRET_KEY
@@ -22,7 +22,7 @@ app.config.update(
 
 api.add_namespace(BoardList, "/boardlist")
 api.add_namespace(PostList, "/postlist")
-api.add_namespace(UserList, "/userlist")
+api.add_namespace(UserControl, "/userlist")
 
 api.add_namespace(Post, "/post")
 api.add_namespace(Reply, "/reply")

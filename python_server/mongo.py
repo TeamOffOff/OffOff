@@ -54,7 +54,7 @@ class MongoHelper:
     def create_index(self, standard, expire_time, collection_name=None):
         self.db.create_collection(collection_name)
         self.collection = self.db[collection_name]
-        result = self.collection.create_index(standard, expireAfterSeconds= expire_time)
+        result = self.collection.create_index(standard, expireAfterSeconds=expire_time)
         return result
     
     def aggregate(self, pipeline=None, collection_name=None):
@@ -66,8 +66,6 @@ class MongoHelper:
         self.collection = self.db[collection_name]
         result = self.collection.drop()
         return result
-
-
 
 
 if __name__ == "__main__":

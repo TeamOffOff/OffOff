@@ -4,27 +4,28 @@ from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from .image_control import *
 from .user import check_jwt
 
 import mongo
-
 
 mongodb = mongo.MongoHelper()
 
 Post = Namespace("post", description="게시물 관련 API")
 Reply = Namespace("reply", description="댓글 관련 API")
 
-
 """ 리펙토링 """
 
 """변수 추출하는 함수"""
+
+
 @jwt_required()
 def get_variables():
-    user_id = check_jwt()  
+    user_id = check_jwt()
     # user_id가 있는지, blocklist는 아닌지
     # onwership_requried 데코레이터가 없는 곳에는
     # if not user_id:
-        # return{"queryStatus": "wrong Token"}, 403 있어야함
+    # return{"queryStatus": "wrong Token"}, 403 있어야함
 
     request_info = request.get_json()
 
@@ -39,17 +40,20 @@ def get_variables():
 
 
 """JSON 형태로 response하기 위해 string 타입으로 변환하는 함수"""
+
+
 def convert_to_string(post, *args):
     for key in args:
         post[key] = str(post[key])
 
 
 """author 정보 embed, 활동 정보 link 클래스"""
+
+
 class MakeReference:
     def __init__(self, board_type, user):
         self.board_type = board_type
         self.user = user
-
 
     # author 정보 embed
     def embed_author_information_in_object(self):
@@ -69,7 +73,6 @@ class MakeReference:
 
         return embedded_author_info
 
-
     # 활동 정보 link
     def link_activity_information_in_user(self, operator, field, post_id, reply_id=None):
         if reply_id:
@@ -85,15 +88,17 @@ class MakeReference:
         return result
 
 
-"""수정, 삭제 시 작성자 확인""" 
+"""수정, 삭제 시 작성자 확인"""
+
+
 def ownership_required(func):
     @jwt_required()
     def wrapper(self):
         request_info = request.get_json()
-        
+
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "wrong Token"}, 403
+            return {"queryStatus": "wrong Token"}, 403
 
         if "author" in request_info:  # 삭제, 수정은 author 넘겨받음
             author = (request.get_json())["author"]
@@ -114,9 +119,11 @@ def ownership_required(func):
 """API 기능 구현"""
 
 """게시글 관련 API"""
+
+
 @Post.route("")
 class PostControl(Resource):
-    def get(self): 
+    def get(self):
         """특정 id의 게시글을 조회합니다."""
         post_id = request.args.get("postId")
         board_type = request.args.get("boardType") + "_board"
@@ -130,6 +137,8 @@ class PostControl(Resource):
         post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                 collection_name=board_type)
 
+        post["Image"]["body"] = get_image(post["Image"]["key"])
+
         if not post:
             return {"queryStatus": "not found"}, 404
 
@@ -140,7 +149,6 @@ class PostControl(Resource):
             post["_id"] = str(post["_id"])
             post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
             return post, 200
-
 
     @ownership_required
     def delete(self):
@@ -166,15 +174,14 @@ class PostControl(Resource):
         else:
             return {"queryStatus": "success"}, 200
 
-
-    def post(self): 
+    def post(self):
         """게시글을 생성합니다."""
 
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
         if not user:
-            return{"queryStatus": "wrong Token"}, 403
-        
+            return {"queryStatus": "wrong Token"}, 403
+
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board"
 
@@ -195,6 +202,9 @@ class PostControl(Resource):
         request_info["reports"] = []
         request_info["bookmarks"] = []
 
+        save_image(request_info["img"], "post")
+        del request_info["img"]["body"]
+
         # 게시글 저장
         post_id = mongodb.insert_one(data=request_info, collection_name=board_type)
 
@@ -212,13 +222,12 @@ class PostControl(Resource):
 
             return post, 200
 
-
     @ownership_required
     def put(self):  # 게시글 수정
         """특정 id의 게시글을 수정합니다."""
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
-        
+
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board"
 
@@ -228,7 +237,7 @@ class PostControl(Resource):
 
             # _id 는 수정할 수 없는 정보이므로 삭제
             del request_info["_id"]
-            
+
             # author는 데코레이터에서 역할이 끝났으므로 삭제
             del request_info["author"]
 
@@ -242,7 +251,6 @@ class PostControl(Resource):
 
             activity = request_info["activity"]
 
-    
             if activity == "likes":
                 past_user_list = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id": False, activity: True})[activity]
                 print(past_user_list)
@@ -262,7 +270,7 @@ class PostControl(Resource):
 
                 # 인기게시판 관련   
                 if activity == "likes":
-                    
+
                     modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                                      collection_name=board_type)
                     present_likes = len(modified_post["likes"])
@@ -293,7 +301,7 @@ class PostControl(Resource):
         else:
             modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                              collection_name=board_type)
-            
+
             modified_post["_id"] = str(modified_post["_id"])
             modified_post["date"] = (modified_post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
 
@@ -303,7 +311,7 @@ class PostControl(Resource):
 # 댓글 조회 함수
 def get_reply_list(post_id=None, board_type=None):
     total_list = list(mongodb.find(query={"postId": post_id},
-                          collection_name=board_type))  # 댓글은 오름차순
+                                   collection_name=board_type))  # 댓글은 오름차순
 
     for reply in total_list:
         reply["_id"] = str(reply["_id"])
@@ -324,16 +332,16 @@ class CommentControl(Resource):
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
         if not user:
-            return{"queryStatus": "wrong Token"}, 403
-        
+            return {"queryStatus": "wrong Token"}, 403
+
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board_reply"
 
         # date 추가
         request_info["date"] = datetime.now()
-        
+
         # 회원정보 embedded 형태로 등록
-        making_reference = MakeReference(board_type=board_type, user=user)        
+        making_reference = MakeReference(board_type=board_type, user=user)
         author = making_reference.embed_author_information_in_object()
         request_info["author"] = author
 
@@ -342,7 +350,7 @@ class CommentControl(Resource):
 
         # 댓글 db에 저장
         reply_id = mongodb.insert_one(data=request_info, collection_name=board_type)
-       
+
         # 회원활동 정보 link 형태로 등록
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
 
@@ -352,7 +360,6 @@ class CommentControl(Resource):
         return {
             "replyList": reply_list
         }
-
 
     def get(self):  # 댓글 조회
         """댓글을 조회합니다."""
@@ -366,17 +373,15 @@ class CommentControl(Resource):
             "replyList": reply_list
         }
 
-
     def put(self):  # 좋아요
         """좋아요를 저장합니다"""
         # 클라이언트에서 받은 변수 가져오기
         request_info, reply_id, board_type, user = get_variables()
         if not user:
-            return{"queryStatus": "wrong Token"}, 403
-        
+            return {"queryStatus": "wrong Token"}, 403
+
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board_reply"
-
 
         past_likes_list = mongodb.find_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, projection_key={"_id": False, "likes": True})["likes"]
 
@@ -395,7 +400,7 @@ class CommentControl(Resource):
         """댓글을 삭제합니다."""
         # 클라이언트에서 받은 변수 가져오기
         request_info, reply_id, board_type, user = get_variables()
-        
+
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board_reply"
 
@@ -406,7 +411,7 @@ class CommentControl(Resource):
                                         collection_name=board_type)
         else:  # 대댓글이 있는 경우
             alert_delete = {
-                "author": {"_id":None, "nickname":None, "type":None, "profileImage":None},
+                "author": {"_id": None, "nickname": None, "type": None, "profileImage": None},
                 "content": None,
                 "date": None,
                 "likes": None
@@ -418,14 +423,14 @@ class CommentControl(Resource):
         # 댓글 조회
         post_id = request_info["postId"]
         reply_list = get_reply_list(post_id=post_id, board_type=board_type)
-        
+
         # 회원활동정보 삭제
         making_reference = MakeReference(board_type=board_type, user=user)
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
 
         if result.raw_result["n"] == 1:
             return {
-                "replyList": reply_list
-            }, 200
+                       "replyList": reply_list
+                   }, 200
         else:
             return {"queryStatus": "reply delete failed"}, 500

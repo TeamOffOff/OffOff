@@ -24,11 +24,12 @@ UserControl = Namespace(
     description="유저관련 기능"
 )
 
+
 def fix_index(target, *args):
     real = {}
-    if not args: 
+    if not args:
         args = target.keys()
-    
+
     print(args)
 
     for i in args:
@@ -38,8 +39,9 @@ def fix_index(target, *args):
                 temp[j] = target[i][j]
             real[i] = temp
 
-        else: real[i] = target[i]
-    
+        else:
+            real[i] = target[i]
+
     return real
 
 
@@ -57,7 +59,6 @@ class BoardListControl(Resource):
         # 기준 시점 = 요청 시점 - 3시간
         standard = access_on - timedelta(hours=3)
 
-
         # 해당 board의 컬렉션에 date가 3시간 이전인 게시글이 있는지
         for board in total_list:
 
@@ -66,12 +67,10 @@ class BoardListControl(Resource):
             result = mongodb.find_one(collection_name=board_type, query={"date": {"$gte": standard}})
             if result:
                 board["newPost"] = True
-            
-        
+
         return {
             "boardList": total_list
         }
-
 
     def delete(self):  # 게시판 목록 삭제
         """특정 게시판 정보를 삭제합니다."""
@@ -102,18 +101,16 @@ class UserListControl(Resource):
         유저 리스트 불러오는 api
         """
         func = request.args.get("func")
-        if func == "userlist": 
+        if func == "userlist":
             result = list(mongodb.find(collection_name="user"))
-        
+
         elif func == "blocklist":
             result = list(mongodb.find(collection_name="block_list"))
             for i in result:
                 i["createdAt"] = str(i["createdAt"])
-        
+
         return result
 
-
-    
     def post(self):
         """
         token block 설정 위한 block_list 컬렉션 설정
@@ -122,8 +119,6 @@ class UserListControl(Resource):
         return {
             "queryStatus": result
         }
-        
-
 
 
 @PostList.route("/<string:board_type>")
@@ -153,7 +148,6 @@ class PostListControl(Resource):
             for post in total_list:
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-
 
             last_post_id = total_list[-1]["_id"]
 
@@ -186,10 +180,9 @@ class PostListControl(Resource):
                 }
         else:
             return {
-            "lastPostId": None,
-            "postList": None
-        }
-
+                "lastPostId": None,
+                "postList": None
+            }
 
     def delete(self, board_type):  # 컬렉션 자체를 삭제
 

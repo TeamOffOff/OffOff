@@ -10,9 +10,7 @@ from pymongo import collection, encryption
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 
-
 import mongo
-
 
 mongodb = mongo.MongoHelper()
 
@@ -22,13 +20,12 @@ Token = Namespace(name="token", description="access토큰 재발급 API")
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
 
-
 # 중복확인 함수 => 데코레이터 고민 중
 def check_duplicate(key, target):
     if mongodb.find_one(query={key: target}, collection_name="user"):
         return {
-            "queryStatus": "already exist"
-            }, 409
+                   "queryStatus": "already exist"
+               }, 409
 
 
 # 순서 고정 함수
@@ -45,14 +42,13 @@ def check_jwt():
     user_id = get_jwt_identity()
     print(user_id)
     jti = get_jwt()["jti"]
-    result = mongodb.find_one(query={"_id":jti}, collection_name="block_list")  # 없으면 null(None) 반환
+    result = mongodb.find_one(query={"_id": jti}, collection_name="block_list")  # 없으면 null(None) 반환
 
-    if (not user_id) or (result):
+    if (not user_id) or result:
         # user_id 가 없거나 block로 설정되어 있는 경우
         return False
     else:
         return user_id
-
 
 
 @Token.route('')
@@ -63,25 +59,24 @@ class TokenControl(Resource):
         refresh_token = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["refreshToken"]
         if not refresh_token:  # refresh token이 탈취되어서 db에서 삭제한 경우
             return {
-                "queryStatus": "refresh token was taken"
-            }, 403
+                       "queryStatus": "refresh token was taken"
+                   }, 403
         delta = timedelta(minutes=1)
         access_token = create_access_token(identity=user_id, expires_delta=delta)
-    
 
         return {
-                "accessToken": access_token,
-                "queryStatus": 'success'
-            }, 200
-    
+                   "accessToken": access_token,
+                   "queryStatus": 'success'
+               }, 200
+
     @jwt_required()
     def delete(self):  # access or refresh 가 탈취된 경우 or 로그아웃하는 경우 => 현재 access blocklist에 추가 + 현재 refresh db 에서 삭제
-        
+
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         print("user_id: ", user_id)
         if not user_id:
-            return{"queryStatus": "wrong Token"}, 403
-        
+            return {"queryStatus": "wrong Token"}, 403
+
         jti = get_jwt()["jti"]
         print(jti)
 
@@ -90,27 +85,25 @@ class TokenControl(Resource):
             "_id": jti,
             "createdAt": datetime.utcnow()
         }
-        
+
         result1 = mongodb.insert_one(data=data, collection_name="block_list")  # result1은 _id
         print(result1)
-        
 
         result2 = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": ""}})  # unset으로 아예 삭제할 수도 있음
-        
 
         if not result1:
-            return{
-                "queryStatus": "add accessToken fail"
-            }, 500 
+            return {
+                       "queryStatus": "add accessToken fail"
+                   }, 500
 
         if result2.raw_result["n"] == 0:
-            return{
-                "queryStatus": "delete refreshToken fail"
-            }, 500
-        
-        return{
-            "queryStatus": "success"
-        }, 200
+            return {
+                       "queryStatus": "delete refreshToken fail"
+                   }, 500
+
+        return {
+                   "queryStatus": "success"
+               }, 200
 
 
 @User.route('/register')
@@ -138,7 +131,6 @@ class AuthRegister(Resource):
 
         return result
 
-
     def post(self):  # 회원가입
         """
         회원가입을 완료합니다.
@@ -147,25 +139,25 @@ class AuthRegister(Resource):
 
         # 중복확인
         if check_duplicate(key="_id", target=user_info["_id"]):
-            return{
-                "queryStatus": "id already exist"
-            }, 409 
+            return {
+                       "queryStatus": "id already exist"
+                   }, 409
         if check_duplicate(key="information.email", target=user_info["information"]["email"]):
-            return{
-                "queryStatus": "email already exist"
-            }, 409
+            return {
+                       "queryStatus": "email already exist"
+                   }, 409
         if check_duplicate(key="subInformation.nickname", target=user_info["subInformation"]["nickname"]):
-            return{
-                "queryStatus": "nickname already exist"
-            }, 409
- 
+            return {
+                       "queryStatus": "nickname already exist"
+                   }, 409
+
         # 비밀번호를 암호화: 암호화할 때는 string이면 안 되고 byte여야 해서 encode
-        encrypted_password = bcrypt.hashpw(str(user_info["password"]).encode("utf-8"), bcrypt.gensalt())  
+        encrypted_password = bcrypt.hashpw(str(user_info["password"]).encode("utf-8"), bcrypt.gensalt())
 
         # 이를 또 UTF-8 방식으로 디코딩하여, str 객체로 데이터 베이스에 저장
-        user_info["password"] = encrypted_password.decode("utf-8")  
+        user_info["password"] = encrypted_password.decode("utf-8")
 
-        try: 
+        try:
             print("비밀번호 암호화 후 : ", user_info)
 
             # 순서 고정
@@ -182,12 +174,11 @@ class AuthRegister(Resource):
             mongodb.insert_one(data=real_user_info, collection_name="user")  # 데이터베이스에 저장
 
             return {
-                "queryStatus": 'success'
-            }, 200
-        
+                       "queryStatus": 'success'
+                   }, 200
+
         except TypeError:
             return TypeError
-
 
     @jwt_required()
     def put(self):
@@ -198,7 +189,7 @@ class AuthRegister(Resource):
         """
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "wrong Token"}, 403
+            return {"queryStatus": "wrong Token"}, 403
 
         new_password = (request.get_json())["password"]
         new_encrypted_password = bcrypt.hashpw(str(new_password).encode("utf-8"), bcrypt.gensalt())
@@ -207,12 +198,11 @@ class AuthRegister(Resource):
         result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"password": final_new_password}})
 
         if result.raw_result["n"] == 1:
-            return {"queryStatus" : "success"}, 200
+            return {"queryStatus": "success"}, 200
         else:
             return {"queryStatus": "password update fail"}, 500
 
-
-    @jwt_required()        
+    @jwt_required()
     def delete(self):
         """
         회원정보를 삭제합니다(회원탈퇴)
@@ -220,7 +210,7 @@ class AuthRegister(Resource):
         """
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "wrong Token"}, 403
+            return {"queryStatus": "wrong Token"}, 403
 
         # 활동 알수없음으로 바꾸기
         print("author을 알 수 없음으로 바꾸는 과정 진입")
@@ -235,11 +225,11 @@ class AuthRegister(Resource):
         if posts:
             print("작성한 게시물이 있는 경우")
             for post in posts:
-                board_type=post[0]+"_board"
+                board_type = post[0] + "_board"
                 post_id = post[1]
                 print(board_type, post_id)
                 alert_delete = {
-                    "author":{
+                    "author": {
                         "_id": None,
                         "nickname": None,
                         "type": None,
@@ -249,16 +239,16 @@ class AuthRegister(Resource):
                 post_change_result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={"$set": alert_delete})
 
                 if post_change_result.raw_result["n"] == 0:
-                    return{"queryStatus": "author information change fail"}, 500
-        
+                    return {"queryStatus": "author information change fail"}, 500
+
         if replies:
             print("작성한 댓글이 있는 경우")
             for reply in replies:
-                board_type = reply[0]+"_board_reply"
+                board_type = reply[0] + "_board_reply"
                 reply_id = reply[2]
                 print(board_type, reply_id)
                 alert_delete = {
-                    "author":{
+                    "author": {
                         "_id": None,
                         "nickname": None,
                         "type": None,
@@ -268,15 +258,14 @@ class AuthRegister(Resource):
                 reply_change_result = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$set": alert_delete})
 
                 if reply_change_result.raw_result["n"] == 0:
-                    return{"queryStatus": "author information change fail"}, 500
-
+                    return {"queryStatus": "author information change fail"}, 500
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": user_id}, collection_name="user")
 
         if result.raw_result["n"] == 1:
-            return{"queryStatus": "success"}, 200
-        else :
+            return {"queryStatus": "success"}, 200
+        else:
             return {"queryStatus": "user delete fail"}, 500
 
 
@@ -295,37 +284,35 @@ class AuthLogin(Resource):
         user_pw = request_info["password"]
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")  # 동일한 아이디불러오기
-        
+
         if not user_info:
             # 해당 아이디가 없는 경우
             return {
-                "queryStatus": "not exist"
-            }, 403
+                       "queryStatus": "not exist"
+                   }, 403
 
         elif not bcrypt.checkpw((user_pw).encode("utf-8"), user_info["password"].encode("utf-8")):
             # 비밀번호가 일치하지 않는 경우
             return {
-                "queryStatus": "wrong password"
-            }, 401
+                       "queryStatus": "wrong password"
+                   }, 401
 
         else:
             # 비밀번호 일치한 경우
             access_token = create_access_token(identity=request_info["_id"], expires_delta=False)
             refresh_token = create_refresh_token(identity=request_info["_id"], expires_delta=False)
-            
-            add_refresh_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":{"refreshToken": refresh_token}})
-            
+
+            add_refresh_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": refresh_token}})
 
             if add_refresh_token.raw_result["n"] != 1:
-                return{"queryStatus": "add token fail"}, 500
+                return {"queryStatus": "add token fail"}, 500
 
             return {
-                "accessToken": access_token,
-                "refreshToken": refresh_token,
-                "queryStatus": "success"
+                       "accessToken": access_token,
+                       "refreshToken": refresh_token,
+                       "queryStatus": "success"
 
-            }, 200
-
+                   }, 200
 
     @jwt_required()  # jwt 보냈는지, 만료된 건 아닌지
     def get(self):  # 회원정보조회
@@ -335,8 +322,8 @@ class AuthLogin(Resource):
 
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "wrong Token"}, 403
-        
+            return {"queryStatus": "wrong Token"}, 403
+
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
         # 순서 고정
@@ -345,15 +332,13 @@ class AuthLogin(Resource):
         activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
         real_user_info = {"_id": user_info["_id"],
-                            "password": user_info["password"],
-                            "information": information,
-                            "subInformation": sub_information,
-                            "activity": activity}
-        
-        
-        return {
-            "user": real_user_info}, 200
+                          "password": user_info["password"],
+                          "information": information,
+                          "subInformation": sub_information,
+                          "activity": activity}
 
+        return {
+                   "user": real_user_info}, 200
 
     @jwt_required()
     def put(self):  # 회원정보수정 => 순서고정 코드 추가 고려
@@ -363,7 +348,7 @@ class AuthLogin(Resource):
 
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "wrong Token"}, 403
+            return {"queryStatus": "wrong Token"}, 403
 
         request_info = request.get_json()
         del (request_info["activity"])
@@ -385,6 +370,7 @@ class ActivityControl(Resource):
     """
     공감, 스크랩, 댓글, 작성글
     """
+
     @jwt_required()
     def get(self, activity_type):  # 회원활동 탭에서 보여지는 정보 (게시글 리스트)
         """
@@ -392,35 +378,35 @@ class ActivityControl(Resource):
         """
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return{"queryStatus": "wrong Token"}, 403
+            return {"queryStatus": "wrong Token"}, 403
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
-       
+
         target_activity = user_info["activity"][activity_type]
 
-        if not target_activity: # 타겟 activity 가 없는 경우
+        if not target_activity:  # 타겟 activity 가 없는 경우
             # 리스트로 이루어진 리스트  "likes" : [["board_type", "content_id"], ["board_type", "content_id"]
             return {
-                "{}List" .format(activity_type) :None
-            }, 200
+                       "{}List".format(activity_type): None
+                   }, 200
         else:
             post_list = []
             for post in target_activity:
-                board_type = post[0]+"_board"
+                board_type = post[0] + "_board"
                 post_id = post[1]
 
-                result = mongodb.find_one(query={"_id": ObjectId(post_id)},collection_name=board_type)
+                result = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
                 if result:  # 해당 게시글이 있는 경우(삭제되지 않은 경우)
                     result["_id"] = str(result["_id"])
                     result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-                    
+
                     if result not in post_list:  # 중복 피하기 위함
                         post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
                 else:  # 삭제된 경우
                     continue
 
             post_list.sort(key=lambda x: x["_id"], reverse=True)
-          
+
             return {
-                "{}List" .format(activity_type): post_list
-            }, 200
+                       "{}List".format(activity_type): post_list
+                   }, 200
