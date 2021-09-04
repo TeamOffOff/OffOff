@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey
 
 /* Realm 데이터 클래스 */
 
-open class Shift(
+open class Shift  (
     @PrimaryKey
     var id: Int? = 0,
     var title: String? = null,

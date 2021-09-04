@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import com.yuuuzzzin.offoff_android.databinding.CalendarDayBinding
 import com.yuuuzzzin.offoff_android.databinding.FragmentScheduleBinding
 import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.realm.Realm
 import jp.kuluna.calendarviewpager.CalendarPagerAdapter
 import jp.kuluna.calendarviewpager.CalendarViewPager
 import jp.kuluna.calendarviewpager.Day
@@ -29,7 +27,6 @@ class ScheduleFragment : Fragment() {
     private var mBinding: FragmentScheduleBinding? = null
     private val binding get() = mBinding!!
     private val viewModel: ScheduleViewModel by viewModels()
-    private lateinit var realm: Realm
 
     lateinit var calendar: CalendarViewPager
     private val bottomDialog = CalendarBottomDialog()
@@ -40,7 +37,6 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         mBinding = FragmentScheduleBinding.inflate(inflater, container, false)
-        realm = Realm.getDefaultInstance()
 
         initViewModel()
         initToolbar()
@@ -51,10 +47,8 @@ class ScheduleFragment : Fragment() {
 
     private fun initViewModel() {
         binding.viewModel = viewModel
-        realm.executeTransaction {
-            val data = viewModel.allShifts.value
-            Log.d("tag_realm_test", data.toString())
-        }
+
+
     }
 
 //    private fun addDb() {
@@ -87,7 +81,7 @@ class ScheduleFragment : Fragment() {
                     true
                 }
                 R.id.action_set -> {
-                    startActivity(Intent(context, ScheduleTypeSettingActivity::class.java))
+                    startActivity(Intent(context, ShiftSettingActivity::class.java))
                     true
                 }
                 else -> false

@@ -78,7 +78,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/bt_add"
-                    tools:listitem="@layout/rv_item_scehdule_type_setting" />
+                    tools:listitem="@layout/rv_item_shift" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

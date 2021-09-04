@@ -3,21 +3,21 @@ package com.yuuuzzzin.offoff_android.views.ui.schedule
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.yuuuzzzin.offoff_android.databinding.ActivityScheduleTypeSettingBinding
+import com.yuuuzzzin.offoff_android.databinding.ActivityShiftSettingBinding
 import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.ScheduleTypeSettingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ScheduleTypeSettingActivity : AppCompatActivity() {
+class ShiftSettingActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityScheduleTypeSettingBinding
+    private lateinit var binding: ActivityShiftSettingBinding
     private lateinit var scheduleTypeSettingListAdapter: ScheduleTypeSettingListAdapter
     private val viewModel: ScheduleViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityScheduleTypeSettingBinding.inflate(layoutInflater)
+        binding = ActivityShiftSettingBinding.inflate(layoutInflater)
 
         initRV()
         initView()
