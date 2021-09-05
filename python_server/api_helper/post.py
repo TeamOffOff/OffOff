@@ -438,3 +438,18 @@ class CommentControl(Resource):
                    }, 200
         else:
             return {"queryStatus": "reply delete failed"}, 500
+
+# 채팅관련  http 통신
+Chat = Namespace(
+    name="chatcontrol",
+    description="채팅방 관리 기능"
+)
+
+@Chat.route("")
+class ChatControl(Resource):
+
+    def post(self):
+        pass
+
+    def get(self):
+        pass

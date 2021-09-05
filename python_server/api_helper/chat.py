@@ -9,20 +9,6 @@ import mongo
 
 from flask_socketio import emit, join_room, leave_room, Namespace
 
-# http 통신
-Chat = Namespace(
-    name="chatcontrol",
-    description="채팅방 관리 기능"
-)
-
-@Chat.route("")
-class ChatControl(Resource):
-
-    def post(self):
-        pass
-
-    def get(self):
-        pass
 
 
 
