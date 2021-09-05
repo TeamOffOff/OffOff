@@ -11,11 +11,13 @@ from api_helper.post import Post, Reply, Chat
 from api_helper.user import Activity, User, Token
 from api_helper.chat import ChatNamepsace
 
+print("api_helper __init__.py진입")
 
 socketio = SocketIO(logger=True, engineio_logger=True)
 
 def create_app(debug=False):
     """create an application."""
+    print("create_app 실행")
 
     app = Flask(__name__)
 

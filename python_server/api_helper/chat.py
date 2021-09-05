@@ -9,7 +9,7 @@ import mongo
 
 from flask_socketio import emit, join_room, leave_room, Namespace
 
-
+mongodb = mongo.MongoHelper()
 
 
 # 소켓통신
@@ -22,15 +22,10 @@ class ChatNamepsace(Namespace):
         pass
 
     def on_joined(self, data):
-        room = session.get('room')
-        join_room(room)
-        emit('status', {'msg': session.get('name') + '님이 입장하셨습니다'}, room=room)
+        pass
 
     def on_text(self, data):
-        room = session.get('room')
-        emit('message', {'msg': session.get('name') + ':' + data['msg']}, room=room)
+        pass
 
     def on_left(self, data):
-        room = session.get('room')
-        leave_room(room)
-        emit('status', {'msg': session.get('name') + '님이 퇴장하셨습니다'}, room=room)
+        pass
