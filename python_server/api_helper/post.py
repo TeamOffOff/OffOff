@@ -4,9 +4,10 @@ from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from .image_control import *
-from .user import check_jwt
-
+from controller.image import *
+from controller.reference import *
+from controller.filter import check_jwt, ownership_required
+from controller.ect import get_variables, convert_to_string, get_reply_list
 import mongo
 
 mongodb = mongo.MongoHelper()
@@ -14,109 +15,6 @@ mongodb = mongo.MongoHelper()
 Post = Namespace("post", description="게시물 관련 API")
 Reply = Namespace("reply", description="댓글 관련 API")
 
-""" 리펙토링 """
-
-"""변수 추출하는 함수"""
-
-
-@jwt_required()
-def get_variables():
-    user_id = check_jwt()
-    # user_id가 있는지, blocklist는 아닌지
-    # onwership_requried 데코레이터가 없는 곳에는
-    # if not user_id:
-    # return{"queryStatus": "wrong Token"}, 403 있어야함
-
-    request_info = request.get_json()
-
-    if "_id" in request_info:  # 게시글 작성, 게시글 수정/좋아요, 게시글 삭제 댓글/대댓글 좋아요, 댓글/대댓글의 삭제인 경우
-        pk = request_info["_id"]
-    else:  # 댓글 작성인 경우
-        pk = request_info["postId"]
-
-    board_type = request_info["boardType"]
-
-    return request_info, pk, board_type, user_id
-
-
-"""JSON 형태로 response하기 위해 string 타입으로 변환하는 함수"""
-
-
-def convert_to_string(post, *args):
-    for key in args:
-        post[key] = str(post[key])
-
-
-"""author 정보 embed, 활동 정보 link 클래스"""
-
-
-class MakeReference:
-    def __init__(self, board_type, user):
-        self.board_type = board_type
-        self.user = user
-
-    # author 정보 embed
-    def embed_author_information_in_object(self):
-
-        embedded_author_info = {}
-
-        total_author_info = mongodb.find_one(query={"_id": self.user}, collection_name="user")
-
-        needed_author_info = ["_id", "subInformation.nickname", "information.type", "subInformation.profileImage"]
-
-        for info in needed_author_info:
-            if "." in info:
-                field, key = info.split(".")
-                embedded_author_info[key] = total_author_info[field][key]
-            else:
-                embedded_author_info[info] = total_author_info[info]
-
-        return embedded_author_info
-
-    # 활동 정보 link
-    def link_activity_information_in_user(self, operator, field, post_id, reply_id=None):
-        if reply_id:
-            board_type = self.board_type.replace("_board_reply", "")
-        else:
-            board_type = self.board_type.replace("_board", "")
-
-        # 회원탈퇴 시 댓글, 대댓글의 author을 None으로 바꾸려면 reply_id 필요함
-        new_activity_info = [board_type, str(post_id), str(reply_id)]
-
-        result = mongodb.update_one(query={"_id": self.user}, collection_name="user", modify={operator: {field: new_activity_info}})
-
-        return result
-
-
-"""수정, 삭제 시 작성자 확인"""
-
-
-def ownership_required(func):
-    @jwt_required()
-    def wrapper(self):
-        request_info = request.get_json()
-
-        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
-        if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
-
-        if "author" in request_info:  # 삭제, 수정은 author 넘겨받음
-            author = (request.get_json())["author"]
-
-            if author == user_id:
-                result = func(self)
-                return result
-            else:
-                return {"queryStatus": "작성자가 아닙니다"}, 403
-
-        else:  # 게시글, 댓글 좋아요
-            result = func(self)
-            return result
-
-    return wrapper
-
-
-"""API 기능 구현"""
 
 """게시글 관련 API"""
 
@@ -312,17 +210,7 @@ class PostControl(Resource):
             return modified_post
 
 
-# 댓글 조회 함수
-def get_reply_list(post_id=None, board_type=None):
-    total_list = list(mongodb.find(query={"postId": post_id},
-                                   collection_name=board_type))  # 댓글은 오름차순
 
-    for reply in total_list:
-        reply["_id"] = str(reply["_id"])
-        if reply["date"]:
-            reply["date"] = (reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-
-    return total_list
 
 
 # 댓글 관련 API
@@ -439,6 +327,7 @@ class CommentControl(Resource):
         else:
             return {"queryStatus": "reply delete failed"}, 500
 
+
 # 채팅관련  http 통신
 Chat = Namespace(
     name="chatcontrol",
@@ -452,4 +341,4 @@ class ChatControl(Resource):
         pass
 
     def get(self):
-        pass
+        return "chat get"

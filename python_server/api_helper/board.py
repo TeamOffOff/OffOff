@@ -25,26 +25,6 @@ UserControl = Namespace(
 )
 
 
-def fix_index(target, *args):
-    real = {}
-    if not args:
-        args = target.keys()
-
-    print(args)
-
-    for i in args:
-        if type(target[i]) is dict:
-            temp = {}
-            for j in target[i]:
-                temp[j] = target[i][j]
-            real[i] = temp
-
-        else:
-            real[i] = target[i]
-
-    return real
-
-
 @BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우
 class BoardListControl(Resource):

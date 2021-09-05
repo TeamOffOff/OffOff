@@ -1,14 +1,13 @@
-from os import access
-from time import timezone
-from flask import request, jsonify
-from flask.helpers import make_response
+from flask import request
 from flask_jwt_extended.utils import get_jwt
-from flask_restx import Resource, Api, Namespace, fields
+from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 import bcrypt
-from pymongo import collection, encryption
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
+
+from controller.filter import check_duplicate, check_jwt
+from controller.ect import fix_index
 
 import mongo
 
@@ -20,35 +19,6 @@ Token = Namespace(name="token", description="access토큰 재발급 API")
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
 
-# 중복확인 함수 => 데코레이터 고민 중
-def check_duplicate(key, target):
-    if mongodb.find_one(query={key: target}, collection_name="user"):
-        return {
-                   "queryStatus": "already exist"
-               }, 409
-
-
-# 순서 고정 함수
-def fix_index(target, key):
-    real = {}
-    for i in key:
-        real[i] = target[i]
-
-    return real
-
-
-# blocklist에 있는지 체크하는 함수 (jwt_required 데코레이터가 있는 모든 곳에 있어야함) => 라이브러리 내에 있는 데코레이터 아님
-def check_jwt():
-    user_id = get_jwt_identity()
-    print(user_id)
-    jti = get_jwt()["jti"]
-    result = mongodb.find_one(query={"_id": jti}, collection_name="block_list")  # 없으면 null(None) 반환
-
-    if (not user_id) or result:
-        # user_id 가 없거나 block로 설정되어 있는 경우
-        return False
-    else:
-        return user_id
 
 
 @Token.route('')

@@ -10,4 +10,4 @@ if __name__ == "__main__":
     print("__name__ == __main__")
     mongodb = mongo.MongoHelper()
     print("mongodb 실행 후")
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0", port="5000")

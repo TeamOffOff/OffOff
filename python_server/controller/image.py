@@ -1,6 +1,6 @@
 import boto3
 import base64
-from .utils import *
+from api_helper.utils import *
 
 
 s3 = boto3.resource("s3",
