@@ -13,11 +13,19 @@ class ScheduleDataBaseRepository @Inject
 constructor(
     private val shiftDao: ShiftDao, private val realm: Realm
 ) {
+    val shiftList = shiftDao.getAllShifts()
 
-    val allShifts = shiftDao.getAllShifts()
+//    val shiftList LiveData<List<mRealmObject>> = Transformations.map(shiftDao.getAllShifts()) {
+//        realm.copyFromRealm(it)
+//    }
 
-    fun getAllShift() {
-        shiftDao.getAllShift()
+    fun getAllShifts() = shiftDao.getAllShifts()
+
+    fun getFirst() =
+        shiftDao.getFirst()
+
+    fun getAllShift(): List<Shift> {
+        return shiftDao.getAllShift()
     }
 
     fun insertShift(shift: Shift) {

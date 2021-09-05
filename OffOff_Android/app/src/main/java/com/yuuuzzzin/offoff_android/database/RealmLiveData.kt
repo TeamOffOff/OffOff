@@ -11,10 +11,17 @@ class RealmLiveData<T: RealmModel>(
     private val realmResults: RealmResults<T>
 ) : LiveData<RealmResults<T>>() {
 
-    private val listener = RealmChangeListener<RealmResults<T>> {
-        value = it
-    }
+//    init {
+//        value = realmResults
+//    }
+//
+//    private val listener =
+//        RealmChangeListener<RealmResults<T>> { results -> value = results }
 
+    private val listener : RealmChangeListener<RealmResults<T>> =
+        RealmChangeListener {
+            value = it
+        }
     override fun onActive() {
         realmResults.addChangeListener(listener)
     }

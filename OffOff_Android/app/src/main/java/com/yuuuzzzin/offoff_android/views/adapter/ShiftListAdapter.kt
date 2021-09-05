@@ -1,27 +1,40 @@
 package com.yuuuzzzin.offoff_android.views.adapter
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.database.models.Shift
-import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
+import com.yuuuzzzin.offoff_android.databinding.RvItemShiftBinding
 
 class ShiftListAdapter(): RecyclerView.Adapter<ShiftListAdapter.ViewHolder>() {
 
-    private val shiftList = mutableListOf<Shift>()
+    lateinit var binding: RvItemShiftBinding
+    private lateinit var shiftList:List<Shift>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShiftListAdapter.ViewHolder {
-        return ViewHolder(parent)
+        binding = RvItemShiftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ShiftListAdapter.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.bind(shiftList[position])
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return shiftList.count()
     }
 
-    class ViewHolder {
+    class ViewHolder(private val binding: RvItemShiftBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(shift: Shift) {
+            binding.tvName.text = shift.title
+            binding.tvTime.text = shift.startDate.toString() + " - " + shift.endDate.toString()
+        }
+    }
 
+    fun updateList(list: List<Shift>) {
+        shiftList = list
+        notifyDataSetChanged()
     }
 }
