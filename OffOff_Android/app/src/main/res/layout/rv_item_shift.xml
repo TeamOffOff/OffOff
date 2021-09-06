@@ -8,7 +8,7 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/tv_name"
+        android:id="@+id/icon_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/green"
@@ -29,7 +29,7 @@
         android:textSize="16sp"
         android:text="14:00 - 21:00"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_name"
+        app:layout_constraintStart_toEndOf="@id/icon_title"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton

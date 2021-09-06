@@ -8,6 +8,18 @@
 
     <item
         android:id="@+id/action_set"
-        android:title="스케줄 편집"/>
+        android:title="근무 편집"/>
+
+    <item
+        android:id="@+id/action_allShiftLIst"
+        android:title="log shifList"/>
+
+    <item
+        android:id="@+id/action_insert"
+        android:title="insert"/>
+
+    <item
+        android:id="@+id/action_deleteAll"
+        android:title="delete all"/>
 
 </menu>

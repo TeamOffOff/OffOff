@@ -24,12 +24,10 @@ constructor(
     val shiftList: LiveData<List<Shift>> get() = _shiftList
 
     init {
-        Log.d("tag_realm_test", shiftList.value.toString())
+        Log.d("tag_realm_test", getAllShift().toString())
     }
 
     fun getAllShifts() = dbRepository.getAllShifts()
-
-    fun getFirst() = dbRepository.getFirst()
 
     fun getAllShift(): List<Shift> {
         return dbRepository.getAllShift()
@@ -41,6 +39,11 @@ constructor(
 
     fun deleteAllShifts() {
         dbRepository.deleteAllShifts()
+    }
+
+    // 나중에 삭제 필요
+    fun getNextId() : Int {
+        return dbRepository.getNextId()
     }
 
 }

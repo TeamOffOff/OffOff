@@ -13,26 +13,25 @@ class ScheduleDataBaseRepository @Inject
 constructor(
     private val shiftDao: ShiftDao, private val realm: Realm
 ) {
+
+    // 저장된 모든 근무타입
     val shiftList = shiftDao.getAllShifts()
 
-//    val shiftList LiveData<List<mRealmObject>> = Transformations.map(shiftDao.getAllShifts()) {
-//        realm.copyFromRealm(it)
-//    }
-
+    // 모든 근무타입 라이브데이터로 가져오기
     fun getAllShifts() = shiftDao.getAllShifts()
 
-    fun getFirst() =
-        shiftDao.getFirst()
+    // 모든 근무타입 가져오기
+    fun getAllShift() = shiftDao.getAllShift()
 
-    fun getAllShift(): List<Shift> {
-        return shiftDao.getAllShift()
-    }
+    // 근무타입 추가
+    fun insertShift(shift: Shift) = shiftDao.insertShift(shift)
 
-    fun insertShift(shift: Shift) {
-        shiftDao.insertShift(shift)
-    }
+    // 특정 근무타입 삭제
+    fun deleteShift(id: String) = shiftDao.deleteShift(id)
 
-    fun deleteAllShifts() {
-        shiftDao.deleteAllShifts()
-    }
+    // 모든 근무타입 삭제
+    fun deleteAllShifts() = shiftDao.deleteAllShifts()
+
+    // id max 값 + 1 반환하는 메소드
+    fun getNextId(): Int = shiftDao.getNextId()
 }
