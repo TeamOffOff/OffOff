@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.database.models.Shift
 import com.yuuuzzzin.offoff_android.databinding.RvItemShiftBinding
 
-class ShiftListAdapter(): RecyclerView.Adapter<ShiftListAdapter.ViewHolder>() {
+class ShiftListAdapter() : RecyclerView.Adapter<ShiftListAdapter.ViewHolder>() {
 
     lateinit var binding: RvItemShiftBinding
-    private lateinit var shiftList:List<Shift>
+    private lateinit var shiftList: List<Shift>
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShiftListAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         binding = RvItemShiftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ShiftListAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(shiftList[position])
     }
 
@@ -28,7 +28,9 @@ class ShiftListAdapter(): RecyclerView.Adapter<ShiftListAdapter.ViewHolder>() {
     class ViewHolder(private val binding: RvItemShiftBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(shift: Shift) {
-            binding.tvName.text = shift.title
+            binding.iconTitle.text = shift.title
+            binding.iconTitle.setTextColor(shift.textColor!!)
+            binding.iconTitle.setBackgroundColor(shift.backgroundColor!!)
             binding.tvTime.text = shift.startDate.toString() + " - " + shift.endDate.toString()
         }
     }

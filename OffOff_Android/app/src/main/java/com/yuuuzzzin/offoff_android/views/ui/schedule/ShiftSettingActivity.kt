@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import com.yuuuzzzin.offoff_android.database.models.Shift
 import com.yuuuzzzin.offoff_android.databinding.ActivityShiftSettingBinding
 import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.ShiftListAdapter
@@ -35,9 +33,9 @@ class ShiftSettingActivity : AppCompatActivity() {
 
     private fun initView() {
         binding.btAdd.setOnClickListener {
-            viewModel.insertShift(Shift(5, "E", "black", "white", "14:30", "23:00"))
-//            val dialog = ScheduleTypeSettingDialog()
-//            dialog.show(supportFragmentManager, "custom_dialog")
+            //viewModel.insertShift(Shift(5, "E", "black", "white", "14:30", "23:00"))
+            val dialog = ShiftSettingDialog()
+            dialog.show(supportFragmentManager, "shift_setting_dialog")
         }
     }
 
@@ -54,11 +52,13 @@ class ShiftSettingActivity : AppCompatActivity() {
 //                }
 //            })
 
-        viewModel.shiftList.observe(this, Observer { shiftList ->
+        viewModel.shiftList.observe(this, { shiftList ->
             shiftList?.let { shiftlistAdapter.updateList(it) }
             Log.d("tag_realm_test", "shiftList변화 감지")
         })
 
     }
+
+
 }
 
