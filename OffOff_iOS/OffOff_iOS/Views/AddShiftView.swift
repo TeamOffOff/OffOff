@@ -41,7 +41,7 @@ class AddShiftView: UIView {
         $0.setTitle("설정", for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.backgroundColor = .white
-        $0.titleLabel?.textAlignment = .right
+        $0.contentHorizontalAlignment = .right
     }
     
     lazy var startTimeStack = UIStackView(arrangedSubviews: [startTimeLabel, startTimeButton]).then {
@@ -69,7 +69,7 @@ class AddShiftView: UIView {
         $0.setTitle("설정", for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.backgroundColor = .white
-        $0.titleLabel?.textAlignment = .right
+        $0.contentHorizontalAlignment = .right
     }
     
     lazy var endTimeStack = UIStackView(arrangedSubviews: [endTimeLabel, endTimeButton]).then {

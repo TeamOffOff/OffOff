@@ -48,8 +48,11 @@ class AddShiftViewModel {
         let titleStartEnd = Observable.combineLatest(input.titleText, startTimeChanged, endTimeChanged)
         isShiftAdded = input.saveButtonTapped.asObservable().withLatestFrom(titleStartEnd)
             .observeOn(MainScheduler.instance)
-            .flatMapLatest { (value) -> Observable<Bool> in
-                let shift = Shift(id: "@@@", title: value.0 ?? "", textColor: "#FFFFFF", backgroundColor: "#000000", startTime: value.1, endTime: value.2)
+            .flatMapLatest { (values) -> Observable<Bool> in
+                if values.0 == nil || values.0 == "" {
+                    return Observable.just(false)
+                }
+                let shift = Shift(id: "@@@", title: values.0 ?? "", textColor: "#FFFFFF", backgroundColor: "#000000", startTime: values.1, endTime: values.2)
                 return UserRoutineManager.shared.createShift(shift: shift)
             }
     }

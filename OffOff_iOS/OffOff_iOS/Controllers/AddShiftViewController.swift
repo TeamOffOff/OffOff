@@ -54,13 +54,21 @@ class AddShiftViewController: UIViewController {
         
         viewModel.isShiftAdded
             .bind {
-                print(#fileID, #function, #line, $0)
+                if $0 {
+                    self.dismiss(animated: true, completion: nil)
+                } else {
+                    let alert = UIAlertController(title: nil, message: "타이틀을 입력해주세요", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "확인", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
             .disposed(by: disposeBag)
         
         viewModel.isStartTimeEditing
             .bind {
                 if $0 {
+                    self.customView.endTimePicker.isHidden = true
                     UIView.animate(withDuration: 0.3) {
                         self.customView.startTimePicker.isHidden.toggle()
                     }
@@ -71,6 +79,7 @@ class AddShiftViewController: UIViewController {
         viewModel.isEndTimeEditing
             .bind {
                 if $0 {
+                    self.customView.startTimePicker.isHidden = true
                     UIView.animate(withDuration: 0.3) {
                         self.customView.endTimePicker.isHidden.toggle()
                     }
