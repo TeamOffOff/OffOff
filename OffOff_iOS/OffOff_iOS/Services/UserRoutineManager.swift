@@ -23,11 +23,23 @@ class UserRoutineManager {
     
     // Create
     func createShift() {
-        let shift = Shift(id: "Shift00", title: "주", textColor: "#000000", backgroundColor: "#FFFFFF", startDate: "2021-09-02 09:00", endDate: "2021-09-02 18:00")
+        let shift = Shift(id: "Shift00", title: "주", textColor: "#000000", backgroundColor: "#FFFFFF", startTime: "09:00", endTime: "18:00")
         
         try! realm.write {
             realm.add(shift)
         }
+    }
+    
+    func createShift(shift: Shift) -> Observable<Bool> {
+        do {
+            try realm.write {
+                realm.add(shift)
+            }
+            return Observable.just(true)
+        } catch {
+            return Observable.just(false)
+        }
+        
     }
     
     func createSavedShift(shift: Shift, date: Date) -> Observable<Bool> {
@@ -78,6 +90,16 @@ class UserRoutineManager {
             }
         } catch {
             print("Failed to delete SavedShift")
+        }
+    }
+    
+    func deleteAllShifts() {
+        do {
+            try realm.write {
+                realm.delete(realm.objects(Shift.self))
+            }
+        } catch {
+            print("Failed to delete Shift")
         }
     }
 //    func deleteRoutine(of userId: String, by routineId: String) {

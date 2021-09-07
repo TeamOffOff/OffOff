@@ -43,7 +43,7 @@ class EditScheduleViewController: UIViewController {
             .observeOn(MainScheduler.instance)
             .bind(to: customView.routineTable.rx.items(cellIdentifier: RoutineTableViewCell.identifier, cellType: RoutineTableViewCell.self)) { row, element, cell  in
                 cell.titleLabel.text = String(element.title.first!)
-                cell.timeLabel.text = UserRoutineManager.shared.getRoutineTime(startDate: element.startDate, endDate: element.endDate)
+                cell.timeLabel.text = UserRoutineManager.shared.getRoutineTime(startDate: element.startTime, endDate: element.endTime)
                 cell.titleLabel.textColor = UIColor(hex: element.textColor)
                 cell.titleLabel.backgroundColor = UIColor(hex: element.backgroundColor)
             }

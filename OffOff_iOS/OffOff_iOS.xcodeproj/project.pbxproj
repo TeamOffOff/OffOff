@@ -112,6 +112,8 @@
 		EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2128B26907B9600E47942 /* BoardListViewController.swift */; };
 		EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2128D2690814400E47942 /* CommunityBoard.swift */; };
 		EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF21290269081B800E47942 /* CommunityListSampleData.swift */; };
+		EAF7073326E71F7D00B7B6D1 /* AddShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */; };
+		EAF7073526E731CE00B7B6D1 /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -210,6 +212,8 @@
 		EAF2128B26907B9600E47942 /* BoardListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardListViewController.swift; sourceTree = "<group>"; };
 		EAF2128D2690814400E47942 /* CommunityBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityBoard.swift; sourceTree = "<group>"; };
 		EAF21290269081B800E47942 /* CommunityListSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListSampleData.swift; sourceTree = "<group>"; };
+		EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftViewModel.swift; sourceTree = "<group>"; };
+		EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -362,6 +366,7 @@
 				EA83564C26D3A6D500D60C46 /* ScheduleView.swift */,
 				EA8A333A26D4CB490014D97C /* SetRoutineView.swift */,
 				EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */,
+				EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -416,6 +421,7 @@
 				EA83564626D37BBE00D60C46 /* ScheduleViewModel.swift */,
 				EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */,
 				EA8A334826D63F480014D97C /* EditScheduleViewModel.swift */,
+				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -653,6 +659,7 @@
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
 				EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */,
 				EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */,
+				EAF7073326E71F7D00B7B6D1 /* AddShiftViewModel.swift in Sources */,
 				EA0624DD26DCA13C004FF91A /* RealmTestViewController.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
@@ -693,6 +700,7 @@
 				EA07345526929C01007830ED /* Post.swift in Sources */,
 				EA8A333B26D4CB490014D97C /* SetRoutineView.swift in Sources */,
 				EA2C4DF426DFD4890056A93C /* RoutineTableViewCell.swift in Sources */,
+				EAF7073526E731CE00B7B6D1 /* AddShiftView.swift in Sources */,
 				EA8A334926D63F480014D97C /* EditScheduleViewModel.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EA526E1D26CD0A100059A90C /* FirstViewController.swift in Sources */,

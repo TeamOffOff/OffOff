@@ -12,17 +12,17 @@ class Shift: Object {
     @Persisted var title: String = ""
     @Persisted var textColor: String = ""
     @Persisted var backgroundColor: String = ""
-    @Persisted var startDate: String = ""
-    @Persisted var endDate: String = ""
+    @Persisted var startTime: String = ""
+    @Persisted var endTime: String = ""
     
-    convenience init(id: String, title: String, textColor: String, backgroundColor: String, startDate: String, endDate: String) {
+    convenience init(id: String, title: String, textColor: String, backgroundColor: String, startTime: String, endTime: String) {
         self.init()
         self.id = id
         self.title = title
         self.textColor = textColor
         self.backgroundColor = backgroundColor
-        self.startDate = startDate
-        self.endDate = endDate
+        self.startTime = startTime
+        self.endTime = endTime
     }
     
     override class func primaryKey() -> String? {
