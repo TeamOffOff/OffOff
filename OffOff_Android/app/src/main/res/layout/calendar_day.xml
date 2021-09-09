@@ -19,7 +19,7 @@
         tools:text="00" />
 
     <TextView
-        android:id="@+id/tv_schedule_type"
+        android:id="@+id/icon_shift"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
@@ -27,6 +27,7 @@
         android:layout_marginBottom="16dp"
         android:background="@color/green"
         android:text="주"
+        android:visibility="invisible"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="24sp"

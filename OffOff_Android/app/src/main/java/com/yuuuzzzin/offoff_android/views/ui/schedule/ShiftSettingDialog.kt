@@ -46,11 +46,11 @@ class ShiftSettingDialog: DialogFragment() {
         }
 
         binding.tpStart.setOnTimeChangedListener { view, hourOfDay, minute ->
-            binding.tvStartTime.text = (String.format("%02d : %02d", hourOfDay, minute))
+            binding.tvStartTime.text = (String.format("%02d:%02d", hourOfDay, minute))
         }
 
         binding.tpEnd.setOnTimeChangedListener { view, hourOfDay, minute ->
-            binding.tvEndTime.text = (String.format("%02d : %02d", hourOfDay, minute))
+            binding.tvEndTime.text = (String.format("%02d:%02d", hourOfDay, minute))
         }
 
         binding.btCancel.setOnClickListener {
@@ -61,10 +61,10 @@ class ShiftSettingDialog: DialogFragment() {
             val shift = Shift(
                 id = viewModel.getNextId(),
                 title = binding.etTitle.text.toString(),
-                textColor =  Color.parseColor("#000066"),
-                backgroundColor =  Color.parseColor("#3366FF"),
-                startDate = binding.tvStartTime.text.toString(),
-                endDate = binding.tvEndTime.text.toString()
+                textColor ="#000066",
+                backgroundColor = "#3366FF",
+                startTime = binding.tvStartTime.text.toString(),
+                endTime = binding.tvEndTime.text.toString()
             )
             viewModel.insertShift(shift)
             dialog!!.dismiss()

@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,9 +30,10 @@ class ShiftListAdapter() : RecyclerView.Adapter<ShiftListAdapter.ViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
         fun bind(shift: Shift) {
             binding.iconTitle.text = shift.title
-            binding.iconTitle.setTextColor(shift.textColor!!)
-            binding.iconTitle.setBackgroundColor(shift.backgroundColor!!)
-            binding.tvTime.text = shift.startDate.toString() + " - " + shift.endDate.toString()
+            binding.iconTitle.setTextColor(Color.parseColor(shift.textColor!!))
+            binding.iconTitle.setBackgroundColor(
+                Color.parseColor(shift.backgroundColor!!))
+            binding.tvTime.text = shift.startTime.toString() + " - " + shift.endTime.toString()
         }
     }
 
@@ -39,4 +41,5 @@ class ShiftListAdapter() : RecyclerView.Adapter<ShiftListAdapter.ViewHolder>() {
         shiftList = list
         notifyDataSetChanged()
     }
+
 }

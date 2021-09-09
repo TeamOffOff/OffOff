@@ -34,6 +34,7 @@ class ScheduleFragment : Fragment() {
     lateinit var calendar: CalendarViewPager
     private val bottomDialog = SaveShiftBottomDialog()
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +45,7 @@ class ScheduleFragment : Fragment() {
         initViewModel()
         initToolbar()
         initCalendar()
+
 
         return binding.root
     }
@@ -82,16 +84,37 @@ class ScheduleFragment : Fragment() {
                     startActivity(Intent(context, ShiftSettingActivity::class.java))
                     true
                 }
-                R.id.action_allShiftLIst -> {
+                R.id.action_allShiftList -> {
                     Log.d("tag_getAllShift", viewModel.getAllShift().toString())
                     true
                 }
-                R.id.action_insert -> {
-                    viewModel.insertShift(Shift(viewModel.getNextId(), "D", Color.parseColor("#FFFFFF"), Color.parseColor("#000000"), "07:30", "15:30"))
+                R.id.action_insertShift -> {
+                    viewModel.insertShift(
+                        Shift(
+                            viewModel.getNextId(),
+                            "D",
+                            "#FFFFFF",
+                            "#000000",
+                            "07:30",
+                            "15:30"
+                        )
+                    )
                     true
                 }
-                R.id.action_deleteAll -> {
+                R.id.action_deleteAllShifts -> {
                     viewModel.deleteAllShifts()
+                    true
+                }
+                R.id.action_allScheduleList -> {
+                    Log.d("tag_getAllSchedule", viewModel.getAllS().toString())
+                    true
+                }
+                R.id.action_insertSchedule -> {
+                    //viewModel.insertSchedule(SavedShift(viewModel.getNextScheduleId(), "D","#FFFFFF", "#000000", "07:30", "15:30"))
+                    true
+                }
+                R.id.action_deleteAllSchedule -> {
+                    viewModel.deleteAllSchedule()
                     true
                 }
                 else -> false
@@ -101,13 +124,16 @@ class ScheduleFragment : Fragment() {
 
     private fun initCalendar() {
         calendar = binding.cvCalendar
-        calendar.adapter = CalendarAdapter(requireContext())
+        calendar.adapter = CalendarAdapter(requireContext(), viewModel)
         setDateHeader(Calendar.getInstance())
+
 
         // 캘린더 셀 클릭 리스너
         calendar.onDayClickListener = { day: Day ->
+            Log.d("test_calendar", day.toString())
             val bundle = Bundle()
-            bundle.putString("month",(day.calendar.get(Calendar.MONTH) + 1).toString())
+            bundle.putString("year", day.calendar.get(Calendar.YEAR).toString())
+            bundle.putString("month", (day.calendar.get(Calendar.MONTH) + 1).toString())
             bundle.putString("day", day.calendar.get(Calendar.DAY_OF_MONTH).toString())
             bundle.putInt("dayOfWeek", day.calendar.get(Calendar.DAY_OF_WEEK))
             bottomDialog.arguments = bundle
@@ -129,34 +155,50 @@ class ScheduleFragment : Fragment() {
     private fun setDateHeader(calendar: Calendar) {
         binding.tvMonth.text = DateUtils.formatDateTime(
             requireContext(), calendar.timeInMillis,
-            DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_NO_MONTH_DAY)
+            DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_NO_MONTH_DAY
+        )
     }
 
     override fun onDestroyView() {
         mBinding = null
         super.onDestroyView()
     }
-
 }
 
-class CalendarAdapter(context: Context) : CalendarPagerAdapter(context) {
+class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
+    CalendarPagerAdapter(context) {
+
+    val viewModel: ScheduleViewModel = scheduleViewModel
+
     override fun onCreateView(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(R.layout.calendar_day, parent, false)
     }
 
     override fun onBindView(view: View, day: Day) {
         val tvDate = CalendarDayBinding.bind(view).tvDate
-        val icon = CalendarDayBinding.bind(view).tvScheduleType
+        val icon = CalendarDayBinding.bind(view).iconShift
 
         if (day.state == DayState.ThisMonth) {
             view.visibility = View.VISIBLE
             tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
-            icon.visibility = if (day.calendar.get(Calendar.DAY_OF_MONTH) == 1 || day.calendar.get(Calendar.DAY_OF_MONTH) ==3 || day.calendar.get(Calendar.DAY_OF_MONTH) ==12 ||
-                day.calendar.get(Calendar.DAY_OF_MONTH) ==16 || day.calendar.get(Calendar.DAY_OF_MONTH) ==  20 || day.calendar.get(Calendar.DAY_OF_MONTH) == 28 ||
-                day.calendar.get(Calendar.DAY_OF_MONTH) ==25 || day.calendar.get(Calendar.DAY_OF_MONTH) ==  29 || day.calendar.get(Calendar.DAY_OF_MONTH) == 30) View.VISIBLE else View.GONE
+            viewModel.getSchedule(
+                day.calendar.get(Calendar.YEAR),
+                day.calendar.get(Calendar.MONTH) + 1,
+                day.calendar.get(Calendar.DAY_OF_MONTH)
+            ).let { response ->
+                if (response != null) {
+                    icon.visibility = View.VISIBLE
+                    icon.text = response.shift?.title
+                    icon.setTextColor(Color.parseColor(response.shift?.textColor!!))
+                    icon.setBackgroundColor(
+                        Color.parseColor(response.shift?.backgroundColor!!)
+                    )
+                }
+            }
         } else {
+            // 이 부분이 나중에 이전, 다음 달 날짜셀 띄울 때 수정해야하는 부분인듯..?
             view.visibility = View.INVISIBLE
         }
     }
-
 }
+

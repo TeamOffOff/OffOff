@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,8 +42,8 @@ class ShiftIconListAdapter() : RecyclerView.Adapter<ShiftIconListAdapter.ViewHol
         RecyclerView.ViewHolder(binding.root) {
         fun bind(shift: Shift) {
             binding.iconTitle.text = shift.title
-            binding.iconTitle.setTextColor(shift.textColor!!)
-            binding.iconTitle.setBackgroundColor(shift.backgroundColor!!)
+            binding.iconTitle.setTextColor(Color.parseColor(shift.textColor!!))
+            binding.iconTitle.setBackgroundColor(Color.parseColor(shift.backgroundColor!!))
             itemView.setOnClickListener {
                 shiftIconClickListener.onShiftIconClick(itemView, shift)
             }

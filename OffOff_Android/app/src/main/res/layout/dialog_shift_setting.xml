@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="96dp"
+                android:layout_marginStart="80dp"
                 android:text="주"
                 android:textSize="16sp" />
 
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="96dp"
+                android:layout_marginStart="80dp"
                 android:text="눌러서 설정하기"
                 android:textSize="16sp" />
 
@@ -109,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="96dp"
+                android:layout_marginStart="80dp"
                 android:text="눌러서 설정하기"
                 android:textSize="16sp" />
 

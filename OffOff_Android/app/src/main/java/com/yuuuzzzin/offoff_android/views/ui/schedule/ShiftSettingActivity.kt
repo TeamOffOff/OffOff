@@ -56,9 +56,6 @@ class ShiftSettingActivity : AppCompatActivity() {
             shiftList?.let { shiftlistAdapter.updateList(it) }
             Log.d("tag_realm_test", "shiftList변화 감지")
         })
-
     }
-
-
 }
 
