@@ -11,15 +11,27 @@
         android:title="근무 편집"/>
 
     <item
-        android:id="@+id/action_allShiftLIst"
+        android:id="@+id/action_allShiftList"
         android:title="log shifList"/>
 
     <item
-        android:id="@+id/action_insert"
-        android:title="insert"/>
+        android:id="@+id/action_insertShift"
+        android:title="insert shift"/>
 
     <item
-        android:id="@+id/action_deleteAll"
-        android:title="delete all"/>
+        android:id="@+id/action_deleteAllShifts"
+        android:title="delete all shift"/>
+
+    <item
+        android:id="@+id/action_allScheduleList"
+        android:title="log scheduleList"/>
+
+    <item
+        android:id="@+id/action_insertSchedule"
+        android:title="insert schedule"/>
+
+    <item
+        android:id="@+id/action_deleteAllSchedule"
+        android:title="delete all schedule"/>
 
 </menu>

@@ -9,10 +9,10 @@ open class Shift  (
     @PrimaryKey
     var id: Int? = 0,
     var title: String? = null,
-    var textColor: Int? = null,
-    var backgroundColor: Int? = null,
-    var startDate: String? = null,
-    var endDate: String? = null
+    var textColor: String? = null,
+    var backgroundColor: String? = null,
+    var startTime: String? = null,
+    var endTime: String? = null
 ) : RealmObject()
 
 open class SavedShift(
