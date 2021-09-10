@@ -29,7 +29,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:background="@color/green"
-                android:text="주"
+                android:text='@{viewModel.title.length() > 0 ? viewModel.title.substring(0, 1): ""}'
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="40sp" />
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="80dp"
-                android:text="주"
+                android:text="@={viewModel.title}"
                 android:textSize="16sp" />
 
         </LinearLayout>

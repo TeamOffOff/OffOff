@@ -3,12 +3,13 @@ package com.yuuuzzzin.offoff_android.views.ui.schedule
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.yuuuzzzin.offoff_android.database.models.Shift
 import com.yuuuzzzin.offoff_android.databinding.DialogShiftSettingBinding
 import com.yuuuzzzin.offoff_android.viewmodel.ShiftSettingViewModel
@@ -19,7 +20,7 @@ class ShiftSettingDialog: DialogFragment() {
 
     private var mBinding: DialogShiftSettingBinding? = null
     private val binding get() = mBinding!!
-    private lateinit var viewModel: ShiftSettingViewModel
+    private val viewModel: ShiftSettingViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +54,10 @@ class ShiftSettingDialog: DialogFragment() {
             binding.tvEndTime.text = (String.format("%02d:%02d", hourOfDay, minute))
         }
 
+        viewModel.title.observe(viewLifecycleOwner, {
+            Log.d("tag_observe", "값:" + it.toString())
+        })
+
         binding.btCancel.setOnClickListener {
             dialog!!.dismiss()
         }
@@ -74,9 +79,9 @@ class ShiftSettingDialog: DialogFragment() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(this).get(ShiftSettingViewModel::class.java)
-
-
+        //viewModel = ViewModelProvider(this).get(ShiftSettingViewModel::class.java)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
     }
 
     override fun onDestroyView() {

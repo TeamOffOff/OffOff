@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuuuzzzin.offoff_android.database.models.Shift
 import com.yuuuzzzin.offoff_android.database.repository.ScheduleDataBaseRepository
@@ -14,6 +15,10 @@ constructor(
     private val serviceRepository: ScheduleServiceRepository,
     private val dbRepository: ScheduleDataBaseRepository
 ) : ViewModel() {
+
+    val title = MutableLiveData<String>()
+
+    init { title.value = "D" }
 
     fun insertShift(shift: Shift) {
         dbRepository.insertShift(shift)

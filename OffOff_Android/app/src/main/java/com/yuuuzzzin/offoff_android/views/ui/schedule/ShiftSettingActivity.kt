@@ -40,6 +40,7 @@ class ShiftSettingActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
         shiftlistAdapter = ShiftListAdapter()
         binding.rvScheduleType.adapter = shiftlistAdapter

@@ -178,7 +178,7 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     }
 
     override fun onBindView(view: View, day: Day) {
-        Log.d("tag_onBindView", view.toString() + '/' + day.toString())
+        // Log.d("tag_onBindView", view.toString() + '/' + day.toString())
         val tvDate = CalendarDayBinding.bind(view).tvDate
         val icon = CalendarDayBinding.bind(view).iconShift
 
