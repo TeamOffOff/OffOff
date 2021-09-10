@@ -28,7 +28,6 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
     private lateinit var day: String
     private lateinit var dayOfWeek: String
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,12 +68,13 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
                         shift = shift
                     )
                 )
+                viewModel.scheduleChanged()
             }
         })
 
         viewModel.shiftList.observe(this, { shiftIconList ->
             shiftIconList?.let { shiftIconListAdapter.updateList(it) }
-            Log.d("tag_realm_test", "shiftListIcon변화 감지")
+            Log.d("tag_realm_test", "shiftListIcon 변화 감지")
         })
     }
 

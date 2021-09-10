@@ -30,22 +30,19 @@ class ScheduleFragment : Fragment() {
     private var mBinding: FragmentScheduleBinding? = null
     private val binding get() = mBinding!!
     private val viewModel: ScheduleViewModel by activityViewModels()
-
     lateinit var calendar: CalendarViewPager
     private val bottomDialog = SaveShiftBottomDialog()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentScheduleBinding.inflate(inflater, container, false)
 
         initViewModel()
         initToolbar()
         initCalendar()
-
 
         return binding.root
     }
@@ -89,6 +86,7 @@ class ScheduleFragment : Fragment() {
                     true
                 }
                 R.id.action_insertShift -> {
+                    // 임의의 Shift 삽입
                     viewModel.insertShift(
                         Shift(
                             viewModel.getNextId(),
@@ -110,7 +108,7 @@ class ScheduleFragment : Fragment() {
                     true
                 }
                 R.id.action_insertSchedule -> {
-                    //viewModel.insertSchedule(SavedShift(viewModel.getNextScheduleId(), "D","#FFFFFF", "#000000", "07:30", "15:30"))
+                    //viewModel.insertSchedule(SavedShift(viewModel.getNextScheduleId(), "D",Shift("#FFFFFF", "#000000", "07:30", "15:30"))
                     true
                 }
                 R.id.action_deleteAllSchedule -> {
@@ -126,7 +124,6 @@ class ScheduleFragment : Fragment() {
         calendar = binding.cvCalendar
         calendar.adapter = CalendarAdapter(requireContext(), viewModel)
         setDateHeader(Calendar.getInstance())
-
 
         // 캘린더 셀 클릭 리스너
         calendar.onDayClickListener = { day: Day ->
@@ -149,6 +146,12 @@ class ScheduleFragment : Fragment() {
         calendar.onCalendarChangeListener = { calendar: Calendar ->
             setDateHeader(calendar)
         }
+
+        viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
+            event.getContentIfNotHandled()?.let {
+                (calendar.adapter as CalendarAdapter).notifyCalendarChanged()
+            }
+        })
     }
 
     // 캘린더의 헤더 설정
@@ -175,23 +178,26 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     }
 
     override fun onBindView(view: View, day: Day) {
+        Log.d("tag_onBindView", view.toString() + '/' + day.toString())
         val tvDate = CalendarDayBinding.bind(view).tvDate
         val icon = CalendarDayBinding.bind(view).iconShift
 
         if (day.state == DayState.ThisMonth) {
             view.visibility = View.VISIBLE
             tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
+
+            // 저장된 근무 스케줄 띄우기
             viewModel.getSchedule(
                 day.calendar.get(Calendar.YEAR),
                 day.calendar.get(Calendar.MONTH) + 1,
                 day.calendar.get(Calendar.DAY_OF_MONTH)
-            ).let { response ->
-                if (response != null) {
+            ).let { savedShift ->
+                if (savedShift != null) {
                     icon.visibility = View.VISIBLE
-                    icon.text = response.shift?.title
-                    icon.setTextColor(Color.parseColor(response.shift?.textColor!!))
+                    icon.text = savedShift.shift?.title
+                    icon.setTextColor(Color.parseColor(savedShift.shift?.textColor!!))
                     icon.setBackgroundColor(
-                        Color.parseColor(response.shift?.backgroundColor!!)
+                        Color.parseColor(savedShift.shift?.backgroundColor!!)
                     )
                 }
             }
@@ -201,4 +207,3 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         }
     }
 }
-

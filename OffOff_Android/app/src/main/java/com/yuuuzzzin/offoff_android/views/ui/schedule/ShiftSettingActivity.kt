@@ -41,20 +41,12 @@ class ShiftSettingActivity : AppCompatActivity() {
 
     private fun initViewModel() {
         binding.viewModel = viewModel
-
         shiftlistAdapter = ShiftListAdapter()
         binding.rvScheduleType.adapter = shiftlistAdapter
 
-//        viewModel.getAllShifts()
-//            .observe(this, Observer {
-//                it?.let {
-//                    shiftlistAdapter.updateList(it)
-//                }
-//            })
-
         viewModel.shiftList.observe(this, { shiftList ->
             shiftList?.let { shiftlistAdapter.updateList(it) }
-            Log.d("tag_realm_test", "shiftList변화 감지")
+            Log.d("tag_realm_test", "shiftList 변화 감지")
         })
     }
 }

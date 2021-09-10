@@ -2,12 +2,14 @@ package com.yuuuzzzin.offoff_android.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.yuuuzzzin.offoff_android.database.models.SavedShift
 import com.yuuuzzzin.offoff_android.database.models.Shift
 import com.yuuuzzzin.offoff_android.database.repository.ScheduleDataBaseRepository
 import com.yuuuzzzin.offoff_android.service.repository.ScheduleServiceRepository
+import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -23,6 +25,9 @@ constructor(
         it
     }
     val shiftList: LiveData<List<Shift>> get() = _shiftList
+
+    private val _scheduleChanged = MutableLiveData<Event<Boolean>>()
+    val scheduleChanged: LiveData<Event<Boolean>> = _scheduleChanged
 
     init {
         Log.d("tag_realm_test", getSchedule(2021, 9, 15).toString())
@@ -63,11 +68,17 @@ constructor(
 
     fun deleteAllSchedule() {
         dbRepository.deleteAllSchedule()
+        scheduleChanged()
     }
 
     // 나중에 삭제 필요
     fun getNextScheduleId(): Int {
         return dbRepository.getNextScheduleId()
+    }
+
+    fun scheduleChanged() {
+
+        _scheduleChanged.postValue(Event(true))
     }
 
 }
