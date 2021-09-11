@@ -19,8 +19,6 @@ Token = Namespace(name="token", description="access토큰 재발급 API")
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
 
-
-
 @Token.route('')
 class TokenControl(Resource):
     @jwt_required(refresh=True)

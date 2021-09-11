@@ -35,7 +35,7 @@ class PostControl(Resource):
         post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                 collection_name=board_type)
 
-        post["image"]["body"] = get_image(post["image"]["key"], "post")
+        post["image"] = get_image(post["image"], "post")
 
         if not post:
             return {"queryStatus": "not found"}, 404
@@ -102,8 +102,7 @@ class PostControl(Resource):
         
         if request_info["image"]:
             print("here")
-            save_image(request_info["image"], "post")
-            del request_info["image"]["body"]
+            request_info["image"] = save_image(request_info["image"], "post")
         
         print(request_info)
 
@@ -333,6 +332,7 @@ Chat = Namespace(
     name="chatcontrol",
     description="채팅방 관리 기능"
 )
+
 
 @Chat.route("")
 class ChatControl(Resource):
