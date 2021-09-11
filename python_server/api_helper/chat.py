@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from pymongo import collection
 
-import mongo
+import python_server.mongo as mongo
 
 from flask_socketio import emit, join_room, leave_room, Namespace
 

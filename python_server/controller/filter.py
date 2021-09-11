@@ -2,11 +2,12 @@ from flask import request
 from flask_jwt_extended.utils import get_jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-import mongo
+import python_server.mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
 """duplication, blocklist, ownership filter"""
+
 
 # 중복확인 함수 => 데코레이터 고민 중
 def check_duplicate(key, target):

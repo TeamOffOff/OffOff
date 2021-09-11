@@ -6,10 +6,10 @@ import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 
-from controller.filter import check_duplicate, check_jwt
-from controller.ect import fix_index
+from python_server.controller.filter import check_duplicate, check_jwt
+from python_server.controller.ect import fix_index
 
-import mongo
+import python_server.mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
