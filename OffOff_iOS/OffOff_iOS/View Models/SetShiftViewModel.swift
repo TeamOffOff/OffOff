@@ -16,7 +16,7 @@ class SetShiftViewModel {
     var shifts: Observable<[Shift]>
     var date = PublishSubject<Date>()
     var dateText: Observable<String>
-    var shiftSaved: Observable<Bool>
+    var shiftSaved: Observable<Date?>
     
     init(
         input: (
@@ -31,7 +31,13 @@ class SetShiftViewModel {
         
         let shiftAndDate = Observable.combineLatest(input.selectedShift, date)
         shiftSaved = shiftAndDate.flatMap { shift, date in
-            UserRoutineManager.shared.createSavedShift(shift: shift, date: date)
+            UserRoutineManager.shared.createSavedShift(shift: shift, date: date).map {
+                if $0 {
+                    return date 
+                } else {
+                    return nil
+                }
+            }
         }
         
         

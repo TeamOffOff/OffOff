@@ -114,6 +114,8 @@
 		EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF21290269081B800E47942 /* CommunityListSampleData.swift */; };
 		EAF7073326E71F7D00B7B6D1 /* AddShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */; };
 		EAF7073526E731CE00B7B6D1 /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */; };
+		EAF7073726E9F35700B7B6D1 /* ShiftColorSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */; };
+		EAF7073926EA059600B7B6D1 /* UnderlineSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -214,6 +216,8 @@
 		EAF21290269081B800E47942 /* CommunityListSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListSampleData.swift; sourceTree = "<group>"; };
 		EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftViewModel.swift; sourceTree = "<group>"; };
 		EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftView.swift; sourceTree = "<group>"; };
+		EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftColorSelectViewController.swift; sourceTree = "<group>"; };
+		EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineSegmentedControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -347,6 +351,7 @@
 				EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */,
 				EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */,
 				EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */,
+				EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -400,7 +405,6 @@
 		EAF2127A268FEC2500E47942 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 				EA07345426929C01007830ED /* Post.swift */,
 				EACC255A26A5B3B0000B12B6 /* UserModel.swift */,
 				EACF1B3A26B6710800C153D3 /* Board.swift */,
@@ -422,6 +426,7 @@
 				EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */,
 				EA8A334826D63F480014D97C /* EditScheduleViewModel.swift */,
 				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
+				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -443,6 +448,7 @@
 				EA8A334626D63ADD0014D97C /* EditScheduleViewController.swift */,
 				EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */,
 				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
+				EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -710,7 +716,9 @@
 				EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */,
 				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */,
+				EAF7073926EA059600B7B6D1 /* UnderlineSegmentedControl.swift in Sources */,
 				EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */,
+				EAF7073726E9F35700B7B6D1 /* ShiftColorSelectViewController.swift in Sources */,
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
 				EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,

@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 
 class AddShiftViewModel {
+    // outputs
+    var textChanged: Observable<String?>
     var isDismissing: Observable<Bool>
     var isSaving: Observable<Bool>
     var isStartTimeEditing = Observable<Bool>.just(false)
@@ -17,11 +19,13 @@ class AddShiftViewModel {
     var startTimeChanged: Observable<String>
     var endTimeChanged: Observable<String>
     var isShiftAdded: Observable<Bool>
+    var isEditingShiftColor: Observable<Bool>
     
     let disposeBag = DisposeBag()
     
     init(
         input: (
+            badgeTapped: Signal<()>,
             titleText: Observable<String?>,
             cancelButtonTapped: Signal<()>,
             saveButtonTapped: Signal<()>,
@@ -32,6 +36,10 @@ class AddShiftViewModel {
         )
     ) {
         // outputs
+        textChanged = input.titleText.map { $0 }
+        
+        isEditingShiftColor = input.badgeTapped.asObservable().map { true }
+        
         isDismissing = input.cancelButtonTapped.asObservable().map { true }
         
         isSaving = input.saveButtonTapped.asObservable().map { true }

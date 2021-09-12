@@ -62,7 +62,7 @@ class ScheduleViewController: UIViewController {
             .debug()
             .bind {
                 if $0 {
-                    self.customView.calendar.reloadData()
+//                    self.customView.calendar.reloadData()
                 }
             }
             .disposed(by: disposeBag)
@@ -73,6 +73,7 @@ class ScheduleViewController: UIViewController {
 extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
         if let cell = cell as? ScheduleCalendarCell {
+            cell.backgroundColor = .white
             let savedShift = viewModel.getSavedShift(of: date)
             savedShift.bind {
                 cell.savedShift.onNext($0)
@@ -89,10 +90,18 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        guard let cell = calendar.cell(for: date, at: monthPosition) as? ScheduleCalendarCell else {
+            return
+        }
+        cell.backgroundColor = .lightGray
         let vc = SetShiftViewController()
+        vc.editingCell = cell
         vc.modalTransitionStyle = .coverVertical
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true, completion: nil)
         vc.viewModel.date.onNext(date)
+    }
+    
+    func calendar(_ calendar: FSCalendar, didDeselect date: Date, at monthPosition: FSCalendarMonthPosition) {
     }
 }

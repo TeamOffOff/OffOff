@@ -13,6 +13,7 @@ class SetShiftViewController: UIViewController {
     let customView = SetRoutineView()
     var viewModel: SetShiftViewModel!
     let disposeBag = DisposeBag()
+    var editingCell: ScheduleCalendarCell? = nil
     
     let outterView = UIView().then { $0.backgroundColor = .clear }
     
@@ -31,6 +32,7 @@ class SetShiftViewController: UIViewController {
             .tapGesture()
             .when(.recognized)
             .subscribe(onNext: { _ in
+                self.editingCell!.backgroundColor = .white
                 self.dismiss(animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
@@ -46,7 +48,6 @@ class SetShiftViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.dateText
-            .debug()
             .bind {
                 self.customView.dateLabel.text = $0
             }
@@ -55,8 +56,14 @@ class SetShiftViewController: UIViewController {
         // 새로운 시프트 저장처리
         viewModel.shiftSaved
             .bind {
-                if $0 {
+                if $0 != nil {
                     print("saved")
+                    UserRoutineManager.shared.getSavedShift(of: $0!).map { $0.isEmpty ? nil : $0.first!}
+                        .bind {
+                            self.editingCell?.savedShift.onNext($0)
+                        }
+                        .dispose()
+                    self.editingCell?.backgroundColor = .white
                     self.dismiss(animated: true, completion: nil)
                 } else {
                     print("failed")

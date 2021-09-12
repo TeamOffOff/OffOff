@@ -27,6 +27,7 @@ class AddShiftViewController: UIViewController {
         
         viewModel = AddShiftViewModel(
             input: (
+                badgeTapped: customView.badgeButton.rx.tap.asSignal(),
                 titleText: customView.titleTextField.rx.text.asObservable(),
                 cancelButtonTapped: customView.cancelButton.rx.tap.asSignal(),
                 saveButtonTapped: customView.saveButton.rx.tap.asSignal(),
@@ -38,6 +39,25 @@ class AddShiftViewController: UIViewController {
         )
         
         // bind outputs
+        viewModel.textChanged
+            .bind {
+                if $0 != nil {
+                    self.customView.badgeButton.setTitle("\($0!.prefix(1))", for: .normal)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.isEditingShiftColor
+            .bind {
+                if $0 {
+                    let vc = ShiftColorSelectViewController()
+                    vc.modalTransitionStyle = .crossDissolve
+                    vc.modalPresentationStyle = .currentContext
+                    self.present(vc, animated: true, completion: nil)
+                }
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.isDismissing
             .bind {
                 if $0 {
