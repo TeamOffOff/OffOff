@@ -41,8 +41,4 @@ def get_image(img_key_list: list, directory: str):
             "body": img_body
         })
 
-<<<<<<< HEAD
     return img_list
-=======
-    return img_list
->>>>>>> 5dd819636fff4d049d116eec98b54b9edc4897d1

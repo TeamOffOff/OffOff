@@ -6,16 +6,11 @@ from flask_jwt_extended import JWTManager
 
 from .utils import APP_SECRET_KEY, JWT_SECRET_KEY
 
-<<<<<<< HEAD
 from .list import BoardList, PostList, UserControl
 from .post import Post, Reply, Chat
 from .user import Activity, User, Token
-=======
-from .board import BoardList, PostList, UserControl
-from .post import Post, Reply, Chat
-from .user import Activity, User, Token
 from .chat import ChatNamepsace
->>>>>>> 5dd819636fff4d049d116eec98b54b9edc4897d1
+
 
 print("api_helper __init__.py진입")
 
