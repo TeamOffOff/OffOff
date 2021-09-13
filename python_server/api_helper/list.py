@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from pymongo import collection
 
-import mongo
+import python_server.mongo as mongo
 
 import pprint
 
