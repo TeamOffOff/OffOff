@@ -134,7 +134,7 @@ class ScheduleFragment : Fragment() {
             bundle.putString("day", day.calendar.get(Calendar.DAY_OF_MONTH).toString())
             bundle.putInt("dayOfWeek", day.calendar.get(Calendar.DAY_OF_WEEK))
             bottomDialog.arguments = bundle
-            bottomDialog.show(parentFragmentManager, "custom_dialog")
+            bottomDialog.show(parentFragmentManager, "calendar_bottom_dialog")
         }
 
         calendar.onDayLongClickListener = { day: Day ->

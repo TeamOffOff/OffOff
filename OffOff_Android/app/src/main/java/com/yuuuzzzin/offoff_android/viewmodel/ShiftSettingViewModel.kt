@@ -16,16 +16,26 @@ constructor(
     private val dbRepository: ScheduleDataBaseRepository
 ) : ViewModel() {
 
-    val title = MutableLiveData<String>()
+    val title: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
 
-    init { title.value = "D" }
+    fun initEtShift() {
+        title.value = "D"
+    }
+
+    fun initEtShift(title: String) {
+        this.title.value = title
+    }
+
+    fun getShift(id: String): Shift? = dbRepository.getShift(id)
 
     fun insertShift(shift: Shift) {
         dbRepository.insertShift(shift)
     }
 
     // 나중에 삭제 필요
-    fun getNextId() : Int {
+    fun getNextId(): Int {
         return dbRepository.getNextId()
     }
 
