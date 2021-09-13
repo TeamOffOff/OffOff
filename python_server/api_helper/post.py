@@ -4,11 +4,11 @@ from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from controller.image import *
-from controller.reference import *
-from controller.filter import check_jwt, ownership_required
-from controller.ect import get_variables, convert_to_string, get_reply_list
-import mongo
+from python_server.controller.image import *
+from python_server.controller.reference import *
+from python_server.controller.filter import check_jwt, ownership_required
+from python_server.controller.ect import get_variables, convert_to_string, get_reply_list
+import python_server.mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
@@ -35,7 +35,7 @@ class PostControl(Resource):
         post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                 collection_name=board_type)
 
-        post["Image"]["body"] = get_image(post["Image"]["key"])
+        post["image"] = get_image(post["image"], "post")
 
         if not post:
             return {"queryStatus": "not found"}, 404
@@ -102,8 +102,7 @@ class PostControl(Resource):
         
         if request_info["image"]:
             print("here")
-            save_image(request_info["image"], "post")
-            del request_info["image"]["body"]
+            request_info["image"] = save_image(request_info["image"], "post")
         
         print(request_info)
 
@@ -333,6 +332,7 @@ Chat = Namespace(
     name="chatcontrol",
     description="채팅방 관리 기능"
 )
+
 
 @Chat.route("")
 class ChatControl(Resource):

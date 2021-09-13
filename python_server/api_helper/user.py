@@ -6,10 +6,10 @@ import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 
-from controller.filter import check_duplicate, check_jwt
-from controller.ect import fix_index
+from python_server.controller.filter import check_duplicate, check_jwt
+from python_server.controller.ect import fix_index
 
-import mongo
+import python_server.mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
@@ -17,8 +17,6 @@ User = Namespace(name="user", description="유저 관련 API")
 Token = Namespace(name="token", description="access토큰 재발급 API")
 
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
-
-
 
 
 @Token.route('')

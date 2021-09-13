@@ -1,9 +1,8 @@
 from flask import request
 from flask_jwt_extended import jwt_required
 
-from controller.filter import check_jwt
-
-import mongo
+import python_server.mongo as mongo
+from python_server.controller.filter import check_jwt
 
 mongodb = mongo.MongoHelper()
 
@@ -22,21 +21,18 @@ def fix_index(target, *args):
     real = {}
     if not args:
         args = target.keys()
-
     print(args)
-
     for i in args:
         if type(target[i]) is dict:
             temp = {}
             for j in target[i]:
                 temp[j] = target[i][j]
             real[i] = temp
-
         else:
             real[i] = target[i]
-
     return real
 """
+
 
 # 변수 추출
 @jwt_required()

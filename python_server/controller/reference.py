@@ -1,4 +1,5 @@
-import mongo
+import python_server.mongo as mongo
+
 mongodb = mongo.MongoHelper()
 
 """author 정보 embed, 활동 정보 link 클래스"""
