@@ -18,8 +18,13 @@ class UserRoutineManager {
         "SavedShift\(realm.objects(SavedShift.self).count)"
     }
     
+    func shiftID() -> String {
+        "Shift\(realm.objects(Shift.self).count)"
+    }
+    
     // Observing changing
     var savedShiftsChanged = BehaviorSubject<Bool>(value: false)
+    var shiftsChanged = BehaviorSubject<Bool>(value: false)
     
     // Create
     func createShift() {
@@ -35,6 +40,7 @@ class UserRoutineManager {
             try realm.write {
                 realm.add(shift)
             }
+            shiftsChanged.onNext(true)
             return Observable.just(true)
         } catch {
             return Observable.just(false)
@@ -72,8 +78,26 @@ class UserRoutineManager {
         return Observable.array(from: result)
     }
     
+    func getShift(of id: String) -> Observable<[Shift]> {
+        let shifts = realm.objects(Shift.self)
+        let predicateQuery = NSPredicate(format: "id = %@", id)
+        let result = shifts.filter(predicateQuery)
+        return Observable.array(from: result)
+    }
 
     // Update
+    func updateShift(shift: Shift) -> Observable<Bool> {
+        do {
+            try realm.write {
+                realm.add(shift, update: .modified)
+            }
+            shiftsChanged.onNext(true)
+            return Observable.just(true)
+        } catch {
+            return Observable.just(false)
+        }
+    }
+    
     func addShift(shift: Shift) {
         Observable.from(object: shift).subscribe(realm.rx.add()).dispose()
     }
@@ -102,33 +126,40 @@ class UserRoutineManager {
             print("Failed to delete Shift")
         }
     }
-//    func deleteRoutine(of userId: String, by routineId: String) {
-//        if let userRoutine = getUserRoutine(by: userId) {
-//            try! realm.write {
-//                if let routine = userRoutine.shifts.filter({ $0.id == routineId }).first {
-//                    if let index = userRoutine.shifts.index(of: routine) {
-//                        userRoutine.shifts.remove(at: index)
-//                    }
-//                }
-//            }
-//        } else {
-//            print("User Routine is nil")
-//        }
-//    }
-//
-//    func deleteSavedRoutine(of userId: String, by savedRoutineId: String) {
-//        if let userRoutine = getUserRoutine(by: userId) {
-//            try! realm.write {
-//                if let saved = userRoutine.savedRoutines.filter({$0.id == savedRoutineId}).first {
-//                    if let index = userRoutine.savedRoutines.index(of: saved) {
-//                        userRoutine.savedRoutines.remove(at: index)
-//                    }
-//                }
-//            }
-//        } else {
-//            print("User Routine is nil")
-//        }
-//    }
+    
+    func deleteShift(by id: Int) -> Observable<Bool> {
+        let shifts = realm.objects(Shift.self)
+        let predicateQuery = NSPredicate(format: "id = %@", id)
+        let result = shifts.filter(predicateQuery)
+        
+        if result.count == 1 {
+            do {
+                try realm.write {
+                    realm.delete(result.first!)
+                }
+                shiftsChanged.onNext(true)
+                return Observable.just(true)
+            } catch {
+                return Observable.just(false)
+            }
+        } else {
+            return Observable.just(false)
+        }
+    }
+    
+    func deleteShift(by shift: Shift) -> Observable<Bool> {
+        
+        do {
+            try realm.write {
+                realm.delete(shift)
+            }
+            shiftsChanged.onNext(true)
+            return Observable.just(true)
+        } catch {
+            return Observable.just(false)
+        }
+
+    }
     
     // Utility
     func getRoutineTime(startDate: String, endDate: String) -> String {

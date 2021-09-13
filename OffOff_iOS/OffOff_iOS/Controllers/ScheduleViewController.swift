@@ -39,7 +39,7 @@ class ScheduleViewController: UIViewController {
         editScheduleButton
             .rx.tap
             .bind {
-                let vc = EditScheduleViewController()
+                let vc = EditShiftViewController()
                 vc.modalPresentationStyle = .fullScreen
                 self.present(vc, animated: true, completion: nil)
             }

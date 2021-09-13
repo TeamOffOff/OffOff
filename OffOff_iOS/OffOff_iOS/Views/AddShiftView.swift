@@ -133,4 +133,13 @@ class AddShiftView: UIView {
             $0.bottom.equalTo(cancelButton.snp.top).offset(-20)
         }
     }
+    
+    public func setupView(with shift: Shift) {
+        self.badgeButton.setTitle(String(shift.title.prefix(1)), for: .normal)
+        self.badgeButton.setTitleColor(UIColor(hex: shift.textColor), for: .normal)
+        self.badgeButton.backgroundColor = UIColor(hex: shift.backgroundColor)
+        self.titleTextField.text = shift.title
+        self.startTimeButton.setTitle(shift.startTime, for: .normal)
+        self.endTimeButton.setTitle(shift.endTime, for: .normal)
+    }
 }

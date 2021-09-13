@@ -12,6 +12,7 @@ class AddShiftViewController: UIViewController {
 
     let customView = AddShiftView()
     var viewModel: AddShiftViewModel!
+    var editingShift = Observable<Shift?>.just(nil)
     
     let disposeBag = DisposeBag()
     
@@ -27,6 +28,7 @@ class AddShiftViewController: UIViewController {
         
         viewModel = AddShiftViewModel(
             input: (
+                editingShift: editingShift,
                 badgeTapped: customView.badgeButton.rx.tap.asSignal(),
                 titleText: customView.titleTextField.rx.text.asObservable(),
                 cancelButtonTapped: customView.cancelButton.rx.tap.asSignal(),
@@ -39,6 +41,15 @@ class AddShiftViewController: UIViewController {
         )
         
         // bind outputs
+        viewModel.isEditingShift
+            .filter {
+                $0 != nil
+            }
+            .bind {
+                self.customView.setupView(with: $0!)
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.textChanged
             .bind {
                 if $0 != nil {
@@ -72,7 +83,7 @@ class AddShiftViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        viewModel.isShiftAdded
+        viewModel.isShiftChanged
             .bind {
                 if $0 {
                     self.dismiss(animated: true, completion: nil)

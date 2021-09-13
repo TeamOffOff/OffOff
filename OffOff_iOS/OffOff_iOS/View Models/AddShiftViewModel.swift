@@ -18,13 +18,16 @@ class AddShiftViewModel {
     var isEndTimeEditing = Observable<Bool>.just(false)
     var startTimeChanged: Observable<String>
     var endTimeChanged: Observable<String>
-    var isShiftAdded: Observable<Bool>
+    var isShiftChanged: Observable<Bool>
     var isEditingShiftColor: Observable<Bool>
+    var isEditingShift = Observable<Shift?>.just(nil)
     
+    var exsistingId: String?
     let disposeBag = DisposeBag()
     
     init(
         input: (
+            editingShift: Observable<Shift?>,
             badgeTapped: Signal<()>,
             titleText: Observable<String?>,
             cancelButtonTapped: Signal<()>,
@@ -36,6 +39,14 @@ class AddShiftViewModel {
         )
     ) {
         // outputs
+        isEditingShift = input.editingShift.map {
+            if $0 != nil {
+                return $0
+            } else {
+                return nil
+            }
+        }
+        
         textChanged = input.titleText.map { $0 }
         
         isEditingShiftColor = input.badgeTapped.asObservable().map { true }
@@ -53,15 +64,25 @@ class AddShiftViewModel {
         startTimeChanged = input.pickedStartTime.map { formatter.string(from: $0) }
         endTimeChanged = input.pickedEndTime.map { formatter.string(from: $0) }
         
-        let titleStartEnd = Observable.combineLatest(input.titleText, startTimeChanged, endTimeChanged)
-        isShiftAdded = input.saveButtonTapped.asObservable().withLatestFrom(titleStartEnd)
+        let titleStartEnd = Observable.combineLatest(input.titleText, startTimeChanged, endTimeChanged, isEditingShift)
+        isShiftChanged = input.saveButtonTapped.asObservable().withLatestFrom(titleStartEnd)
             .observeOn(MainScheduler.instance)
             .flatMapLatest { (values) -> Observable<Bool> in
                 if values.0 == nil || values.0 == "" {
                     return Observable.just(false)
                 }
-                let shift = Shift(id: "@@@", title: values.0 ?? "", textColor: "#FFFFFF", backgroundColor: "#000000", startTime: values.1, endTime: values.2)
-                return UserRoutineManager.shared.createShift(shift: shift)
+                
+                if values.3 != nil {
+                    let shift = Shift(id: values.3!.id, title: values.0 ?? "", textColor: "#FFFFFF", backgroundColor: "#000000", startTime: values.1, endTime: values.2)
+                    return UserRoutineManager.shared.updateShift(shift: shift)
+                } else {
+                    let shift = Shift(id: UserRoutineManager.shared.shiftID(), title: values.0 ?? "", textColor: "#FFFFFF", backgroundColor: "#000000", startTime: values.1, endTime: values.2)
+                    return UserRoutineManager.shared.createShift(shift: shift)
+                }
             }
+    }
+    
+    private func bindOutputs() {
+        
     }
 }

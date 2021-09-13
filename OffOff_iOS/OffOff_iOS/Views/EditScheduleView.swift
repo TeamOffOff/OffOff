@@ -15,7 +15,7 @@ class EditScheduleView: UIView {
     }
     var routineTable = UITableView().then {
         $0.backgroundColor = .white
-        $0.register(RoutineTableViewCell.self, forCellReuseIdentifier: RoutineTableViewCell.identifier)
+        $0.register(ShiftTableViewCell.self, forCellReuseIdentifier: ShiftTableViewCell.identifier)
     }
     var closeButton = UIButton(type: .close)
     

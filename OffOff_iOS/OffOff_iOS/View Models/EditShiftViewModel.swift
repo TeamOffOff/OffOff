@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-class EditScheduleViewModel {
+class EditShiftViewModel {
     
     // outputs
     var shifts = Observable<[Shift]>.just([])
@@ -29,6 +29,10 @@ class EditScheduleViewModel {
     
     func fetchRoutines() {
         shifts = UserRoutineManager.shared.getShifts()
+    }
+    
+    func deleteShift(shift: Shift) {
+        UserRoutineManager.shared.deleteShift(by: shift)
     }
     
 //    private func saveNewRoutine(model: RoutineModel) {

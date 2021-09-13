@@ -23,7 +23,7 @@
 		EA285A6626C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA285A6726C565F000E65EB2 /* RxCocoa */; };
 		EA2C4DF226DFCB4A0056A93C /* EditScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */; };
-		EA2C4DF426DFD4890056A93C /* RoutineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2C4DF326DFD4890056A93C /* RoutineTableViewCell.swift */; };
+		EA2C4DF426DFD4890056A93C /* ShiftTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */; };
 		EA2FDF4826A7C7EF00AEC951 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */; };
 		EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
@@ -48,8 +48,8 @@
 		EA8A333D26D4CB600014D97C /* SetShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */; };
 		EA8A333F26D4CC720014D97C /* RoutineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333E26D4CC720014D97C /* RoutineCell.swift */; };
 		EA8A334226D61B5F0014D97C /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = EA8A334126D61B5F0014D97C /* RxGesture */; };
-		EA8A334726D63ADD0014D97C /* EditScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A334626D63ADD0014D97C /* EditScheduleViewController.swift */; };
-		EA8A334926D63F480014D97C /* EditScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A334826D63F480014D97C /* EditScheduleViewModel.swift */; };
+		EA8A334726D63ADD0014D97C /* EditShiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */; };
+		EA8A334926D63F480014D97C /* EditShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A334826D63F480014D97C /* EditShiftViewModel.swift */; };
 		EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */; };
 		EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F2026A9D12A009352B9 /* ProfileViewController.swift */; };
 		EA929F2326AC66BE009352B9 /* default profile.png in Resources */ = {isa = PBXBuildFile; fileRef = EA929F2226AC66BE009352B9 /* default profile.png */; };
@@ -145,7 +145,7 @@
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
 		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScheduleView.swift; sourceTree = "<group>"; };
-		EA2C4DF326DFD4890056A93C /* RoutineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineTableViewCell.swift; sourceTree = "<group>"; };
+		EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTableViewCell.swift; sourceTree = "<group>"; };
 		EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		EA2FDF4926A7D88800AEC951 /* UserServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServices.swift; sourceTree = "<group>"; };
 		EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftViewController.swift; sourceTree = "<group>"; };
@@ -170,8 +170,8 @@
 		EA8A333A26D4CB490014D97C /* SetRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRoutineView.swift; sourceTree = "<group>"; };
 		EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetShiftViewModel.swift; sourceTree = "<group>"; };
 		EA8A333E26D4CC720014D97C /* RoutineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineCell.swift; sourceTree = "<group>"; };
-		EA8A334626D63ADD0014D97C /* EditScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScheduleViewController.swift; sourceTree = "<group>"; };
-		EA8A334826D63F480014D97C /* EditScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScheduleViewModel.swift; sourceTree = "<group>"; };
+		EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditShiftViewController.swift; sourceTree = "<group>"; };
+		EA8A334826D63F480014D97C /* EditShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditShiftViewModel.swift; sourceTree = "<group>"; };
 		EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMakeView.swift; sourceTree = "<group>"; };
 		EA929F2026A9D12A009352B9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		EA929F2226AC66BE009352B9 /* default profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default profile.png"; sourceTree = "<group>"; };
@@ -397,7 +397,7 @@
 				EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */,
 				EA83564826D38C4900D60C46 /* ScheduleCalendarCell.swift */,
 				EA8A333E26D4CC720014D97C /* RoutineCell.swift */,
-				EA2C4DF326DFD4890056A93C /* RoutineTableViewCell.swift */,
+				EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -424,7 +424,7 @@
 				EA983F0C26C0E4980070604E /* NewPostViewModel.swift */,
 				EA83564626D37BBE00D60C46 /* ScheduleViewModel.swift */,
 				EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */,
-				EA8A334826D63F480014D97C /* EditScheduleViewModel.swift */,
+				EA8A334826D63F480014D97C /* EditShiftViewModel.swift */,
 				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
 				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 			);
@@ -445,7 +445,7 @@
 				EA526E1C26CD0A100059A90C /* FirstViewController.swift */,
 				EA83564326D3729100D60C46 /* ScheduleViewController.swift */,
 				EA8A333826D4C7540014D97C /* SetShiftViewController.swift */,
-				EA8A334626D63ADD0014D97C /* EditScheduleViewController.swift */,
+				EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */,
 				EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */,
 				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
 				EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */,
@@ -705,13 +705,13 @@
 				EA83564D26D3A6D500D60C46 /* ScheduleView.swift in Sources */,
 				EA07345526929C01007830ED /* Post.swift in Sources */,
 				EA8A333B26D4CB490014D97C /* SetRoutineView.swift in Sources */,
-				EA2C4DF426DFD4890056A93C /* RoutineTableViewCell.swift in Sources */,
+				EA2C4DF426DFD4890056A93C /* ShiftTableViewCell.swift in Sources */,
 				EAF7073526E731CE00B7B6D1 /* AddShiftView.swift in Sources */,
-				EA8A334926D63F480014D97C /* EditScheduleViewModel.swift in Sources */,
+				EA8A334926D63F480014D97C /* EditShiftViewModel.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EA526E1D26CD0A100059A90C /* FirstViewController.swift in Sources */,
 				EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */,
-				EA8A334726D63ADD0014D97C /* EditScheduleViewController.swift in Sources */,
+				EA8A334726D63ADD0014D97C /* EditShiftViewController.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */,
 				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
