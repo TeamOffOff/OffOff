@@ -58,7 +58,7 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
         binding.rvScheduleType.adapter = shiftIconListAdapter
 
         /* click listener 재정의 */
-        shiftIconListAdapter.setOnScheduleTypeClickListener(object :
+        shiftIconListAdapter.setOnShiftIconClickListener(object :
             ShiftIconListAdapter.OnShiftIconClickListener {
             override fun onShiftIconClick(view: View, shift: Shift) {
                 viewModel.insertSchedule(

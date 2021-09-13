@@ -43,6 +43,14 @@ constructor(
         dbRepository.insertShift(shift)
     }
 
+//    fun updateShift(shift: Shift) {
+//        dbRepository.updateShift(shift)
+//    }
+
+    fun deleteShift(id: Int) {
+        dbRepository.deleteShift(id)
+    }
+
     fun deleteAllShifts() {
         dbRepository.deleteAllShifts()
     }

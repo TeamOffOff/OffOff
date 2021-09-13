@@ -24,11 +24,17 @@ constructor(
     // 모든 근무타입 가져오기
     fun getAllShift() = shiftDao.getAllShift()
 
+    // 특정 근무타입 가져오기
+    fun getShift(id: String) = shiftDao.getShift(id)
+
     // 근무타입 추가
     fun insertShift(shift: Shift) = shiftDao.insertShift(shift)
 
+    // 근무타입 수정
+    // fun updateShift(shift: Shift) = shiftDao.updateShift(shift)
+
     // 특정 근무타입 삭제
-    fun deleteShift(id: String) = shiftDao.deleteShift(id)
+    fun deleteShift(id: Int) = shiftDao.deleteShift(id)
 
     // 모든 근무타입 삭제
     fun deleteAllShifts() = shiftDao.deleteAllShifts()

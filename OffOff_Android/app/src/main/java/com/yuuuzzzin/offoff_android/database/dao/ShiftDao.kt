@@ -24,15 +24,27 @@ class ShiftDao(private val realm: Realm) {
             .sort("id", Sort.ASCENDING)
     }
 
-    // 근무타입 추가
+    // 특정 근무타입 가져오기
+    fun getShift(id: String): Shift? = realm.where<Shift>()
+        .equalTo("id", id)
+        .findFirst()
+
+    // 근무타입 추가 또는 수정
     fun insertShift(shift: Shift) {
         realm.executeTransactionAsync {
-            it.insert(shift)
+            it.insertOrUpdate(shift)
         }
     }
 
+    // 근무타입 수정
+//    fun updateShift(shift: Shift) {
+//        realm.executeTransactionAsync {
+//            it.insertOrUp
+//        }
+//    }
+
     // 특정 근무타입 삭제
-    fun deleteShift(id: String) {
+    fun deleteShift(id: Int) {
         realm.executeTransaction {
             it.where<Shift>().equalTo("id", id).findAll().deleteAllFromRealm()
         }

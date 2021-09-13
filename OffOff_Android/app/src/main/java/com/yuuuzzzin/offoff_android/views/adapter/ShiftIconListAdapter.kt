@@ -34,7 +34,7 @@ class ShiftIconListAdapter() : RecyclerView.Adapter<ShiftIconListAdapter.ViewHol
 
     private lateinit var shiftIconClickListener: OnShiftIconClickListener
 
-    fun setOnScheduleTypeClickListener(listener: OnShiftIconClickListener) {
+    fun setOnShiftIconClickListener(listener: OnShiftIconClickListener) {
         this.shiftIconClickListener = listener
     }
 
