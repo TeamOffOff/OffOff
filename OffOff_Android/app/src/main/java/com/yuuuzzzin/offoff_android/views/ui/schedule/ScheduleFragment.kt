@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,13 +23,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import jp.kuluna.calendarviewpager.*
 import java.util.*
 
+lateinit var calendar: CalendarViewPager
+
 @AndroidEntryPoint
 class ScheduleFragment : Fragment() {
 
     private var mBinding: FragmentScheduleBinding? = null
     private val binding get() = mBinding!!
     private val viewModel: ScheduleViewModel by activityViewModels()
-    lateinit var calendar: CalendarViewPager
     private val bottomDialog = SaveShiftBottomDialog()
 
     override fun onCreateView(
@@ -143,6 +145,7 @@ class ScheduleFragment : Fragment() {
         // 다른 달로 넘어갈 때 리스너
         calendar.onCalendarChangeListener = { calendar: Calendar ->
             setDateHeader(calendar)
+            //Log.d("tag_test", )
         }
 
         viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
@@ -179,6 +182,7 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         viewContainer = container
+        Log.d("tag_position", position.toString())
         return super.instantiateItem(container, position)
     }
 
@@ -194,6 +198,9 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         if (day.state == DayState.ThisMonth) {
             view.visibility = View.VISIBLE
             tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
+
+            if (day.isSelected) view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
+            else view.setBackgroundResource(R.drawable.layout_border_calendar)
 
             // 저장된 근무 스케줄 띄우기
             viewModel.getSchedule(
@@ -212,7 +219,9 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
             }
         } else {
             // 이 부분이 나중에 이전, 다음 달 날짜셀 띄울 때 수정해야하는 부분인듯..?
-            view.visibility = View.INVISIBLE
+            view.visibility = View.VISIBLE
+            tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
+            //calendar.moveItemBy(1)
         }
     }
 
@@ -226,6 +235,12 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
 //            }
 //        }
 //    }
+
+}
+
+class CustomCalendarViewPager(context: Context, attrs: AttributeSet?) :
+    CalendarViewPager(context, attrs) {
+
 
 }
 
