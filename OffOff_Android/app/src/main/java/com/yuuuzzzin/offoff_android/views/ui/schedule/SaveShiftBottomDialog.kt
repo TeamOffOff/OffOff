@@ -52,7 +52,9 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
 
         }
 
+        binding.btPrevious.setOnClickListener {
 
+        }
 
 
         //initViewModel()

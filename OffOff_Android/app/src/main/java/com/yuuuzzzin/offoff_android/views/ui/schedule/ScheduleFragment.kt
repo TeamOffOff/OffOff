@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import jp.kuluna.calendarviewpager.*
 import java.util.*
+import kotlin.properties.Delegates
 
 lateinit var calendar: CalendarViewPager
 
@@ -177,12 +179,13 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     CalendarPagerAdapter(context) {
 
     private var viewContainer: ViewGroup? = null
+    private var position by Delegates.notNull<Int>()
 
     val viewModel: ScheduleViewModel = scheduleViewModel
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         viewContainer = container
-        Log.d("tag_position", position.toString())
+        this.position = position
         return super.instantiateItem(container, position)
     }
 
@@ -202,6 +205,8 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
             if (day.isSelected) view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
             else view.setBackgroundResource(R.drawable.layout_border_calendar)
 
+            if (day.isToday) view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.gray))
+
             // 저장된 근무 스케줄 띄우기
             viewModel.getSchedule(
                 day.calendar.get(Calendar.YEAR),
@@ -218,10 +223,15 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 }
             }
         } else {
-            // 이 부분이 나중에 이전, 다음 달 날짜셀 띄울 때 수정해야하는 부분인듯..?
             view.visibility = View.VISIBLE
+            tvDate.setTextColor(ContextCompat.getColor(context!!, R.color.gray))
             tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
-            //calendar.moveItemBy(1)
+            view.setOnClickListener {
+                calendar.moveItemBy(day.state.compareTo(DayState.ThisMonth))
+                selectedDay = day.calendar.time
+                onDayClickLister?.invoke(day)
+                Log.d("tag_day", day.toString())
+            }
         }
     }
 
