@@ -10,10 +10,11 @@ from bson.objectid import ObjectId
 
 # 보낸 쪽지 / 받은 쪽지
 """
+Collection : message
 {
     "_id": ObjectId,
-    "from": user_id,
-    "to": user_id,
+    "send": user_id  # nickname 어떻게 할지 논의해야함
+    "receive": user_id,
     "date": datetime
     "content": string,
     "post": {
@@ -21,8 +22,18 @@ from bson.objectid import ObjectId
         "post_title": string
     },
     "delete": {
-        "sender": False,
-        "receiver": False
+        "send": False,
+        "receive": False
+    }
+}
+"""
+
+"""
+Collection : user
+{
+    "message":{
+        "send": [],
+        "recieve": []
     }
 }
 """
@@ -51,26 +62,20 @@ class MassageControl(Resource):
         # datetime 추가
         request_info["date"] = datetime.now()
 
-        # sender, reciever 변수 저장
-        sender = request_info["from"]  # 회원정보가 수정된 경우 sender, reciever 이름은 그 전 그대로? 새롭게 업데이트 해야하나?
-        receiver = request_info["to"]
-
         # message collection에 저장
         message_id = mongodb.insert_one(data=request_info, collection_name="message")
 
-        # user collection / sender에 message_id 추가
-        making_reference = MakeReference(board_type="user", user=sender)
-        result1 = making_reference.link_activity_information_in_user(field="message.send", post_id=message_id, operator="$addToSet")
+        # sender, reciever 변수 저장
+        for user in ("send", "receive"):
+            user = request_info[user]
+            making_reference =MakeReference(board_type="user", user=user)
+            result = making_reference.link_activity_information_in_user(field=f"message.{user}", post_id=message_id, operator="$addToSet")
+            if (result.raw_result["n"] == 0):
+                return {"queryStatus": "update activity fail"}, 500
 
-        # user collection / reciever에 message_id 추가
-        making_reference =MakeReference(board_type="user", user=receiver)
-        result2 = making_reference.link_activity_information_in_user(field="message.recieve", post_id=message_id, operator="$addToSet")
-        
-
-        if (result1.raw_result["n"] == 0) or (result2.raw_result["n"] == 0):
-            return {"queryStatus": "update activity fail"}, 500
-        else:  # 메시지 보내고 난 다음 해당 게시글 페이지에 남아있음을 가정
-            return {"queryStatus": "send massage success"}, 200
+                
+        # 메시지 보내고 난 다음 해당 게시글 페이지에 남아있음을 가정 -> 메시지 보낸 걸 성공했다는 것만 알림
+        return {"queryStatus": "send massage success"}, 200
 
 
     @jwt_required()
@@ -81,60 +86,75 @@ class MassageControl(Resource):
             return {"queryStatus": "wrong Token"}, 403
 
         message_id = request.args.get("msgId")
-        who = request.args.get("who") # sender, reciever
+        user = request.args.get("user") # send, recieve
         
         # check_jwt()로 얻는 user_id가 주고 받았던 당시와 달라질 일은 없음 
         # 삭제했던 걸 url을 입력해서 들어가는 사람도 있을 수 있음 => true, false로 확인하면 됨
         # check_jwt()로 얻은 user_id 의 message에 해당 message_id가 있는지 확인하는 방향으로 확인할 수도 있지만 그렇게 되면 2개의 collection을 확인하게 됨
 
-        message = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")
+        message = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")  # send, receive 둘 다 삭제한 경우
         if not message:
             return {"queryStatus": "not found"}, 404
-            
-        sender = message["from"]
-        sender_whether_to_delete = message["delete"]["sender"]  # 삭제하면 True
-        receiver = message["to"]
-        receiver_whether_to_delete = message["delete"]["receiver"]
         
-        if who == "sender":
-            if (user_id != sender) or (sender_whether_to_delete):
-                return{"queryStatus": "wrong access"}, 403
-        elif who == "reciever":
-            if (user_id != receiver) or (receiver_whether_to_delete):
-                return{"queryStatus": "wrong access"}, 403
+        whether_to_delete = message["delete"][user]  # 삭제하면 True 상대방은 삭제 하지 않았지만 자신은 삭제했었던 경우
+        if whether_to_delete:
+            return{"queryStatus": "not found"}, 404
+        
+        check_user = message[user]
+        if user_id != check_user:  # 접근한 유저(user_id)와 기록되어있는 user가 다른경우
+            return{"queryStatus": "wrong access"}, 403
 
 
         message["_id"] = str(message["_id"])
         message["date"] = (message["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
         return message, 200
 
 
     @jwt_required()  # 로그인 안 되어있는 경우 여기에서 걸러짐
     def delete(self):
-        user_id = check_jwt()
+        user_id = check_jwt()  #blocklist 토큰 걸러내기
         if not user_id:
             return {"queryStatus": "wrong Token"}, 403
 
+        total = ['send', 'receive']
         message_id = request.args.get("msgId")
-        who = request.args.get("who") # sender, reciever
+        user = request.args.get("user") # send, recieve
+        other = (total.remove(user))[0]
+
+        message = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")  # 둘 다 삭제해서 db에서 못 찾은 경우
+        if not message:
+            return {"queryStatus": "not found"}, 404
+
+        whether_to_delete = message["delete"][user]  # 삭제하면 True 상대방은 삭제 하지 않았지만 자신은 삭제했었던 경우
+        if whether_to_delete:
+            return{"queryStatus": "not found"}, 404
         
-        # check_jwt()로 얻는 user_id가 주고 받았던 당시와 달라졌을 수 있음
-        # 삭제했던 걸 url을 입력해서 들어가는 사람도 있을 수 있음
-        # check_jwt()로 얻은 user_id 의 message에 해당 message_id가 있는지 확인하는 방향으로 해야함
-        result = mongodb.find_one(query={"_id": user_id}, collection_name="user", projection_key={"message":True, "_id":False})
-        if who == "sender":
-            if not (message_id in result["message"]["send"]):
-                return{"queryStatus": "Wrong access"}, 403
-        else:
-            if not (message_id in result["message"]["recieve"]):
-                return{"queryStatus": "Wrong access"}, 403
+        check_user = message[user]
+        if user_id != check_user:  # 접근한 유저와 기록된 유저가 다른 경우
+            return{"queryStatus": "wrong access"}, 403
+
 
         # user collection에서 message id 삭제
+        making_reference = MakeReference(board_type="user", user=user_id)
+        result = making_reference.link_activity_information_in_user(field=f'message.{user}', post_id=message_id, operator="$pull")
+        if (result.raw_result["n"] == 0):
+            return {"queryStatus": "update activity fail"}, 500
+        
+        if message["delete"][other]:  # 상대방이 이미 삭제한 경우 (True)
+            result = mongodb.delete_one(query={"_id":message_id}, collection_name="message")
+        else:
+            # message collection에서 True로 변경
+            # $set 제대로 작동하는지 확인하기
+            result = mongodb.update_one(query={"_id":message_id}, collection_name="message", modify={"set": {f"delete.{user}": True}})
 
-        # message collection에서 True로 변경
+        if result.raw_result["n"] == 0:
+            return {"queryStatus": "delete message fail"}, 500
+        
+        return{"queryStatus": "delete success"}, 200
 
 
-        # 둘 다 True 인지 확인하고 db에서 삭제
+
 
 
 
