@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.database.models.Shift
@@ -18,10 +19,7 @@ import com.yuuuzzzin.offoff_android.databinding.CalendarDayBinding
 import com.yuuuzzzin.offoff_android.databinding.FragmentScheduleBinding
 import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import jp.kuluna.calendarviewpager.CalendarPagerAdapter
-import jp.kuluna.calendarviewpager.CalendarViewPager
-import jp.kuluna.calendarviewpager.Day
-import jp.kuluna.calendarviewpager.DayState
+import jp.kuluna.calendarviewpager.*
 import java.util.*
 
 @AndroidEntryPoint
@@ -149,6 +147,10 @@ class ScheduleFragment : Fragment() {
 
         viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
             event.getContentIfNotHandled()?.let {
+//                Log.d("tag_scheduleChanged", "스케줄 추가")
+//                var viewContainer: ViewGroup?= null
+//                var views = viewContainer
+//                (calendar.adapter as? CalendarCellAdapter)?.updateItems(selectedDay)
                 (calendar.adapter as CalendarAdapter).notifyCalendarChanged()
             }
         })
@@ -171,14 +173,21 @@ class ScheduleFragment : Fragment() {
 class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     CalendarPagerAdapter(context) {
 
+    private var viewContainer: ViewGroup? = null
+
     val viewModel: ScheduleViewModel = scheduleViewModel
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        viewContainer = container
+        return super.instantiateItem(container, position)
+    }
 
     override fun onCreateView(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(R.layout.calendar_day, parent, false)
     }
 
     override fun onBindView(view: View, day: Day) {
-        // Log.d("tag_onBindView", view.toString() + '/' + day.toString())
+        //Log.d("tag_onBindView", view.toString() + '/' + day.toString())
         val tvDate = CalendarDayBinding.bind(view).tvDate
         val icon = CalendarDayBinding.bind(view).iconShift
 
@@ -206,4 +215,32 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
             view.visibility = View.INVISIBLE
         }
     }
+
+//    fun notifyCalendarItemChanged() {
+//        val views = this.viewContainer
+//        if (views != null) {
+//            Log.d("tag_scheduleChanged", "스케줄 추가 작업..")
+//            (0 until views.childCount).forEach { i ->
+//                Log.d("log_selectedDay", selectedDay.toString())
+//                ((views.getChildAt(i) as? RecyclerView)?.adapter as? CalendarCellAdapter)?.updateItems(selectedDay)
+//            }
+//        }
+//    }
+
+}
+
+class CalendarCellsAdapter(
+    context: Context,
+    calendar: Calendar,
+    startingAt: CalendarPagerAdapter.DayOfWeek,
+    preselectedDay: Date?
+) : CalendarCellAdapter(context, calendar, startingAt, preselectedDay) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, day: Day) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        TODO("Not yet implemented")
+    }
+
 }

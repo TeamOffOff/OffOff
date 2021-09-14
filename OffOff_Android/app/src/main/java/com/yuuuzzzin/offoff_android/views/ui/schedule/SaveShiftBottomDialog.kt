@@ -27,6 +27,8 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
     private lateinit var month: String
     private lateinit var day: String
     private lateinit var dayOfWeek: String
+    private var id: Int? = null
+    private var savedShift: SavedShift ?= null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +43,17 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
         binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
 
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+        viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt()).let { savedShift ->
+            if(savedShift != null) {
+                this.savedShift = viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt())
+                id = savedShift.id
+            }
+
+        }
+
+
+
 
         //initViewModel()
         initRV()
@@ -63,11 +76,12 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
             override fun onShiftIconClick(view: View, shift: Shift) {
                 viewModel.insertSchedule(
                     SavedShift(
-                        id = viewModel.getNextScheduleId(),
+                        id = if(id != null) id else viewModel.getNextScheduleId(),
                         date = (String.format("%04d-%02d-%02d", year.toInt(), month.toInt(), day.toInt())),
                         shift = shift
                     )
                 )
+
                 viewModel.scheduleChanged()
             }
         })

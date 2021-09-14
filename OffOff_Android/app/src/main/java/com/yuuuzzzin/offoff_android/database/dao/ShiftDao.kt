@@ -87,7 +87,7 @@ class ShiftDao(private val realm: Realm) {
     // 일정 추가
     fun insertSchedule(savedShift: SavedShift) {
         realm.executeTransactionAsync {
-            it.insert(savedShift)
+            it.insertOrUpdate(savedShift)
         }
     }
 
