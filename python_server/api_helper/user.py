@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 from flask import request
 from flask_jwt_extended.utils import get_jwt
 from flask_restx import Resource, Namespace
+=======
+from os import access
+from flask import request
+from flask_restx import Resource, Api, Namespace, fields
+>>>>>>> parent of 8e5b480 (http only 쿠키)
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 import bcrypt
 from bson.objectid import ObjectId
@@ -22,7 +28,7 @@ Activity = Namespace(name="activity", description="유저 활동 관련 API")
 @Token.route('')
 class TokenControl(Resource):
     @jwt_required(refresh=True)
-    def get(self):  # refresh 로 access 발급
+    def get(self):
         user_id = get_jwt_identity()
         refresh_token = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["refreshToken"]
         if not refresh_token:  # refresh token이 탈취되어서 db에서 삭제한 경우
@@ -33,6 +39,7 @@ class TokenControl(Resource):
         access_token = create_access_token(identity=user_id, expires_delta=delta)
 
         return {
+<<<<<<< HEAD
                    "accessToken": access_token,
                    "queryStatus": 'success'
                }, 200
@@ -53,6 +60,14 @@ class TokenControl(Resource):
             "_id": jti,
             "createdAt": datetime.utcnow()
         }
+=======
+                "accessToken": access_token,
+                "queryStatus": 'success'
+            }, 200
+    
+    def delete(self):
+        pass
+>>>>>>> parent of 8e5b480 (http only 쿠키)
 
         result1 = mongodb.insert_one(data=data, collection_name="block_list")  # result1은 _id
         print(result1)
@@ -269,16 +284,28 @@ class AuthLogin(Resource):
             # 비밀번호 일치한 경우
             access_token = create_access_token(identity=request_info["_id"], expires_delta=False)
             refresh_token = create_refresh_token(identity=request_info["_id"], expires_delta=False)
+<<<<<<< HEAD
 
             add_refresh_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": refresh_token}})
+=======
+            
+            add_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":{"refreshToken": refresh_token}})
+>>>>>>> parent of 8e5b480 (http only 쿠키)
 
             if add_refresh_token.raw_result["n"] != 1:
                 return {"queryStatus": "add token fail"}, 500
 
             return {
+<<<<<<< HEAD
                        "accessToken": access_token,
                        "refreshToken": refresh_token,
                        "queryStatus": "success"
+=======
+                "accessToken": access_token,
+                "refreshToken": refresh_token,
+                "queryStatus": 'success'
+            }, 200
+>>>>>>> parent of 8e5b480 (http only 쿠키)
 
                    }, 200
 
