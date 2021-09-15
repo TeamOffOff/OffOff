@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, collection
 from pymongo.cursor import CursorType
 
 
@@ -11,7 +11,6 @@ class MongoHelper:
         self.db = self.client[db_name]
         self.collection = None
     
-
     def insert_one(self, data=None, collection_name=None):
         self.collection = self.db[collection_name]
         result = self.collection.insert_one(data).inserted_id
@@ -42,14 +41,20 @@ class MongoHelper:
         result = self.collection.delete_many(query)
         return result
 
-    def update_one(self, query=None, collection_name=None, modify=None):
+    def update_one(self, query=None, collection_name=None, modify=None, upsert=False, bypass=False, collation=None, array_filters=None):
         self.collection = self.db[collection_name]
-        result = self.collection.update_one(query, modify, upsert=False)
+        result = self.collection.update_one(query, modify, upsert, bypass, collation, array_filters)
         return result
 
     def update_many(self, query=None, collection_name=None, modify=None):
         self.collection = self.db[collection_name]
         result = self.collection.update_many(query, modify, upsert=False)
+        return result
+    
+    def create_index(self, standard, expire_time, collection_name=None):
+        self.db.create_collection(collection_name)
+        self.collection = self.db[collection_name]
+        result = self.collection.create_index(standard, expireAfterSeconds=expire_time)
         return result
     
     def aggregate(self, pipeline=None, collection_name=None):
@@ -61,7 +66,6 @@ class MongoHelper:
         self.collection = self.db[collection_name]
         result = self.collection.drop()
         return result
-
 
 
 if __name__ == "__main__":
