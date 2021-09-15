@@ -1,10 +1,10 @@
 from pymongo import message
-from controller.reference import MakeReference
+from python_server.controller.reference import MakeReference
 from flask import request
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
-from controller.filter import check_jwt, ownership_required
+from python_server.controller.filter import check_jwt, ownership_required
 from bson.objectid import ObjectId
 
 
@@ -39,8 +39,8 @@ Collection : user
 """
 
 
+import python_server.mongo as mongo
 
-import mongo 
 mongodb = mongo.MongoHelper()
 
 Message = Namespace("message", description="메시지 관련 API")
@@ -57,7 +57,7 @@ class MassageControl(Resource):
         request_info = request.get_json()
 
         #_id 삭제
-        del request_info["id"]
+        del request_info["_id"]
 
         # datetime 추가
         request_info["date"] = datetime.now()
@@ -67,8 +67,8 @@ class MassageControl(Resource):
 
         # sender, reciever 변수 저장
         for user in ("send", "receive"):
-            user = request_info[user]
-            making_reference =MakeReference(board_type="user", user=user)
+            target_user = request_info[user]
+            making_reference =MakeReference(board_type="user", user=target_user)
             result = making_reference.link_activity_information_in_user(field=f"message.{user}", post_id=message_id, operator="$addToSet")
             if (result.raw_result["n"] == 0):
                 return {"queryStatus": "update activity fail"}, 500
@@ -95,15 +95,16 @@ class MassageControl(Resource):
         message = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")  # send, receive 둘 다 삭제한 경우
         if not message:
             return {"queryStatus": "not found"}, 404
+        print(message)
+
+        check_user = message[user]
+        if user_id != check_user:  # 접근한 유저(user_id)와 기록되어있는 user가 다른경우
+            return{"queryStatus": "wrong access"}, 403
         
         whether_to_delete = message["delete"][user]  # 삭제하면 True 상대방은 삭제 하지 않았지만 자신은 삭제했었던 경우
         if whether_to_delete:
             return{"queryStatus": "not found"}, 404
         
-        check_user = message[user]
-        if user_id != check_user:  # 접근한 유저(user_id)와 기록되어있는 user가 다른경우
-            return{"queryStatus": "wrong access"}, 403
-
 
         message["_id"] = str(message["_id"])
         message["date"] = (message["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
@@ -118,12 +119,19 @@ class MassageControl(Resource):
             return {"queryStatus": "wrong Token"}, 403
 
         total = ['send', 'receive']
+        print(total)
         message_id = request.args.get("msgId")
         user = request.args.get("user") # send, recieve
-        other = (total.remove(user))[0]
+        print(user)
+        temp = total.remove(user)
+        print(temp)
+        other = total[0]
+        print(other)        
 
-        message = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")  # 둘 다 삭제해서 db에서 못 찾은 경우
-        if not message:
+
+        message = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")
+        print(message)  
+        if not message:  # 둘 다 삭제해서 db에서 못 찾은 경우
             return {"queryStatus": "not found"}, 404
 
         whether_to_delete = message["delete"][user]  # 삭제하면 True 상대방은 삭제 하지 않았지만 자신은 삭제했었던 경우
@@ -142,12 +150,16 @@ class MassageControl(Resource):
             return {"queryStatus": "update activity fail"}, 500
         
         if message["delete"][other]:  # 상대방이 이미 삭제한 경우 (True)
-            result = mongodb.delete_one(query={"_id":message_id}, collection_name="message")
+            print("상대방이 삭제한 경우")
+            result = mongodb.delete_one(query={"_id":ObjectId(message_id)}, collection_name="message")
         else:
             # message collection에서 True로 변경
             # $set 제대로 작동하는지 확인하기
-            result = mongodb.update_one(query={"_id":message_id}, collection_name="message", modify={"set": {f"delete.{user}": True}})
-
+            print("상대방이 삭제하지 않은 경우")
+            result = mongodb.update_one(query={"_id":ObjectId(message_id)}, collection_name="message", modify={"$set": {'delete': {user: True, other: False}}})
+       
+        
+        print(result.raw_result["n"])
         if result.raw_result["n"] == 0:
             return {"queryStatus": "delete message fail"}, 500
         
