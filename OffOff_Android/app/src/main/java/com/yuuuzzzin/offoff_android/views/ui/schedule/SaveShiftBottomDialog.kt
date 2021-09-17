@@ -15,9 +15,11 @@ import com.yuuuzzzin.offoff_android.utils.CalendarUtils
 import com.yuuuzzzin.offoff_android.viewmodel.ScheduleViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.ShiftIconListAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import jp.kuluna.calendarviewpager.CalendarViewPager
+import java.util.*
 
 @AndroidEntryPoint
-class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
+class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFragment() {
 
     private var mBinding: DialogBottomSaveShiftBinding? = null
     private val binding get() = mBinding!!
@@ -28,7 +30,7 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
     private lateinit var day: String
     private lateinit var dayOfWeek: String
     private var id: Int? = null
-    private var savedShift: SavedShift ?= null
+    private var savedShift: SavedShift? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +47,7 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
         viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt()).let { savedShift ->
-            if(savedShift != null) {
+            if (savedShift != null) {
                 this.savedShift = viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt())
                 id = savedShift.id
             }
@@ -53,9 +55,31 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
         }
 
         binding.btPrevious.setOnClickListener {
+            (calendar.adapter as? CalendarAdapter)?.movePreviousDate().let { date ->
+                val cal: Calendar = Calendar.getInstance()
+                cal.time = date
+                year = cal.get(Calendar.YEAR).toString()
+                month = (cal.get(Calendar.MONTH) + 1).toString()
+                day = cal.get(Calendar.DAY_OF_MONTH).toString()
+                dayOfWeek =
+                    CalendarUtils.WeekOfDayType.fromInt(cal.get(Calendar.DAY_OF_WEEK)).toString()
+                binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
 
+            }
         }
 
+        binding.btNext.setOnClickListener {
+            (calendar.adapter as? CalendarAdapter)?.moveNextDate().let { date ->
+                val cal: Calendar = Calendar.getInstance()
+                cal.time = date
+                year = cal.get(Calendar.YEAR).toString()
+                month = (cal.get(Calendar.MONTH) + 1).toString()
+                day = cal.get(Calendar.DAY_OF_MONTH).toString()
+                dayOfWeek =
+                    CalendarUtils.WeekOfDayType.fromInt(cal.get(Calendar.DAY_OF_WEEK)).toString()
+                binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
+            }
+        }
 
         //initViewModel()
         initRV()
@@ -78,8 +102,13 @@ class SaveShiftBottomDialog() : BottomSheetDialogFragment() {
             override fun onShiftIconClick(view: View, shift: Shift) {
                 viewModel.insertSchedule(
                     SavedShift(
-                        id = if(id != null) id else viewModel.getNextScheduleId(),
-                        date = (String.format("%04d-%02d-%02d", year.toInt(), month.toInt(), day.toInt())),
+                        id = if (id != null) id else viewModel.getNextScheduleId(),
+                        date = (String.format(
+                            "%04d-%02d-%02d",
+                            year.toInt(),
+                            month.toInt(),
+                            day.toInt()
+                        )),
                         shift = shift
                     )
                 )

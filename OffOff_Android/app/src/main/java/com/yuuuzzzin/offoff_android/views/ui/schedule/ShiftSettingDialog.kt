@@ -80,7 +80,7 @@ class ShiftSettingDialog : DialogFragment() {
 
         binding.btConfirm.setOnClickListener {
             val shift = Shift(
-                id = if(id != null) id else viewModel.getNextId(),
+                id = if (id != null) id else viewModel.getNextId(),
                 title = binding.etTitle.text.toString(),
                 textColor = "#000066",
                 backgroundColor = "#3366FF",
