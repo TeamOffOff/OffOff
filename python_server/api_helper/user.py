@@ -6,6 +6,7 @@ import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 
+from image import save_image, get_image
 from python_server.controller.filter import check_duplicate, check_jwt
 from python_server.controller.ect import fix_index
 
@@ -132,6 +133,9 @@ class AuthRegister(Resource):
             information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
             sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
             activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
+
+            if sub_information["profileImage"]:
+                sub_information["profileImage"] = save_image(sub_information["profileImage"], "user")
 
             real_user_info = {"_id": user_info["_id"],
                               "password": user_info["password"],
@@ -299,14 +303,15 @@ class AuthLogin(Resource):
         sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
         activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
+        sub_information["profileImage"] = get_image(sub_information["profileImage"], "user")
+
         real_user_info = {"_id": user_info["_id"],
                           "password": user_info["password"],
                           "information": information,
                           "subInformation": sub_information,
                           "activity": activity}
 
-        return {
-                   "user": real_user_info}, 200
+        return {"user": real_user_info}, 200
 
     @jwt_required()
     def put(self):  # 회원정보수정 => 순서고정 코드 추가 고려

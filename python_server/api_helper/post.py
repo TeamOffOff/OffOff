@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from python_server.controller.image import *
 from python_server.controller.reference import *
 from python_server.controller.filter import check_jwt, ownership_required
-from python_server.controller.ect import get_variables, convert_to_string, 
+from python_server.controller.ect import get_variables, convert_to_string
 import python_server.mongo as mongo
 
 mongodb = mongo.MongoHelper()
@@ -101,7 +101,6 @@ class PostControl(Resource):
         request_info["bookmarks"] = []
         
         if request_info["image"]:
-            print("here")
             request_info["image"] = save_image(request_info["image"], "post")
         
         print(request_info)

@@ -14,6 +14,9 @@ bucket = s3.Bucket("offoffbucket")
 def save_image(img_list: list, directory: str):
     key_list = []
 
+    if not img_list:
+        return None
+
     for img in img_list:
         img_key = img["key"]
         key_list.append(img_key)
@@ -30,6 +33,9 @@ def save_image(img_list: list, directory: str):
 
 def get_image(img_key_list: list, directory: str):
     img_list = list()
+
+    if not img_key_list:
+        return None
 
     for img_key in img_key_list:
         img_obj = s3.Object(bucket.name, directory + "/" + img_key)
