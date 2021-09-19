@@ -6,10 +6,11 @@ from flask_jwt_extended import JWTManager
 
 from .utils import APP_SECRET_KEY, JWT_SECRET_KEY
 
-from .list import BoardList, PostList, UserControl
+from .list import BoardList, PostList, UserControl, MessageList
 from .post import Post, Reply, Chat
 from .user import Activity, User, Token
 from .message import Message
+from .calendar import Calendar, CalendarControl
 
 
 print("api_helper __init__.py진입")
@@ -38,8 +39,6 @@ def create_app(debug=False):
     # flask_restx
     api = Api(app)
 
-    api.add_namespace(Chat, "/chat")
-
     api.add_namespace(BoardList, "/boardlist")
     api.add_namespace(PostList, "/postlist")
     api.add_namespace(UserControl, "/usercontrol")
@@ -52,5 +51,8 @@ def create_app(debug=False):
     api.add_namespace(Activity, "/activity")
 
     api.add_namespace(Message, "/message")
+    api.add_namespace(MessageList, "/messagelist")
+
+    api.add_namespace(Calendar, "/calendar")
 
     return app
