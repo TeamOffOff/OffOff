@@ -30,6 +30,9 @@ def check_jwt():
     else:
         return user_id
 
+"""
+ownership_required 를 하면 jwt_required 안 해도 된다
+"""
 
 # 수정, 삭제, 접근 시 작성자 확인
 def ownership_required(func):

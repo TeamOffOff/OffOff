@@ -2,8 +2,9 @@ from flask import request
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
-
-from pymongo import collection
+from flask_jwt_extended import jwt_required
+from python_server.controller.filter import check_jwt
+from pymongo import collection, message
 
 import python_server.mongo as mongo
 
@@ -174,3 +175,36 @@ class PostListControl(Resource):
         result = mongodb.drop(collection_name=board_type)
 
         return {"queryStatus": result}
+
+
+@MessageList.route("/<string:message_type>")  # send, receive
+class MassageListControl(Resource):
+    @jwt_required()
+    def get(self, message_type):  # 쪽지 목록 불러오기
+        """
+        쪽지 리스트를 조회합니다
+        """
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
+
+        message_id_list = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["message"][message_type]
+
+        # 회원활동 게시글 조회와 구조 동일
+        message_list = []
+        for message_id in message_id_list:
+            result = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")
+            if result:
+                result["_id"] = str(result["_id"])
+                result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                message_list.append(result)
+
+            else:
+                continue
+            
+            message_list.sort(key=lambda x: x["_id"], reverse=True)
+
+            return{
+                f"{message_type}List": message_list
+            }, 200
+
