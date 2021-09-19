@@ -69,8 +69,8 @@ class PostControl(Resource):
             return {"queryStatus": "post delete fail"}, 500
         elif activity_result.raw_result["n"] == 0:
             return {"queryStatus": "delete activity fail"}, 500
-        else:
-            return {"queryStatus": "success"}, 200
+        
+        return {"queryStatus": "success"}, 200
 
     def post(self):
         """게시글을 생성합니다."""
