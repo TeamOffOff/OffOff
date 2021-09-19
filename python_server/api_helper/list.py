@@ -24,6 +24,11 @@ UserControl = Namespace(
     description="유저관련 기능"
 )
 
+MessageList = Namespace(
+    "messagelist",
+    description="메시지 목록을 불러오는 API"
+)
+
 
 @BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우

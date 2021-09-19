@@ -21,8 +21,14 @@ Reply = Namespace("reply", description="댓글 관련 API")
 
 @Post.route("")
 class PostControl(Resource):
+    @jwt_required()  # token이 있는지
     def get(self):
         """특정 id의 게시글을 조회합니다."""
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        print("user_id: ", user_id)
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
+
         post_id = request.args.get("postId")
         board_type = request.args.get("boardType") + "_board"
 
@@ -72,9 +78,14 @@ class PostControl(Resource):
         
         return {"queryStatus": "success"}, 200
 
+
+    @jwt_required()  # token이 있는지
     def post(self):
         """게시글을 생성합니다."""
-
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
+            
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
         if not user:
@@ -215,9 +226,12 @@ class PostControl(Resource):
 @Reply.route("")
 class CommentControl(Resource):
     """ 댓글생성, 삭제, 조회(대댓글 포함) """
-
+    @jwt_required()
     def post(self):  # 댓글 작성
         """댓글을 생성합니다."""
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
 
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
@@ -251,8 +265,12 @@ class CommentControl(Resource):
             "replyList": reply_list
         }
 
+    @jwt_required()
     def get(self):  # 댓글 조회
         """댓글을 조회합니다."""
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
 
         post_id = request.args.get("postId")
         board_type = request.args.get("boardType") + "_board_reply"
@@ -263,8 +281,12 @@ class CommentControl(Resource):
             "replyList": reply_list
         }
 
+    @jwt_required()
     def put(self):  # 좋아요
         """좋아요를 저장합니다"""
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
         # 클라이언트에서 받은 변수 가져오기
         request_info, reply_id, board_type, user = get_variables()
         if not user:
@@ -284,6 +306,7 @@ class CommentControl(Resource):
             return {"queryStatus": "likes update fail"}, 500
         else:
             return {"queryStatus": "likes update success"}, 200
+
 
     @ownership_required
     def delete(self):  # 댓글 삭제
@@ -324,20 +347,3 @@ class CommentControl(Resource):
                    }, 200
         else:
             return {"queryStatus": "reply delete failed"}, 500
-
-
-# 채팅관련  http 통신
-Chat = Namespace(
-    name="chatcontrol",
-    description="채팅방 관리 기능"
-)
-
-
-@Chat.route("")
-class ChatControl(Resource):
-
-    def post(self):
-        pass
-
-    def get(self):
-        return "chat get"
