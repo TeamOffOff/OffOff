@@ -58,18 +58,64 @@ class CalendarControl(Resource):
 
     def put(self):
         """
-        추가, 수정
-        일부만 수정하는 경우 별도로 저장될 수도 있다..
+        shift
+         {
+            "id": "string",
+            "title": "string",
+            "textColor": "string",
+            "backgroundColor": "string",
+            "startDate": "string",
+            "endDate": "string"
+        }
+        saved shift
+        {
+            "id": "string",
+            "date": "string",
+            "shift": {
+                "id": "string",
+                "title": "string",
+                "textColor": "string",
+                "backgroundColor": "string",
+                "startDate": "string",
+                "endDate": "string"
+            }
+        }
         """
-        request_info = request.get_json()  # _id, 변경할 타입, 변경/추가하는 내용
+        request_info = request.get_json()
+        """
+        "_id": string,
+        "method": update(수정), post(추가), delete(삭제),
+        "field": shift, saved shift  --> 이건 shift 필드 유무로 가릴 수 있으므로 없어도 됨
+        "content": {
+            object
+        }
 
+        """
+        calendar_id = request_info["_id"]
+        operator = request_info["method"]
+        field = request_info["field"]
+        content = request_info["content"]
+        
+        if operator == "update":
+            pass  # array filter 사용
+
+        elif operator == "post":
+            operator = "$addToSet"
+        
+        elif operator == "delete":
+            operator = "$pull"
+        
+        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
+
+        if result.raw_result["n"] == 0:
+            return {"queryStatus": "calendar update fail"}, 500
+            
+        return {"queryStatus": "success"}, 200
 
 
     def delete(self):
         """
-        shift, saved shift 삭제? 
-        + 캘린더의 삭제는 회원탈퇴할 때? 
-        + 캘린더 자체를 아예 삭제할 수 있는 기능이 있나?
+        캘린더 초기화
         """
         request_info = request.get_json()
         calendar_id = request_info["_id"]
