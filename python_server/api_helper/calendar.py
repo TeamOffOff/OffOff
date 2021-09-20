@@ -96,16 +96,23 @@ class CalendarControl(Resource):
         field = request_info["field"]
         content = request_info["content"]
         
+        array_filter = None
         if operator == "update":
-            pass  # array filter 사용
-
+            shift_id = content["id"]
+            operator = "$set"
+            array_filter = [{f"{field}.id":shift_id}]
+            
+            # 체크할것
+            # result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={"$set":{field: content}}, upsert=False, array_filters=[{f"{field}.id":shift_id}])
+            # update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$inc":{"subReplies.$[subreply].likes": modified_like}},upsert=False, array_filters=[{"subreply.content":content, "subreply.date":date}])
+        
         elif operator == "post":
             operator = "$addToSet"
         
         elif operator == "delete":
             operator = "$pull"
         
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
+        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}}, array_filters=array_filter)
 
         if result.raw_result["n"] == 0:
             return {"queryStatus": "calendar update fail"}, 500
