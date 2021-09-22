@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
@@ -152,6 +153,8 @@ class ScheduleFragment : Fragment() {
         // 다른 달로 넘어갈 때 리스너
         calendar.onCalendarChangeListener = { c: Calendar ->
             setDateHeader(c)
+            (calendar.adapter as CalendarAdapter).notifyCalendarChanged()
+            //(calendar.adapter as CalendarAdapter).notifyCalendarChanged()
         }
 
         viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
@@ -185,6 +188,9 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     private var viewContainer: ViewGroup? = null
     private var position by Delegates.notNull<Int>()
     lateinit var selectedDate: Date
+    val sDay: MutableLiveData<Date> by lazy {
+        MutableLiveData<Date>()
+    }
 
     val viewModel: ScheduleViewModel = scheduleViewModel
 
@@ -200,23 +206,59 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
 
     override fun onBindView(view: View, day: Day) {
         //Log.d("tag_onBindView", view.toString() + '/' + day.toString())
+        Log.d("tag_onBindView", "캘린더 바인드")
         val tvDate = CalendarDayBinding.bind(view).tvDate
         val icon = CalendarDayBinding.bind(view).iconShift
+        sDay.value = selectedDay
 
 //        if (day.isSelected) view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
 //        else view.setBackgroundResource(R.drawable.layout_border_calendar)
+
+        fun setThisMonthSelected(day: Day) = if (day.calendar.time == selectedDay) {
+            view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
+            //onDayClickLister!!.invoke(day)
+        } else {
+            view.setBackgroundResource(R.drawable.layout_border_calendar)
+            //onDayClickLister!!.invoke(day)
+        }
+
+        fun setOtherMonthSelected(day: Day) {
+            view.alpha = 0.5F
+            if (day.calendar.time == selectedDay) {
+                Log.d("otherMonth_tag", "다른달")
+                view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
+                view.alpha = 0.5F
+                view.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context!!,
+                        R.color.gray
+                    )
+                )
+                view.alpha = 0.5F
+                //onDayClickLister?.invoke(day)
+            } else {
+                Log.d("otherMonth_tag", "다른달")
+                view.setBackgroundResource(R.drawable.layout_border_calendar)
+                view.alpha = 0.5F
+                view.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context!!,
+                        R.color.gray
+                    )
+                )
+                view.alpha = 0.5F
+            }
+            view.alpha = 0.5F
+        }
 
         if (day.state == DayState.ThisMonth) {
             view.visibility = View.VISIBLE
             tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
 
-            if (day.isSelected) {
-                view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
-                //onDayClickLister!!.invoke(day)
-            } else {
-                view.setBackgroundResource(R.drawable.layout_border_calendar)
-                //onDayClickLister!!.invoke(day)
-            }
+            setThisMonthSelected(day)
+//            sDay.observe(this, {
+//                setThisMonthSelected(day)
+//            })
 
             if (day.isToday) view.setBackgroundColor(
                 ContextCompat.getColor(
@@ -239,14 +281,10 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 Log.d("tag_day", day.toString())
             }
 
-            if (day.isSelected) {
-                view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
-                view.alpha = 0.5F
-                //onDayClickLister?.invoke(day)
-            } else {
-                view.setBackgroundResource(R.drawable.layout_border_calendar)
-                view.alpha = 0.5F
-            }
+            setOtherMonthSelected(day)
+//            sDay.observe(lifecycle, {
+//                setOtherMonthSelected(day)
+//            })
         }
 
         // 저장된 근무 스케줄 띄우기
@@ -262,6 +300,8 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 icon.setBackgroundColor(
                     Color.parseColor(savedShift.shift?.backgroundColor!!)
                 )
+            } else {
+                icon.visibility = View.INVISIBLE
             }
         }
     }
@@ -273,6 +313,16 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         selectedDay = cal.time
         (calendar.adapter as CalendarAdapter).selectedDate =
             (calendar.adapter as CalendarAdapter).selectedDay as Date
+
+        val cal1: Calendar = Calendar.getInstance()
+        cal1.time = selectedDate
+
+        val thisTime =
+            cal1.get(Calendar.YEAR) * 12 + cal1.get(Calendar.MONTH)
+        val compareTime = calendar.getCurrentCalendar()!!
+            .get(Calendar.YEAR) * 12 + calendar.getCurrentCalendar()!!.get(Calendar.MONTH)
+        calendar.moveItemBy(thisTime.compareTo(compareTime))
+
         return selectedDay
     }
 
@@ -283,9 +333,18 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         selectedDay = cal.time
         (calendar.adapter as CalendarAdapter).selectedDate =
             (calendar.adapter as CalendarAdapter).selectedDay as Date
+
+        val cal1: Calendar = Calendar.getInstance()
+        cal1.time = selectedDate
+
+        val thisTime =
+            cal1.get(Calendar.YEAR) * 12 + cal1.get(Calendar.MONTH)
+        val compareTime = calendar.getCurrentCalendar()!!
+            .get(Calendar.YEAR) * 12 + calendar.getCurrentCalendar()!!.get(Calendar.MONTH)
+        calendar.moveItemBy(thisTime.compareTo(compareTime))
+
         return selectedDay
     }
-
 
 //    fun notifyCalendarItemChanged() {
 //        val views = this.viewContainer

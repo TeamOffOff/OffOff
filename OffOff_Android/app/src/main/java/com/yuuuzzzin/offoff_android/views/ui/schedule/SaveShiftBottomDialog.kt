@@ -51,7 +51,6 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
                 this.savedShift = viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt())
                 id = savedShift.id
             }
-
         }
 
         binding.btPrevious.setOnClickListener {

@@ -66,7 +66,7 @@ constructor(
         return dbRepository.getAllS()
     }
 
-    fun getSchedule(year: Int, month: Int, day: Int):SavedShift? {
+    fun getSchedule(year: Int, month: Int, day: Int): SavedShift? {
         return dbRepository.getSchedule(year, month, day)
     }
 
