@@ -19,6 +19,8 @@ class ScheduleViewController: UIViewController {
     var viewModel = ScheduleViewModel()
     let customView = ScheduleView()
     
+    var setShiftVC = SetShiftViewController()
+    
     override func loadView() {
         self.view = customView
         self.calendar = customView.calendar
@@ -79,6 +81,12 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
                 cell.savedShift.onNext($0)
             }
             .dispose()
+            
+            cell.isEditing.onNext(false)
+            if date == calendar.selectedDate {
+                setShiftVC.editingCell = cell
+                cell.isEditing.onNext(true)
+            }
         } else {
             return
         }
@@ -93,15 +101,30 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
         guard let cell = calendar.cell(for: date, at: monthPosition) as? ScheduleCalendarCell else {
             return
         }
-        cell.backgroundColor = .lightGray
-        let vc = SetShiftViewController()
-        vc.editingCell = cell
-        vc.modalTransitionStyle = .coverVertical
-        vc.modalPresentationStyle = .overFullScreen
-        self.present(vc, animated: true, completion: nil)
-        vc.viewModel.date.onNext(date)
+        
+        setShiftVC = SetShiftViewController()
+        
+        setShiftVC.editingCell = cell
+        setShiftVC.editingCell?.isEditing.onNext(true)
+        setShiftVC.calendar = calendar
+        setShiftVC.modalTransitionStyle = .coverVertical
+        setShiftVC.modalPresentationStyle = .overFullScreen
+        self.present(setShiftVC, animated: true, completion: nil)
+        setShiftVC.viewModel.date.onNext(date)
     }
     
     func calendar(_ calendar: FSCalendar, didDeselect date: Date, at monthPosition: FSCalendarMonthPosition) {
+    }
+    
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        // 전달로 들어온거면 현재 달 마지막 onNext
+        // 다음달로 간거면 현재 달 1일 onNext
+    }
+}
+
+extension FSCalendar {
+    func reloadData(completion: @escaping () -> ()) {
+        UIView.animate(withDuration: 0, animations: { self.reloadData() })
+                    { _ in completion() }
     }
 }

@@ -11,7 +11,8 @@ class ScheduleCalendarCell: FSCalendarCell {
     static let identifier = "ScheduleCalendarCell"
     
     var savedShift = BehaviorSubject<SavedShift?>(value: nil)
-    let disposeBag = DisposeBag()
+    var isEditing = BehaviorSubject<Bool>(value: false)
+    var disposeBag = DisposeBag()
     
     var eventTitleLabel = UILabel().then {
         $0.textAlignment = .center
@@ -30,6 +31,50 @@ class ScheduleCalendarCell: FSCalendarCell {
             $0.top.equalToSuperview().inset(8)
             $0.left.right.equalToSuperview()
         }
+        
+        isEditing
+            .observeOn(MainScheduler.instance)
+            .bind {
+                if $0 {
+                    self.makeBorder(color: UIColor.mainColor.cgColor, width: 1.0, cornerRadius: 0)
+                } else {
+                    self.makeBorder(color: UIColor.white.cgColor, width: 0, cornerRadius: 0)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        savedShift
+            .observeOn(MainScheduler.instance)
+            .bind {
+                if $0 != nil {
+                    self.eventTitleLabel.text = "\($0!.shift!.title.first!)"
+                    self.eventTitleLabel.textColor = UIColor(hex: $0!.shift!.textColor)
+                    self.eventTitleLabel.backgroundColor = UIColor(hex: $0!.shift!.backgroundColor)
+                } else {
+                    self.eventTitleLabel.text = nil
+                    self.eventTitleLabel.backgroundColor = .white
+                    self.eventTitleLabel.textColor = .black
+                }
+                
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        disposeBag = DisposeBag()
+        
+        isEditing
+            .observeOn(MainScheduler.instance)
+            .bind {
+                if $0 {
+                    self.makeBorder(color: UIColor.mainColor.cgColor, width: 1.0, cornerRadius: 0)
+                } else {
+                    self.makeBorder(color: UIColor.white.cgColor, width: 0, cornerRadius: 0)
+                }
+            }
+            .disposed(by: disposeBag)
         
         savedShift
             .observeOn(MainScheduler.instance)

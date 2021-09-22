@@ -14,6 +14,7 @@ class SetShiftViewController: UIViewController {
     var viewModel: SetShiftViewModel!
     let disposeBag = DisposeBag()
     var editingCell: ScheduleCalendarCell? = nil
+    var calendar: FSCalendar? = nil
     
     let outterView = UIView().then { $0.backgroundColor = .clear }
     
@@ -32,7 +33,9 @@ class SetShiftViewController: UIViewController {
             .tapGesture()
             .when(.recognized)
             .subscribe(onNext: { _ in
+                self.editingCell?.isEditing.onNext(false)
                 self.editingCell!.backgroundColor = .white
+                self.calendar!.deselect(self.calendar!.selectedDate!)
                 self.dismiss(animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
@@ -44,6 +47,21 @@ class SetShiftViewController: UIViewController {
                 cell.titleLabel.text = element.title
                 cell.titleLabel.textColor = UIColor(hex: element.textColor)
                 cell.backgroundColor = UIColor(hex: element.backgroundColor)
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.date
+            .skip(1)
+            .bind { date in
+                self.calendar!.select(date, scrollToDate: true)
+                
+                guard let cell = self.calendar!.cell(for: date, at: .current) as? ScheduleCalendarCell else {
+                    return
+                }
+                
+                self.editingCell?.isEditing.onNext(false)
+                self.editingCell = cell
+                self.editingCell?.isEditing.onNext(true)
             }
             .disposed(by: disposeBag)
         
@@ -63,14 +81,14 @@ class SetShiftViewController: UIViewController {
                             self.editingCell?.savedShift.onNext($0)
                         }
                         .dispose()
-                    self.editingCell?.backgroundColor = .white
+                    self.editingCell?.isEditing.onNext(false)
                     self.dismiss(animated: true, completion: nil)
                 } else {
                     print("failed")
                 }
             }
             .disposed(by: disposeBag)
-    
+        
         customView.makeView()
     }
     
@@ -79,7 +97,7 @@ class SetShiftViewController: UIViewController {
         self.view.addSubview(customView)
         self.view.addSubview(outterView)
         self.view.backgroundColor = .clear
-
+        
         customView.routineCollection.register(RoutineCell.self, forCellWithReuseIdentifier: RoutineCell.identifier)
         customView.routineCollection.rx.setDelegate(self).disposed(by: disposeBag)
         
@@ -96,7 +114,6 @@ class SetShiftViewController: UIViewController {
 
 extension SetShiftViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let width = collectionView.bounds.width
         let cellWidth = Constants.RoutineCellSize
         return CGSize(width: cellWidth, height: cellWidth)
     }

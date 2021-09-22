@@ -14,7 +14,9 @@ class ScheduleView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(calendar)
-        self.calendar.snp.makeConstraints { $0.edges.equalTo(self.safeAreaLayoutGuide).inset(30) }
+        self.calendar.snp.makeConstraints { $0.top.left.right.equalTo(self.safeAreaLayoutGuide).inset(30)
+            $0.height.equalTo(self).multipliedBy(0.6)
+        }
         initCalendar()
     }
     
@@ -46,7 +48,6 @@ class ScheduleView: UIView {
                 weekday.textColor = .black
             }
         }
-
     }
     
     required init?(coder: NSCoder) {

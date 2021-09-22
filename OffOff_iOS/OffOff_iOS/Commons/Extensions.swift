@@ -38,6 +38,42 @@ extension String {
 }
 
 extension Date {
+    var startOfMonth: Date {
+        
+        let calendar = Calendar(identifier: .gregorian)
+        let components = calendar.dateComponents([.year, .month], from: self)
+        
+        return  calendar.date(from: components)!
+    }
+    
+    var endOfMonth: Date {
+        var components = DateComponents()
+        components.month = 1
+        components.second = -1
+        return Calendar(identifier: .gregorian).date(byAdding: components, to: startOfMonth)!
+    }
+    
+    var isEndOfMonth: Bool {
+        let calendar = Calendar.current
+        
+        return calendar.isDate(self, inSameDayAs: self.endOfMonth)
+    }
+    
+    var day: Int {
+        let calendar = Calendar.current
+        return calendar.component(.day, from: self)
+    }
+    
+    var month: Int {
+        let calendar = Calendar.current
+        return calendar.component(.month, from: self)
+    }
+    
+    var year: Int {
+        let calendar = Calendar.current
+        return calendar.component(.year, from: self)
+    }
+    
     func toString(_ format: String = "yyyy년 MM월 dd일") -> String {
         dateFormatter.locale = Locale(identifier: "ko_KR")
         dateFormatter.dateFormat = format
@@ -59,6 +95,53 @@ extension Date {
         }
         let theCalendar = Calendar.current
         return theCalendar.date(byAdding: dayComponent, to: self)
+    }
+    
+    func isSame(with date: Date, component: Calendar.Component) -> Bool {
+        let calendar = Calendar.current
+        
+        if calendar.component(component, from: self) == calendar.component(component, from: date) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func compareComponent(with date: Date, component: Calendar.Component) -> ComparisonResult {
+        let calendar = Calendar.current
+        
+        if calendar.component(component, from: self) == calendar.component(component, from: date) {
+            return .orderedSame
+        }
+        
+        if calendar.component(component, from: self) > calendar.component(component, from: date) {
+            return .orderedDescending
+        }
+        
+        return .orderedAscending
+    }
+    
+    func toLocalTime() -> Date {
+        let timezone = TimeZone.current
+        let seconds = TimeInterval(timezone.secondsFromGMT(for: self))
+        
+        return Date(timeInterval: seconds, since: self)
+        
+    }
+    
+    // Convert local time to UTC (or GMT)
+    func toGlobalTime() -> Date {
+        let timezone = TimeZone.current
+        let seconds = -TimeInterval(timezone.secondsFromGMT(for: self))
+        
+        return Date(timeInterval: seconds, since: self)
+        
+    }
+    
+    func changeComponent(component: Calendar.Component, amount: Int) -> Date? {
+        let calendar = Calendar.current
+        
+        return calendar.date(bySetting: component,  value: amount, of: self)
     }
 }
 
