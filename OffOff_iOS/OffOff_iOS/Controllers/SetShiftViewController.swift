@@ -76,11 +76,7 @@ class SetShiftViewController: UIViewController {
             .bind {
                 if $0 != nil {
                     print("saved")
-                    UserRoutineManager.shared.getSavedShift(of: $0!).map { $0.isEmpty ? nil : $0.first!}
-                        .bind {
-                            self.editingCell?.savedShift.onNext($0)
-                        }
-                        .dispose()
+                    self.editingCell?.savedShift.onNext($0)
                     self.editingCell?.isEditing.onNext(false)
                     self.dismiss(animated: true, completion: nil)
                 } else {

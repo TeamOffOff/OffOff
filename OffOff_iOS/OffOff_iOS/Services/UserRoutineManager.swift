@@ -48,8 +48,42 @@ class UserRoutineManager {
         
     }
     
-    func createSavedShift(shift: Shift, date: Date) -> Observable<Bool> {
-        let savedShift = SavedShift(id: savedShiftID(), date: date.toString("yyyy-MM-dd"), shift: shift)
+    func createSavedShift(shift: Shift, date: Date) -> Observable<SavedShift?> {
+        
+        let savedShifts = realm.objects(SavedShift.self)
+        let predicateQuery = NSPredicate(format: "date = %@", date.toString("yyyy-MM-dd"))
+        let result = savedShifts.filter(predicateQuery)
+        
+        if result.isEmpty {
+            let savedShift = SavedShift(id: self.savedShiftID(), date: date.toString("yyyy-MM-dd"), shift: shift)
+            
+            do {
+                try self.realm.write {
+                    self.realm.add(savedShift)
+                }
+                self.savedShiftsChanged.onNext(true)
+                return Observable.just(savedShift)
+            } catch {
+                return Observable.just(nil)
+            }
+        } else {
+            let savedShift = SavedShift(id: result.first!.id, date: date.toString("yyyy-MM-dd"), shift: shift)
+            
+            do {
+                try self.realm.write {
+                    self.realm.add(savedShift, update: .modified)
+                }
+                self.savedShiftsChanged.onNext(true)
+                return Observable.just(savedShift)
+            } catch {
+                return Observable.just(nil)
+            }
+        }
+    }
+    
+    func createSavedShift(savedshift: SavedShift, date: Date) -> Observable<Bool> {
+        let savedShift = savedshift
+        savedshift.date = date.toString("yyyy-MM-dd")
         do {
             try realm.write {
                 realm.add(savedShift)
@@ -59,7 +93,6 @@ class UserRoutineManager {
         } catch {
             return Observable.just(false)
         }
-        
     }
     
     // Read
@@ -159,6 +192,38 @@ class UserRoutineManager {
             return Observable.just(false)
         }
 
+    }
+    
+    func deleteSavedShift(by date: Date) -> Observable<Bool> {
+        let savedShifts = realm.objects(SavedShift.self)
+        let predicateQuery = NSPredicate(format: "date = %@", date.toString("yyyy-MM-dd"))
+        let result = savedShifts.filter(predicateQuery)
+        
+        if result.count == 1 {
+            do {
+                try realm.write {
+                    realm.delete(result.first!)
+                }
+                savedShiftsChanged.onNext(true)
+                return Observable.just(true)
+            } catch {
+                return Observable.just(false)
+            }
+        } else {
+            return Observable.just(false)
+        }
+    }
+    
+    func deleteSavedShift(by savedShift: SavedShift) -> Observable<Bool> {
+        do {
+            try realm.write {
+                realm.delete(savedShift)
+            }
+            savedShiftsChanged.onNext(true)
+            return Observable.just(true)
+        } catch {
+            return Observable.just(false)
+        }
     }
     
     // Utility

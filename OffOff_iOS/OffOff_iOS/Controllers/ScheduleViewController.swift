@@ -57,18 +57,6 @@ class ScheduleViewController: UIViewController {
                 self.present(controller, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
-        
-        // bind outputs
-        viewModel.savedShiftsChanged
-            .observeOn(MainScheduler.instance)
-            .debug()
-            .bind {
-                if $0 {
-//                    self.customView.calendar.reloadData()
-                }
-            }
-            .disposed(by: disposeBag)
-            
     }
 }
 
@@ -101,7 +89,7 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
         guard let cell = calendar.cell(for: date, at: monthPosition) as? ScheduleCalendarCell else {
             return
         }
-        
+        customView.calendar.select(date, scrollToDate: true)
         setShiftVC = SetShiftViewController()
         
         setShiftVC.editingCell = cell
