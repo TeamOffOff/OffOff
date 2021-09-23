@@ -17,11 +17,13 @@ class SetShiftViewModel {
     var date = PublishSubject<Date>()
     var dateText: Observable<String>
     var shiftSaved: Observable<SavedShift?>
+    var shiftDeleted: Observable<Bool>
     
     init(
         input: (
             leftButtonTapped: Signal<()>,
             rightButtonTapped: Signal<()>,
+            deleteButtonTapped: Signal<()>,
             selectedShift: Observable<Shift>
         )
     ) {
@@ -36,6 +38,13 @@ class SetShiftViewModel {
                     .map {
                         $0
                     }
+            }
+        
+        shiftDeleted = input.deleteButtonTapped
+            .asObservable()
+            .withLatestFrom(date)
+            .flatMap {
+                UserRoutineManager.shared.deleteSavedShift(by: $0)
             }
         
         // bind inputs

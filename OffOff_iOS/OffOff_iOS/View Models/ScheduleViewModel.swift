@@ -17,7 +17,18 @@ class ScheduleViewModel {
     private let eventStore = EKEventStore()
     private var calendarAuth = EKEventStore.authorizationStatus(for: .event)
     
-    init() {
+    var isEditShiftButtonTapped: Observable<Bool>
+    var isEditModeButtonTapped: Observable<Bool>
+    
+    init(
+        input: (
+            editShiftButtonTapped: Signal<()>,
+            editModeButtonTapped: Signal<()>
+        )
+    ) {
+        isEditShiftButtonTapped = input.editShiftButtonTapped.asObservable().map { true }
+        isEditModeButtonTapped = input.editModeButtonTapped.asObservable().map { true }
+        
         authorizationCheck()
         print(Realm.Configuration.defaultConfiguration.fileURL!)
     }

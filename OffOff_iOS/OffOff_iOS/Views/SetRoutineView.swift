@@ -29,6 +29,12 @@ class SetRoutineView: UIView {
         routineCollectionLayout.scrollDirection = .horizontal
     }
     
+    var deleteSavedShiftButton = UIButton().then {
+        $0.setTitle("삭제", for: .normal)
+        $0.setTitleColor(.red, for: .normal)
+        $0.backgroundColor = .lightGray
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .lightGray
@@ -36,6 +42,7 @@ class SetRoutineView: UIView {
         self.addSubview(leftButton)
         self.addSubview(rightButton)
         self.addSubview(routineCollection)
+        self.addSubview(deleteSavedShiftButton)
     }
     
     required init?(coder: NSCoder) {
@@ -60,6 +67,10 @@ class SetRoutineView: UIView {
             $0.height.equalTo(Constants.RoutineCellSize)
             $0.left.equalToSuperview().inset(12)
             $0.right.equalToSuperview().inset(12)
+        }
+        deleteSavedShiftButton.snp.makeConstraints {
+            $0.right.equalTo(routineCollection)
+            $0.bottom.equalTo(routineCollection.snp.top).offset(-12)
         }
     }
 }

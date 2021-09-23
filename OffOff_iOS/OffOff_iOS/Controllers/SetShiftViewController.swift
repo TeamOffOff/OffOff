@@ -15,6 +15,7 @@ class SetShiftViewController: UIViewController {
     let disposeBag = DisposeBag()
     var editingCell: ScheduleCalendarCell? = nil
     var calendar: FSCalendar? = nil
+    var isEditModeOn = false
     
     let outterView = UIView().then { $0.backgroundColor = .clear }
     
@@ -25,6 +26,8 @@ class SetShiftViewController: UIViewController {
             input: (
                 leftButtonTapped: customView.leftButton.rx.tap.asSignal(),
                 rightButtonTapped: customView.rightButton.rx.tap.asSignal(),
+                deleteButtonTapped:
+                    customView.deleteSavedShiftButton.rx.tap.asSignal(),
                 selectedShift: customView.routineCollection.rx.modelSelected(Shift.self).map { $0 }
             )
         )
@@ -40,7 +43,7 @@ class SetShiftViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        // bind outputs
+        // bind outputs {
         viewModel.shifts
             .bind(to: customView.routineCollection
                     .rx.items(cellIdentifier: RoutineCell.identifier, cellType: RoutineCell.self)) { (row, element, cell) in
@@ -84,6 +87,19 @@ class SetShiftViewController: UIViewController {
                 }
             }
             .disposed(by: disposeBag)
+        
+        viewModel.shiftDeleted
+            .bind {
+                if $0 {
+                    print("Deleted")
+                    self.editingCell?.savedShift.onNext(nil)
+                    self.editingCell?.isEditing.onNext(false)
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        // }
         
         customView.makeView()
     }

@@ -16,7 +16,7 @@ class ScheduleViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     fileprivate weak var calendar: FSCalendar!
-    var viewModel = ScheduleViewModel()
+    var viewModel: ScheduleViewModel!
     let customView = ScheduleView()
     
     var setShiftVC = SetShiftViewController()
@@ -26,35 +26,43 @@ class ScheduleViewController: UIViewController {
         self.calendar = customView.calendar
     }
     
-    // TODO: 근무 일정 설정할 수 있는 화면 만들기
     override func viewDidLoad() {
         super.viewDidLoad()
         self.calendar.delegate = self
         self.calendar.dataSource = self
         self.calendar.register(ScheduleCalendarCell.self, forCellReuseIdentifier: ScheduleCalendarCell.identifier)
         
-        let addScheduleButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
-        let editScheduleButton = UIBarButtonItem(barButtonSystemItem: .edit, target: nil, action: nil)
+        let editModeButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+        let editShift = UIBarButtonItem(barButtonSystemItem: .edit, target: nil, action: nil)
         
-        self.navigationItem.rightBarButtonItems = [editScheduleButton, addScheduleButton]
+        self.navigationItem.rightBarButtonItems = [editShift, editModeButton]
         
-        editScheduleButton
-            .rx.tap
+        viewModel = ScheduleViewModel(
+            input: (
+                editShiftButtonTapped: editShift.rx.tap.asSignal(),
+                editModeButtonTapped: editModeButton.rx.tap.asSignal()
+            )
+        )
+        
+        // bind outputs
+        viewModel.isEditShiftButtonTapped
             .bind {
-                let vc = EditShiftViewController()
-                vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true, completion: nil)
+                if $0 {
+                    let vc = EditShiftViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true, completion: nil)
+                }
             }
             .disposed(by: disposeBag)
         
-        addScheduleButton
-            .rx.tap
+        viewModel.isEditModeButtonTapped
             .bind {
-                // + 버튼을 누르면 설정 해둔 근무 일정들을 표시
-                let controller = UIAlertController(title: "스케쥴 추가", message: "추가할 스케쥴을 선택하세요", preferredStyle: .actionSheet)
-                let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-                controller.addAction(cancel)
-                self.present(controller, animated: true, completion: nil)
+                if $0 {
+                    let controller = UIAlertController(title: "스케쥴 추가", message: "추가할 스케쥴을 선택하세요", preferredStyle: .actionSheet)
+                    let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+                    controller.addAction(cancel)
+                    self.present(controller, animated: true, completion: nil)
+                }
             }
             .disposed(by: disposeBag)
     }
@@ -89,7 +97,10 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
         guard let cell = calendar.cell(for: date, at: monthPosition) as? ScheduleCalendarCell else {
             return
         }
-        customView.calendar.select(date, scrollToDate: true)
+        if date.compareComponent(with: calendar.currentPage, component: .month) != ComparisonResult.orderedSame {
+            customView.calendar.select(date, scrollToDate: true)
+        }
+        
         setShiftVC = SetShiftViewController()
         
         setShiftVC.editingCell = cell
