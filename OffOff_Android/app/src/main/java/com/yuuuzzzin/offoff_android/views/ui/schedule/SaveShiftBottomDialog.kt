@@ -42,16 +42,18 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
         month = arguments?.getString("month").toString()
         day = arguments?.getString("day").toString()
         dayOfWeek = CalendarUtils.WeekOfDayType.fromInt(arguments?.getInt("dayOfWeek")!!).toString()
+        id = null
         binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
-
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
-        viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt()).let { savedShift ->
-            if (savedShift != null) {
-                this.savedShift = viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt())
-                id = savedShift.id
-            }
-        }
+        initViewModel()
+
+//        viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt()).let { savedShift ->
+//            if (savedShift != null) {
+//                this.savedShift = viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt())
+//                id = savedShift.id
+//            }
+//        }
 
         binding.btPrevious.setOnClickListener {
             (calendar.adapter as? CalendarAdapter)?.movePreviousDate().let { date ->
@@ -63,7 +65,7 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
                 dayOfWeek =
                     CalendarUtils.WeekOfDayType.fromInt(cal.get(Calendar.DAY_OF_WEEK)).toString()
                 binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
-
+                initViewModel()
             }
         }
 
@@ -77,18 +79,36 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
                 dayOfWeek =
                     CalendarUtils.WeekOfDayType.fromInt(cal.get(Calendar.DAY_OF_WEEK)).toString()
                 binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
+                initViewModel()
             }
         }
 
-        //initViewModel()
+        binding.btDelete.setOnClickListener {
+            if (id != null) {
+                viewModel.deleteSchedule(id!!)
+                viewModel.scheduleChanged()
+            }
+
+        }
+
         initRV()
 
         return binding.root
     }
 
-    private fun initViewModel() {
+    override fun dismiss() {
+        (calendar.adapter as? CalendarAdapter)?.initSelectedDay()
+        super.dismiss()
+    }
 
-
+    fun initViewModel() {
+        Log.d("tag_initViewModel", "뷰모델 초기화")
+        viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt()).let { savedShift ->
+            if (savedShift != null) {
+                this.savedShift = viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt())
+                id = savedShift.id
+            }
+        }
     }
 
     private fun initRV() {
@@ -113,6 +133,7 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
                 )
 
                 viewModel.scheduleChanged()
+                dialog!!.dismiss()
             }
         })
 
@@ -124,6 +145,7 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
 
     override fun onDestroyView() {
         mBinding = null
+        (calendar.adapter as? CalendarAdapter)?.initSelectedDay()
         super.onDestroyView()
     }
 

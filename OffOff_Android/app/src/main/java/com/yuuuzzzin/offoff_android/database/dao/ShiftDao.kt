@@ -92,7 +92,7 @@ class ShiftDao(private val realm: Realm) {
     }
 
     // 특정 일정 삭제
-    fun deleteSchedule(id: String) {
+    fun deleteSchedule(id: Int) {
         realm.executeTransaction {
             it.where<SavedShift>().equalTo("id", id).findAll().deleteAllFromRealm()
         }

@@ -74,6 +74,10 @@ constructor(
         dbRepository.insertSchedule(savedShift)
     }
 
+    fun deleteSchedule(id: Int) {
+        dbRepository.deleteSchedule(id)
+    }
+
     fun deleteAllSchedule() {
         dbRepository.deleteAllSchedule()
         scheduleChanged()
@@ -85,7 +89,6 @@ constructor(
     }
 
     fun scheduleChanged() {
-
         _scheduleChanged.postValue(Event(true))
     }
 

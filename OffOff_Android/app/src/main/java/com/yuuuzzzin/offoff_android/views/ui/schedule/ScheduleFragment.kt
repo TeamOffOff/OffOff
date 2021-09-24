@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.R
@@ -43,36 +41,12 @@ class ScheduleFragment : Fragment() {
     ): View {
         mBinding = FragmentScheduleBinding.inflate(inflater, container, false)
 
-        initViewModel()
         initToolbar()
         initCalendar()
 
         bottomDialog = SaveShiftBottomDialog(calendar)
-
         return binding.root
     }
-
-    private fun initViewModel() {
-    }
-
-//    private fun addDb() {
-//
-//        realm.executeTransaction{
-//            with(it.createObject(Shift::class.java, "3")){
-//                this.title = "D"
-//                this.textColor = "black"
-//                this.backgroundColor = "white"
-//                this.startDate = "07:30"
-//                this.endDate = "15:30"
-//            }
-//        }
-//
-//
-//        realm.executeTransaction {
-//            val data = it.where(Shift::class.java).findAll()
-//            Log.d("tag_realm_test", data.toString())
-//        }
-//    }
 
     private fun initToolbar() {
         val toolbar: MaterialToolbar = binding.appbar // 상단 툴바
@@ -146,7 +120,6 @@ class ScheduleFragment : Fragment() {
         }
 
         calendar.onDayLongClickListener = { day: Day ->
-
             true
         }
 
@@ -154,15 +127,11 @@ class ScheduleFragment : Fragment() {
         calendar.onCalendarChangeListener = { c: Calendar ->
             setDateHeader(c)
             (calendar.adapter as CalendarAdapter).notifyCalendarChanged()
-            //(calendar.adapter as CalendarAdapter).notifyCalendarChanged()
         }
 
+        // 스케줄이 바뀌는지 관찰
         viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
             event.getContentIfNotHandled()?.let {
-//                Log.d("tag_scheduleChanged", "스케줄 추가")
-//                var viewContainer: ViewGroup?= null
-//                var views = viewContainer
-//                (calendar.adapter as? CalendarCellAdapter)?.updateItems(selectedDay)
                 (calendar.adapter as CalendarAdapter).notifyCalendarChanged()
             }
         })
@@ -188,10 +157,6 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     private var viewContainer: ViewGroup? = null
     private var position by Delegates.notNull<Int>()
     lateinit var selectedDate: Date
-    val sDay: MutableLiveData<Date> by lazy {
-        MutableLiveData<Date>()
-    }
-
     val viewModel: ScheduleViewModel = scheduleViewModel
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -206,20 +171,14 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
 
     override fun onBindView(view: View, day: Day) {
         //Log.d("tag_onBindView", view.toString() + '/' + day.toString())
-        Log.d("tag_onBindView", "캘린더 바인드")
+        //Log.d("tag_onBindView", "캘린더 바인드")
         val tvDate = CalendarDayBinding.bind(view).tvDate
         val icon = CalendarDayBinding.bind(view).iconShift
-        sDay.value = selectedDay
-
-//        if (day.isSelected) view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
-//        else view.setBackgroundResource(R.drawable.layout_border_calendar)
 
         fun setThisMonthSelected(day: Day) = if (day.calendar.time == selectedDay) {
             view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
-            //onDayClickLister!!.invoke(day)
         } else {
             view.setBackgroundResource(R.drawable.layout_border_calendar)
-            //onDayClickLister!!.invoke(day)
         }
 
         fun setOtherMonthSelected(day: Day) {
@@ -230,7 +189,7 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 view.alpha = 0.5F
                 view.setBackgroundColor(
                     ContextCompat.getColor(
-                        context!!,
+                        context,
                         R.color.gray
                     )
                 )
@@ -242,7 +201,7 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 view.alpha = 0.5F
                 view.setBackgroundColor(
                     ContextCompat.getColor(
-                        context!!,
+                        context,
                         R.color.gray
                     )
                 )
@@ -256,13 +215,10 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
             tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
 
             setThisMonthSelected(day)
-//            sDay.observe(this, {
-//                setThisMonthSelected(day)
-//            })
 
             if (day.isToday) view.setBackgroundColor(
                 ContextCompat.getColor(
-                    context!!,
+                    context,
                     R.color.gray
                 )
             )
@@ -280,11 +236,7 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 onDayClickLister?.invoke(day)
                 Log.d("tag_day", day.toString())
             }
-
             setOtherMonthSelected(day)
-//            sDay.observe(lifecycle, {
-//                setOtherMonthSelected(day)
-//            })
         }
 
         // 저장된 근무 스케줄 띄우기
@@ -307,18 +259,18 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     }
 
     fun moveNextDate(): Date? {
-        val cal: Calendar = Calendar.getInstance()
+        var cal: Calendar = Calendar.getInstance()
         cal.time = selectedDate
         cal.add(Calendar.DATE, 1)
         selectedDay = cal.time
         (calendar.adapter as CalendarAdapter).selectedDate =
             (calendar.adapter as CalendarAdapter).selectedDay as Date
 
-        val cal1: Calendar = Calendar.getInstance()
-        cal1.time = selectedDate
+        cal = Calendar.getInstance()
+        cal.time = selectedDate
 
         val thisTime =
-            cal1.get(Calendar.YEAR) * 12 + cal1.get(Calendar.MONTH)
+            cal.get(Calendar.YEAR) * 12 + cal.get(Calendar.MONTH)
         val compareTime = calendar.getCurrentCalendar()!!
             .get(Calendar.YEAR) * 12 + calendar.getCurrentCalendar()!!.get(Calendar.MONTH)
         calendar.moveItemBy(thisTime.compareTo(compareTime))
@@ -327,23 +279,27 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     }
 
     fun movePreviousDate(): Date? {
-        val cal: Calendar = Calendar.getInstance()
+        var cal: Calendar = Calendar.getInstance()
         cal.time = selectedDate
         cal.add(Calendar.DATE, -1)
         selectedDay = cal.time
         (calendar.adapter as CalendarAdapter).selectedDate =
             (calendar.adapter as CalendarAdapter).selectedDay as Date
 
-        val cal1: Calendar = Calendar.getInstance()
-        cal1.time = selectedDate
+        cal = Calendar.getInstance()
+        cal.time = selectedDate
 
         val thisTime =
-            cal1.get(Calendar.YEAR) * 12 + cal1.get(Calendar.MONTH)
+            cal.get(Calendar.YEAR) * 12 + cal.get(Calendar.MONTH)
         val compareTime = calendar.getCurrentCalendar()!!
             .get(Calendar.YEAR) * 12 + calendar.getCurrentCalendar()!!.get(Calendar.MONTH)
         calendar.moveItemBy(thisTime.compareTo(compareTime))
 
         return selectedDay
+    }
+
+    fun initSelectedDay() {
+        selectedDay = null
     }
 
 //    fun notifyCalendarItemChanged() {
@@ -356,13 +312,6 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
 //            }
 //        }
 //    }
-
-}
-
-class CustomCalendarViewPager(context: Context, attrs: AttributeSet?) :
-    CalendarViewPager(context, attrs) {
-
-
 }
 
 class CalendarCellsAdapter(
@@ -380,3 +329,21 @@ class CalendarCellsAdapter(
     }
 
 }
+
+//    private fun addDb() {
+//
+//        realm.executeTransaction{
+//            with(it.createObject(Shift::class.java, "3")){
+//                this.title = "D"
+//                this.textColor = "black"
+//                this.backgroundColor = "white"
+//                this.startDate = "07:30"
+//                this.endDate = "15:30"
+//            }
+//        }
+//
+//        realm.executeTransaction {
+//            val data = it.where(Shift::class.java).findAll()
+//            Log.d("tag_realm_test", data.toString())
+//        }
+//    }

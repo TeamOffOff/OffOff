@@ -58,7 +58,7 @@ constructor(
     fun insertSchedule(savedShift: SavedShift) = shiftDao.insertSchedule(savedShift)
 
     // 특정 일정 삭제
-    fun deleteSchedule(id: String) = shiftDao.deleteSchedule(id)
+    fun deleteSchedule(id: Int) = shiftDao.deleteSchedule(id)
 
     // 모든 일정 삭제
     fun deleteAllSchedule() = shiftDao.deleteAllSchedule()

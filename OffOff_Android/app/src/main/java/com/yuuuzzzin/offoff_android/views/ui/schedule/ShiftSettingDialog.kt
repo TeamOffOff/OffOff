@@ -95,7 +95,7 @@ class ShiftSettingDialog : DialogFragment() {
     }
 
     private fun initViewModel() {
-        //viewModel = ViewModelProvider(this).get(ShiftSettingViewModel::class.java)
+        // viewModel = ViewModelProvider(this).get(ShiftSettingViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
     }
