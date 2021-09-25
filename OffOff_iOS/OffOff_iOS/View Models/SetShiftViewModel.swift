@@ -30,8 +30,8 @@ class SetShiftViewModel {
         // outputs
         shifts = UserRoutineManager.shared.getShifts()
         dateText = date.map { $0.toString("M월 d일 (E)") }
-        
-        let shiftAndDate = Observable.combineLatest(input.selectedShift, date)
+
+        let shiftAndDate = Observable.zip(input.selectedShift, date)
         shiftSaved = shiftAndDate
             .flatMap { shift, date -> Observable<SavedShift?> in
                 return UserRoutineManager.shared.createSavedShift(shift: shift, date: date)

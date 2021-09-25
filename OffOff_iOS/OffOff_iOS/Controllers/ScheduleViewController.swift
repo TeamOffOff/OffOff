@@ -24,6 +24,7 @@ class ScheduleViewController: UIViewController {
     override func loadView() {
         self.view = customView
         self.calendar = customView.calendar
+        UserRoutineManager.shared.deleteAllSavedShifts()
     }
     
     override func viewDidLoad() {
@@ -44,7 +45,7 @@ class ScheduleViewController: UIViewController {
             )
         )
         
-        // bind outputs
+    // bind outputs {
         viewModel.isEditShiftButtonTapped
             .bind {
                 if $0 {
@@ -58,13 +59,32 @@ class ScheduleViewController: UIViewController {
         viewModel.isEditModeButtonTapped
             .bind {
                 if $0 {
-                    let controller = UIAlertController(title: "스케쥴 추가", message: "추가할 스케쥴을 선택하세요", preferredStyle: .actionSheet)
+                    let controller = UIAlertController(title: "근무편집모드를 실행할까요?", message: nil, preferredStyle: .actionSheet)
+                    let yes = UIAlertAction(title: "실행", style: .default) {_ in
+                        controller.dismiss(animated: true) {
+                            guard let cell = self.calendar.cell(for: self.calendar.currentPage.startOfMonth, at: .current) as? ScheduleCalendarCell else {
+                                return
+                            }
+                            self.calendar.select(self.calendar.currentPage.startOfMonth)
+                            self.setShiftVC = SetShiftViewController()
+                            self.setShiftVC.isEditModeOn = true
+                            self.setShiftVC.editingCell = cell
+                            self.setShiftVC.editingCell?.isEditing.onNext(true)
+                            self.setShiftVC.calendar = self.calendar
+                            self.setShiftVC.modalTransitionStyle = .coverVertical
+                            self.setShiftVC.modalPresentationStyle = .overFullScreen
+                            self.present(self.setShiftVC, animated: true, completion: nil)
+                            self.setShiftVC.viewModel.date.onNext(self.calendar.currentPage.startOfMonth)
+                        }
+                    }
                     let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+                    controller.addAction(yes)
                     controller.addAction(cancel)
                     self.present(controller, animated: true, completion: nil)
                 }
             }
             .disposed(by: disposeBag)
+    // }
     }
 }
 

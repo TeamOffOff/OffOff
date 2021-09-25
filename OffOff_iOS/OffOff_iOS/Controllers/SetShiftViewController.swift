@@ -12,7 +12,7 @@ import RxGesture
 class SetShiftViewController: UIViewController {
     let customView = SetRoutineView()
     var viewModel: SetShiftViewModel!
-    let disposeBag = DisposeBag()
+    var disposeBag = DisposeBag()
     var editingCell: ScheduleCalendarCell? = nil
     var calendar: FSCalendar? = nil
     var isEditModeOn = false
@@ -54,14 +54,13 @@ class SetShiftViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.date
-            .skip(1)
             .bind { date in
                 self.calendar!.select(date, scrollToDate: true)
                 
                 guard let cell = self.calendar!.cell(for: date, at: .current) as? ScheduleCalendarCell else {
                     return
                 }
-                
+                self.customView.routineCollection.reloadData()
                 self.editingCell?.isEditing.onNext(false)
                 self.editingCell = cell
                 self.editingCell?.isEditing.onNext(true)
@@ -80,8 +79,17 @@ class SetShiftViewController: UIViewController {
                 if $0 != nil {
                     print("saved")
                     self.editingCell?.savedShift.onNext($0)
-                    self.editingCell?.isEditing.onNext(false)
-                    self.dismiss(animated: true, completion: nil)
+                    if self.isEditModeOn {
+                        if self.calendar!.selectedDate!.adjustDate(amount: 1, component: .day)!.day == 1 {
+                            self.editingCell?.isEditing.onNext(false)
+                            self.dismiss(animated: true, completion: nil)
+                        } else {
+                            self.viewModel.date.onNext(self.calendar!.selectedDate!.adjustDate(amount: 1, component: .day)!)
+                        }
+                    } else {
+                        self.editingCell?.isEditing.onNext(false)
+                        self.dismiss(animated: true, completion: nil)
+                    }
                 } else {
                     print("failed")
                 }
@@ -94,6 +102,7 @@ class SetShiftViewController: UIViewController {
                     print("Deleted")
                     self.editingCell?.savedShift.onNext(nil)
                     self.editingCell?.isEditing.onNext(false)
+                    self.calendar!.deselect(self.calendar!.selectedDate!)
                     self.dismiss(animated: true, completion: nil)
                 }
             }

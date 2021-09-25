@@ -49,7 +49,7 @@ class UserRoutineManager {
     }
     
     func createSavedShift(shift: Shift, date: Date) -> Observable<SavedShift?> {
-        
+        print(#fileID, #function, #line, date, shift)
         let savedShifts = realm.objects(SavedShift.self)
         let predicateQuery = NSPredicate(format: "date = %@", date.toString("yyyy-MM-dd"))
         let result = savedShifts.filter(predicateQuery)
