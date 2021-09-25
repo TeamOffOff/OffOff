@@ -1,13 +1,52 @@
-from api_helper import create_app, socketio
-import mongo
-print("main.py 진입")
+from logging import DEBUG
+from flask import Flask
+from flask_socketio import SocketIO
+from flask_restx import Api
+from flask_jwt_extended import JWTManager
 
-app = create_app(debug=True)
-print("app:", app)
+from api_helper.utils import APP_SECRET_KEY, JWT_SECRET_KEY
+
+from api_helper.list import BoardList, PostList, UserControl, MessageList
+from api_helper.post import Post, Reply
+from api_helper.user import Activity, User, Token
+from api_helper.message import Message
+from api_helper.calendar import Calendar
+
+import mongo as mongo
+
+app = Flask(__name__)
+
+app.config.update(
+        DEBUG=True,
+        SECRET_KEY = APP_SECRET_KEY,
+        JWT_SECRET_KEY = JWT_SECRET_KEY
+)
+
+# flask_jwt_extended
+jwt = JWTManager(app)
+
+
+# flask_restx
+api = Api(app)
+
+api.add_namespace(BoardList, "/boardlist")
+api.add_namespace(PostList, "/postlist")
+api.add_namespace(UserControl, "/usercontrol")
+
+api.add_namespace(Post, "/post")
+api.add_namespace(Reply, "/reply")
+
+api.add_namespace(User, "/user")
+api.add_namespace(Token, '/refresh')
+api.add_namespace(Activity, "/activity")
+
+api.add_namespace(Message, "/message")
+api.add_namespace(MessageList, "/messagelist")
+
+api.add_namespace(Calendar, "/calendar")
 
 
 if __name__ == "__main__":
     print("__name__ == __main__")
     mongodb = mongo.MongoHelper()
-    print("mongodb 실행 후")
-    socketio.run(app, host="0.0.0.0", port="5000")
+    app.run(host="0.0.0.0", port="5000")

@@ -1,10 +1,10 @@
 from pymongo import message
-from python_server.controller.reference import MakeReference
+from controller.reference import MakeReference
 from flask import request
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
-from python_server.controller.filter import check_jwt, ownership_required
+from controller.filter import check_jwt, ownership_required
 from bson.objectid import ObjectId
 
 
@@ -39,7 +39,7 @@ Collection : user
 """
 
 
-import python_server.mongo as mongo
+import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 

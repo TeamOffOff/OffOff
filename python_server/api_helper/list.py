@@ -3,10 +3,10 @@ from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from flask_jwt_extended import jwt_required
-from python_server.controller.filter import check_jwt
+from controller.filter import check_jwt
 from pymongo import collection, message
 
-import python_server.mongo as mongo
+import mongo as mongo
 
 import pprint
 
@@ -187,12 +187,23 @@ class MassageListControl(Resource):
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
             return {"queryStatus": "wrong Token"}, 403
+        print(user_id)
+        message_field = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["message"]
+
+        # 아직 message_type이 user db에 message field에 없으면 KeyError 발생
+        if not (message_type in message_field):
+            return {"queryStatus": "no list"}
 
         message_id_list = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["message"][message_type]
+        print(message_id_list)
+
+            
 
         # 회원활동 게시글 조회와 구조 동일
         message_list = []
         for message_id in message_id_list:
+            print(message_id)
+            message_id = message_id[1]
             result = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")
             if result:
                 result["_id"] = str(result["_id"])

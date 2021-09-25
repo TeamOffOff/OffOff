@@ -6,11 +6,11 @@ import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 
-from image import save_image, get_image
-from python_server.controller.filter import check_duplicate, check_jwt
-from python_server.controller.ect import fix_index
+from controller.image import save_image, get_image
+from controller.filter import check_duplicate, check_jwt
+from controller.ect import fix_index
 
-import python_server.mongo as mongo
+import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 

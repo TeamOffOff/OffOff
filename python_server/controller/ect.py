@@ -1,7 +1,7 @@
 from flask import request
 from flask_jwt_extended import jwt_required
 
-import python_server.mongo as mongo
+import mongo as mongo
 from controller.filter import check_jwt
 
 mongodb = mongo.MongoHelper()

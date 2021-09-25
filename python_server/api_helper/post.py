@@ -4,11 +4,11 @@ from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from python_server.controller.image import *
-from python_server.controller.reference import *
-from python_server.controller.filter import check_jwt, ownership_required
-from python_server.controller.ect import get_variables, convert_to_string
-import python_server.mongo as mongo
+from controller.image import *
+from controller.reference import *
+from controller.filter import check_jwt, ownership_required
+from controller.ect import get_variables, convert_to_string
+import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 

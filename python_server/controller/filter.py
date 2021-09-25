@@ -2,7 +2,7 @@ from flask import request
 from flask_jwt_extended.utils import get_jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-import python_server.mongo as mongo
+import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
@@ -19,6 +19,7 @@ def check_duplicate(key, target):
 
 # blocklist에 있는지 체크하는 함수 (jwt_required 데코레이터가 있는 모든 곳에 있어야함) => 라이브러리 내에 있는 데코레이터 아님
 def check_jwt():
+    print("check_jwt")
     user_id = get_jwt_identity()
     print(user_id)
     jti = get_jwt()["jti"]
