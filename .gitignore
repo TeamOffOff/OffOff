@@ -125,4 +125,4 @@ python_server/__pycache__/
 __pycache__/
 
 # 가상환경
-python_server/venv/
+python_server/venv
