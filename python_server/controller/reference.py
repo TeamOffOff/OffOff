@@ -1,4 +1,4 @@
-import python_server.mongo as mongo
+import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 

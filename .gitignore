@@ -117,7 +117,7 @@ rebel.xml
 
 
 # Python server 보안성 자료
-python_server/api_helper/utils.py
+OFFOFF/python_server/api_helper/utils.py
 
 # __pycache__
 python_server/api_helper/__pycache__/
@@ -125,4 +125,4 @@ python_server/__pycache__/
 __pycache__/
 
 # 가상환경
-python_server/venv/
+OffOff/python_server/venv/

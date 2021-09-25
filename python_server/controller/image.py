@@ -1,7 +1,7 @@
 import boto3
 import base64
 
-from python_server.api_helper.utils import *
+from api_helper.utils import *
 
 s3 = boto3.resource("s3",
                     aws_access_key_id=AWS_ACCESS_KEY_ID,
