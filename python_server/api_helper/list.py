@@ -192,7 +192,7 @@ class MassageListControl(Resource):
 
         # 아직 message_type이 user db에 message field에 없으면 KeyError 발생
         if not (message_type in message_field):
-            return {"queryStatus": "no list"}
+            return {"queryStatus": "no message"}
 
         message_id_list = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["message"][message_type]
         print(message_id_list)
