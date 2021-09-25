@@ -15,7 +15,7 @@ class UserRoutineManager {
     
     // Object ID
     func savedShiftID() -> String {
-        "SavedShift\(realm.objects(SavedShift.self).count)"
+        "SavedShift\(Date().toString("yyyy.MM.dd.HH.mm.ss.SSS"))"
     }
     
     func shiftID() -> String {
