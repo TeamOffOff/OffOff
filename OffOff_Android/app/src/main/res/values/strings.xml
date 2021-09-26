@@ -51,7 +51,7 @@
     <!--    <string name=""></string>-->
     <!--    <string name=""></string>-->
 
-    <string-array name = "week_day">
+    <string-array name="week_day">
         <item>(월)</item>
         <item>(화)</item>
         <item>(수)</item>

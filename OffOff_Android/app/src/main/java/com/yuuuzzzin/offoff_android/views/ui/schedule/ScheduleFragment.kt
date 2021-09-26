@@ -32,7 +32,10 @@ class ScheduleFragment : Fragment() {
     private var mBinding: FragmentScheduleBinding? = null
     private val binding get() = mBinding!!
     private val viewModel: ScheduleViewModel by activityViewModels()
-    private lateinit var bottomDialog: SaveShiftBottomDialog
+    private lateinit var savedShiftBottomDialog: SaveShiftBottomDialog
+    private lateinit var editModeQuestionDialog: EditModeQuestionDialog
+    private lateinit var editModeDialog: EditModeDialog
+    private var editMode: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +47,10 @@ class ScheduleFragment : Fragment() {
         initToolbar()
         initCalendar()
 
-        bottomDialog = SaveShiftBottomDialog(calendar)
+        savedShiftBottomDialog = SaveShiftBottomDialog(calendar)
+        editModeQuestionDialog = EditModeQuestionDialog()
+        editModeDialog = EditModeDialog(calendar)
+
         return binding.root
     }
 
@@ -53,7 +59,32 @@ class ScheduleFragment : Fragment() {
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_add -> {
-                    startActivity(Intent(context, AddScheduleActivity::class.java))
+                    editModeQuestionDialog.show(parentFragmentManager, "edit_mode_question_dialog")
+
+                    editModeQuestionDialog.setDialogResult(object : EditModeQuestionDialog.DialogReault {
+                        override fun finish(result: Boolean) {
+                            if(result) {
+
+                                // 편집모드 True로 변경
+                                editMode = result
+
+                                // 해당 월의 1일로 이동
+                                var cal: Calendar = calendar.getCurrentCalendar()!!
+                                (calendar.adapter as? CalendarAdapter)?.setCalendarSelectedDay(cal.time)
+                                (calendar.adapter as CalendarAdapter).selectedDate =
+                                    (calendar.adapter as CalendarAdapter).selectedDay as Date
+
+                                val bundle = Bundle()
+                                bundle.putString("year", cal.get(Calendar.YEAR).toString())
+                                bundle.putString("month", (cal.get(Calendar.MONTH) + 1).toString())
+                                bundle.putString("day", cal.get(Calendar.DAY_OF_MONTH).toString())
+                                bundle.putInt("dayOfWeek", cal.get(Calendar.DAY_OF_WEEK))
+                                editModeDialog.arguments = bundle
+
+                                editModeDialog.show(parentFragmentManager, "edit_mode_dialog")
+                            }
+                        }
+                    })
                     true
                 }
                 R.id.action_set -> {
@@ -115,8 +146,14 @@ class ScheduleFragment : Fragment() {
             bundle.putString("month", (day.calendar.get(Calendar.MONTH) + 1).toString())
             bundle.putString("day", day.calendar.get(Calendar.DAY_OF_MONTH).toString())
             bundle.putInt("dayOfWeek", day.calendar.get(Calendar.DAY_OF_WEEK))
-            bottomDialog.arguments = bundle
-            bottomDialog.show(parentFragmentManager, "calendar_bottom_dialog")
+
+            if(editMode) {
+                editModeDialog.arguments = bundle
+                editModeDialog.show(parentFragmentManager, "edit_mode_dialog")
+            } else {
+                savedShiftBottomDialog.arguments = bundle
+                savedShiftBottomDialog.show(parentFragmentManager, "calendar_bottom_dialog")
+            }
         }
 
         calendar.onDayLongClickListener = { day: Day ->
@@ -285,6 +322,8 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         selectedDay = cal.time
         (calendar.adapter as CalendarAdapter).selectedDate =
             (calendar.adapter as CalendarAdapter).selectedDay as Date
+        Log.d("tag_selectedDay", (calendar.adapter as? CalendarAdapter)?.selectedDay.toString())
+
 
         cal = Calendar.getInstance()
         cal.time = selectedDate
@@ -300,6 +339,10 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
 
     fun initSelectedDay() {
         selectedDay = null
+    }
+
+    fun setCalendarSelectedDay(date: Date) {
+        selectedDay = date
     }
 
 //    fun notifyCalendarItemChanged() {
