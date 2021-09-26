@@ -6,10 +6,11 @@ import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 
-from python_server.controller.filter import check_duplicate, check_jwt
-from python_server.controller.ect import fix_index
+from controller.image import save_image, get_image
+from controller.filter import check_duplicate, check_jwt
+from controller.ect import fix_index
 
-import python_server.mongo as mongo
+import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
@@ -133,6 +134,9 @@ class AuthRegister(Resource):
             sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
             activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
+            if sub_information["profileImage"]:
+                sub_information["profileImage"] = save_image(sub_information["profileImage"], "user")
+
             real_user_info = {"_id": user_info["_id"],
                               "password": user_info["password"],
                               "information": information,
@@ -180,12 +184,15 @@ class AuthRegister(Resource):
         if not user_id:
             return {"queryStatus": "wrong Token"}, 403
 
+        
+        
+        user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
+
         # 활동 알수없음으로 바꾸기
         print("author을 알 수 없음으로 바꾸는 과정 진입")
-        activity = mongodb.find_one(query={"_id": user_id}, collection_name="user", projection_key={"activity": True, "_id": False})
-
-        posts = activity["activity"]["posts"]
-        replies = activity["activity"]["replies"]
+        activity = user_info["activity"]
+        posts = activity["posts"]
+        replies = activity["replies"]
         print("게시글 작성: ", posts)
         print("댓글 or 대댓글 작성:", replies)
 
@@ -208,7 +215,8 @@ class AuthRegister(Resource):
 
                 if post_change_result.raw_result["n"] == 0:
                     return {"queryStatus": "author information change fail"}, 500
-
+        
+        # 댓글 알 수 없음
         if replies:
             print("작성한 댓글이 있는 경우")
             for reply in replies:
@@ -227,14 +235,21 @@ class AuthRegister(Resource):
 
                 if reply_change_result.raw_result["n"] == 0:
                     return {"queryStatus": "author information change fail"}, 500
+        
+        # 캘린더 삭제하기
+        calendar_id = user_info["calendar"]
+        result = mongodb.delete_one(query={"_id":calendar_id}, collection_name="calendar")
+
+        if result.raw_result["n"] == 0:
+            return{"queryStatus": "calendar delete fail"}, 500
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": user_id}, collection_name="user")
 
         if result.raw_result["n"] == 1:
             return {"queryStatus": "success"}, 200
-        else:
-            return {"queryStatus": "user delete fail"}, 500
+        
+        return {"queryStatus": "user delete fail"}, 500
 
 
 @User.route('/login')
@@ -299,14 +314,15 @@ class AuthLogin(Resource):
         sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
         activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
+        sub_information["profileImage"] = get_image(sub_information["profileImage"], "user")
+
         real_user_info = {"_id": user_info["_id"],
                           "password": user_info["password"],
                           "information": information,
                           "subInformation": sub_information,
                           "activity": activity}
 
-        return {
-                   "user": real_user_info}, 200
+        return {"user": real_user_info}, 200
 
     @jwt_required()
     def put(self):  # 회원정보수정 => 순서고정 코드 추가 고려

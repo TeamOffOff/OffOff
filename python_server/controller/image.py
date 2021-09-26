@@ -1,7 +1,7 @@
 import boto3
 import base64
 
-from python_server.api_helper.utils import *
+from api_helper.utils import *
 
 s3 = boto3.resource("s3",
                     aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -13,6 +13,9 @@ bucket = s3.Bucket("offoffbucket")
 
 def save_image(img_list: list, directory: str):
     key_list = []
+
+    if not img_list:
+        return None
 
     for img in img_list:
         img_key = img["key"]
@@ -30,6 +33,9 @@ def save_image(img_list: list, directory: str):
 
 def get_image(img_key_list: list, directory: str):
     img_list = list()
+
+    if not img_key_list:
+        return None
 
     for img_key in img_key_list:
         img_obj = s3.Object(bucket.name, directory + "/" + img_key)
