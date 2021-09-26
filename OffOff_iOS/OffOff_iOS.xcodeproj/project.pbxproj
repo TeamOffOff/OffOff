@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
+		EA0624D926DBB1B6004FF91A /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624D826DBB1B6004FF91A /* Realm */; };
+		EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624DA26DBB1B6004FF91A /* RealmSwift */; };
+		EA0624DD26DCA13C004FF91A /* RealmTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */; };
+		EA0624DF26DD1D58004FF91A /* UserRoutineManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */; };
+		EA0624E226DE77A7004FF91A /* RxRealm in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624E126DE77A7004FF91A /* RxRealm */; };
 		EA07345526929C01007830ED /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345426929C01007830ED /* Post.swift */; };
 		EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */ = {isa = PBXBuildFile; fileRef = EA0734562692A0B8007830ED /* PostsDummyData.json */; };
 		EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
@@ -17,10 +22,13 @@
 		EA285A6526C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA285A6626C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA285A6726C565F000E65EB2 /* RxCocoa */; };
+		EA2C4DF226DFCB4A0056A93C /* EditScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */; };
+		EA2C4DF426DFD4890056A93C /* ShiftTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */; };
 		EA2FDF4826A7C7EF00AEC951 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */; };
 		EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4C26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
+		EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */; };
 		EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* IDPWViewController.swift */; };
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
 		EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA420B36269BFBD200F6F903 /* PostServices.swift */; };
@@ -29,6 +37,19 @@
 		EA72D75B2698276C00EB07DA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75A2698276C00EB07DA /* PostView.swift */; };
 		EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */; };
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
+		EA83564226D3727100D60C46 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = EA83564126D3727100D60C46 /* FSCalendar */; };
+		EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564326D3729100D60C46 /* ScheduleViewController.swift */; };
+		EA83564726D37BBE00D60C46 /* ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564626D37BBE00D60C46 /* ScheduleViewModel.swift */; };
+		EA83564926D38C4900D60C46 /* ScheduleCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564826D38C4900D60C46 /* ScheduleCalendarCell.swift */; };
+		EA83564B26D3A47600D60C46 /* RoutineModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564A26D3A47600D60C46 /* RoutineModel.swift */; };
+		EA83564D26D3A6D500D60C46 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564C26D3A6D500D60C46 /* ScheduleView.swift */; };
+		EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333826D4C7540014D97C /* SetShiftViewController.swift */; };
+		EA8A333B26D4CB490014D97C /* SetRoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333A26D4CB490014D97C /* SetRoutineView.swift */; };
+		EA8A333D26D4CB600014D97C /* SetShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */; };
+		EA8A333F26D4CC720014D97C /* RoutineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333E26D4CC720014D97C /* RoutineCell.swift */; };
+		EA8A334226D61B5F0014D97C /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = EA8A334126D61B5F0014D97C /* RxGesture */; };
+		EA8A334726D63ADD0014D97C /* EditShiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */; };
+		EA8A334926D63F480014D97C /* EditShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A334826D63F480014D97C /* EditShiftViewModel.swift */; };
 		EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */; };
 		EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA929F2026A9D12A009352B9 /* ProfileViewController.swift */; };
 		EA929F2326AC66BE009352B9 /* default profile.png in Resources */ = {isa = PBXBuildFile; fileRef = EA929F2226AC66BE009352B9 /* default profile.png */; };
@@ -91,6 +112,10 @@
 		EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2128B26907B9600E47942 /* BoardListViewController.swift */; };
 		EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF2128D2690814400E47942 /* CommunityBoard.swift */; };
 		EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF21290269081B800E47942 /* CommunityListSampleData.swift */; };
+		EAF7073326E71F7D00B7B6D1 /* AddShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */; };
+		EAF7073526E731CE00B7B6D1 /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */; };
+		EAF7073726E9F35700B7B6D1 /* ShiftColorSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */; };
+		EAF7073926EA059600B7B6D1 /* UnderlineSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,14 +136,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmTestViewController.swift; sourceTree = "<group>"; };
+		EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRoutineManager.swift; sourceTree = "<group>"; };
 		EA07345426929C01007830ED /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		EA0734562692A0B8007830ED /* PostsDummyData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostsDummyData.json; sourceTree = "<group>"; };
 		EA07345A2692AD56007830ED /* PostListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewModel.swift; sourceTree = "<group>"; };
 		EA07345E2692CECA007830ED /* PostListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
 		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScheduleView.swift; sourceTree = "<group>"; };
+		EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTableViewCell.swift; sourceTree = "<group>"; };
 		EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		EA2FDF4926A7D88800AEC951 /* UserServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServices.swift; sourceTree = "<group>"; };
+		EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftViewController.swift; sourceTree = "<group>"; };
 		EA3DA4BB26A58B510075819B /* OffOff_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA406A8D26A475CE00737F90 /* IDPWViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewController.swift; sourceTree = "<group>"; };
 		EA406A8F26A4769300737F90 /* IDPWView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWView.swift; sourceTree = "<group>"; };
@@ -130,6 +160,18 @@
 		EA72D75A2698276C00EB07DA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		EA83564326D3729100D60C46 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		EA83564526D373FD00D60C46 /* OffOff_iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OffOff_iOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		EA83564626D37BBE00D60C46 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModel.swift; sourceTree = "<group>"; };
+		EA83564826D38C4900D60C46 /* ScheduleCalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCalendarCell.swift; sourceTree = "<group>"; };
+		EA83564A26D3A47600D60C46 /* RoutineModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineModel.swift; sourceTree = "<group>"; };
+		EA83564C26D3A6D500D60C46 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		EA8A333826D4C7540014D97C /* SetShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetShiftViewController.swift; sourceTree = "<group>"; };
+		EA8A333A26D4CB490014D97C /* SetRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRoutineView.swift; sourceTree = "<group>"; };
+		EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetShiftViewModel.swift; sourceTree = "<group>"; };
+		EA8A333E26D4CC720014D97C /* RoutineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineCell.swift; sourceTree = "<group>"; };
+		EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditShiftViewController.swift; sourceTree = "<group>"; };
+		EA8A334826D63F480014D97C /* EditShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditShiftViewModel.swift; sourceTree = "<group>"; };
 		EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMakeView.swift; sourceTree = "<group>"; };
 		EA929F2026A9D12A009352B9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		EA929F2226AC66BE009352B9 /* default profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default profile.png"; sourceTree = "<group>"; };
@@ -172,6 +214,10 @@
 		EAF2128B26907B9600E47942 /* BoardListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardListViewController.swift; sourceTree = "<group>"; };
 		EAF2128D2690814400E47942 /* CommunityBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityBoard.swift; sourceTree = "<group>"; };
 		EAF21290269081B800E47942 /* CommunityListSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListSampleData.swift; sourceTree = "<group>"; };
+		EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftViewModel.swift; sourceTree = "<group>"; };
+		EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftView.swift; sourceTree = "<group>"; };
+		EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftColorSelectViewController.swift; sourceTree = "<group>"; };
+		EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineSegmentedControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,12 +240,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */,
+				EA83564226D3727100D60C46 /* FSCalendar in Frameworks */,
 				EA9D0AD026BAC93100D571EC /* Then in Frameworks */,
 				EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */,
 				EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */,
 				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
+				EA8A334226D61B5F0014D97C /* RxGesture in Frameworks */,
 				EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */,
+				EA0624E226DE77A7004FF91A /* RxRealm in Frameworks */,
+				EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */,
 				EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */,
+				EA0624D926DBB1B6004FF91A /* Realm in Frameworks */,
 				EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */,
 				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
@@ -243,6 +294,7 @@
 		EAE502D62689E3D6002B1C6A = {
 			isa = PBXGroup;
 			children = (
+				EA83564526D373FD00D60C46 /* OffOff_iOS-Bridging-Header.h */,
 				EAE502E12689E3D6002B1C6A /* OffOff_iOS */,
 				EA420B3F269C5F7D00F6F903 /* OffOff_iOSTests */,
 				EAE502E02689E3D6002B1C6A /* Products */,
@@ -299,6 +351,7 @@
 				EACC257926A5CFB2000B12B6 /* Font Awesome 5 Brands-Regular-400.otf */,
 				EACC257826A5CFB2000B12B6 /* Font Awesome 5 Free-Regular-400.otf */,
 				EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */,
+				EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -315,6 +368,10 @@
 				EA929F1E26A9D0E9009352B9 /* ProfileMakeView.swift */,
 				EA975A5B26AFB87000C6FB41 /* CircularImageView.swift */,
 				EA975A5D26AFE4A300C6FB41 /* TextWithIconView.swift */,
+				EA83564C26D3A6D500D60C46 /* ScheduleView.swift */,
+				EA8A333A26D4CB490014D97C /* SetRoutineView.swift */,
+				EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */,
+				EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -328,6 +385,7 @@
 				EA2FDF4926A7D88800AEC951 /* UserServices.swift */,
 				EACF1B3626B5A9DD00C153D3 /* BoardAPI.swift */,
 				EACF1B3826B6698C00C153D3 /* BoardServices.swift */,
+				EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -337,6 +395,9 @@
 			children = (
 				EAE6525E269416B600D8F7BB /* PostPreviewCell.swift */,
 				EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */,
+				EA83564826D38C4900D60C46 /* ScheduleCalendarCell.swift */,
+				EA8A333E26D4CC720014D97C /* RoutineCell.swift */,
+				EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -344,10 +405,10 @@
 		EAF2127A268FEC2500E47942 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 				EA07345426929C01007830ED /* Post.swift */,
 				EACC255A26A5B3B0000B12B6 /* UserModel.swift */,
 				EACF1B3A26B6710800C153D3 /* Board.swift */,
+				EA83564A26D3A47600D60C46 /* RoutineModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -361,6 +422,11 @@
 				EACF1B3C26B7E42300C153D3 /* BoardListViewModel.swift */,
 				EA983F0A26C0DDF60070604E /* PostViewModel.swift */,
 				EA983F0C26C0E4980070604E /* NewPostViewModel.swift */,
+				EA83564626D37BBE00D60C46 /* ScheduleViewModel.swift */,
+				EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */,
+				EA8A334826D63F480014D97C /* EditShiftViewModel.swift */,
+				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
+				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -377,6 +443,12 @@
 				EAE652602694182D00D8F7BB /* PostViewController.swift */,
 				EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */,
 				EA526E1C26CD0A100059A90C /* FirstViewController.swift */,
+				EA83564326D3729100D60C46 /* ScheduleViewController.swift */,
+				EA8A333826D4C7540014D97C /* SetShiftViewController.swift */,
+				EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */,
+				EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */,
+				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
+				EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -455,6 +527,11 @@
 				EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */,
 				EACB84F126C39B9800096E01 /* Amplify */,
 				EA285A6726C565F000E65EB2 /* RxCocoa */,
+				EA83564126D3727100D60C46 /* FSCalendar */,
+				EA8A334126D61B5F0014D97C /* RxGesture */,
+				EA0624D826DBB1B6004FF91A /* Realm */,
+				EA0624DA26DBB1B6004FF91A /* RealmSwift */,
+				EA0624E126DE77A7004FF91A /* RxRealm */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -499,6 +576,10 @@
 				EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
 				EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */,
 				EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */,
+				EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */,
+				EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */,
+				EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+				EA0624E026DE77A7004FF91A /* XCRemoteSwiftPackageReference "RxRealm" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -582,7 +663,10 @@
 				EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
+				EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */,
 				EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */,
+				EAF7073326E71F7D00B7B6D1 /* AddShiftViewModel.swift in Sources */,
+				EA0624DD26DCA13C004FF91A /* RealmTestViewController.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EACF1B3726B5A9DD00C153D3 /* BoardAPI.swift in Sources */,
@@ -590,6 +674,7 @@
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
 				EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */,
+				EA83564926D38C4900D60C46 /* ScheduleCalendarCell.swift in Sources */,
 				EAF212842690133500E47942 /* HomeView.swift in Sources */,
 				EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */,
 				EA72D75B2698276C00EB07DA /* PostView.swift in Sources */,
@@ -597,7 +682,9 @@
 				EA975A5E26AFE4A300C6FB41 /* TextWithIconView.swift in Sources */,
 				EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */,
 				EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */,
+				EA0624DF26DD1D58004FF91A /* UserRoutineManager.swift in Sources */,
 				EACF1B3D26B7E42300C153D3 /* BoardListViewModel.swift in Sources */,
+				EA2C4DF226DFCB4A0056A93C /* EditScheduleView.swift in Sources */,
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,
 				EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
@@ -609,20 +696,34 @@
 				EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */,
 				EA983F0D26C0E4980070604E /* NewPostViewModel.swift in Sources */,
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
+				EA83564726D37BBE00D60C46 /* ScheduleViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
 				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
+				EA8A333F26D4CC720014D97C /* RoutineCell.swift in Sources */,
+				EA83564B26D3A47600D60C46 /* RoutineModel.swift in Sources */,
+				EA83564D26D3A6D500D60C46 /* ScheduleView.swift in Sources */,
 				EA07345526929C01007830ED /* Post.swift in Sources */,
+				EA8A333B26D4CB490014D97C /* SetRoutineView.swift in Sources */,
+				EA2C4DF426DFD4890056A93C /* ShiftTableViewCell.swift in Sources */,
+				EAF7073526E731CE00B7B6D1 /* AddShiftView.swift in Sources */,
+				EA8A334926D63F480014D97C /* EditShiftViewModel.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EA526E1D26CD0A100059A90C /* FirstViewController.swift in Sources */,
 				EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */,
+				EA8A334726D63ADD0014D97C /* EditShiftViewController.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */,
 				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
+				EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */,
+				EAF7073926EA059600B7B6D1 /* UnderlineSegmentedControl.swift in Sources */,
 				EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */,
+				EAF7073726E9F35700B7B6D1 /* ShiftColorSelectViewController.swift in Sources */,
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
+				EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,
 				EAF212882690355B00E47942 /* HomeViewController.swift in Sources */,
+				EA8A333D26D4CB600014D97C /* SetShiftViewModel.swift in Sources */,
 				EA983F0F26C1183D0070604E /* Constants.swift in Sources */,
 				EA975A5C26AFB87000C6FB41 /* CircularImageView.swift in Sources */,
 				EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */,
@@ -874,6 +975,7 @@
 				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -895,6 +997,7 @@
 				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -942,6 +1045,39 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.13.0;
+			};
+		};
+		EA0624E026DE77A7004FF91A /* XCRemoteSwiftPackageReference "RxRealm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxRealm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+		EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.2;
+			};
+		};
+		EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxGesture";
+			requirement = {
+				kind = versionRange;
+				maximumVersion = 4.0.0;
+				minimumVersion = 3.0.0;
+			};
+		};
 		EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
@@ -1002,10 +1138,35 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		EA0624D826DBB1B6004FF91A /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = Realm;
+		};
+		EA0624DA26DBB1B6004FF91A /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
+		EA0624E126DE77A7004FF91A /* RxRealm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA0624E026DE77A7004FF91A /* XCRemoteSwiftPackageReference "RxRealm" */;
+			productName = RxRealm;
+		};
 		EA285A6726C565F000E65EB2 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxCocoa;
+		};
+		EA83564126D3727100D60C46 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
+		};
+		EA8A334126D61B5F0014D97C /* RxGesture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */;
+			productName = RxGesture;
 		};
 		EA9D0AC326BA956200D571EC /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;

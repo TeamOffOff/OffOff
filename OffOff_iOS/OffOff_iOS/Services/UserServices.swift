@@ -99,9 +99,10 @@ public class UserServices {
     static func getUserInfo(token: String) -> Observable<UserModel?> {
         return UserServices.provider
             .rx.request(.getUserInfo(token))
-            .observeOn(MainScheduler.instance)
+            .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
+                print(try? $0.mapJSON())
                 let response = try JSONDecoder().decode(UserModel.self, from: $0.data)
                 return response
             }

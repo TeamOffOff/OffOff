@@ -31,15 +31,19 @@ class FirstViewController: UIViewController {
         if let token = UserDefaults.standard.string(forKey: "loginToken") {
             print("Auto logined... token:", token)
             UserServices.getUserInfo(token: token)
+                .debug()
+                .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
+                .observeOn(MainScheduler.instance)
                 .bind {
-                    print($0)
                     let vc = ($0 != nil) ? TabBarController() : LoginViewController()
                     vc.modalPresentationStyle = .fullScreen
                     self.present(vc, animated: false)
                 }
                 .disposed(by: disposeBag)
         } else {
-            self.present(LoginViewController(), animated: false)
+            let vc = LoginViewController()
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: false)
         }
     }
     

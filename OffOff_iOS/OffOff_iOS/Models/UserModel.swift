@@ -29,16 +29,16 @@ import Foundation
 //}
 
 class SharedSignUpModel {
-    static var model = UserModel(_id: "", password: "", information: Information(name: "", email: "", birth: "", type: nil), subInformation: SubInformation(nickname: "", profileImage: nil), activity: Activity())
+    static var model = UserModel(_id: "", activity: Activity(), information: Information(name: "", email: "", birth: "", type: nil), password: "", subInformation: SubInformation(nickname: "", profileImage: nil))
 }
 
 struct UserModel: Codable {
     var _id: String
-    var password: String
-    
-    var information: Information
-    var subInformation: SubInformation
     var activity: Activity
+    var information: Information
+    var password: String
+    var subInformation: SubInformation
+    
 }
 
 struct Information: Codable {

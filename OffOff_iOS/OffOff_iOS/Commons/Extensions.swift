@@ -5,10 +5,7 @@
 //  Created by Lee Nam Jun on 2021/07/09.
 //
 
-import Foundation
-import UIKit.UIView
-import UIKit.UIColor
-import UIKit.UITextField
+import RealmSwift
 import SkyFloatingLabelTextField
 import FontAwesome
 import RxSwift
@@ -33,12 +30,118 @@ extension String {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         return dateFormatter.date(from: self)
     }
+    
+    func toDate(_ format: String) -> Date? {
+        dateFormatter.dateFormat = format
+        return dateFormatter.date(from: self)
+    }
 }
 
 extension Date {
-    func toString() -> String {
-        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+    var startOfMonth: Date {
+        
+        let calendar = Calendar(identifier: .gregorian)
+        let components = calendar.dateComponents([.year, .month], from: self)
+        
+        return  calendar.date(from: components)!
+    }
+    
+    var endOfMonth: Date {
+        var components = DateComponents()
+        components.month = 1
+        components.second = -1
+        return Calendar(identifier: .gregorian).date(byAdding: components, to: startOfMonth)!
+    }
+    
+    var isEndOfMonth: Bool {
+        let calendar = Calendar.current
+        
+        return calendar.isDate(self, inSameDayAs: self.endOfMonth)
+    }
+    
+    var day: Int {
+        let calendar = Calendar.current
+        return calendar.component(.day, from: self)
+    }
+    
+    var month: Int {
+        let calendar = Calendar.current
+        return calendar.component(.month, from: self)
+    }
+    
+    var year: Int {
+        let calendar = Calendar.current
+        return calendar.component(.year, from: self)
+    }
+    
+    func toString(_ format: String = "yyyy년 MM월 dd일") -> String {
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = format
         return dateFormatter.string(from: self)
+    }
+    
+    func adjustDate(amount: Int, component: Calendar.Component) -> Date? {
+        var dayComponent = DateComponents()
+        
+        switch component {
+        case .day:
+            dayComponent.day = amount
+        case .month:
+            dayComponent.month = amount
+        case .year:
+            dayComponent.year = amount
+        default:
+            return nil
+        }
+        let theCalendar = Calendar.current
+        return theCalendar.date(byAdding: dayComponent, to: self)
+    }
+    
+    func isSame(with date: Date, component: Calendar.Component) -> Bool {
+        let calendar = Calendar.current
+        
+        if calendar.component(component, from: self) == calendar.component(component, from: date) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func compareComponent(with date: Date, component: Calendar.Component) -> ComparisonResult {
+        let calendar = Calendar.current
+        
+        if calendar.component(component, from: self) == calendar.component(component, from: date) {
+            return .orderedSame
+        }
+        
+        if calendar.component(component, from: self) > calendar.component(component, from: date) {
+            return .orderedDescending
+        }
+        
+        return .orderedAscending
+    }
+    
+    func toLocalTime() -> Date {
+        let timezone = TimeZone.current
+        let seconds = TimeInterval(timezone.secondsFromGMT(for: self))
+        
+        return Date(timeInterval: seconds, since: self)
+        
+    }
+    
+    // Convert local time to UTC (or GMT)
+    func toGlobalTime() -> Date {
+        let timezone = TimeZone.current
+        let seconds = -TimeInterval(timezone.secondsFromGMT(for: self))
+        
+        return Date(timeInterval: seconds, since: self)
+        
+    }
+    
+    func changeComponent(component: Calendar.Component, amount: Int) -> Date? {
+        let calendar = Calendar.current
+        
+        return calendar.date(bySetting: component,  value: amount, of: self)
     }
 }
 
@@ -61,6 +164,35 @@ extension UIView {
 extension UIColor {
     static var mainColor: UIColor {
         return Constants.mainColor
+    }
+    
+    // hex code로 UIColor 객체 생성
+    convenience init(hex: String, alpha: CGFloat = 1.0) {
+        var hexFormatted: String = hex.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
+        
+        if hexFormatted.hasPrefix("#") {
+            hexFormatted = String(hexFormatted.dropFirst())
+        }
+        
+        assert(hexFormatted.count == 6, "Invalid hex code used.")
+        
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
+        
+        self.init(red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+                  green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+                  blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+                  alpha: alpha)
+    }
+    
+    func toHexString() -> String {
+        var r:CGFloat = 0
+        var g:CGFloat = 0
+        var b:CGFloat = 0
+        var a:CGFloat = 0
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
+        return String(format:"#%06x", rgb)
     }
 }
 
@@ -197,5 +329,30 @@ extension UIFont {
 
     func italic() -> UIFont {
         return withTraits(traits: .traitItalic)
+    }
+}
+
+
+extension Results {
+    // Realm Result를 Array로 convert
+    func toArray<T>(ofType: T.Type) -> [T] {
+        var array = [T]()
+        for i in 0 ..< count {
+            if let result = self[i] as? T {
+                array.append(result)
+            }
+        }
+        
+        return array
+    }
+}
+
+extension Realm {
+    public func safeWrite(_ block: (() throws -> Void)) throws {
+        if isInWriteTransaction {
+            try block()
+        } else {
+            try write(block)
+        }
     }
 }
