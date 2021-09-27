@@ -5,6 +5,7 @@ from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson.objectid import ObjectId
 
+from controller.calendar import calendar_post_or_delete, calendar_update
 from controller.filter import check_jwt
 import mongo as mongo
 
@@ -62,7 +63,7 @@ class CalendarControl(Resource):
         
         # user 컬랙션에 참조 달기
         link_calendar = {"calendar" : str(calendar_id)}
-        result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":link_calendar})
+        result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$addToSet":link_calendar})
         # user collection에 calendar field 리스트 형태로 바꾸기
 
         if result.raw_result["n"] == 0:
@@ -72,69 +73,21 @@ class CalendarControl(Resource):
     
 
     def put(self):
-        """
-        shift
-         {
-            "id": "string",
-            "title": "string",
-            "textColor": "string",
-            "backgroundColor": "string",
-            "startDate": "string",
-            "endDate": "string"
-        }
-        saved shift
-        {
-            "id": "string",
-            "date": "string",
-            "shift": {
-                "id": "string",
-                "title": "string",
-                "textColor": "string",
-                "backgroundColor": "string",
-                "startDate": "string",
-                "endDate": "string"
-            }
-        }
-        """
         request_info = request.get_json()
         """
         "_id": string,
-        "method": update(수정), post(추가), delete(삭제),
-        "field": shift, saved shift  --> 이건 shift 필드 유무로 가릴 수 있으므로 없어도 됨
-        "content": {
-            object
-        }
-
+        "title": string
         """
         calendar_id = request_info["_id"]
-        operator = request_info["method"]
-        field = request_info["field"]
-        content = request_info["content"]
+        new_title = request_info["title"]
         
-
-        if operator == "update":
-            shift_id = content["id"]
-            operator = "$set"
-            result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{f"{field}.$[elem]":content}}, array_filters=[{"elem.id":shift_id}])
-            if result.raw_result["n"] == 0:
-                return {"queryStatus": "calendar update fail"}, 500
-            return {"queryStatus": "success"}, 200
-            
-            # 체크할것
-            # update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$inc":{"subReplies.$[subreply].likes": modified_like}},upsert=False, array_filters=[{"subreply.content":content, "subreply.date":date}])
-        
-        elif operator == "post":
-            operator = "$addToSet"
-        
-        elif operator == "delete":
-            operator = "$pull"
-        
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
+        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={"$set":{"title": new_title}})
 
         if result.raw_result["n"] == 0:
             return {"queryStatus": "calendar update fail"}, 500
             
         return {"queryStatus": "success"}, 200
+
 
     @jwt_required()
     def delete(self):
@@ -159,6 +112,9 @@ class CalendarControl(Resource):
         result = mongodb.delete_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar")
         
         # user collection에서 calendar field에서 pull
+        # user 컬랙션에 참조 달기
+        link_calendar = {"calendar" : str(calendar_id)}
+        result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$pull":link_calendar})
 
         if result.raw_result["n"] == 0:
             return {"queryStatus": "calendar delete fail"}, 500
@@ -182,14 +138,12 @@ class ShiftControl(Resource):
                 "endDate": "string"
             }
         """
-        request_info = request.get_json()
-        calendar_id = request_info["_id"]
-        content = request_info["content"]
         
         field = "shift"
         operator = "$addToSet"
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
-
+        
+        result = calendar_post_or_delete(field=field, operator=operator)
+        
         if result.raw_result["n"] == 0:
                 return {"queryStatus": "shift update fail"}, 500
         return {"queryStatus": "success"}, 200
@@ -207,14 +161,11 @@ class ShiftControl(Resource):
                     "endDate": "string"
                 }
         """
-        request_info = request.get_json()
-        calendar_id = request_info["_id"]
-        content = request_info["content"]
-        shift_id = content["id"]
         
         field = "shift"
         operator = "$set"
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{f"{field}.$[elem]":content}}, array_filters=[{"elem.id":shift_id}])
+
+        result = calendar_update(field=field, operator=operator)
 
         if result.raw_result["n"] == 0:
                 return {"queryStatus": "shift update fail"}, 500
@@ -233,14 +184,12 @@ class ShiftControl(Resource):
                     "endDate": "string"
                 }
         """
-        request_info = request.get_json()
-        calendar_id = request_info["_id"]
-        content = request_info["content"]
         
         field = "shift"
         operator = "$pull"
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
-        
+
+        result = calendar_post_or_delete(field=field, operator=operator)
+
         if result.raw_result["n"] == 0:
                 return {"queryStatus": "shift update fail"}, 500
         return {"queryStatus": "success"}, 200
@@ -266,13 +215,12 @@ class ShiftControl(Resource):
             }
         }
         """
-        request_info = request.get_json()
-        calendar_id = request_info["_id"]
-        content = request_info["content"]
+
         
         field = "savedShift"
         operator = "$addToSet"
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
+
+        result = calendar_post_or_delete(field=field, operator=operator)
 
         if result.raw_result["n"] == 0:
                 return {"queryStatus": "savedShift update fail"}, 500
@@ -295,14 +243,11 @@ class ShiftControl(Resource):
             }
         }
         """
-        request_info = request.get_json()
-        calendar_id = request_info["_id"]
-        content = request_info["content"]
-        shift_id = content["id"]
-        
+
         field = "savedShift"
         operator = "$set"
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{f"{field}.$[elem]":content}}, array_filters=[{"elem.id":shift_id}])
+
+        result = calendar_update(field=field, operator=operator)
 
         if result.raw_result["n"] == 0:
                 return {"queryStatus": "savedShift update fail"}, 500
@@ -325,13 +270,11 @@ class ShiftControl(Resource):
             }
         }
         """
-        request_info = request.get_json()
-        calendar_id = request_info["_id"]
-        content = request_info["content"]
         
         field = "savedShift"
         operator = "$pull"
-        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
+
+        result = calendar_post_or_delete(field=field, operator=operator)
         
         if result.raw_result["n"] == 0:
                 return {"queryStatus": "savedShift update fail"}, 500
