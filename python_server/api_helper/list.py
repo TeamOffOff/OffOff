@@ -202,8 +202,8 @@ class MassageListControl(Resource):
         # 회원활동 게시글 조회와 구조 동일
         message_list = []
         for message_id in message_id_list:
-            print(message_id)
             message_id = message_id[1]
+            print("개별 메시지 id : ", message_id)
             result = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")
             if result:
                 result["_id"] = str(result["_id"])
@@ -213,9 +213,9 @@ class MassageListControl(Resource):
             else:
                 continue
             
-            message_list.sort(key=lambda x: x["_id"], reverse=True)
+        message_list.sort(key=lambda x: x["_id"], reverse=True)
 
-            return{
-                f"{message_type}List": message_list
-            }, 200
+        return{
+            f"{message_type}List": message_list
+        }, 200
 

@@ -1,6 +1,5 @@
 from logging import DEBUG
 from flask import Flask
-from flask_socketio import SocketIO
 from flask_restx import Api
 from flask_jwt_extended import JWTManager
 
