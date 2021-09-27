@@ -244,3 +244,95 @@ class ShiftControl(Resource):
         if result.raw_result["n"] == 0:
                 return {"queryStatus": "shift update fail"}, 500
         return {"queryStatus": "success"}, 200
+
+
+@SavedShift.route("")
+class ShiftControl(Resource):
+    # user_id뽑아내서 calendar_id가 있는지 확인하는 과정 필요
+    @jwt_required()
+    def post(self):
+        """
+            "_id": string,
+            "content": {
+                "id": "string",
+                "date": "string",
+                "shift": {
+                    "id": "string",
+                    "title": "string",
+                    "textColor": "string",
+                    "backgroundColor": "string",
+                    "startDate": "string",
+                    "endDate": "string"
+            }
+        }
+        """
+        request_info = request.get_json()
+        calendar_id = request_info["_id"]
+        content = request_info["content"]
+        
+        field = "savedShift"
+        operator = "$addToSet"
+        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
+
+        if result.raw_result["n"] == 0:
+                return {"queryStatus": "savedShift update fail"}, 500
+        return {"queryStatus": "success"}, 200
+
+    @jwt_required()
+    def update(self):
+        """
+            "_id": string,
+            "content": {
+                "id": "string",
+                "date": "string",
+                "shift": {
+                    "id": "string",
+                    "title": "string",
+                    "textColor": "string",
+                    "backgroundColor": "string",
+                    "startDate": "string",
+                    "endDate": "string"
+            }
+        }
+        """
+        request_info = request.get_json()
+        calendar_id = request_info["_id"]
+        content = request_info["content"]
+        shift_id = content["id"]
+        
+        field = "savedShift"
+        operator = "$set"
+        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{f"{field}.$[elem]":content}}, array_filters=[{"elem.id":shift_id}])
+
+        if result.raw_result["n"] == 0:
+                return {"queryStatus": "savedShift update fail"}, 500
+        return {"queryStatus": "success"}, 200
+        
+    @jwt_required()
+    def delete(self):
+        """
+            "_id": string,
+            "content": {
+                "id": "string",
+                "date": "string",
+                "shift": {
+                    "id": "string",
+                    "title": "string",
+                    "textColor": "string",
+                    "backgroundColor": "string",
+                    "startDate": "string",
+                    "endDate": "string"
+            }
+        }
+        """
+        request_info = request.get_json()
+        calendar_id = request_info["_id"]
+        content = request_info["content"]
+        
+        field = "savedShift"
+        operator = "$pull"
+        result = mongodb.update_one(query={"_id": ObjectId(calendar_id)}, collection_name="calendar", modify={operator:{field: content}})
+        
+        if result.raw_result["n"] == 0:
+                return {"queryStatus": "savedShift update fail"}, 500
+        return {"queryStatus": "success"}, 200
