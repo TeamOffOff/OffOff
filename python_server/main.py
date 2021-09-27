@@ -10,7 +10,7 @@ from api_helper.list import BoardList, PostList, UserControl, MessageList
 from api_helper.post import Post, Reply
 from api_helper.user import Activity, User, Token
 from api_helper.message import Message
-from api_helper.calendar import Calendar
+from api_helper.calendar import Calendar, Shift, SavedShift
 
 import mongo as mongo
 
@@ -44,6 +44,8 @@ api.add_namespace(Message, "/message")
 api.add_namespace(MessageList, "/messagelist")
 
 api.add_namespace(Calendar, "/calendar")
+api.add_namespace(Shift, '/shift')
+api.add_namespace(SavedShift, '/savedshift')
 
 
 if __name__ == "__main__":
