@@ -149,7 +149,7 @@ class ShiftControl(Resource):
         return {"queryStatus": "success"}, 200
 
     @jwt_required()
-    def update(self):
+    def put(self):
         """
             "_id": string,
                 "content": {
@@ -201,6 +201,7 @@ class ShiftControl(Resource):
     @jwt_required()
     def post(self):
         """
+        {
             "_id": string,
             "content": {
                 "id": "string",
@@ -227,8 +228,9 @@ class ShiftControl(Resource):
         return {"queryStatus": "success"}, 200
 
     @jwt_required()
-    def update(self):
+    def put(self):
         """
+        {
             "_id": string,
             "content": {
                 "id": "string",
