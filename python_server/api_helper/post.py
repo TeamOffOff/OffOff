@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from controller.image import *
 from controller.reference import *
 from controller.filter import check_jwt, ownership_required
-from controller.ect import get_variables, convert_to_string
+from controller.etc import get_variables, get_reply_list
 import mongo as mongo
 
 mongodb = mongo.MongoHelper()

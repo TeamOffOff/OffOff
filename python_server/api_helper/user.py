@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 from controller.image import save_image, get_image
 from controller.filter import check_duplicate, check_jwt
-from controller.ect import fix_index
+from controller.etc import fix_index
 
 import mongo as mongo
 
