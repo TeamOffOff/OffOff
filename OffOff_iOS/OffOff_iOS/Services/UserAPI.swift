@@ -106,7 +106,7 @@ extension UserAPI: TargetType {
         case .passwordChange(_), .resign, .modifyMemberInfo(_):
             return ["Authorization": "token_encoded"]
         case .getUserInfo(let token):
-            return ["Authorization": token]
+            return ["Authorization": "Bearer \(token)"]
         default:
             return ["Content-type": "application/json"]
         }

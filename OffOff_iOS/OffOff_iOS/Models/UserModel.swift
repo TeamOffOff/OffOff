@@ -29,7 +29,7 @@ import Foundation
 //}
 
 class SharedSignUpModel {
-    static var model = UserModel(_id: "", activity: Activity(), information: Information(name: "", email: "", birth: "", type: nil), password: "", subInformation: SubInformation(nickname: "", profileImage: nil))
+    static var model = UserModel(_id: "", activity: Activity(), information: Information(name: "", email: "", birth: "", type: ""), password: "", subInformation: SubInformation(nickname: "", profileImage: nil))
 }
 
 struct UserModel: Codable {
@@ -39,13 +39,21 @@ struct UserModel: Codable {
     var password: String
     var subInformation: SubInformation
     
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(activity, forKey: .activity)
+        try container.encode(information, forKey: .information)
+        try container.encode(password, forKey: .password)
+        try container.encode(subInformation, forKey: .subInformation)
+    }
 }
 
 struct Information: Codable {
     var name: String
     var email: String
     var birth: String
-    var type: String?
+    var type: String
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -65,12 +73,22 @@ struct SubInformation: Codable {
         try container.encode(profileImage, forKey: .profileImage)
     }
 }
+
 struct Activity: Codable {
     var posts: [String] = []
     var replies: [String] = []
     var likes: [String] = []
     var reports: [String] = []
     var bookmarks: [String] = []
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(posts, forKey: .posts)
+        try container.encode(replies, forKey: .replies)
+        try container.encode(likes, forKey: .likes)
+        try container.encode(reports, forKey: .reports)
+        try container.encode(bookmarks, forKey: .bookmarks)
+    }
 }
 
 struct IDPWModel {

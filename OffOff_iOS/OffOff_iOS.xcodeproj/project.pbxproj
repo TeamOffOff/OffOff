@@ -67,6 +67,9 @@
 		EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD226BAC96D00D571EC /* SnapKit */; };
 		EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD526BAC97C00D571EC /* SkyFloatingLabelTextField */; };
 		EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD826BAC9DF00D571EC /* FontAwesome */; };
+		EAA89BC127074F5E00EB3818 /* ReplyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA89BC027074F5E00EB3818 /* ReplyAPI.swift */; };
+		EAA89BC3270752A000EB3818 /* ReplyServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA89BC2270752A000EB3818 /* ReplyServices.swift */; };
+		EAA89BC5270752F600EB3818 /* Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA89BC4270752F600EB3818 /* Reply.swift */; };
 		EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
 		EAAA212026BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
 		EAAA212126BE80D3004FA6F9 /* IDPWViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */; };
@@ -181,6 +184,9 @@
 		EA983F0A26C0DDF60070604E /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		EA983F0C26C0E4980070604E /* NewPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewModel.swift; sourceTree = "<group>"; };
 		EA983F0E26C1183D0070604E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		EAA89BC027074F5E00EB3818 /* ReplyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyAPI.swift; sourceTree = "<group>"; };
+		EAA89BC2270752A000EB3818 /* ReplyServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyServices.swift; sourceTree = "<group>"; };
+		EAA89BC4270752F600EB3818 /* Reply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reply.swift; sourceTree = "<group>"; };
 		EAAA211D26BC20E7004FA6F9 /* IDPWViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewModel.swift; sourceTree = "<group>"; };
 		EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyInfoViewModel.swift; sourceTree = "<group>"; };
 		EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -386,6 +392,8 @@
 				EACF1B3626B5A9DD00C153D3 /* BoardAPI.swift */,
 				EACF1B3826B6698C00C153D3 /* BoardServices.swift */,
 				EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */,
+				EAA89BC027074F5E00EB3818 /* ReplyAPI.swift */,
+				EAA89BC2270752A000EB3818 /* ReplyServices.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -409,6 +417,7 @@
 				EACC255A26A5B3B0000B12B6 /* UserModel.swift */,
 				EACF1B3A26B6710800C153D3 /* Board.swift */,
 				EA83564A26D3A47600D60C46 /* RoutineModel.swift */,
+				EAA89BC4270752F600EB3818 /* Reply.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -664,7 +673,9 @@
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
 				EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */,
+				EAA89BC3270752A000EB3818 /* ReplyServices.swift in Sources */,
 				EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */,
+				EAA89BC5270752F600EB3818 /* Reply.swift in Sources */,
 				EAF7073326E71F7D00B7B6D1 /* AddShiftViewModel.swift in Sources */,
 				EA0624DD26DCA13C004FF91A /* RealmTestViewController.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
@@ -723,6 +734,7 @@
 				EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,
 				EAF212882690355B00E47942 /* HomeViewController.swift in Sources */,
+				EAA89BC127074F5E00EB3818 /* ReplyAPI.swift in Sources */,
 				EA8A333D26D4CB600014D97C /* SetShiftViewModel.swift in Sources */,
 				EA983F0F26C1183D0070604E /* Constants.swift in Sources */,
 				EA975A5C26AFB87000C6FB41 /* CircularImageView.swift in Sources */,

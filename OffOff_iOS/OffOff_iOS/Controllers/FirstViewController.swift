@@ -28,7 +28,7 @@ class FirstViewController: UIViewController {
     }
     
     private func loginCheck() {
-        if let token = UserDefaults.standard.string(forKey: "loginToken") {
+        if let token = UserDefaults.standard.string(forKey: "accessToken") {
             print("Auto logined... token:", token)
             UserServices.getUserInfo(token: token)
                 .debug()

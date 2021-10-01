@@ -18,7 +18,8 @@ public class UserServices {
     }
     
     struct LoginResponse: Codable {
-        var Authorization: String
+        var accessToken: String
+        var refreshToken: String
         var queryStatus: String
     }
     
@@ -90,10 +91,15 @@ public class UserServices {
             .asObservable()
             .map {
                 let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
-                UserDefaults.standard.set(response.Authorization, forKey: "loginToken")
+                UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
+                UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
                 return LoginResult(rawValue: $0.statusCode)!
             }
             .catchErrorJustReturn(.NotExist)
+    }
+    
+    struct UserInfo: Codable {
+        var user: UserModel
     }
     
     static func getUserInfo(token: String) -> Observable<UserModel?> {
@@ -102,9 +108,8 @@ public class UserServices {
             .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                print(try? $0.mapJSON())
-                let response = try JSONDecoder().decode(UserModel.self, from: $0.data)
-                return response
+                let response = try JSONDecoder().decode(UserInfo.self, from: $0.data)
+                return response.user
             }
             .catchErrorJustReturn(nil)
     }
