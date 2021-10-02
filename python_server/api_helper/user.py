@@ -200,8 +200,8 @@ class AuthRegister(Resource):
         if posts:
             print("작성한 게시물이 있는 경우")
             for post in posts:
-                board_type = post[0] + "_board"
-                post_id = post[1]
+                board_type = post["boardType"] + "_board"
+                post_id = post["postId"]
                 print(board_type, post_id)
                 alert_delete = {
                     "author": {
@@ -220,8 +220,8 @@ class AuthRegister(Resource):
         if replies:
             print("작성한 댓글이 있는 경우")
             for reply in replies:
-                board_type = reply[0] + "_board_reply"
-                reply_id = reply[2]
+                board_type = reply["boardType"] + "_board_reply"
+                reply_id = reply["replyId"]
                 print(board_type, reply_id)
                 alert_delete = {
                     "author": {

@@ -36,7 +36,11 @@ class MakeReference:
             board_type = self.board_type.replace("_board", "")
 
         # 회원탈퇴 시 댓글, 대댓글의 author을 None으로 바꾸려면 reply_id 필요함
-        new_activity_info = [board_type, str(post_id), str(reply_id)]
+        new_activity_info = {
+            "boardType": board_type, 
+            "postId": str(post_id), 
+            "replyId": str(reply_id)
+            }
 
         result = mongodb.update_one(query={"_id": self.user}, collection_name="user", modify={operator: {field: new_activity_info}})
 
