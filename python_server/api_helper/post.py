@@ -105,8 +105,9 @@ class PostControl(Resource):
         author = making_reference.embed_author_information_in_object()
         request_info["author"] = author
 
-        # views, likes, reports, bookmarks 추가
+        # views, likes, reports, bookmarks, replyCount 추가
         request_info["views"] = 0
+        request_info["replyCount"] = 0
         request_info["likes"] = []
         request_info["reports"] = []
         request_info["bookmarks"] = []
@@ -237,15 +238,27 @@ class CommentControl(Resource):
         request_info, post_id, board_type, user = get_variables()
         if not user:
             return {"queryStatus": "wrong Token"}, 403
+        print(board_type)
+        
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
 
-        # db 컬랙션 명으로 변경
-        board_type = board_type + "_board_reply"
+        # 댓글 수 +1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": 1}})
+        print(update_status)
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
+
+        # reply 컬랙션 이름으로
+        reply_board_type = board_type + "_board_reply"
+        print(reply_board_type)
 
         # date 추가
         request_info["date"] = datetime.now()
 
         # 회원정보 embedded 형태로 등록
-        making_reference = MakeReference(board_type=board_type, user=user)
+        making_reference = MakeReference(board_type=reply_board_type, user=user)
         author = making_reference.embed_author_information_in_object()
         request_info["author"] = author
 
@@ -253,13 +266,14 @@ class CommentControl(Resource):
         request_info["likes"] = []
 
         # 댓글 db에 저장
-        reply_id = mongodb.insert_one(data=request_info, collection_name=board_type)
+        reply_id = mongodb.insert_one(data=request_info, collection_name=reply_board_type)
 
         # 회원활동 정보 link 형태로 등록
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
 
+        
         # 댓글 조회
-        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
+        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
 
         return {
             "replyList": reply_list
@@ -313,15 +327,29 @@ class CommentControl(Resource):
         """댓글을 삭제합니다."""
         # 클라이언트에서 받은 변수 가져오기
         request_info, reply_id, board_type, user = get_variables()
+        post_id = request_info["postId"]
+        print(board_type)
 
-        # db 컬랙션 명으로 변경
-        board_type = board_type + "_board_reply"
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
 
-        whether_subreply = mongodb.find_one(query={"parentReplyId": reply_id}, collection_name=board_type)
+        # 댓글 -1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": -1}})
+
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
+
+        # reply 컬랙션 이름으로
+        reply_board_type = board_type + "_board_reply"
+        print(reply_board_type)
+
+        whether_subreply = mongodb.find_one(query={"parentReplyId": reply_id}, collection_name=reply_board_type)
+        print(whether_subreply)
 
         if not whether_subreply:  # 대댓글이 없는 경우
             result = mongodb.delete_one(query={"_id": ObjectId(reply_id)},
-                                        collection_name=board_type)
+                                        collection_name=reply_board_type)
         else:  # 대댓글이 있는 경우
             alert_delete = {
                 "author": {"_id": None, "nickname": None, "type": None, "profileImage": None},
@@ -330,20 +358,21 @@ class CommentControl(Resource):
                 "likes": None
             }
             result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
-                                        collection_name=board_type,
+                                        collection_name=reply_board_type,
                                         modify={"$set": alert_delete})
 
+        
+        
         # 댓글 조회
-        post_id = request_info["postId"]
-        reply_list = get_reply_list(post_id=post_id, board_type=board_type)
+        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
 
         # 회원활동정보 삭제
-        making_reference = MakeReference(board_type=board_type, user=user)
+        making_reference = MakeReference(board_type=reply_board_type, user=user)
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
 
-        if result.raw_result["n"] == 1:
-            return {
+        if result.raw_result["n"] == 0:
+            return {"queryStatus": "reply delete failed"}, 500
+        
+        return {
                        "replyList": reply_list
                    }, 200
-        else:
-            return {"queryStatus": "reply delete failed"}, 500
