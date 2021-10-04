@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:paddingStart="32dp"
+    android:paddingTop="32dp"
+    android:paddingEnd="32dp"
+    android:paddingBottom="32dp"
+    android:layout_marginBottom="32dp"
+    tools:context=".views.ui.schedule.EditModeQuestionDialog">
+
+    <TextView
+        android:id="@+id/tv_question"
+        android:text="근무 편집 모드를 실행할까요 ?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:layout_marginTop="16dp"
+        android:id="@+id/bt_ok"
+        android:text="실행"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question"
+        android:paddingVertical="8dp" />
+
+    <Button
+        android:id="@+id/bt_cancel"
+        android:text="취소"
+        android:layout_marginTop="8dp"
+        android:paddingVertical="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_ok"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

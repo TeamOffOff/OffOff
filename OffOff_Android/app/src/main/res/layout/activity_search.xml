@@ -4,12 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ui.SearchActivity">
+    tools:context=".views.ui.SearchActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="여기는 검색 액티비티 !"
-        android:textSize="50sp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_likes"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:textSize="12sp"
+        android:text="Text button"
+        android:padding="4dp"
+        app:icon="@drawable/ic_round_person_24"
+        app:shapeAppearanceOverlay="@style/buttomShape"
+        app:strokeColor="@color/gray"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

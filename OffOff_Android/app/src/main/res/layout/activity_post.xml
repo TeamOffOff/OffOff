@@ -1,99 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.ui.PostActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green">
+    <data>
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/appbar_post"
-            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            app:title="게시판" />
+        <variable
+            name="viewModel"
+            type="com.yuuuzzzin.offoff_android.viewmodel.PostViewModel" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <variable
+            name="post"
+            type="com.yuuuzzzin.offoff_android.service.models.Post" />
+    </data>
 
-    <!-- AppBarLayout 아래에 스크롤 뷰 배치 -->
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        tools:context=".views.ui.board.PostActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_post"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/iv_avatar"
-                android:layout_width="40dp"
-                android:layout_height="0dp"
-                android:src="@drawable/ic_round_person_24"
-                app:layout_constraintBottom_toBottomOf="@id/tv_date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/appbar"
+                style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp">
 
-            <TextView
-                android:id="@+id/tv_author"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appbar_layout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_post"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{post.title}"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="40dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_round_person_24"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+                <TextView
+                    android:id="@+id/tv_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@{post.author.nickname}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/iv_avatar"
+                    app:layout_constraintTop_toTopOf="@id/iv_avatar" />
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@{post.date}"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@id/iv_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/tv_author" />
+
+                <com.yuuuzzzin.offoff_android.utils.CharacterWrapTextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{post.content}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_avatar" />
+
+                <info.androidhive.fontawesome.FontTextView
+                    android:id="@+id/iv_likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/fa_thumbs_up_solid"
+                    android:textColor="@color/red"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_likes"
+                    app:layout_constraintEnd_toStartOf="@id/tv_likes"
+                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
+                <TextView
+                    android:id="@+id/tv_likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="0"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@id/iv_scrap"
+                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
+                <info.androidhive.fontawesome.FontTextView
+                    android:id="@+id/iv_scrap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/fa_star_solid"
+                    android:textColor="#FFC107"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_scrap"
+                    app:layout_constraintEnd_toStartOf="@id/tv_scrap"
+                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
+                <TextView
+                    android:id="@+id/tv_scrap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="스크랩"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:listitem="@layout/rv_item_comment"
+                    android:outlineProvider="bounds"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_scrap" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="4dp"
+            android:windowSoftInputMode="adjustUnspecified|adjustPan"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tf_id"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="작성자"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/iv_avatar"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="01/01 00:00"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@id/tv_author"
-                app:layout_constraintTop_toBottomOf="@id/tv_author" />
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="제목"
-                android:textSize="17sp"
-                android:textStyle="bold"
+                android:layout_marginEnd="8dp"
+                app:boxStrokeColor="@color/box_stroke_color_verified"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="custom"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_date" />
+                app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/tv_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="내용"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_title" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:maxLines="4" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>

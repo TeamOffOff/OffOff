@@ -1,55 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.ui.BoardsFragment"
-    android:id="@+id/boardsFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.yuuuzzzin.offoff_android.viewmodel.BoardListViewModel" />
+    </data>
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/appbar_home"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:title="@string/appbar_boards"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- AppBarLayout 아래에 스크롤 뷰 배치 -->
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        tools:context=".views.ui.board.BoardsFragment"
+        android:id="@+id/boardsFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_boards"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/appbar_home"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/rv_item_board"
-                android:outlineProvider="bounds" />
+                android:layout_height="60dp"
+                app:title="@string/appbar_boards"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-    </androidx.core.widget.NestedScrollView>
+        <!-- AppBarLayout 아래에 스크롤 뷰 배치 -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_boards"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:outlineProvider="bounds"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:listitem="@layout/rv_item_board" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

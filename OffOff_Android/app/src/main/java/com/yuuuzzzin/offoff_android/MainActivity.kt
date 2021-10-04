@@ -1,14 +1,15 @@
 package com.yuuuzzzin.offoff_android
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.navigation.findNavController
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.yuuuzzzin.offoff_android.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    // MainActivity와 activiry_main.xml 데이터 바인딩
+
     private lateinit var mBinding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

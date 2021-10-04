@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.ui.SettingsFragment"
-    android:id="@+id/settingsFragment">
+    tools:context=".views.ui.SettingsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -15,11 +14,11 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/appbar_home"
+            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            app:title="@string/appbar_settings"
             android:layout_marginStart="15dp"
-            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"/>
+            app:title="@string/appbar_settings" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -29,13 +28,34 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/menu_logout"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginVertical="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="로그아웃"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <View
+                    android:layout_marginVertical="24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 

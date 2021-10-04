@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add"
+        android:title="스케줄 추가" />
+
+    <item
+        android:id="@+id/action_set"
+        android:title="근무 편집"/>
+
+    <item
+        android:id="@+id/action_allShiftList"
+        android:title="log shifList"/>
+
+    <item
+        android:id="@+id/action_insertShift"
+        android:title="insert shift"/>
+
+    <item
+        android:id="@+id/action_deleteAllShifts"
+        android:title="delete all shift"/>
+
+    <item
+        android:id="@+id/action_allScheduleList"
+        android:title="log scheduleList"/>
+
+    <item
+        android:id="@+id/action_insertSchedule"
+        android:title="insert schedule"/>
+
+    <item
+        android:id="@+id/action_deleteAllSchedule"
+        android:title="delete all schedule"/>
+
+</menu>
