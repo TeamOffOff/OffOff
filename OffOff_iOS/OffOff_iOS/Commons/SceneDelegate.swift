@@ -6,16 +6,37 @@
 //
 
 import UIKit
+import RxSwift
+import RealmSwift
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    let disposeBag = DisposeBag()
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
+        // .realm 파일 삭제
+//        let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
+//                let realmURLs = [
+//                    realmURL,
+//                    realmURL.appendingPathExtension("lock"),
+//                    realmURL.appendingPathExtension("note"),
+//                    realmURL.appendingPathExtension("management")
+//                ]
+//                for URL in realmURLs {
+//                    do {
+//                        try FileManager.default.removeItem(at: URL)
+//                    } catch {
+//                        // handle error
+//                    }
+//                }
+        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = TabBarController() // RootViewController를 연결
+        window?.rootViewController = TabBarController()
         window?.makeKeyAndVisible()
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

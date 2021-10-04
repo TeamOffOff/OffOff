@@ -1,4 +1,3 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/swift,carthage,cocoapods
 # Edit at https://www.toptal.com/developers/gitignore?templates=swift,carthage,cocoapods
 
@@ -101,4 +100,29 @@ fastlane/test_output
 
 iOSInjectionProject/
 
+# iOS 상수 파일
+Constants.swift
+
 # End of https://www.toptal.com/developers/gitignore/api/swift,carthage,cocoapods
+
+
+# IntelliJ project files
+.idea/
+.idea/*.xml
+*.iml
+out
+gen
+build
+rebel.xml
+
+
+# Python server 보안성 자료
+python_server/api_helper/utils.py
+
+# __pycache__
+python_server/api_helper/__pycache__/
+python_server/__pycache__/
+__pycache__/
+
+# 가상환경
+python_server/venv

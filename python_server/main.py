@@ -1,42 +1,52 @@
-from flask import Flask, request  # 서버 구현을 위한 Flask 객체 import
-from flask_restx import Api, Resource
-from api_helper.post import Post
+from logging import DEBUG
+from flask import Flask
+from flask_socketio import SocketIO
+from flask_restx import Api
+from flask_jwt_extended import JWTManager
 
-import mongo
+from api_helper.utils import APP_SECRET_KEY, JWT_SECRET_KEY
+
+from api_helper.list import BoardList, PostList, UserControl, MessageList
+from api_helper.post import Post, Reply
+from api_helper.user import Activity, User, Token
+from api_helper.message import Message
+from api_helper.calendar import Calendar
+
+import mongo as mongo
 
 app = Flask(__name__)
+
+app.config.update(
+        DEBUG=True,
+        SECRET_KEY = APP_SECRET_KEY,
+        JWT_SECRET_KEY = JWT_SECRET_KEY
+)
+
+# flask_jwt_extended
+jwt = JWTManager(app)
+
+
+# flask_restx
 api = Api(app)
 
+api.add_namespace(BoardList, "/boardlist")
+api.add_namespace(PostList, "/postlist")
+api.add_namespace(UserControl, "/usercontrol")
+
 api.add_namespace(Post, "/post")
+api.add_namespace(Reply, "/reply")
 
+api.add_namespace(User, "/user")
+api.add_namespace(Token, '/refresh')
+api.add_namespace(Activity, "/activity")
 
-@api.route("/signup")
-class SignUp(Resource):
-    def post(self):
-        user_info = request.get_json()
+api.add_namespace(Message, "/message")
+api.add_namespace(MessageList, "/messagelist")
 
-        if not mongodb.find_one(query={"id": user_info["id"]}, collection_name="user_collection"):
-            mongodb.insert_one(user_info, collection_name="user_collection")
-            return {"query_status": "success"}
-        else:
-            return {"query_status": "fail"}
-
-
-@api.route("/signin")
-class SignIn(Resource):
-    def post(self):
-        sign_info = request.get_json()
-        user_info = mongodb.find_one(query={"id": sign_info["id"]}, collection_name="user_collection")
-
-        if not user_info:
-            return {"query_status": "유효하지않은 ID 입니다."}
-
-        if user_info["password"] != sign_info["password"]:
-            return {"query_status": "틀린 비밀번호입니다."}
-        else:
-            return {"query_status": "success"}
+api.add_namespace(Calendar, "/calendar")
 
 
 if __name__ == "__main__":
+    print("__name__ == __main__")
     mongodb = mongo.MongoHelper()
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port="5000")
