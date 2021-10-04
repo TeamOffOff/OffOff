@@ -15,7 +15,7 @@ class NewPostViewModel {
     let isContentConfiremd: Driver<Bool>
     let postCreated: Observable<Bool>
     let newPost: PublishSubject<PostModel?> = PublishSubject<PostModel?>()
-
+    
     init(
         input: (
             titleText: Driver<String>,
@@ -35,19 +35,43 @@ class NewPostViewModel {
                 return Driver.just(pair.title != "" && pair.content != "")
             }
         
-        var postModel: PostModel?
+        var postModel: WritingPost?
         postCreated = postCreation.asObservable().withLatestFrom(titleAndContent.asObservable()) {
             print(#fileID, #function, #line, "")
             if $0 {
                 print($1)
                 
                 // TODO: 현재 로그인하고 있는 회원정보, 현재 접속하고 있는 게시판 정보를 넣어서 새로운 포스트 작성
-                postModel = PostModel(_id: nil, boardType: "free", author: Author(_id: "admin", nickname: "admin", type: "admin", profileImage: nil), date: "2021-08-11", title: $1.0, content: $1.1,image: nil, likes: 0, viewCount: 0, reportCount: 0, replyCount: 0)
+                if Constants.currentBoard != nil && Constants.loginUser != nil {
+                    postModel = WritingPost(boardType: Constants.currentBoard!, author: Constants.loginUser!.subInformation.nickname, title: $1.title, content: $1.content)
+                }
             }
         }
         .debug()
-        .flatMap {
-            PostServices.createPost(post: postModel!).map { $0 }
+        .flatMap { _ -> Observable<Bool> in
+            if postModel != nil {
+                return PostServices.createPost(post: postModel!).map { $0 }
+            }
+            return Observable.just(false)
         }
+    }
+}
+
+struct WritingPost: Codable {
+    var _id: String? = nil
+    var boardType: String
+    var author: String
+    var title: String
+    var content: String
+    var image: String? = nil
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(author, forKey: .author)
+        try container.encode(title, forKey: .title)
+        try container.encode(content, forKey: .content)
+        try container.encode(image, forKey: .image)
     }
 }

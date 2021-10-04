@@ -12,7 +12,7 @@ import Moya
 
 enum PostAPI {
     case getPost(content_id: String, board_type: String)
-    case makePost(post: PostModel)
+    case makePost(post: WritingPost)
 //    case modifyPost
 //    case deletePost
 }
@@ -54,7 +54,7 @@ extension PostAPI: TargetType {
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json"]
+        return ["Content-type": "application/json", "Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
     }
     
     

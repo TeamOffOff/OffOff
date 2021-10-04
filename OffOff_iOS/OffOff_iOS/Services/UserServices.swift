@@ -21,6 +21,15 @@ public class UserServices {
         var accessToken: String
         var refreshToken: String
         var queryStatus: String
+        var user: UserModel
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(accessToken, forKey: .accessToken)
+            try container.encode(refreshToken, forKey: .refreshToken)
+            try container.encode(queryStatus, forKey: .queryStatus)
+            try container.encode(user, forKey: .user)
+        }
     }
     
     static func idDuplicationCheck(id: String) -> Observable<Bool> {
@@ -91,8 +100,11 @@ public class UserServices {
             .asObservable()
             .map {
                 let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
-                UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
-                UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
+                if $0.statusCode == 200 {
+                    UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
+                    UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
+                    Constants.loginUser = response.user
+                }
                 return LoginResult(rawValue: $0.statusCode)!
             }
             .catchErrorJustReturn(.NotExist)
@@ -108,6 +120,7 @@ public class UserServices {
             .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
+                print(try? $0.mapJSON())
                 let response = try JSONDecoder().decode(UserInfo.self, from: $0.data)
                 return response.user
             }

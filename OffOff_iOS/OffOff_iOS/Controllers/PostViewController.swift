@@ -77,7 +77,7 @@ class PostViewController: UIViewController {
                 self.postView.contentTextView.text = $0?.content
                 self.postView.dateLabel.text = $0?.date
                 self.postView.profileImageView.image = UIImage(systemName: "person.fil")
-                self.postView.likeButton.setTitle("\($0?.likes ?? 0)", for: .normal)
+//                self.postView.likeButton.setTitle("\($0?.likes ?? 0)", for: .normal)
             }
             .disposed(by: disposeBag)
     }

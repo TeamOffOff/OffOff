@@ -27,7 +27,7 @@ public class PostServices {
             .catchErrorJustReturn(nil)
     }
     
-    static func createPost(post: PostModel) -> Observable<Bool> {
+    static func createPost(post: WritingPost) -> Observable<Bool> {
         PostServices.provider
             .rx.request(.makePost(post: post))
             .asObservable()

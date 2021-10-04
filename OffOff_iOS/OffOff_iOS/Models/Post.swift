@@ -33,9 +33,10 @@ struct PostModel: Codable {
     var title: String
     var content: String
     var image: String?
-    var likes: Int
-    var viewCount: Int
-    var reportCount: Int
+    var likes: [String]
+    var views: Int
+    var reports: [String]
+    var bookmarks: [String]
     var replyCount: Int
     
     func encode(to encoder: Encoder) throws {
@@ -47,9 +48,24 @@ struct PostModel: Codable {
         try container.encode(date, forKey: .date)
         try container.encode(image, forKey: .image)
         try container.encode(likes, forKey: .likes)
-        try container.encode(replyCount, forKey: .replyCount)
-        try container.encode(reportCount, forKey: .reportCount)
+        try container.encode(reports, forKey: .reports)
         try container.encode(title, forKey: .title)
-        try container.encode(viewCount, forKey: .viewCount)
+        try container.encode(views, forKey: .views)
+        try container.encode(bookmarks, forKey: .bookmarks)
+        try container.encode(replyCount, forKey: .replyCount)
+    }
+}
+
+struct PostActivity: Codable {
+    var boardType: String
+    var postId: String
+    var replyId: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(postId, forKey: .postId)
+        try container.encode(replyId, forKey: .replyId)
     }
 }

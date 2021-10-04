@@ -35,7 +35,13 @@ class FirstViewController: UIViewController {
                 .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
                 .observeOn(MainScheduler.instance)
                 .bind {
-                    let vc = ($0 != nil) ? TabBarController() : LoginViewController()
+                    if $0 != nil {
+                        Constants.loginUser = $0
+                        let vc = TabBarController()
+                        vc.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: false)
+                    }
+                    let vc = LoginViewController()
                     vc.modalPresentationStyle = .fullScreen
                     self.present(vc, animated: false)
                 }

@@ -8,9 +8,15 @@
 import UIKit
 import SnapKit
 import Then
+import RxSwift
 
 class PostPreviewCell: UITableViewCell {
     static let identifier = "PostPreviewCell"
+    
+    var postModel = BehaviorSubject<PostModel?>(value: nil)
+    var replies = BehaviorSubject<[Reply]>(value: [])
+    
+    var disposeBag = DisposeBag()
     
     var titleLabel = UILabel().then {
         $0.textAlignment = .left
@@ -38,12 +44,16 @@ class PostPreviewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         setupCell()
+        setData()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        setData()
     }
     
     private func setupCell() {
@@ -76,12 +86,28 @@ class PostPreviewCell: UITableViewCell {
         }
     }
     
-    func setData(post: PostModel) {
-        titleLabel.text = post.title
-        previewTextView.text = post.content
-        dateAuthorLabel.text = "\(post.date) | \(post.author)"
-        likeLabel.label.text = "\(post.likes) | "
-        commentLabel.label.text = "\(post.replyCount)"
+    private func setData() {
+        disposeBag = DisposeBag()
+        
+        postModel
+            .filter { $0 != nil }
+            .do(onNext: { post in
+                _ = ReplyServices.getReplies(of: post!._id!, in: post!.boardType).bind(to: self.replies)
+            })
+            .bind { post in
+                self.titleLabel.text = post!.title
+                self.previewTextView.text = post!.content
+                self.dateAuthorLabel.text = "\(post!.date) | \(post!.author.nickname)"
+                self.likeLabel.label.text = "\(post!.likes.count) | "
+                self.commentLabel.label.text = "\(post!.replyCount)"
+            }
+            .disposed(by: disposeBag)
+        
+//        replies
+//            .bind { replies in
+//                self.commentLabel.label.text = "\(replies.count)"
+//            }
+//            .disposed(by: disposeBag)
     }
     
     private func addViews() {

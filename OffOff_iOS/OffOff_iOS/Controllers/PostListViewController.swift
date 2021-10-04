@@ -51,11 +51,7 @@ class PostListViewController: UITableViewController {
             .observeOn(MainScheduler.instance)
             .do(onNext: { _ in refreshControl.endRefreshing() })
             .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
-                cell.titleLabel.text = element.title
-                cell.dateAuthorLabel.text = "\(element.date) | \(element.author.nickname)"
-                cell.previewTextView.text = element.content
-                cell.likeLabel.label.text = "\(element.likes) "
-                cell.commentLabel.label.text = "\(element.replyCount)"
+                cell.postModel.onNext(element)
             }
             .disposed(by: disposeBag)
         
@@ -82,7 +78,11 @@ class PostListViewController: UITableViewController {
         
         self.navigationItem.rightBarButtonItem?
             .rx.tap
-            .bind { self.navigationController?.pushViewController(NewPostViewController(), animated: true) }
+            .bind {
+                let vc = NewPostViewController()
+                Constants.currentBoard = self.boardType
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
             .disposed(by: disposeBag)
     }
 }
