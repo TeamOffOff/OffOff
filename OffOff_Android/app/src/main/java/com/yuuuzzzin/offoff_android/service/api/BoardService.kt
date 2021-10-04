@@ -21,6 +21,7 @@ interface BoardService {
     /* 해당 id의 게시물 불러오기 */
     @GET("post")
     suspend fun getPost(
+        @Header("Authorization") auth: String,
         @Query("postId") post_id: String,
         @Query("boardType") board_type: String
     ): Response<Post>
@@ -28,6 +29,7 @@ interface BoardService {
     /* 게시물 작성 */
     @POST("post")
     suspend fun writePost(
+        @Header("Authorization") auth: String,
         @Body post: PostSend
     ): Response<Post>
 

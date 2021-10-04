@@ -163,13 +163,14 @@ class ScheduleFragment : Fragment() {
         // 다른 달로 넘어갈 때 리스너
         calendar.onCalendarChangeListener = { c: Calendar ->
             setDateHeader(c)
-            (calendar.adapter as CalendarAdapter).notifyCalendarChanged()
+            (calendar.adapter as CalendarAdapter).notifyDataSetChanged()
         }
 
         // 스케줄이 바뀌는지 관찰
         viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
             event.getContentIfNotHandled()?.let {
-                (calendar.adapter as CalendarAdapter).notifyCalendarChanged()
+                Log.d("tag_observe", "관찰됨")
+                (calendar.adapter as CalendarAdapter).notifyDataSetChanged()
             }
         })
     }
@@ -207,8 +208,8 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
     }
 
     override fun onBindView(view: View, day: Day) {
-        //Log.d("tag_onBindView", view.toString() + '/' + day.toString())
-        //Log.d("tag_onBindView", "캘린더 바인드")
+        Log.d("tag_onBindView", view.toString() + '/' + day.toString())
+        Log.d("tag_onBindView", "캘린더 바인드")
         val tvDate = CalendarDayBinding.bind(view).tvDate
         val icon = CalendarDayBinding.bind(view).iconShift
 
@@ -219,61 +220,38 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         }
 
         fun setOtherMonthSelected(day: Day) {
+            Log.d("tag_alpha", "여기서 뿌얘저야돼...")
             view.alpha = 0.5F
             if (day.calendar.time == selectedDay) {
                 Log.d("otherMonth_tag", "다른달")
+                Log.d("tag_alpha", "여기서 뿌얘저야돼...")
                 view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
+//                view.alpha = 0.5F
+//                view.setBackgroundColor(
+//                    ContextCompat.getColor(
+//                        context,
+//                        R.color.gray
+//                    )
+//                )
                 view.alpha = 0.5F
-                view.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.gray
-                    )
-                )
-                view.alpha = 0.5F
+                view.bringToFront()
                 //onDayClickLister?.invoke(day)
             } else {
+                Log.d("tag_alpha", "여기서 뿌얘저야돼...")
                 Log.d("otherMonth_tag", "다른달")
                 view.setBackgroundResource(R.drawable.layout_border_calendar)
+//                view.alpha = 0.5F
+//                view.setBackgroundColor(
+//                    ContextCompat.getColor(
+//                        context,
+//                        R.color.gray
+//                    )
+//                )
                 view.alpha = 0.5F
-                view.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.gray
-                    )
-                )
-                view.alpha = 0.5F
+                view.bringToFront()
             }
-            view.alpha = 0.5F
-        }
-
-        if (day.state == DayState.ThisMonth) {
-            view.visibility = View.VISIBLE
-            tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
-
-            setThisMonthSelected(day)
-
-            if (day.isToday) view.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.gray
-                )
-            )
-        } else {
-            view.visibility = View.VISIBLE
-            view.alpha = 0.5F
-            tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
-            view.setOnClickListener {
-                val thisTime =
-                    day.calendar.get(Calendar.YEAR) * 12 + day.calendar.get(Calendar.MONTH)
-                val compareTime = calendar.getCurrentCalendar()!!
-                    .get(Calendar.YEAR) * 12 + calendar.getCurrentCalendar()!!.get(Calendar.MONTH)
-                calendar.moveItemBy(thisTime.compareTo(compareTime))
-                selectedDay = day.calendar.time
-                onDayClickLister?.invoke(day)
-                Log.d("tag_day", day.toString())
-            }
-            setOtherMonthSelected(day)
+            view.bringToFront()
+            //view.alpha = 0.5F
         }
 
         // 저장된 근무 스케줄 띄우기
@@ -289,9 +267,44 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 icon.setBackgroundColor(
                     Color.parseColor(savedShift.shift?.backgroundColor!!)
                 )
+                Log.d("tag_icon", "아이콘 띄워짐" + day.calendar.get(Calendar.DAY_OF_MONTH).toString())
             } else {
                 icon.visibility = View.INVISIBLE
             }
+        }
+
+        if (day.state == DayState.ThisMonth) {
+            view.visibility = View.VISIBLE
+            tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
+
+            setThisMonthSelected(day)
+
+            if (day.isToday) {
+                tvDate.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.green
+                    )
+                )
+                Log.d("tag_today", day.calendar.get(Calendar.DAY_OF_MONTH).toString() + " / " + "그린색바뀜")
+            }
+        } else {
+
+            view.visibility = View.VISIBLE
+            view.alpha = 0.5F
+            tvDate.text = day.calendar.get(Calendar.DAY_OF_MONTH).toString()
+            setOtherMonthSelected(day)
+            view.setOnClickListener {
+                val thisTime =
+                    day.calendar.get(Calendar.YEAR) * 12 + day.calendar.get(Calendar.MONTH)
+                val compareTime = calendar.getCurrentCalendar()!!
+                    .get(Calendar.YEAR) * 12 + calendar.getCurrentCalendar()!!.get(Calendar.MONTH)
+                calendar.moveItemBy(thisTime.compareTo(compareTime))
+                selectedDay = day.calendar.time
+                onDayClickLister?.invoke(day)
+                Log.d("tag_day", day.toString())
+            }
+            setOtherMonthSelected(day)
         }
     }
 
@@ -324,7 +337,6 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
             (calendar.adapter as CalendarAdapter).selectedDay as Date
         Log.d("tag_selectedDay", (calendar.adapter as? CalendarAdapter)?.selectedDay.toString())
 
-
         cal = Calendar.getInstance()
         cal.time = selectedDate
 
@@ -343,6 +355,11 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
 
     fun setCalendarSelectedDay(date: Date) {
         selectedDay = date
+    }
+
+    override fun notifyDataSetChanged() {
+        super.notifyDataSetChanged()
+        Log.d("tag_notifyDataSetCh", "DataSetChanged 변화 감지 / " + Calendar.getInstance().toString() )
     }
 
 //    fun notifyCalendarItemChanged() {
@@ -370,7 +387,6 @@ class CalendarCellsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         TODO("Not yet implemented")
     }
-
 }
 
 //    private fun addDb() {

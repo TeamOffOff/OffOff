@@ -70,7 +70,7 @@ constructor(
             repository.login(loginInfo).let { response ->
                 if (response.isSuccessful) {
                     _loginSuccess.postValue(Event(userId))
-                    OffoffApplication.pref.token = response.body()!!.auth
+                    OffoffApplication.pref.token = "Bearer " + response.body()!!.accessToken
                     Log.d("tag_success", "login: ${response.body()}")
                     Log.d("tag_success", "token: ${OffoffApplication.pref.token}")
                 } else {

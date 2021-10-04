@@ -5,11 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yuuuzzzin.offoff_android.service.models.Author
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.PostSend
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
-import com.yuuuzzzin.offoff_android.utils.DateUtils.currentTime
-import com.yuuuzzzin.offoff_android.utils.DateUtils.dateFormat
 import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +18,7 @@ import javax.inject.Inject
 class PostWriteViewModel
 @Inject
 constructor(
-    private val repository: BoardRepository
+    private val repository: BoardRepository,
 ) : ViewModel() {
 
 //    val title: MutableLiveData<String> by lazy {
@@ -40,7 +38,7 @@ constructor(
     private val _successEvent = MutableLiveData<Event<String>>()
     val successEvent: LiveData<Event<String>> = _successEvent
 
-    fun setPostText(title:String, content:String) {
+    fun setPostText(title: String, content: String) {
         this.title.postValue(title)
         this.content.postValue(content)
     }
@@ -63,18 +61,19 @@ constructor(
     fun writePost(boardType: String) {
         if (!check()) return
 
+        val token = OffoffApplication.pref.token // 토큰
+
+        if (token.isNullOrEmpty()) return
+
         val post = PostSend(
             boardType = boardType,
-            author = Author(
-                id = "yujin12"
-            ),
-            date = dateFormat.format(currentTime),
+            author = "유진박",
             title = title.value!!,
-            content = content.value!!
+            content = content.value!!,
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.writePost(post).let { response ->
+            repository.writePost(token, post).let { response ->
                 if (response.isSuccessful) {
                     _successEvent.postValue(Event(response.body()!!.id))
                     Log.d("tag_success", "writePost: ${response.body()}")
@@ -91,13 +90,7 @@ constructor(
         val post = PostSend(
             id = postId,
             boardType = boardType,
-            author = Author(
-                id = "yujin12",
-                nickname = "박유진",
-                type = "student"
-            ),
-            user = "박유진",
-            date = dateFormat.format(currentTime),
+            author = "유진박",
             title = title.value!!,
             content = content.value!!
         )

@@ -87,8 +87,8 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
             if (id != null) {
                 viewModel.deleteSchedule(id!!)
                 viewModel.scheduleChanged()
+                dialog!!.dismiss()
             }
-
         }
 
         initRV()
@@ -109,6 +109,7 @@ class SaveShiftBottomDialog(calendar: CalendarViewPager) : BottomSheetDialogFrag
                 id = savedShift.id
             }
         }
+        (calendar.adapter as? CalendarAdapter)?.notifyDataSetChanged()
     }
 
     private fun initRV() {

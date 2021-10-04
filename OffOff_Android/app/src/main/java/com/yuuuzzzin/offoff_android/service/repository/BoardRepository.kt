@@ -13,10 +13,10 @@ constructor(private val boardService: BoardService) {
 
     suspend fun getBoardList() = boardService.getBoardList()
     suspend fun getPosts(boardType: String) = boardService.getPosts(boardType)
-    suspend fun getPost(postId: String, boardType: String) =
-        boardService.getPost(postId, boardType)
+    suspend fun getPost(auth: String, postId: String, boardType: String) =
+        boardService.getPost(auth, postId, boardType)
 
-    suspend fun writePost(post: PostSend) = boardService.writePost(post)
+    suspend fun writePost(auth: String, post: PostSend) = boardService.writePost(auth, post)
     suspend fun editPost(post: PostSend) = boardService.editPost(post)
     suspend fun deletePost(post: PostSend) = boardService.deletePost(post)
 

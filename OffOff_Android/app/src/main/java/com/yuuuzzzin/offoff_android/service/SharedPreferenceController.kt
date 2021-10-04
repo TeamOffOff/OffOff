@@ -24,6 +24,24 @@ class SharedPreferenceController(context: Context) {
         edit.apply()
     }
 
+//    private val NICKNAME = "NICKNAME"
+//    //private val ACCESS_TOKEN = "access_token"
+//
+//    private val pref: SharedPreferences =
+//        context.getSharedPreferences(NICKNAME, MODE_PRIVATE)
+//
+//    var nickname: String?
+//        get() = pref.getString("nickname", null)
+//        set(value) {
+//            pref.edit().putString("nickname", value).apply()
+//        }
+//
+//    fun deleteToken() {
+//        val edit = pref.edit()
+//        edit.clear()
+//        edit.apply()
+//    }
+
 //
 //    fun setToken(key: String, str: String) {
 //        pref.edit().putString(key, str).apply()

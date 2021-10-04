@@ -58,6 +58,7 @@ class EditModeDialog(calendar: CalendarViewPager) : BottomSheetDialogFragment() 
                 dayOfWeek =
                     CalendarUtils.WeekOfDayType.fromInt(cal.get(Calendar.DAY_OF_WEEK)).toString()
                 binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
+
                 initViewModel()
             }
         }
@@ -72,6 +73,7 @@ class EditModeDialog(calendar: CalendarViewPager) : BottomSheetDialogFragment() 
                 dayOfWeek =
                     CalendarUtils.WeekOfDayType.fromInt(cal.get(Calendar.DAY_OF_WEEK)).toString()
                 binding.tvDate.text = "${month}월 ${day}일 ($dayOfWeek)"
+
                 initViewModel()
             }
         }
@@ -81,7 +83,6 @@ class EditModeDialog(calendar: CalendarViewPager) : BottomSheetDialogFragment() 
                 viewModel.deleteSchedule(id!!)
                 viewModel.scheduleChanged()
             }
-
         }
 
         initRV()
@@ -90,6 +91,7 @@ class EditModeDialog(calendar: CalendarViewPager) : BottomSheetDialogFragment() 
     }
 
     fun initViewModel() {
+        (calendar.adapter as? CalendarAdapter)?.notifyDataSetChanged()
         Log.d("tag_initViewModel", "뷰모델 초기화")
         viewModel.getSchedule(year.toInt(), month.toInt(), day.toInt()).let { savedShift ->
             if (savedShift != null) {
@@ -97,6 +99,7 @@ class EditModeDialog(calendar: CalendarViewPager) : BottomSheetDialogFragment() 
                 id = savedShift.id
             }
         }
+        (calendar.adapter as? CalendarAdapter)?.notifyDataSetChanged()
     }
 
     private fun initRV() {
@@ -120,6 +123,7 @@ class EditModeDialog(calendar: CalendarViewPager) : BottomSheetDialogFragment() 
                     )
                 )
 
+                (calendar.adapter as? CalendarAdapter)?.notifyDataSetChanged()
                 viewModel.scheduleChanged()
 
                 (calendar.adapter as? CalendarAdapter)?.moveNextDate().let { date ->

@@ -21,22 +21,24 @@ data class Post(
     val boardType: String,
     @SerializedName("author")
     val author: Author,
-    @SerializedName("date")
-    val date: String,
     @SerializedName("title")
     val title: String,
     @SerializedName("content")
     val content: String,
     @SerializedName("image")
     val image: String? = null,
-    @SerializedName("likes")
-    val likes: Int? = 0,
-    @SerializedName("viewCount")
-    val viewCount: Int? = 0,
-    @SerializedName("reportCount")
-    val reportCount: Int? = 0,
+    @SerializedName("date")
+    val date: String,
+    @SerializedName("views")
+    val views: Int? = 0,
     @SerializedName("replyCount")
-    val replyCount: Int? = 0
+    val replyCount: Int? = 0,
+    @SerializedName("likes")
+    val likes:List<Any> = emptyList(),
+    @SerializedName("reports")
+    val reports: List<Any> = emptyList(),
+    @SerializedName("bookmarks")
+    val bookmarks: List<Any> = emptyList(),
 ) : Identifiable {
     override val identifier: Any
         get() = id
@@ -49,25 +51,13 @@ data class PostSend(
     @SerializedName("boardType")
     val boardType: String,
     @SerializedName("author")
-    val author: Author,
-    @SerializedName("user")
-    val user: String? = null,
-    @SerializedName("date")
-    val date: String,
+    val author: String,
     @SerializedName("title")
     val title: String,
     @SerializedName("content")
     val content: String,
     @SerializedName("image")
-    val image: String? = null,
-    @SerializedName("likes")
-    val likes: Int? = 0,
-    @SerializedName("viewCount")
-    val viewCount: Int? = 0,
-    @SerializedName("reportCount")
-    val reportCount: Int? = 0,
-    @SerializedName("replyCount")
-    val replyCount: Int? = 0
+    val image: String? = null
 )
 
 /* 작성자 */

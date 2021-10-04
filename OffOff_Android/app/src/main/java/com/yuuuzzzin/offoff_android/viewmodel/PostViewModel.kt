@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +24,8 @@ constructor(
     val response: LiveData<Post> get() = _response
 
     fun getPost(postId: String, postBoardType: String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.getPost(postId, postBoardType).let {response ->
+
+        repository.getPost(OffoffApplication.pref.token.toString(), postId, postBoardType).let { response ->
             if (response.isSuccessful){
                 _response.postValue(response.body())
                 Log.d("tag_success", response.body().toString())
