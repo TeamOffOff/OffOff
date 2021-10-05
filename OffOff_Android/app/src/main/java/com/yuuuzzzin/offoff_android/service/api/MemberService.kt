@@ -1,9 +1,6 @@
 package com.yuuuzzzin.offoff_android.service.api
 
-import com.yuuuzzzin.offoff_android.service.models.AuthResponse
-import com.yuuuzzzin.offoff_android.service.models.LoginInfo
-import com.yuuuzzzin.offoff_android.service.models.ResultResponse
-import com.yuuuzzzin.offoff_android.service.models.User
+import com.yuuuzzzin.offoff_android.service.models.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -15,7 +12,7 @@ interface MemberService {
     @POST("user/login")
     suspend fun login(
         @Body loginInfo: LoginInfo
-    ): Response<AuthResponse>
+    ): Response<LoginResponse>
 
     /* 회원가입 */
     @POST("user/register")
@@ -45,6 +42,6 @@ interface MemberService {
     @GET("user/login")
     suspend fun getUserInfo(
         @Header("Authorization") auth: String
-    ): Response<User>
+    ): Response<UserInfo>
 
 }

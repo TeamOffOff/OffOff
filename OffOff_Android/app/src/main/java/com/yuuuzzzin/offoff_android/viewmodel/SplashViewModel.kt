@@ -63,8 +63,10 @@ constructor(
 
             if (!token.isNullOrEmpty()) { // 저장된 토큰이 있는 경우
                 repository.getUserInfo(token).let { response ->
+
                     if (response.isSuccessful) { // 토큰이 유효한 경우
                         _tokenVerified.postValue(true)
+                        OffoffApplication.user = response.body()!!.user
                         Log.d("tag_success", "getUserInfo: ${response.body()}")
                     } else { // 토큰이 유효하지 않은 경우
                         _tokenVerified.postValue(false)

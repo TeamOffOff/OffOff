@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         // 바텀 네비게이션 뷰와 네비게이션을 묶어주기
         NavigationUI.setupWithNavController(mBinding.bottomNavigationView, navController)
-
     }
 
 }

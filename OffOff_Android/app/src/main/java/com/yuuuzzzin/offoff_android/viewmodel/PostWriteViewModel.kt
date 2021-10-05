@@ -67,7 +67,7 @@ constructor(
 
         val post = PostSend(
             boardType = boardType,
-            author = "유진박",
+            author = OffoffApplication.user.subInfo.nickname,
             title = title.value!!,
             content = content.value!!,
         )
