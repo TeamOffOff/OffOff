@@ -61,19 +61,15 @@ constructor(
     fun writePost(boardType: String) {
         if (!check()) return
 
-        val token = OffoffApplication.pref.token // 토큰
-
-        if (token.isNullOrEmpty()) return
-
         val post = PostSend(
             boardType = boardType,
-            author = OffoffApplication.user.subInfo.nickname,
+            author = OffoffApplication.user.id,
             title = title.value!!,
             content = content.value!!,
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.writePost(token, post).let { response ->
+            repository.writePost(OffoffApplication.pref.token!!, post).let { response ->
                 if (response.isSuccessful) {
                     _successEvent.postValue(Event(response.body()!!.id))
                     Log.d("tag_success", "writePost: ${response.body()}")
@@ -90,18 +86,18 @@ constructor(
         val post = PostSend(
             id = postId,
             boardType = boardType,
-            author = "유진박",
+            author = OffoffApplication.user.id,
             title = title.value!!,
             content = content.value!!
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.editPost(post).let { response ->
+            repository.editPost(OffoffApplication.pref.token!!, post).let { response ->
                 if (response.isSuccessful) {
                     _successEvent.postValue(Event(response.body()!!.id))
                     Log.d("tag_success", "editPost: ${response.body()}")
                 } else {
-                    Log.d("tag_fail", "editPost Error: ${response.code()}")
+                    Log.d("tag_fail", "editPost Error: ${response}")
                 }
             }
         }

@@ -36,18 +36,21 @@ interface BoardService {
     /* 게시물 수정 */
     @PUT("post")
     suspend fun editPost(
+        @Header("Authorization") auth: String,
         @Body post: PostSend
     ): Response<Post>
 
     /* 게시물 삭제 */
     @PUT("post")
     suspend fun deletePost(
+        @Header("Authorization") auth: String,
         @Body post: PostSend
     ): Response<ResultResponse>
 
     /* 댓글 조회 */
     @GET("reply")
     suspend fun getComment(
+        @Header("Authorization") auth: String,
         @Query("postId") postId: String,
         @Query("boardType") boardType: String
     ): Response<CommentList>
@@ -55,6 +58,7 @@ interface BoardService {
     /* 댓글 작성 */
     @POST("reply")
     suspend fun writeComment(
+        @Header("Authorization") auth: String,
         @Body comment: CommentSend
     ): Response<CommentList>
 }
