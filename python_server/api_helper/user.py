@@ -286,15 +286,30 @@ class AuthLogin(Resource):
             refresh_token = create_refresh_token(identity=request_info["_id"], expires_delta=False)
 
             add_refresh_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": refresh_token}})
-
             if add_refresh_token.raw_result["n"] != 1:
                 return {"queryStatus": "add token fail"}, 500
 
+            # 회원정보 조회
+            user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
+
+            # 순서 고정
+            information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
+            sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
+            activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
+
+            sub_information["profileImage"] = get_image(sub_information["profileImage"], "user")
+
+            real_user_info = {"_id": user_info["_id"],
+                                "password": user_info["password"],
+                                "information": information,
+                                "subInformation": sub_information,
+                                "activity": activity}
+
+            
             return {
                        "accessToken": access_token,
                        "refreshToken": refresh_token,
-                       "queryStatus": "success"
-
+                       "user": real_user_info
                    }, 200
 
     @jwt_required()  # jwt 보냈는지, 만료된 건 아닌지
