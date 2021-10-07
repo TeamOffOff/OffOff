@@ -71,6 +71,7 @@ constructor(
                 if (response.isSuccessful) {
                     _loginSuccess.postValue(Event(userId))
                     OffoffApplication.pref.token = "Bearer " + response.body()!!.accessToken
+                    OffoffApplication.user = response.body()!!.user
                     Log.d("tag_success", "login: ${response.body()}")
                 } else {
                     Log.d("tag_fail", "login Error: ${response.code()}")

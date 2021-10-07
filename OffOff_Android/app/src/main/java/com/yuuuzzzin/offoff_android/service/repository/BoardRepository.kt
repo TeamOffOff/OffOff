@@ -1,6 +1,7 @@
 package com.yuuuzzzin.offoff_android.service.repository
 
 import com.yuuuzzzin.offoff_android.service.api.BoardService
+import com.yuuuzzzin.offoff_android.service.models.ActivityItem
 import com.yuuuzzzin.offoff_android.service.models.CommentSend
 import com.yuuuzzzin.offoff_android.service.models.PostSend
 import javax.inject.Inject
@@ -22,4 +23,6 @@ constructor(private val boardService: BoardService) {
 
     suspend fun getComment(auth: String, postId: String, boardType: String) = boardService.getComment(auth, postId, boardType)
     suspend fun writeComment(auth: String, comment: CommentSend) = boardService.writeComment(auth, comment)
+
+    suspend fun like(auth: String, activityItem: ActivityItem) = boardService.like(auth, activityItem)
 }

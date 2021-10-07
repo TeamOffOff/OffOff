@@ -57,7 +57,7 @@ data class Activity(
     @SerializedName("replies")
     val replies: List<ReplyItem>?= emptyList(),
     @SerializedName("likes")
-    val likes: List<Like>?= emptyList(),
+    val likes: List<LikeItem>?= emptyList(),
     @SerializedName("reports")
     val reports: List<Report>?= emptyList(),
     @SerializedName("bookmarks")
@@ -88,7 +88,7 @@ data class ReplyItem(
     val id: String
 )
 
-data class Like(
+data class LikeItem(
     @SerializedName("_id")
     val id: String
 )

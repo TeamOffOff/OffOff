@@ -53,9 +53,9 @@ data class PostSend(
     @SerializedName("author")
     val author: String,
     @SerializedName("title")
-    val title: String,
+    val title: String? = null,
     @SerializedName("content")
-    val content: String,
+    val content: String? = null,
     @SerializedName("image")
     val image: String? = null
 )

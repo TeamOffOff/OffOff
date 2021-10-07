@@ -87,7 +87,6 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         dialog.setIcon(android.R.drawable.ic_dialog_alert)
         dialog.setNegativeButton("확인",null)
         dialog.show()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

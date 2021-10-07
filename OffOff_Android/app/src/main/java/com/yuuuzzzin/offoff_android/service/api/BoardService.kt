@@ -41,7 +41,7 @@ interface BoardService {
     ): Response<Post>
 
     /* 게시물 삭제 */
-    @PUT("post")
+    @HTTP(method = "DELETE", path = "post", hasBody = true)
     suspend fun deletePost(
         @Header("Authorization") auth: String,
         @Body post: PostSend
@@ -61,4 +61,10 @@ interface BoardService {
         @Header("Authorization") auth: String,
         @Body comment: CommentSend
     ): Response<CommentList>
+
+    @PUT("post")
+    suspend fun like(
+        @Header("Authorization") auth: String,
+        @Body activityItem: ActivityItem
+    ): Response<Post>
 }
