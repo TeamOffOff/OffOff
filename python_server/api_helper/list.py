@@ -202,7 +202,6 @@ class MassageListControl(Resource):
         # 회원활동 게시글 조회와 구조 동일
         message_list = []
         for message_id in message_id_list:
-            message_id = message_id[1]
             print("개별 메시지 id : ", message_id)
             result = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")
             if result:

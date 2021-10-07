@@ -45,6 +45,4 @@ class MakeReference:
         result = mongodb.update_one(query={"_id": self.user}, collection_name="user", modify={operator: {field: new_activity_info}})
 
         return result
-    
-    def link_message_information_in_user(self, operator, field, message_id):
-        pass
+        
