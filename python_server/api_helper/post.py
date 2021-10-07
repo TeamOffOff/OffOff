@@ -12,12 +12,40 @@ import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
+Search = Namespace("search", description="검색 관련 API")
 Post = Namespace("post", description="게시물 관련 API")
 Reply = Namespace("reply", description="댓글 관련 API")
 
+"""
+검색 관련 API
+"""
+@Search.route("")
+class SearchControl(Resource):
+    def get(self):
+        # 회원여부 가려야함
 
-"""게시글 관련 API"""
+        keyward = request.args.get("key")
 
+        # 전체 게시판에서 모두 찾아야함
+
+
+        # content만 할 것인지? 아니면 title도 할 것인지
+        result = list(mongodb.find(collection_name="free_board",query={"content":{"$regex":keyward}}))
+        
+        # 최신순(내림차순)으로 정렬해야함 : mongodb에서 가져온 직후에는 오름차순임
+        for post in result:
+            post["_id"] = str(post["_id"])
+            post["date"] = str(post["date"])
+        
+        return{
+            "postList": result
+        }
+
+
+
+"""
+게시글 관련 API
+"""
 
 @Post.route("")
 class PostControl(Resource):
@@ -221,7 +249,9 @@ class PostControl(Resource):
 
 
 
-
+"""
+댓글 관련 API
+"""
 
 # 댓글 관련 API
 @Reply.route("")

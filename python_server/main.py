@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from api_helper.utils import APP_SECRET_KEY, JWT_SECRET_KEY
 
 from api_helper.list import BoardList, PostList, UserControl, MessageList
-from api_helper.post import Post, Reply
+from api_helper.post import Post, Reply, Search
 from api_helper.user import Activity, User, Token
 from api_helper.message import Message
 from api_helper.calendar import Calendar, Shift, SavedShift
@@ -31,6 +31,8 @@ api = Api(app)
 api.add_namespace(BoardList, "/boardlist")
 api.add_namespace(PostList, "/postlist")
 api.add_namespace(UserControl, "/usercontrol")
+
+api.add_namespace(Search, "/search")
 
 api.add_namespace(Post, "/post")
 api.add_namespace(Reply, "/reply")
