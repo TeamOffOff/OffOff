@@ -2,11 +2,13 @@ package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
@@ -22,6 +24,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private lateinit var postId: String
     private lateinit var boardName: String
     private lateinit var boardType: String
+    private var author: String?= null
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
 
@@ -39,7 +42,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         boardType = intent.getStringExtra("boardType").toString()
         boardName = intent.getStringExtra("boardName").toString()
 
-        viewModel.getPost(postId, boardType)
+        viewModel.getPost(postId, boardType).toString()
     }
 
     private fun initViewModel() {
@@ -47,6 +50,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.response.observe(binding.lifecycleOwner!!, {
             binding.post = it
+        })
+
+        viewModel.author.observe(binding.lifecycleOwner!!, {
+            author = it
+            Log.d("tag_idviewmodel", "id : " + OffoffApplication.user.id.toString() + "/ author: " + author.toString())
+            invalidateOptionsMenu()
         })
     }
 
@@ -88,6 +97,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_post, menu)
+
+        if(OffoffApplication.user.id != author) {
+            Log.d("tag_id", "id : " + OffoffApplication.user.id.toString() + "/ author: " + author.toString())
+            menu!!.findItem(R.id.action_delete).isVisible = false
+            menu.findItem(R.id.action_edit).isVisible = false
+        }
+
         return true
     }
 
@@ -107,6 +123,14 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
             R.id.action_delete -> {
                 // 삭제 버튼 누를 시
+                viewModel.deletePost(postId, boardType)
+
+                val intent = Intent(applicationContext, BoardActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.putExtra("boardType", boardType)
+                intent.putExtra("boardName", boardName)
+                startActivity(intent)
+                finish()
 
                 true
             }
