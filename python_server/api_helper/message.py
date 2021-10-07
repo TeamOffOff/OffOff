@@ -33,7 +33,7 @@ Collection : user
 {
     "message":{
         "send": [],
-        "recieve": []
+        "receive": []
     }
 }
 """
@@ -67,9 +67,9 @@ class MassageControl(Resource):
 
         # sender, reciever 변수 저장
         for user in ("send", "receive"):
-            target_user = request_info[user]
-            making_reference =MakeReference(board_type="user", user=target_user)
-            result = making_reference.link_activity_information_in_user(field=f"message.{user}", post_id=message_id, operator="$addToSet")
+            target_user = request_info[user]  # 보내는 사람, 받는 사람의 _id
+            result = mongodb.update_one(query={"_id": target_user}, collection_name="user", modify={"$addToSet": {f"message.{user}": str(message_id)}})
+           
             if (result.raw_result["n"] == 0):
                 return {"queryStatus": "update activity fail"}, 500
 
@@ -144,8 +144,8 @@ class MassageControl(Resource):
 
 
         # user collection에서 message id 삭제
-        making_reference = MakeReference(board_type="user", user=user_id)
-        result = making_reference.link_activity_information_in_user(field=f'message.{user}', post_id=message_id, operator="$pull")
+        result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$pull": {f"message.{user}": message_id}})
+
         if (result.raw_result["n"] == 0):
             return {"queryStatus": "update activity fail"}, 500
         

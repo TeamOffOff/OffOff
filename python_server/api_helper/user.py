@@ -141,7 +141,13 @@ class AuthRegister(Resource):
                               "password": user_info["password"],
                               "information": information,
                               "subInformation": sub_information,
-                              "activity": activity}
+                              "activity": activity,
+                              "calendar": "",
+                              "message": {
+                                  "send": [],
+                                  "receive": []
+                                }
+                              }
 
             mongodb.insert_one(data=real_user_info, collection_name="user")  # 데이터베이스에 저장
 
@@ -335,7 +341,8 @@ class AuthLogin(Resource):
                           "password": user_info["password"],
                           "information": information,
                           "subInformation": sub_information,
-                          "activity": activity}
+                          "activity": activity,
+                          "calendar": user_info["calendar"]}
 
         return {"user": real_user_info}, 200
 

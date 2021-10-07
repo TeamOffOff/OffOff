@@ -89,7 +89,7 @@ class ShiftControl(Resource):
         
         # user 컬랙션에 참조 달기
         link_calendar = {"calendar" : str(calendar_id)}
-        result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$addToSet":link_calendar})
+        result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":link_calendar})
 
         if result.raw_result["n"] == 0:
             return{"queryStatus": "user info update fail"}, 500
