@@ -199,7 +199,7 @@ class PostControl(Resource):
 
             if user in past_user_list:  # 해당 활동을 한 적이 있는 경우
                 if activity == "likes":
-                    return {"queryStatus": "already like"}
+                    return {"queryStatus": "already like"}, 201
                 else:
                     operator = "$pull"
                     result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
