@@ -24,6 +24,10 @@ class FirstViewController: UIViewController {
         imageView.snp.makeConstraints {
             $0.edges.equalTo(self.view.safeAreaLayoutGuide)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loginCheck()
     }
     

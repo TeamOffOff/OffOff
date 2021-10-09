@@ -20,14 +20,14 @@ public class UserServices {
     struct LoginResponse: Codable {
         var accessToken: String
         var refreshToken: String
-        var queryStatus: String
+//        var queryStatus: String
         var user: UserModel
         
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(accessToken, forKey: .accessToken)
             try container.encode(refreshToken, forKey: .refreshToken)
-            try container.encode(queryStatus, forKey: .queryStatus)
+//            try container.encode(queryStatus, forKey: .queryStatus)
             try container.encode(user, forKey: .user)
         }
     }
