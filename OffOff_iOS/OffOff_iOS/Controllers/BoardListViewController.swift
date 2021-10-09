@@ -39,6 +39,7 @@ class BoardListViewController: UITableViewController {
                 vc.boardName = $0.name
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
+                nav.navigationBar.setAppearance()
                 self.present(nav, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)

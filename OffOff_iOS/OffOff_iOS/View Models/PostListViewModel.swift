@@ -34,7 +34,7 @@ class PostListViewModel {
             .disposed(by: disposeBag)
     }
     
-    private func fetchPostList(boardType: String) {
+    public func fetchPostList(boardType: String) {
         _ = BoardServices.fetchPostList(board_type: boardType).map { $0?.postList ?? [] }.bind(to: self.postList)
     }
 }

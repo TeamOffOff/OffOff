@@ -40,6 +40,18 @@ public class PostServices {
             .catchErrorJustReturn(false)
     }
     
+    static func deletePost(post: DeletingPost) -> Observable<Bool> {
+        PostServices.provider
+            .rx.request(.deletePost(post: post))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    return true
+                }
+                return false
+            }
+    }
+    
     
     // 새로 작성한 포스트를 바로 받아오는 버젼
 //    static func createPost(post: Post) -> Observable<Post?> {

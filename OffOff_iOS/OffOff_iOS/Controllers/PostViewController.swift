@@ -11,7 +11,14 @@ import RxSwift
 class PostViewController: UIViewController {
     var postView = PostView(frame: .zero)
     var postInfo: (id: String, type: String)?
+    
+    var viewModel: PostViewModel!
     let disposeBag = DisposeBag()
+    
+    let deleteButton = UIBarButtonItem(title: "삭제", style: .plain, target: nil, action: nil)
+    let editButton = UIBarButtonItem(title: "수정", style: .plain, target: nil, action: nil)
+    lazy var items = [editButton, deleteButton]
+    var rightButtonsDisposeBag = DisposeBag()
     
     var commentContainer = UIView().then {
         $0.backgroundColor = .white
@@ -67,7 +74,7 @@ class PostViewController: UIViewController {
         addKeyboardNotifications()
         
         // view model
-        let viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "")
+        viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "")
         
         // bind result
         viewModel.post
@@ -78,6 +85,23 @@ class PostViewController: UIViewController {
                 self.postView.dateLabel.text = $0?.date
                 self.postView.profileImageView.image = UIImage(systemName: "person.fil")
 //                self.postView.likeButton.setTitle("\($0?.likes ?? 0)", for: .normal)
+                if $0?.author._id == Constants.loginUser?._id {
+                    print(#fileID, #function, #line, "")
+                    self.setRightButtons(set: true)
+                } else {
+                    self.setRightButtons(set: false)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.postDeleted
+            .filter { $0 }
+            .bind { _ in
+                self.navigationController?.popViewController(animated: true)
+                if let frontVC = self.navigationController?.topViewController as? PostListViewController {
+                    frontVC.viewModel?.fetchPostList(boardType: frontVC.boardType!)
+                    print(#fileID, #function, #line, "")
+                }
             }
             .disposed(by: disposeBag)
     }
@@ -85,6 +109,28 @@ class PostViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         removeKeyboardNotifications()
+    }
+    
+    // MARK: - Private Funcs
+    private func setRightButtons(set: Bool) {
+        if set {
+            self.navigationItem.setRightBarButtonItems(items, animated: false)
+            deleteButton.rx.tap.bind {
+                self.deletingConfirmAlert()
+            }.disposed(by: rightButtonsDisposeBag)
+        } else {
+            self.navigationItem.setRightBarButtonItems([], animated: false)
+            rightButtonsDisposeBag = DisposeBag()
+        }
+    }
+    
+    private func deletingConfirmAlert() {
+        let alert = UIAlertController(title: "정말 삭제하시겠습니까??", message: nil, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "예", style: .default) { _ in self.viewModel.deleteButtonTapped.onNext(Constants.loginUser) }
+        let cancel = UIAlertAction(title: "취소", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
+        alert.addAction(ok)
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
     }
 }
 

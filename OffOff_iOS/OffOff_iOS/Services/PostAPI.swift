@@ -14,7 +14,7 @@ enum PostAPI {
     case getPost(content_id: String, board_type: String)
     case makePost(post: WritingPost)
 //    case modifyPost
-//    case deletePost
+    case deletePost(post: DeletingPost)
 }
 
 extension PostAPI: TargetType {
@@ -28,6 +28,8 @@ extension PostAPI: TargetType {
             return "/post"
         case .makePost(_):
             return "/post"
+        case .deletePost(_):
+            return "/post"
         }
     }
     
@@ -37,6 +39,8 @@ extension PostAPI: TargetType {
             return .get
         case .makePost(_):
             return .post
+        case .deletePost(_):
+            return .delete
         }
     }
     
@@ -50,6 +54,8 @@ extension PostAPI: TargetType {
             return .requestParameters(parameters: ["postId": content_id, "boardType": board_type], encoding: URLEncoding.default)
         case .makePost(let post):
             return .requestJSONEncodable(post)
+        case .deletePost(let post):
+            return .requestJSONEncodable(post)
         }
     }
     
@@ -58,4 +64,10 @@ extension PostAPI: TargetType {
     }
     
     
+}
+
+struct DeletingPost: Codable {
+    var _id: String
+    var boardType: String
+    var author: String
 }

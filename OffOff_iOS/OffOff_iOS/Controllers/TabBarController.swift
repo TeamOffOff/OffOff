@@ -26,13 +26,9 @@ class TabBarController: UITabBarController {
         navController.navigationBar.barTintColor = .mainColor
         navController.navigationBar.prefersLargeTitles = false
         
-        let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = .mainColor
-        
         if let navigationBar = navController.navigationBar as? CustomNavigationBar {
             navigationBar.titleLabel.text = title
-            navigationBar.standardAppearance = appearance
-            navigationBar.scrollEdgeAppearance = appearance
+            navigationBar.setAppearance()
         }
         return navController
     }

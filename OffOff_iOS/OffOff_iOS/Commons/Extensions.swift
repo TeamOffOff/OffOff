@@ -356,3 +356,14 @@ extension Realm {
         }
     }
 }
+
+extension UINavigationBar {
+    func setAppearance(titleColor: UIColor = .white, backgroundColor: UIColor = .mainColor) {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = backgroundColor
+        appearance.titleTextAttributes = [.foregroundColor: titleColor]
+        
+        self.standardAppearance = appearance
+        self.scrollEdgeAppearance = appearance
+    }
+}
