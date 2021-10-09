@@ -34,7 +34,7 @@ data class Post(
     @SerializedName("replyCount")
     val replyCount: Int? = 0,
     @SerializedName("likes")
-    val likes:List<Any> = emptyList(),
+    val likes:List<String> = emptyList(),
     @SerializedName("reports")
     val reports: List<Any> = emptyList(),
     @SerializedName("bookmarks")

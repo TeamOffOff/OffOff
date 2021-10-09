@@ -24,5 +24,5 @@ constructor(private val boardService: BoardService) {
     suspend fun getComment(auth: String, postId: String, boardType: String) = boardService.getComment(auth, postId, boardType)
     suspend fun writeComment(auth: String, comment: CommentSend) = boardService.writeComment(auth, comment)
 
-    suspend fun like(auth: String, activityItem: ActivityItem) = boardService.like(auth, activityItem)
+    suspend fun likePost(auth: String, activityItem: ActivityItem) = boardService.likePost(auth, activityItem)
 }

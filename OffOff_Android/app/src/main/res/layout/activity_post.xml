@@ -62,8 +62,8 @@
                 android:id="@+id/layout_post"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginVertical="8dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -133,6 +133,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="4dp"
                     android:text="@string/fa_thumbs_up_solid"
+                    android:onClick="@{()->viewModel.likePost()}"
                     android:textColor="@color/red"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_likes"
@@ -145,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="0"
+                    android:text="@{String.valueOf(post.likes.size)}"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toStartOf="@id/iv_scrap"
                     app:layout_constraintTop_toBottomOf="@id/tv_content" />

@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="0"
+            android:text="@{String.valueOf(item.likes.size)}"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@id/iv_reply_count"
             app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />

@@ -62,8 +62,9 @@ interface BoardService {
         @Body comment: CommentSend
     ): Response<CommentList>
 
+    /* 게시물 좋아요 */
     @PUT("post")
-    suspend fun like(
+    suspend fun likePost(
         @Header("Authorization") auth: String,
         @Body activityItem: ActivityItem
     ): Response<Post>
