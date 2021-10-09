@@ -50,7 +50,11 @@ class NewPostViewController: UIViewController {
             .debug()
             .subscribe(onNext: {
                 if $0 {
-                    self.dismiss(animated: true, completion: nil)
+                    self.navigationController?.popViewController(animated: true)
+                    if let frontVC = self.navigationController?.topViewController as? PostListViewController {
+                        frontVC.viewModel?.fetchPostList(boardType: frontVC.boardType!)
+                        print(#fileID, #function, #line, "")
+                    }
                 }
             })
             .disposed(by: disposeBag)
