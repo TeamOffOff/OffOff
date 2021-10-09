@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.ui.board
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +25,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private lateinit var postId: String
     private lateinit var boardName: String
     private lateinit var boardType: String
-    private var author: String?= null
+    private var author: String? = null
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
 
@@ -42,6 +43,9 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         boardType = intent.getStringExtra("boardType").toString()
         boardName = intent.getStringExtra("boardName").toString()
 
+        viewModel.postId = postId
+        viewModel.boardType = boardType
+
         viewModel.getPost(postId, boardType).toString()
     }
 
@@ -54,8 +58,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.author.observe(binding.lifecycleOwner!!, {
             author = it
-            Log.d("tag_idviewmodel", "id : " + OffoffApplication.user.id.toString() + "/ author: " + author.toString())
+            Log.d(
+                "tag_idviewmodel",
+                "id : " + OffoffApplication.user.id + " / author: " + author.toString()
+            )
             invalidateOptionsMenu()
+        })
+
+        viewModel.alreadyLike.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                showAlreadyLikeDialog(it)
+            }
         })
     }
 
@@ -83,6 +96,32 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         binding.tfId.endIconDrawable = writeIcon
     }
 
+    fun showDeleteDialog(message: String) {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setMessage(message)
+        dialog.setIcon(android.R.drawable.ic_dialog_alert)
+        dialog.setPositiveButton("예") { dialog, which ->
+            viewModel.deletePost(postId, boardType)
+
+            val intent = Intent(applicationContext, BoardActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.putExtra("boardType", boardType)
+            intent.putExtra("boardName", boardName)
+            startActivity(intent)
+            finish()
+        }
+        dialog.setNegativeButton("아니오", null)
+        dialog.show()
+    }
+
+    fun showAlreadyLikeDialog(message: String) {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setMessage(message)
+        dialog.setIcon(android.R.drawable.ic_dialog_alert)
+        dialog.setNegativeButton("확인",null)
+        dialog.show()
+    }
+
     override fun onBackPressed() {
         if (intent.getStringExtra("update") == "true") {
             val intent = Intent(applicationContext, BoardActivity::class.java)
@@ -98,8 +137,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_post, menu)
 
-        if(OffoffApplication.user.id != author) {
-            Log.d("tag_id", "id : " + OffoffApplication.user.id.toString() + "/ author: " + author.toString())
+        if (OffoffApplication.user.id != author) {
+            Log.d(
+                "tag_id",
+                "id : " + OffoffApplication.user.id.toString() + "/ author: " + author.toString()
+            )
             menu!!.findItem(R.id.action_delete).isVisible = false
             menu.findItem(R.id.action_edit).isVisible = false
         }
@@ -123,14 +165,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
             R.id.action_delete -> {
                 // 삭제 버튼 누를 시
-                viewModel.deletePost(postId, boardType)
-
-                val intent = Intent(applicationContext, BoardActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                intent.putExtra("boardType", boardType)
-                intent.putExtra("boardName", boardName)
-                startActivity(intent)
-                finish()
+                showDeleteDialog("게시글을 삭제하시겠습니까?")
 
                 true
             }
