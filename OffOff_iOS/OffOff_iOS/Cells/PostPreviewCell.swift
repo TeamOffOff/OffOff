@@ -9,11 +9,12 @@ import UIKit
 import SnapKit
 import Then
 import RxSwift
+import RxRelay
 
 class PostPreviewCell: UITableViewCell {
     static let identifier = "PostPreviewCell"
     
-    var postModel = BehaviorSubject<PostModel?>(value: nil)
+    var postModel = BehaviorRelay<PostModel?>(value: nil)
     var replies = BehaviorSubject<[Reply]>(value: [])
     
     var disposeBag = DisposeBag()

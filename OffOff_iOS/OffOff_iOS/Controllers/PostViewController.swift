@@ -20,6 +20,8 @@ class PostViewController: UIViewController {
     lazy var items = [editButton, deleteButton]
     var rightButtonsDisposeBag = DisposeBag()
     
+    var postCell: PostPreviewCell?
+    
     var commentContainer = UIView().then {
         $0.backgroundColor = .white
         $0.makeBorder(color: UIColor.mainColor.cgColor, cornerRadius: 12)
@@ -74,7 +76,7 @@ class PostViewController: UIViewController {
         addKeyboardNotifications()
         
         // view model
-        viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "", likeButtonTapped: self.postView.likeButton.rx.tap.map { self.postInfo })
+        viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "", likeButtonTapped: self.postView.likeButton.rx.tap.map { (id: self.postInfo!.id, type: self.postInfo!.type, cell: self.postCell!) })
         
         // bind result
         viewModel.post

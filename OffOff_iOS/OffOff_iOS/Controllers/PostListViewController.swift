@@ -51,7 +51,7 @@ class PostListViewController: UITableViewController {
             .observeOn(MainScheduler.instance)
             .do(onNext: { _ in refreshControl.endRefreshing() })
             .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
-                cell.postModel.onNext(element)
+                cell.postModel.accept(element)
             }
             .disposed(by: disposeBag)
         
@@ -62,11 +62,14 @@ class PostListViewController: UITableViewController {
 
         // select row
         self.tableView.rx
-            .modelSelected(PostModel.self)
+            .itemSelected
             .bind {
-                let vc = PostViewController()
-                vc.postInfo = (id: $0._id!, type: $0.boardType)
-                self.navigationController?.pushViewController(vc, animated: true)
+                if let cell = self.tableView.cellForRow(at: $0) as? PostPreviewCell {
+                    let vc = PostViewController()
+                    vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
+                    vc.postCell = cell
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
             }
             .disposed(by: disposeBag)
         

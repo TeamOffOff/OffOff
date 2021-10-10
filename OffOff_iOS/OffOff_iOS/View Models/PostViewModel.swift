@@ -18,7 +18,7 @@ class PostViewModel {
     var disposeBag = DisposeBag()
     var activityDisposeBag = DisposeBag()
     
-    init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String)?>) {
+    init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String, cell: PostPreviewCell)?>) {
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
             .bind {
                 self.post.onNext($0)
@@ -37,14 +37,15 @@ class PostViewModel {
             }
         
         likeButtonTapped
-            .bind {
-                if $0 != nil {
-                    let post = PostActivity(boardType: boardType, _id: $0!.id, activity: "likes")
+            .bind { val in
+                if val != nil {
+                    let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
                     self.activityDisposeBag = DisposeBag()
                     PostServices.likePost(post: post).bind {
                         if $0 != nil {
                             self.post.onNext($0)
                             self.liked.onNext(true)
+                            val!.cell.postModel.accept($0)
                         } else {
                             self.liked.onNext(false)
                         }
