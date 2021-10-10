@@ -52,6 +52,26 @@ public class PostServices {
             }
     }
     
+    static func likePost(post: PostActivity) -> Observable<PostModel?> {
+        PostServices.provider
+            .rx.request(.likePost(post: post))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    do {
+                        let result = try JSONDecoder().decode(PostModel.self, from: $0.data)
+                        return result
+                    } catch {
+                        print(#fileID, #function, #line, "Decode error")
+                        return nil
+                    }
+                } else {
+                    print(#fileID, #function, #line, "Status code error: \($0.statusCode)")
+                    return nil
+                }
+            }
+    }
+    
     
     // 새로 작성한 포스트를 바로 받아오는 버젼
 //    static func createPost(post: Post) -> Observable<Post?> {

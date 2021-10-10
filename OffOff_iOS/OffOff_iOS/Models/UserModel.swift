@@ -75,9 +75,9 @@ struct SubInformation: Codable {
 }
 
 struct Activity: Codable {
-    var posts: [PostActivity] = []
+    var posts: [UserPostActivity] = []
     var replies: [String] = []
-    var likes: [String] = []
+    var likes: [UserPostActivity] = []
     var reports: [String] = []
     var bookmarks: [String] = []
     

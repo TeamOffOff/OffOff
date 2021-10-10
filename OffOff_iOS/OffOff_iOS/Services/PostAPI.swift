@@ -15,6 +15,7 @@ enum PostAPI {
     case makePost(post: WritingPost)
 //    case modifyPost
     case deletePost(post: DeletingPost)
+    case likePost(post: PostActivity)
 }
 
 extension PostAPI: TargetType {
@@ -30,6 +31,8 @@ extension PostAPI: TargetType {
             return "/post"
         case .deletePost(_):
             return "/post"
+        case .likePost(_):
+            return "/post"
         }
     }
     
@@ -41,6 +44,8 @@ extension PostAPI: TargetType {
             return .post
         case .deletePost(_):
             return .delete
+        case .likePost(_):
+            return .put
         }
     }
     
@@ -55,6 +60,8 @@ extension PostAPI: TargetType {
         case .makePost(let post):
             return .requestJSONEncodable(post)
         case .deletePost(let post):
+            return .requestJSONEncodable(post)
+        case .likePost(let post):
             return .requestJSONEncodable(post)
         }
     }

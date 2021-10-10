@@ -56,7 +56,7 @@ struct PostModel: Codable {
     }
 }
 
-struct PostActivity: Codable {
+struct UserPostActivity: Codable {
     var boardType: String
     var postId: String
     var replyId: String
@@ -67,5 +67,19 @@ struct PostActivity: Codable {
         try container.encode(boardType, forKey: .boardType)
         try container.encode(postId, forKey: .postId)
         try container.encode(replyId, forKey: .replyId)
+    }
+}
+
+struct PostActivity: Codable {
+    var boardType: String
+    var _id: String
+    var activity: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(activity, forKey: .activity)
     }
 }

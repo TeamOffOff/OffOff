@@ -74,17 +74,18 @@ class PostViewController: UIViewController {
         addKeyboardNotifications()
         
         // view model
-        viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "")
+        viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "", likeButtonTapped: self.postView.likeButton.rx.tap.map { self.postInfo })
         
         // bind result
         viewModel.post
+            .filter { $0 != nil }
             .bind {
-                self.postView.titleLabel.text = $0?.title
-                self.postView.authorLabel.text = $0?.author.nickname
-                self.postView.contentTextView.text = $0?.content
-                self.postView.dateLabel.text = $0?.date
+                self.postView.titleLabel.text = $0!.title
+                self.postView.authorLabel.text = $0!.author.nickname
+                self.postView.contentTextView.text = $0!.content
+                self.postView.dateLabel.text = $0!.date
                 self.postView.profileImageView.image = UIImage(systemName: "person.fil")
-//                self.postView.likeButton.setTitle("\($0?.likes ?? 0)", for: .normal)
+                self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
                 if $0?.author._id == Constants.loginUser?._id {
                     print(#fileID, #function, #line, "")
                     self.setRightButtons(set: true)
@@ -101,6 +102,17 @@ class PostViewController: UIViewController {
                 if let frontVC = self.navigationController?.topViewController as? PostListViewController {
                     frontVC.viewModel?.fetchPostList(boardType: frontVC.boardType!)
                     print(#fileID, #function, #line, "")
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.liked
+            .skip(1)
+            .bind {
+                if $0 {
+                    self.activityAlert(message: "좋아요를 했습니다.")
+                } else {
+                    self.activityAlert(message: "이미 좋아요한 게시글 입니다.")
                 }
             }
             .disposed(by: disposeBag)
@@ -130,6 +142,13 @@ class PostViewController: UIViewController {
         let cancel = UIAlertAction(title: "취소", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
         alert.addAction(ok)
         alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func activityAlert(message: String) {
+        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "확인", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
+        alert.addAction(ok)
         self.present(alert, animated: true, completion: nil)
     }
 }
