@@ -70,6 +70,12 @@ class PostView: UIView {
     var scrollView = UIScrollView()
     var textContainerView = UIView()
     
+    var repliesTableView = UITableView().then {
+        $0.backgroundColor = .white
+        $0.register(RepliesTableViewCell.self, forCellReuseIdentifier: RepliesTableViewCell.identifier)
+        $0.isScrollEnabled = false
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(scrollView)
@@ -82,8 +88,9 @@ class PostView: UIView {
         self.scrollView.addSubview(profileImageView)
         self.scrollView.addSubview(likeButton)
         self.scrollView.addSubview(scrapButton)
+        self.scrollView.addSubview(repliesTableView)
         self.makeView()
-    }
+    }   
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -94,7 +101,6 @@ class PostView: UIView {
         textContainerView.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.width.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(30)
             $0.top.equalTo(profileImageView.snp.bottom)
         }
         titleLabel.snp.makeConstraints {
@@ -118,15 +124,20 @@ class PostView: UIView {
             $0.left.equalToSuperview().offset(12)
             $0.right.equalToSuperview().inset(12)
         }
-        scrapButton.snp.makeConstraints {
-            $0.top.equalTo(contentTextView.snp.bottom).offset(8)
-            $0.right.equalToSuperview().inset(12)
-            $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
-        }
         likeButton.snp.makeConstraints {
             $0.top.equalTo(contentTextView.snp.bottom).offset(8)
             $0.right.equalTo(scrapButton.snp.left)
             $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
+        }
+        scrapButton.snp.makeConstraints {
+            $0.top.equalTo(likeButton)
+            $0.right.equalToSuperview().inset(12)
+            $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
+        }
+        repliesTableView.snp.makeConstraints {
+            $0.top.equalTo(likeButton.snp.bottom).offset(8.0)
+            $0.left.right.bottom.equalToSuperview()
+            $0.height.equalTo(0)
         }
     }
     

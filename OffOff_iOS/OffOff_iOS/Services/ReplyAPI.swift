@@ -10,7 +10,7 @@ import Moya
 
 enum ReplyAPI {
     case getReplies(_ postId: String, _ boardType: String)
-//    case writeReply
+    case writeReply(reply: WritingReply)
 //    case deleteReply
 //    case likeReply
 }
@@ -24,6 +24,8 @@ extension ReplyAPI: TargetType {
         switch self {
         case .getReplies(_, _):
             return "/reply"
+        case .writeReply(_):
+            return "/reply"
         }
     }
     
@@ -31,6 +33,8 @@ extension ReplyAPI: TargetType {
         switch self {
         case .getReplies(_, _):
             return .get
+        case .writeReply(_):
+            return .post
         }
     }
     
@@ -42,12 +46,12 @@ extension ReplyAPI: TargetType {
         switch self {
         case .getReplies(let postId, let boardType):
             return .requestParameters(parameters: ["postId": postId, "boardType": boardType], encoding: URLEncoding.default)
+        case .writeReply(let reply):
+            return .requestJSONEncodable(reply)
         }
     }
     
     var headers: [String : String]? {
-        nil
+        return ["Content-type": "application/json", "Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
     }
-    
-    
 }

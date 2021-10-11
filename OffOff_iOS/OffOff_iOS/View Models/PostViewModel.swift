@@ -12,20 +12,27 @@ import RxCocoa
 class PostViewModel {
     var post = BehaviorSubject<PostModel?>(value: nil)
     var postDeleted = Observable<Bool>.just(false)
+    var replies = BehaviorSubject<[Reply]?>(value: nil)
+    
     var deleteButtonTapped = BehaviorSubject<UserModel?>(value: nil)
     var liked = BehaviorSubject<Bool>(value: false)
+    var replyAdded = BehaviorSubject<Bool>(value: false)
     
     var disposeBag = DisposeBag()
     var activityDisposeBag = DisposeBag()
     
-    init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String, cell: PostPreviewCell)?>) {
+    init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String, cell: PostPreviewCell)?>, commentButtonTapped: Observable<WritingReply>) {
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
             .bind {
                 self.post.onNext($0)
             }.disposed(by: disposeBag)
         
+        ReplyServices.fetchReplies(of: contentId, in: boardType)
+            .bind {
+                self.replies.onNext($0)
+            }.disposed(by: disposeBag)
+        
         postDeleted = Observable.combineLatest(post, deleteButtonTapped)
-            .debug()
             .filter { $0.1 != nil && $0.0 != nil }
             .flatMap { val -> Observable<Bool> in
                 if val.0!.author._id == val.1!._id {
@@ -50,6 +57,22 @@ class PostViewModel {
                             self.liked.onNext(false)
                         }
                         
+                    }.disposed(by: self.activityDisposeBag)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        commentButtonTapped
+            .bind {
+                if $0.content == "" {
+                    self.replyAdded.onNext(false)
+                } else {
+                    self.activityDisposeBag = DisposeBag()
+                    ReplyServices.writeReply(reply: $0).bind {
+                        if $0 != nil {
+                            self.replies.onNext($0)
+                            self.replyAdded.onNext(true)
+                        }
                     }.disposed(by: self.activityDisposeBag)
                 }
             }

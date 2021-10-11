@@ -100,6 +100,7 @@
 		EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3826B6698C00C153D3 /* BoardServices.swift */; };
 		EACF1B3B26B6710800C153D3 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3A26B6710800C153D3 /* Board.swift */; };
 		EACF1B3D26B7E42300C153D3 /* BoardListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3C26B7E42300C153D3 /* BoardListViewModel.swift */; };
+		EAD6FED92713146B00563005 /* RepliesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FED82713146B00563005 /* RepliesTableViewCell.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
@@ -203,6 +204,7 @@
 		EACF1B3826B6698C00C153D3 /* BoardServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardServices.swift; sourceTree = "<group>"; };
 		EACF1B3A26B6710800C153D3 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		EACF1B3C26B7E42300C153D3 /* BoardListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardListViewModel.swift; sourceTree = "<group>"; };
+		EAD6FED82713146B00563005 /* RepliesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesTableViewCell.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 				EA83564826D38C4900D60C46 /* ScheduleCalendarCell.swift */,
 				EA8A333E26D4CC720014D97C /* RoutineCell.swift */,
 				EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */,
+				EAD6FED82713146B00563005 /* RepliesTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -671,6 +674,7 @@
 			files = (
 				EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
+				EAD6FED92713146B00563005 /* RepliesTableViewCell.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
 				EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */,
 				EAA89BC3270752A000EB3818 /* ReplyServices.swift in Sources */,

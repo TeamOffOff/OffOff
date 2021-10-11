@@ -93,7 +93,7 @@ class PostPreviewCell: UITableViewCell {
         postModel
             .filter { $0 != nil }
             .do(onNext: { post in
-                _ = ReplyServices.getReplies(of: post!._id!, in: post!.boardType).bind(to: self.replies)
+//                _ = ReplyServices.fetchReplies(of: post!._id!, in: post!.boardType).bind(to: self.replies)
             })
             .bind { post in
                 self.titleLabel.text = post!.title

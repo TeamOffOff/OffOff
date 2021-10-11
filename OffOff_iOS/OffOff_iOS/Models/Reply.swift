@@ -7,11 +7,26 @@
 
 import Foundation
 
+struct WritingReply: Codable {
+    var boardType: String
+    var postId: String
+    var parentReplyId: String?
+    var content: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(postId, forKey: .postId)
+        try container.encode(parentReplyId, forKey: .parentReplyId)
+        try container.encode(content, forKey: .content)
+    }
+}
+
 struct Reply: Codable {
     var _id: String
     var boardType: String
     var postId: String
-    var parentReplyId: String
+    var parentReplyId: String?
     var content: String
     var date: String
     var author: Author

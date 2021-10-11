@@ -22,61 +22,51 @@ class PostViewController: UIViewController {
     
     var postCell: PostPreviewCell?
     
-    var commentContainer = UIView().then {
+    var replyCellHeight = 125.0
+    
+    var replyContainer = UIView().then {
         $0.backgroundColor = .white
         $0.makeBorder(color: UIColor.mainColor.cgColor, cornerRadius: 12)
     }
-    var commentTextView = UITextView().then {
+    var replyTextView = UITextView().then {
         $0.font = .preferredFont(forTextStyle: .body)
         $0.adjustsFontForContentSizeCategory = true
         $0.translatesAutoresizingMaskIntoConstraints = true
         $0.sizeToFit()
         $0.isScrollEnabled = false
         $0.tintColor = .mainColor
-//        $0.backgroundColor = .white
         $0.autocorrectionType = .no
     }
-    var commentButton = UIButton().then {
+    var replyButton = UIButton().then {
         $0.setImage(.getIcon(name: .pen, color: .mainColor, size: Constants.BUTTON_ICON_SIZE), for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
     }
     
-    override func loadView() {
-        self.view = .init()
-        self.view.backgroundColor = .white
-        view.addSubview(postView)
-        view.addSubview(commentContainer)
-        commentContainer.addSubview(commentTextView)
-        commentContainer.addSubview(commentButton)
-        
-        postView.snp.makeConstraints {
-            $0.left.right.top.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(Constants.SCREEN_SIZE.height / 12.5)
-        }
-        commentContainer.snp.makeConstraints {
-            $0.right.left.equalToSuperview().inset(12)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(8)
-        }
-        commentTextView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(8)
-            $0.left.equalToSuperview().offset(12)
-            $0.right.equalToSuperview().inset(Constants.SCREEN_SIZE.width / 7.5)
-        }
-        commentButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(8)
-            $0.bottom.equalToSuperview().inset(8)
-            $0.height.equalTo(commentTextView)
-        }
-        postView.makeView()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        commentTextView.delegate = self
+        self.view.backgroundColor = .white
+        view.addSubview(postView)
+        view.addSubview(replyContainer)
+        replyContainer.addSubview(replyTextView)
+        replyContainer.addSubview(replyButton)
+        self.makeView()
+        
+        replyTextView.delegate = self
         addKeyboardNotifications()
         
         // view model
-        viewModel = PostViewModel(contentId: postInfo?.id ?? "", boardType: postInfo?.type ?? "", likeButtonTapped: self.postView.likeButton.rx.tap.map { (id: self.postInfo!.id, type: self.postInfo!.type, cell: self.postCell!) })
+        viewModel = PostViewModel(
+            contentId: postInfo?.id ?? "",
+            boardType: postInfo?.type ?? "",
+            likeButtonTapped: self.postView.likeButton.rx.tap.map { (id: self.postInfo!.id, type: self.postInfo!.type, cell: self.postCell!) },
+            commentButtonTapped: self.replyButton.rx.tap.map {
+                let reply = WritingReply(boardType: self.postInfo!.type, postId: self.postInfo!.id, parentReplyId: nil, content: self.replyTextView.text ?? "")
+                return reply
+            }
+        )
+        
+        self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
+        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
         
         // bind result
         viewModel.post
@@ -118,6 +108,23 @@ class PostViewController: UIViewController {
                 }
             }
             .disposed(by: disposeBag)
+        
+        viewModel.replies
+            .filter { $0 != nil }
+            .map { $0! }
+            .do { val in
+                // TODO: - 댓글 테이블 뷰 높이 조절
+                self.postView.repliesTableView.snp.remakeConstraints {
+                    $0.top.equalTo(self.postView.likeButton.snp.bottom).offset(8.0)
+                    $0.left.right.bottom.equalToSuperview()
+                    $0.height.equalTo(Double(val.count) * self.replyCellHeight)
+                }
+            }
+            .bind(to: self.postView.repliesTableView.rx.items(cellIdentifier: RepliesTableViewCell.identifier, cellType: RepliesTableViewCell.self)) { (row, element, cell) in
+                cell.reply.onNext(element)
+            }
+            .disposed(by: disposeBag)
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -126,6 +133,28 @@ class PostViewController: UIViewController {
     }
     
     // MARK: - Private Funcs
+    private func makeView() {
+        postView.snp.makeConstraints {
+            $0.left.right.top.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(Constants.SCREEN_SIZE.height / 12.5)
+        }
+        replyContainer.snp.makeConstraints {
+            $0.right.left.equalToSuperview().inset(12)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(8)
+        }
+        replyTextView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview().inset(8)
+            $0.left.equalToSuperview().offset(12)
+            $0.right.equalToSuperview().inset(Constants.SCREEN_SIZE.width / 7.5)
+        }
+        replyButton.snp.makeConstraints {
+            $0.right.equalToSuperview().inset(8)
+            $0.bottom.equalToSuperview().inset(8)
+            $0.height.equalTo(replyTextView)
+        }
+        postView.makeView()
+    }
+    
     private func setRightButtons(set: Bool) {
         if set {
             self.navigationItem.setRightBarButtonItems(items, animated: false)
@@ -171,7 +200,7 @@ extension PostViewController {
         if let keyboardFrame: NSValue = noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             let keyboardHeight = keyboardRectangle.height
-            self.commentContainer.snp.remakeConstraints {
+            self.replyContainer.snp.remakeConstraints {
                 $0.right.left.equalToSuperview().inset(12)
                 $0.bottom.equalTo(self.view.snp.bottom).inset(keyboardHeight)
             }
@@ -179,7 +208,7 @@ extension PostViewController {
     }
     
     @objc func keyboardWillHide(_ noti: NSNotification) {
-        self.commentContainer.snp.remakeConstraints {
+        self.replyContainer.snp.remakeConstraints {
             $0.right.left.equalToSuperview().inset(12)
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(8)
         }
@@ -210,5 +239,11 @@ extension PostViewController: UITextViewDelegate {
         }
         
         return true
+    }
+}
+
+extension PostViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return self.replyCellHeight
     }
 }
