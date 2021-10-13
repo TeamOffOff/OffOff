@@ -20,9 +20,11 @@ constructor(private val boardService: BoardService) {
     suspend fun writePost(auth: String, post: PostSend) = boardService.writePost(auth, post)
     suspend fun editPost(auth: String, post: PostSend) = boardService.editPost(auth, post)
     suspend fun deletePost(auth: String, post: PostSend) = boardService.deletePost(auth, post)
-
-    suspend fun getComment(auth: String, postId: String, boardType: String) = boardService.getComment(auth, postId, boardType)
-    suspend fun writeComment(auth: String, comment: CommentSend) = boardService.writeComment(auth, comment)
-
     suspend fun likePost(auth: String, activityItem: ActivityItem) = boardService.likePost(auth, activityItem)
+
+    suspend fun getComments(auth: String, postId: String, boardType: String) = boardService.getComments(auth, postId, boardType)
+    suspend fun writeComment(auth: String, comment: CommentSend) = boardService.writeComment(auth, comment)
+    suspend fun deleteComment(auth: String, comment: CommentSend) = boardService.deleteComment(auth, comment)
+    suspend fun likeComment(auth: String, activityItem: ActivityItem) = boardService.likeComment(auth, activityItem)
+
 }

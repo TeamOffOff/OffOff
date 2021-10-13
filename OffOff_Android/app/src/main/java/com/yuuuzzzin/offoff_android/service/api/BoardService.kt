@@ -47,9 +47,16 @@ interface BoardService {
         @Body post: PostSend
     ): Response<ResultResponse>
 
+    /* 게시물 좋아요 */
+    @PUT("post")
+    suspend fun likePost(
+        @Header("Authorization") auth: String,
+        @Body activityItem: ActivityItem
+    ): Response<Post>
+
     /* 댓글 조회 */
     @GET("reply")
-    suspend fun getComment(
+    suspend fun getComments(
         @Header("Authorization") auth: String,
         @Query("postId") postId: String,
         @Query("boardType") boardType: String
@@ -62,10 +69,18 @@ interface BoardService {
         @Body comment: CommentSend
     ): Response<CommentList>
 
-    /* 게시물 좋아요 */
-    @PUT("post")
-    suspend fun likePost(
+    /* 댓글 삭제 */
+    @HTTP(method = "DELETE", path = "reply", hasBody = true)
+    suspend fun deleteComment(
+        @Header("Authorization") auth: String,
+        @Body comment: CommentSend
+    ): Response<CommentList>
+
+    /* 댓글 좋아요 */
+    @PUT("reply")
+    suspend fun likeComment(
         @Header("Authorization") auth: String,
         @Body activityItem: ActivityItem
-    ): Response<Post>
+    ): Response<ResultResponse>
+
 }

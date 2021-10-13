@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
@@ -15,6 +16,7 @@ import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
+import com.yuuuzzzin.offoff_android.views.adapter.CommentListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
 
@@ -26,16 +28,19 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private lateinit var boardName: String
     private lateinit var boardType: String
     private var author: String? = null
+    private var doLike: Boolean? = false
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
+    private lateinit var commentListAdapter: CommentListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initViewModel()
         processIntent()
+        initViewModel()
         initToolbar()
         initView()
+        initRV()
     }
 
     private fun processIntent() {
@@ -70,6 +75,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 showAlreadyLikeDialog(it)
             }
         })
+
+        viewModel.getComments(postId, boardType)
+        viewModel.commentList.observe(binding.lifecycleOwner!!, {
+            with(commentListAdapter) { submitList(it.toMutableList()) }
+        })
     }
 
     private fun initToolbar() {
@@ -96,7 +106,25 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         binding.tfId.endIconDrawable = writeIcon
     }
 
-    fun showDeleteDialog(message: String) {
+    private fun initRV() {
+        commentListAdapter = CommentListAdapter(
+            itemClick = { item ->
+                null
+            }
+        )
+
+        binding.rvComment.apply {
+            adapter = commentListAdapter
+            layoutManager = object : LinearLayoutManager(context) {
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }
+            isNestedScrollingEnabled = false
+        }
+    }
+
+    private fun showDeleteDialog(message: String) {
         val dialog = AlertDialog.Builder(this)
         dialog.setMessage(message)
         dialog.setIcon(android.R.drawable.ic_dialog_alert)
@@ -114,11 +142,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         dialog.show()
     }
 
-    fun showAlreadyLikeDialog(message: String) {
+    private fun showAlreadyLikeDialog(message: String) {
         val dialog = AlertDialog.Builder(this)
         dialog.setMessage(message)
         dialog.setIcon(android.R.drawable.ic_dialog_alert)
-        dialog.setNegativeButton("확인",null)
+        dialog.setNegativeButton("확인", null)
         dialog.show()
     }
 
@@ -130,6 +158,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             intent.putExtra("boardName", boardName)
             startActivity(intent)
             finish()
+        } else if (doLike == true) {
+
         } else
             super.onBackPressed()
     }

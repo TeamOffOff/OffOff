@@ -28,7 +28,7 @@
             android:id="@+id/tv_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="작성자"
+            android:text="@{item.author.nickname}"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/iv_avatar"
@@ -37,7 +37,7 @@
 
         <TextView
             android:id="@+id/tv_content"
-            android:text="글 내용"
+            android:text="@{item.content}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -46,7 +46,7 @@
 
         <TextView
             android:id="@+id/tv_date"
-            android:text="0000-00-00"
+            android:text="@{item.date}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="0"
+            android:text="@{String.valueOf(item.likes.size)}"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@id/bt_reply"
             app:layout_constraintBottom_toBottomOf="@id/bt_reply"

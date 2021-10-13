@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.utils.base
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -54,6 +55,7 @@ abstract class BaseRVAdapter<T : Identifiable, VB : ViewDataBinding>(
         RecyclerView.ViewHolder(binding.root) {
 
         open fun bind(item: T) {
+            Log.d("tag_item", item.toString())
             binding.setVariable(BR.item, item)
             binding.executePendingBindings()
             binding.root.setOnClickListener {

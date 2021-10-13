@@ -53,139 +53,145 @@
             android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appbar_layout">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_post"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/tv_title"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_post"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{post.title}"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/iv_avatar"
-                    android:layout_width="40dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_round_person_24"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_date"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_title" />
+                    <TextView
+                        android:id="@+id/tv_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@{post.title}"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_author"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="@{post.author.nickname}"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@id/iv_avatar"
-                    app:layout_constraintTop_toTopOf="@id/iv_avatar" />
+                    <ImageView
+                        android:id="@+id/iv_avatar"
+                        android:layout_width="40dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:src="@drawable/ic_round_person_24"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_date"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="@{post.date}"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toEndOf="@id/iv_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/tv_author" />
+                    <TextView
+                        android:id="@+id/tv_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="@{post.author.nickname}"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/iv_avatar"
+                        app:layout_constraintTop_toTopOf="@id/iv_avatar" />
 
-                <com.yuuuzzzin.offoff_android.utils.CharacterWrapTextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{post.content}"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_avatar" />
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="@{post.date}"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toEndOf="@id/iv_avatar"
+                        app:layout_constraintTop_toBottomOf="@id/tv_author" />
 
-                <info.androidhive.fontawesome.FontTextView
-                    android:id="@+id/iv_likes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="@string/fa_thumbs_up_solid"
-                    android:onClick="@{()->viewModel.likePost()}"
-                    android:textColor="@color/red"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_likes"
-                    app:layout_constraintEnd_toStartOf="@id/tv_likes"
-                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+                    <com.yuuuzzzin.offoff_android.utils.CharacterWrapTextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@{post.content}"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/iv_avatar" />
 
-                <TextView
-                    android:id="@+id/tv_likes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@{String.valueOf(post.likes.size)}"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toStartOf="@id/iv_scrap"
-                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+                    <info.androidhive.fontawesome.FontTextView
+                        android:id="@+id/iv_likes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:onClick="@{()->viewModel.likePost()}"
+                        android:text="@string/fa_thumbs_up_solid"
+                        android:textColor="@color/red"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_likes"
+                        app:layout_constraintEnd_toStartOf="@id/tv_likes"
+                        app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-                <info.androidhive.fontawesome.FontTextView
-                    android:id="@+id/iv_scrap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="@string/fa_star_solid"
-                    android:textColor="#FFC107"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_scrap"
-                    app:layout_constraintEnd_toStartOf="@id/tv_scrap"
-                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+                    <TextView
+                        android:id="@+id/tv_likes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@{String.valueOf(post.likes.size)}"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toStartOf="@id/iv_scrap"
+                        app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-                <TextView
-                    android:id="@+id/tv_scrap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="스크랩"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+                    <info.androidhive.fontawesome.FontTextView
+                        android:id="@+id/iv_scrap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:text="@string/fa_star_solid"
+                        android:textColor="#FFC107"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_scrap"
+                        app:layout_constraintEnd_toStartOf="@id/tv_scrap"
+                        app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    tools:listitem="@layout/rv_item_comment"
-                    android:outlineProvider="bounds"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_scrap" />
+                    <TextView
+                        android:id="@+id/tv_scrap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="스크랩"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:outlineProvider="bounds"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_scrap"
+                        tools:listitem="@layout/rv_item_comment" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -218,7 +224,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:maxLines="4" />
+                    android:maxLines="4"
+                    android:text="@={viewModel.content}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

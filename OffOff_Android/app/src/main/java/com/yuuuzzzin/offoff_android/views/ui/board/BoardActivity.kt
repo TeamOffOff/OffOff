@@ -15,8 +15,8 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
-import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
+import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
 
@@ -73,6 +73,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             itemClick = { item ->
                 val intent = Intent(this@BoardActivity, PostActivity::class.java)
                 intent.putExtra("id", item.id)
+                // intent.putExtra("position", )
                 intent.putExtra("boardName", boardName)
                 intent.putExtra("boardType", item.boardType)
                 startActivity(intent)
