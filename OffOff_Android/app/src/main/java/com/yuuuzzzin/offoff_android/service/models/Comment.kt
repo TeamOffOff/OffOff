@@ -34,8 +34,7 @@ data class Comment(
 
 /* 보내는 댓글 */
 data class CommentSend(
-    @SerializedName("_id")
-    val id: String? = null,
+
     @SerializedName("boardType")
     val boardType: String,
     @SerializedName("postId")

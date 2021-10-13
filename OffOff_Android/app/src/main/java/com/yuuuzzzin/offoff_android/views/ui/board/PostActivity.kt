@@ -80,6 +80,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
             with(commentListAdapter) { submitList(it.toMutableList()) }
         })
+
+        viewModel.commentSuccessEvent.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+
+            }
+        })
     }
 
     private fun initToolbar() {
@@ -103,7 +109,16 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         likeIcon = FontDrawable(this, R.string.fa_thumbs_up_solid, true, false)
         likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
 
-        binding.tfId.endIconDrawable = writeIcon
+        binding.tfComment.endIconDrawable = writeIcon
+
+        binding.tfComment.setEndIconOnClickListener {
+            if(!binding.etComment.text.isNullOrBlank()) {
+                viewModel.writeComment(postId, boardType)
+                binding.etComment.text = null
+                binding.rvComment.scrollToPosition(binding.rvComment.adapter!!.itemCount)
+                Log.d("tag_itemCount", binding.rvComment.adapter!!.itemCount.toString())
+            }
+        }
     }
 
     private fun initRV() {
@@ -115,11 +130,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         binding.rvComment.apply {
             adapter = commentListAdapter
-            layoutManager = object : LinearLayoutManager(context) {
-                override fun canScrollVertically(): Boolean {
-                    return false
-                }
-            }
+            layoutManager =LinearLayoutManager(context)
+//                object : LinearLayoutManager(context) {
+//                override fun canScrollVertically(): Boolean {
+//                    return false
+//                }
+//            }
             isNestedScrollingEnabled = false
         }
     }

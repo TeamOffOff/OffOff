@@ -42,8 +42,8 @@ constructor(
     val alreadyLike: LiveData<Event<String>> = _alreadyLike
 
     // 댓글
-    private val _successEvent = MutableLiveData<Event<String>>()
-    val successEvent: LiveData<Event<String>> = _successEvent
+    private val _commentSuccessEvent = MutableLiveData<Event<Boolean>>()
+    val commentSuccessEvent: LiveData<Event<Boolean>> = _commentSuccessEvent
 
     fun getPost(postId: String, boardType: String) = viewModelScope.launch(Dispatchers.IO) {
 
@@ -140,10 +140,11 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.writeComment(OffoffApplication.pref.token!!, comment).let { response ->
                 if (response.isSuccessful) {
-                    //_successEvent.postValue(Event(response.body()!!.commentList))
-                    Log.d("tag_success", "writePost: ${response.body()}")
+                    _commentList.postValue(response.body()!!.commentList)
+                    _commentSuccessEvent.postValue(Event(true))
+                    Log.d("tag_success", "writeComment: ${response.body()}")
                 } else {
-                    Log.d("tag_fail", "writePost Error: ${response.code()}")
+                    Log.d("tag_fail", "writeComment Error: ${response}")
                 }
             }
         }
