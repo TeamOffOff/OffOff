@@ -70,19 +70,23 @@ class RepliesTableViewCell: UITableViewCell {
         }
         nicknameLabel.snp.makeConstraints {
             $0.left.equalTo(profileImageView.snp.right).offset(8.0)
-            $0.top.equalTo(profileImageView)
+            $0.right.equalToSuperview()
+            $0.centerY.equalTo(profileImageView)
         }
         dateLabel.snp.makeConstraints {
             $0.top.equalTo(profileImageView.snp.bottom).offset(8.0)
             $0.left.equalTo(profileImageView)
+            $0.right.equalToSuperview()
         }
         contentTextView.snp.makeConstraints {
             $0.top.equalTo(dateLabel.snp.bottom).offset(8.0)
             $0.left.equalTo(dateLabel)
+            $0.right.equalToSuperview().inset(8.0)
         }
         likeButton.snp.makeConstraints {
             $0.top.equalTo(contentTextView.snp.bottom).offset(8.0)
             $0.left.equalTo(contentTextView)
+            $0.right.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
     }

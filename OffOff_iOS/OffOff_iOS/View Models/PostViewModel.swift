@@ -22,15 +22,17 @@ class PostViewModel {
     var activityDisposeBag = DisposeBag()
     
     init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String, cell: PostPreviewCell)?>, commentButtonTapped: Observable<WritingReply>) {
+        ReplyServices.fetchReplies(of: contentId, in: boardType)
+            .bind {
+                self.replies.onNext($0)
+            }.disposed(by: disposeBag)
+        
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
             .bind {
                 self.post.onNext($0)
             }.disposed(by: disposeBag)
         
-        ReplyServices.fetchReplies(of: contentId, in: boardType)
-            .bind {
-                self.replies.onNext($0)
-            }.disposed(by: disposeBag)
+        
         
         postDeleted = Observable.combineLatest(post, deleteButtonTapped)
             .filter { $0.1 != nil && $0.0 != nil }

@@ -66,7 +66,7 @@ class PostViewController: UIViewController {
         )
         
         self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
-        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
+        self.postView.repliesTableView.estimatedRowHeight = 400
         
         // bind result
         viewModel.post
@@ -112,18 +112,32 @@ class PostViewController: UIViewController {
         viewModel.replies
             .filter { $0 != nil }
             .map { $0! }
-            .do { val in
-                // TODO: - 댓글 테이블 뷰 높이 조절
-                self.postView.repliesTableView.snp.remakeConstraints {
-                    $0.top.equalTo(self.postView.likeButton.snp.bottom).offset(8.0)
-                    $0.left.right.bottom.equalToSuperview()
-                    $0.height.equalTo(Double(val.count) * self.replyCellHeight)
-                }
-            }
             .bind(to: self.postView.repliesTableView.rx.items(cellIdentifier: RepliesTableViewCell.identifier, cellType: RepliesTableViewCell.self)) { (row, element, cell) in
                 cell.reply.onNext(element)
             }
             .disposed(by: disposeBag)
+        
+        let alert = UIAlertController(title: "댓글이 등록됐습니다.", message: nil, preferredStyle: .alert)
+        viewModel.replyAdded
+            .filter { $0 }
+            .do {
+                if $0 {
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .bind { _ in
+                alert.dismiss(animated: true, completion: nil)
+                self.replyTextView.text = ""
+                let bottomOffset = CGPoint(x: 0, y: self.postView.contentSize.height - self.postView.bounds.size.height)
+                self.postView.setContentOffset(bottomOffset, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
     }
     
@@ -239,11 +253,5 @@ extension PostViewController: UITextViewDelegate {
         }
         
         return true
-    }
-}
-
-extension PostViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return self.replyCellHeight
     }
 }

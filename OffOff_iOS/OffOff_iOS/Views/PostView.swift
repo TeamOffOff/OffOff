@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PostView: UIView {
+class PostView: UIScrollView {
     var titleLabel = UILabel().then {
         $0.font = UIFont.preferredFont(forTextStyle: .title2).bold()
         $0.adjustsFontForContentSizeCategory = true
@@ -70,7 +70,7 @@ class PostView: UIView {
     var scrollView = UIScrollView()
     var textContainerView = UIView()
     
-    var repliesTableView = UITableView().then {
+    var repliesTableView = ContentSizedTableView().then {
         $0.backgroundColor = .white
         $0.register(RepliesTableViewCell.self, forCellReuseIdentifier: RepliesTableViewCell.identifier)
         $0.isScrollEnabled = false
@@ -78,17 +78,16 @@ class PostView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(scrollView)
-        self.scrollView.addSubview(textContainerView)
+        self.addSubview(textContainerView)
         self.textContainerView.addSubview(contentTextView)
-        self.scrollView.addSubview(informationStackView)
+        self.addSubview(informationStackView)
         informationStackView.addArrangedSubview(authorLabel)
         informationStackView.addArrangedSubview(dateLabel)
-        self.scrollView.addSubview(titleLabel)
-        self.scrollView.addSubview(profileImageView)
-        self.scrollView.addSubview(likeButton)
-        self.scrollView.addSubview(scrapButton)
-        self.scrollView.addSubview(repliesTableView)
+        self.addSubview(titleLabel)
+        self.addSubview(profileImageView)
+        self.addSubview(likeButton)
+        self.addSubview(scrapButton)
+        self.addSubview(repliesTableView)
         self.makeView()
     }   
     
@@ -97,7 +96,11 @@ class PostView: UIView {
     }
     
     func makeView() {
-        scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        print(#fileID, #function, #line, "")
+        repliesTableView.snp.makeConstraints {
+            $0.top.equalTo(likeButton.snp.bottom).offset(8.0)
+            $0.left.right.bottom.equalToSuperview()
+        }
         textContainerView.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.width.equalToSuperview()
@@ -134,11 +137,6 @@ class PostView: UIView {
             $0.right.equalToSuperview().inset(12)
             $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
         }
-        repliesTableView.snp.makeConstraints {
-            $0.top.equalTo(likeButton.snp.bottom).offset(8.0)
-            $0.left.right.bottom.equalToSuperview()
-            $0.height.equalTo(0)
-        }
     }
     
     func setupView(post: PostModel) {
@@ -146,5 +144,18 @@ class PostView: UIView {
         authorLabel.text = post.author.nickname
         dateLabel.text = post.date
         contentTextView.text = post.content
+    }
+}
+
+final class ContentSizedTableView: UITableView {
+    override var contentSize:CGSize {
+        didSet {
+            invalidateIntrinsicContentSize()
+        }
+    }
+
+    override var intrinsicContentSize: CGSize {
+        layoutIfNeeded()
+        return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height)
     }
 }
