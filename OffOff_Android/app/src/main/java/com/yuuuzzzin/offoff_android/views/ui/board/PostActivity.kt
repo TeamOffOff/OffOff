@@ -1,11 +1,15 @@
 package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -115,8 +119,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             if(!binding.etComment.text.isNullOrBlank()) {
                 viewModel.writeComment(postId, boardType)
                 binding.etComment.text = null
-                binding.rvComment.scrollToPosition(binding.rvComment.adapter!!.itemCount)
-                Log.d("tag_itemCount", binding.rvComment.adapter!!.itemCount.toString())
+                hideKeyboard()
+                binding.nestedScrollView.post {
+                    binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
+                }
             }
         }
     }
@@ -166,6 +172,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         dialog.show()
     }
 
+    fun hideKeyboard() {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+
     override fun onBackPressed() {
         if (intent.getStringExtra("update") == "true") {
             val intent = Intent(applicationContext, BoardActivity::class.java)
@@ -186,7 +197,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         if (OffoffApplication.user.id != author) {
             Log.d(
                 "tag_id",
-                "id : " + OffoffApplication.user.id.toString() + "/ author: " + author.toString()
+                "id : " + OffoffApplication.user.id + "/ author: " + author.toString()
             )
             menu!!.findItem(R.id.action_delete).isVisible = false
             menu.findItem(R.id.action_edit).isVisible = false
@@ -233,6 +244,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        hideKeyboard()
+        return true
     }
 }
 
