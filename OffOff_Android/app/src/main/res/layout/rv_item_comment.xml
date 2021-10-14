@@ -12,8 +12,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="24dp"
         android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="24dp"
         android:background="?android:attr/selectableItemBackground">
 
         <ImageView
@@ -24,6 +24,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_baseline_more_vert_24"
+            app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_author"
             android:layout_width="wrap_content"
@@ -31,24 +40,24 @@
             android:text="@{item.author.nickname}"
             android:textSize="12sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/tv_content"
             app:layout_constraintStart_toEndOf="@id/iv_avatar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tv_content" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_content"
-            android:text="@{item.content}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@{item.content}"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_avatar" />
 
         <TextView
             android:id="@+id/tv_date"
-            android:text="@{item.date}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{item.date}"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_content" />
@@ -73,8 +82,8 @@
             android:layout_marginEnd="8dp"
             android:text="@{String.valueOf(item.likes.size)}"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@id/bt_reply"
             app:layout_constraintBottom_toBottomOf="@id/bt_reply"
+            app:layout_constraintEnd_toStartOf="@id/bt_reply"
             app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
         <info.androidhive.fontawesome.FontTextView
@@ -87,7 +96,6 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_content" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

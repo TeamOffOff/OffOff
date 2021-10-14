@@ -31,6 +31,9 @@ constructor(
     private val _commentList = MutableLiveData<List<Comment>>()
     val commentList: LiveData<List<Comment>> get() = _commentList
 
+    private val _comment = MutableLiveData<Comment>()
+    val comment: LiveData<Comment> get() = _comment
+
     private val _author = MutableLiveData<String>()
     val author: LiveData<String> get() = _author
 
@@ -98,7 +101,7 @@ constructor(
                         when (response.code()) {
                             OK -> {
                                 _response.postValue(response.body())
-                                Log.d("tag_success", response.body().toString())
+                                Log.d("tag_success", "likePost: ${response.body()}")
                             }
                             CREATED ->
                                 _alreadyLike.postValue(Event("이미 좋아요한 게시글입니다."))                        }
@@ -147,6 +150,33 @@ constructor(
                     Log.d("tag_fail", "writeComment Error: ${response}")
                 }
             }
+        }
+    }
+
+    fun likeComment(commentId: String) {
+
+        val activityItem = ActivityItem(
+            id = commentId,
+            boardType = boardType,
+            activity = "likes"
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.likeComment(OffoffApplication.pref.token.toString(), activityItem)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        when (response.code()) {
+                            OK -> {
+                                _comment.postValue(response.body())
+                                Log.d("tag_success", "likeComment: ${response.body()}")
+                            }
+                            CREATED ->
+                                _alreadyLike.postValue(Event("이미 좋아요한 댓글입니다."))                        }
+                    } else {
+                        Log.d("tag_fail", "likeComment Error: ${response.code()}")
+                    }
+                }
+
         }
     }
 

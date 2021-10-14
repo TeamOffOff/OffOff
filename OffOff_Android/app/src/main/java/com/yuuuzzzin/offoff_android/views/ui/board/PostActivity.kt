@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
@@ -17,6 +16,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
+import com.yuuuzzzin.offoff_android.service.models.Comment
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
@@ -85,6 +85,14 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             with(commentListAdapter) { submitList(it.toMutableList()) }
         })
 
+        viewModel.commentList.observe(binding.lifecycleOwner!!, {
+            with(commentListAdapter) { submitList(it.toMutableList()) }
+        })
+
+        viewModel.comment.observe(binding.lifecycleOwner!!, {
+            commentListAdapter.notifyItemChanged(0, it)
+        })
+
         viewModel.commentSuccessEvent.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
 
@@ -116,7 +124,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         binding.tfComment.endIconDrawable = writeIcon
 
         binding.tfComment.setEndIconOnClickListener {
-            if(!binding.etComment.text.isNullOrBlank()) {
+            if (!binding.etComment.text.isNullOrBlank()) {
                 viewModel.writeComment(postId, boardType)
                 binding.etComment.text = null
                 hideKeyboard()
@@ -128,15 +136,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun initRV() {
-        commentListAdapter = CommentListAdapter(
-            itemClick = { item ->
-                null
-            }
-        )
+        commentListAdapter = CommentListAdapter()
 
         binding.rvComment.apply {
             adapter = commentListAdapter
-            layoutManager =LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context)
 //                object : LinearLayoutManager(context) {
 //                override fun canScrollVertically(): Boolean {
 //                    return false
@@ -144,6 +148,14 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 //            }
             isNestedScrollingEnabled = false
         }
+
+        commentListAdapter.setOnLikeCommentListener(object :
+            CommentListAdapter.OnLikeCommentListener {
+            override fun onLikeComment(position: Int, comment: Comment) {
+                viewModel.likeComment(comment.id)
+                viewModel.updateCommentItem(position)
+            }
+        })
     }
 
     private fun showDeleteDialog(message: String) {
@@ -172,8 +184,9 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         dialog.show()
     }
 
-    fun hideKeyboard() {
-        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    private fun hideKeyboard() {
+        val imm: InputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
 
@@ -246,9 +259,5 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        hideKeyboard()
-        return true
-    }
 }
 

@@ -81,6 +81,6 @@ interface BoardService {
     suspend fun likeComment(
         @Header("Authorization") auth: String,
         @Body activityItem: ActivityItem
-    ): Response<ResultResponse>
+    ): Response<Comment>
 
 }
