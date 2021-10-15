@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import request
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
+from pymongo.message import query
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from controller.image import *
@@ -339,9 +340,11 @@ class CommentControl(Resource):
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board_reply"
 
-        past_likes_list = mongodb.find_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, projection_key={"_id": False, "likes": True})["likes"]
+        reply = mongodb.find_one(query={"_id":ObjectId(reply_id)}, collection_name=board_type)
+        
+        reply_past_likes_list = reply["likes"]
 
-        if user in past_likes_list:
+        if user in reply_past_likes_list:
             return {"queryStatus": "already like"}
         else:
             update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$addToSet": {"likes": user}})
@@ -349,7 +352,10 @@ class CommentControl(Resource):
         if update_status.raw_result["n"] == 0:
             return {"queryStatus": "likes update fail"}, 500
         else:
-            return {"queryStatus": "likes update success"}, 200
+            modified_reply = mongodb.find_one(query={"_id":ObjectId(reply_id)}, collection_name=board_type)
+            modified_reply["_id"] = str(modified_reply["_id"])
+            modified_reply["date"] = (modified_reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+            return modified_reply, 200
 
 
     @ownership_required
