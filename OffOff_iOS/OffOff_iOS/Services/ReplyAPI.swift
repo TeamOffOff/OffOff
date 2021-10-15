@@ -12,7 +12,7 @@ enum ReplyAPI {
     case getReplies(_ postId: String, _ boardType: String)
     case writeReply(reply: WritingReply)
 //    case deleteReply
-//    case likeReply
+    case likeReply(reply: PostActivity)
 }
 
 extension ReplyAPI: TargetType {
@@ -26,6 +26,8 @@ extension ReplyAPI: TargetType {
             return "/reply"
         case .writeReply(_):
             return "/reply"
+        case .likeReply(_):
+            return "/reply"
         }
     }
     
@@ -35,6 +37,8 @@ extension ReplyAPI: TargetType {
             return .get
         case .writeReply(_):
             return .post
+        case .likeReply(_):
+            return .put
         }
     }
     
@@ -47,6 +51,8 @@ extension ReplyAPI: TargetType {
         case .getReplies(let postId, let boardType):
             return .requestParameters(parameters: ["postId": postId, "boardType": boardType], encoding: URLEncoding.default)
         case .writeReply(let reply):
+            return .requestJSONEncodable(reply)
+        case .likeReply(let reply):
             return .requestJSONEncodable(reply)
         }
     }

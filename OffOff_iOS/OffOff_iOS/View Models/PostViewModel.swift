@@ -21,7 +21,7 @@ class PostViewModel {
     var disposeBag = DisposeBag()
     var activityDisposeBag = DisposeBag()
     
-    init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String, cell: PostPreviewCell)?>, commentButtonTapped: Observable<WritingReply>) {
+    init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String, cell: PostPreviewCell)?>, replyButtonTapped: Observable<WritingReply>) {
         ReplyServices.fetchReplies(of: contentId, in: boardType)
             .bind {
                 self.replies.onNext($0)
@@ -64,7 +64,7 @@ class PostViewModel {
             }
             .disposed(by: disposeBag)
         
-        commentButtonTapped
+        replyButtonTapped
             .bind {
                 if $0.content == "" {
                     self.replyAdded.onNext(false)

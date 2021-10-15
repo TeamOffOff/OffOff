@@ -12,7 +12,11 @@ class RepliesTableViewCell: UITableViewCell {
     
     static let identifier = "RepliesTableViewCell"
     var reply = BehaviorSubject<Reply?>(value: nil)
+    var boardTpye: String?
     var disposeBag = DisposeBag()
+    
+    var activityAlert: ((_ title: String) -> Void)?
+    var dismissAlert: ((_ animated: Bool) -> Void)?
     
     var profileImageView = UIImageView().then {
         $0.backgroundColor = .lightGray
@@ -30,6 +34,7 @@ class RepliesTableViewCell: UITableViewCell {
         $0.backgroundColor = .white
         $0.isScrollEnabled = false
         $0.sizeToFit()
+        $0.isUserInteractionEnabled = false
     }
     
     var likeButton = UIButton().then {
@@ -40,6 +45,7 @@ class RepliesTableViewCell: UITableViewCell {
         $0.imageView?.contentMode = .scaleAspectFit
         $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
         $0.titleLabel?.adjustsFontForContentSizeCategory = true
+        $0.contentHorizontalAlignment = .left
     }
     
     required init?(coder: NSCoder) {
@@ -86,7 +92,7 @@ class RepliesTableViewCell: UITableViewCell {
         likeButton.snp.makeConstraints {
             $0.top.equalTo(contentTextView.snp.bottom).offset(8.0)
             $0.left.equalTo(contentTextView)
-            $0.right.equalToSuperview()
+            //            $0.right.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
     }
@@ -102,5 +108,23 @@ class RepliesTableViewCell: UITableViewCell {
                 self.contentTextView.text = $0!.content
                 self.likeButton.setTitle("\($0!.likes.count)", for: .normal)
             }.disposed(by: disposeBag)
+        
+        self.likeButton.rx.tap.withLatestFrom(reply)
+            .filter { $0 != nil }
+            .flatMap {
+                ReplyServices.likeReply(reply: PostActivity(boardType: self.boardTpye!, _id: $0!._id, activity: "likes"))
+            }
+            .do {
+                if $0 != nil {
+                    self.activityAlert!("좋아요를 했습니다.")
+                    self.reply.onNext($0)
+                } else {
+                    self.activityAlert!("이미 좋아요를 누른 댓글입니다.")
+                }
+            }
+            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .bind { _ in
+                self.dismissAlert!(true)
+            }.disposed(by: self.disposeBag)
     }
 }

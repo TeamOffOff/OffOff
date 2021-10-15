@@ -59,7 +59,7 @@ class PostViewController: UIViewController {
             contentId: postInfo?.id ?? "",
             boardType: postInfo?.type ?? "",
             likeButtonTapped: self.postView.likeButton.rx.tap.map { (id: self.postInfo!.id, type: self.postInfo!.type, cell: self.postCell!) },
-            commentButtonTapped: self.replyButton.rx.tap.map {
+            replyButtonTapped: self.replyButton.rx.tap.map {
                 let reply = WritingReply(boardType: self.postInfo!.type, postId: self.postInfo!.id, parentReplyId: nil, content: self.replyTextView.text ?? "")
                 return reply
             }
@@ -84,6 +84,8 @@ class PostViewController: UIViewController {
                 } else {
                     self.setRightButtons(set: false)
                 }
+                
+                // TODO: 이미 좋아요 누른 게시글이면 좋아요 버튼에 표시
             }
             .disposed(by: disposeBag)
         
@@ -113,7 +115,10 @@ class PostViewController: UIViewController {
             .filter { $0 != nil }
             .map { $0! }
             .bind(to: self.postView.repliesTableView.rx.items(cellIdentifier: RepliesTableViewCell.identifier, cellType: RepliesTableViewCell.self)) { (row, element, cell) in
+                cell.boardTpye = self.postInfo?.type
                 cell.reply.onNext(element)
+                cell.activityAlert = self.activityAlert
+                cell.dismissAlert = self.dismissAlert
             }
             .disposed(by: disposeBag)
         
@@ -190,11 +195,14 @@ class PostViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    var alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     private func activityAlert(message: String) {
-        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
-        let ok = UIAlertAction(title: "확인", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
-        alert.addAction(ok)
+        alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func dismissAlert(animated: Bool = true) {
+        alert.dismiss(animated: true, completion: nil)
     }
 }
 

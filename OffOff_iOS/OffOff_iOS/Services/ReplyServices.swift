@@ -47,4 +47,20 @@ class ReplyServices {
                 }
             }
     }
+    
+    static func likeReply(reply: PostActivity) -> Observable<Reply?> {
+        ReplyServices.provider
+            .rx.request(.likeReply(reply: reply))
+            .asObservable()
+            .map {
+                
+                if $0.statusCode == 200 {
+                    let reply = try JSONDecoder().decode(Reply.self, from: $0.data)
+                    return reply
+                } else {
+                    return nil
+                }
+            }
+            .catchErrorJustReturn(nil)
+    }
 }
