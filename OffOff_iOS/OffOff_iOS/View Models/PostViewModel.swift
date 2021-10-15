@@ -21,7 +21,7 @@ class PostViewModel {
     var disposeBag = DisposeBag()
     var activityDisposeBag = DisposeBag()
     
-    init(contentId: String, boardType: String, likeButtonTapped: Observable<(id: String, type: String, cell: PostPreviewCell)?>, replyButtonTapped: Observable<WritingReply>) {
+    init(contentId: String, boardType: String, likeButtonTapped: Observable<PostLikeModel?>, replyButtonTapped: Observable<WritingReply>) {
         ReplyServices.fetchReplies(of: contentId, in: boardType)
             .bind {
                 self.replies.onNext($0)
@@ -64,6 +64,26 @@ class PostViewModel {
             }
             .disposed(by: disposeBag)
         
+        var cell: PostPreviewCell?
+        likeButtonTapped
+            .filter { $0 != nil }
+            .do { cell = $0!.cell }
+            .flatMap { val -> Observable<PostModel?> in
+                let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
+                self.activityDisposeBag = DisposeBag()
+                return PostServices.likePost(post: post)
+            }
+            .bind {
+                if $0 != nil {
+                    self.post.onNext($0)
+                    self.liked.onNext(true)
+                    cell!.postModel.accept($0)
+                } else {
+                    self.liked.onNext(false)
+                }
+            }
+            .disposed(by: disposeBag)
+        
         replyButtonTapped
             .bind {
                 if $0.content == "" {
@@ -80,4 +100,10 @@ class PostViewModel {
             }
             .disposed(by: disposeBag)
     }
+}
+
+struct PostLikeModel {
+    var id: String
+    var type: String
+    var cell: PostPreviewCell
 }

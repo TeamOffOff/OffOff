@@ -58,7 +58,10 @@ class PostViewController: UIViewController {
         viewModel = PostViewModel(
             contentId: postInfo?.id ?? "",
             boardType: postInfo?.type ?? "",
-            likeButtonTapped: self.postView.likeButton.rx.tap.map { (id: self.postInfo!.id, type: self.postInfo!.type, cell: self.postCell!) },
+            likeButtonTapped: self.postView.likeButton.rx.tap
+                .map {
+                    PostLikeModel(id: self.postInfo!.id, type: self.postInfo!.type, cell: self.postCell!)
+                },
             replyButtonTapped: self.replyButton.rx.tap.map {
                 let reply = WritingReply(boardType: self.postInfo!.type, postId: self.postInfo!.id, parentReplyId: nil, content: self.replyTextView.text ?? "")
                 return reply
@@ -102,12 +105,16 @@ class PostViewController: UIViewController {
         
         viewModel.liked
             .skip(1)
-            .bind {
+            .do {
                 if $0 {
                     self.activityAlert(message: "좋아요를 했습니다.")
                 } else {
                     self.activityAlert(message: "이미 좋아요한 게시글 입니다.")
                 }
+            }
+            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .bind { _ in
+                self.dismissAlert(animated: true)
             }
             .disposed(by: disposeBag)
         
@@ -127,15 +134,17 @@ class PostViewController: UIViewController {
             .filter { $0 }
             .do {
                 if $0 {
+                    self.replyTextView.text = ""
+                    self.replyTextView.resignFirstResponder()
                     self.present(alert, animated: true, completion: nil)
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
             .bind { _ in
                 alert.dismiss(animated: true, completion: nil)
-                self.replyTextView.text = ""
-                let bottomOffset = CGPoint(x: 0, y: self.postView.contentSize.height - self.postView.bounds.size.height)
-                self.postView.setContentOffset(bottomOffset, animated: true)
+                if self.postView.bounds.size.height < self.postView.contentSize.height {
+                    self.postView.scrollToBottom()
+                }
             }
             .disposed(by: disposeBag)
         
@@ -242,18 +251,18 @@ extension PostViewController: UITextViewDelegate {
         return (string as NSString).boundingRect(with: CGSize(width: width, height: Double.greatestFiniteMagnitude),
                                                  options: NSStringDrawingOptions.usesLineFragmentOrigin,
                                                  attributes: [NSAttributedString.Key.font: font],
-            context: nil).size
+                                                 context: nil).size
     }
-
+    
     // Text가 4줄 이상이면, 스크롤이 되게하고, 텍스트뷰가 커지지 않도록
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
         var textWidth = textView.frame.inset(by: textView.textContainerInset).width
         textWidth -= 2.0 * textView.textContainer.lineFragmentPadding
-
+        
         let boundingRect = sizeOfString(string: newText, constrainedToWidth: Double(textWidth), font: textView.font!)
         let numberOfLines = boundingRect.height / textView.font!.lineHeight
-
+        
         if numberOfLines >= 4.0 {
             textView.isScrollEnabled = true
         } else {
