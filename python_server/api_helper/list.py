@@ -12,6 +12,10 @@ import pprint
 
 mongodb = mongo.MongoHelper()
 
+SearchList = Namespace(
+    "searchlist", 
+    description="검색 관련 API")
+
 BoardList = Namespace(
     name="boardlist",
     description="게시판목록을 불러오는 API")
@@ -175,6 +179,36 @@ class PostListControl(Resource):
         result = mongodb.drop(collection_name=board_type)
 
         return {"queryStatus": result}
+
+"""
+검색 관련 API
+"""
+@SearchList.route("/<string:board_type>")
+class SearchControl(Resource):
+    @jwt_required()
+    def get(self,board_type):
+        # 회원여부
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
+
+        keyward = request.args.get("key")
+
+        # 전체 게시판
+        if board_type == "all":
+            pass
+
+        # 특정 게시판
+        else:
+            result = list(mongodb.find(collection_name=board_type,query={"$text":{"$search":keyward}}))
+        
+        for post in result:
+            post["_id"] = str(post["_id"])
+            post["date"] = str(post["date"])
+        
+        return{
+            "postList": result
+        }
 
 
 @MessageList.route("/<string:message_type>")  # send, receive
