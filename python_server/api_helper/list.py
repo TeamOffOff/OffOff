@@ -192,7 +192,8 @@ class SearchControl(Resource):
         if not user_id:
             return {"queryStatus": "wrong Token"}, 403
 
-        keyward = request.args.get("key")
+        keyword = request.args.get("key")
+        print(keyword)
 
         # 전체 게시판
         if board_type == "all":
@@ -200,7 +201,12 @@ class SearchControl(Resource):
 
         # 특정 게시판
         else:
-            result = list(mongodb.find(collection_name=board_type,query={"$text":{"$search":keyward}}))
+            board_type = board_type + "_board"
+            print(board_type)
+            # 현재는 오름차순 -> 내림차순으로 정리해야함
+            result = list(mongodb.find(collection_name=board_type,query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}))
+            # result = list(mongodb.find(collection_name=board_type,query={"$text":{"$search":keyword}}))
+            print(result)
         
         for post in result:
             post["_id"] = str(post["_id"])
