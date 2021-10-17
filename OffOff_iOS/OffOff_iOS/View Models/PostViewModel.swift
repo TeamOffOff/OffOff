@@ -100,6 +100,13 @@ class PostViewModel {
             }
             .disposed(by: disposeBag)
     }
+    
+    func reloadPost(contentId: String, boardType: String) {
+        PostServices.fetchPost(content_id: contentId, board_type: boardType)
+            .bind {
+                self.post.onNext($0)
+            }.disposed(by: disposeBag)
+    }
 }
 
 struct PostLikeModel {

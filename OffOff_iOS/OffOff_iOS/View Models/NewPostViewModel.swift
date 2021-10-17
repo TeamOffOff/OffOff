@@ -10,50 +10,46 @@ import RxSwift
 import RxCocoa
 
 class NewPostViewModel {
-    let postCreation: Driver<Bool>
-    let isTitleConfirmed: Driver<Bool>
-    let isContentConfiremd: Driver<Bool>
-    let postCreated: Observable<Bool>
-    let newPost: PublishSubject<PostModel?> = PublishSubject<PostModel?>()
+    let isTitleConfirmed = BehaviorSubject<Bool>(value: false)
+    let isContentConfiremd = BehaviorSubject<Bool>(value: false)
+    var postCreated = Observable<PostModel?>.just(nil)
     
     init(
         input: (
             titleText: Driver<String>,
             contentText: Driver<String>,
-            createButtonTap: Signal<()>
+            createButtonTap: Signal<()>,
+            post: Observable<PostModel?>
         )
     ) {
         // outputs
+        let titleAndContent = Driver.combineLatest(input.titleText, input.contentText, input.post.asDriver(onErrorJustReturn: nil)) { (title: $0, content: $1, post: $2) }
         
-        isTitleConfirmed = input.titleText.map { $0 != "" }
-        isContentConfiremd = input.contentText.map { $0 != "" }
-        
-        let titleAndContent = Driver.combineLatest(input.titleText, input.contentText) { (title: $0, content: $1) }
-        
-        postCreation = input.createButtonTap.withLatestFrom(titleAndContent)
-            .flatMap { pair in
-                return Driver.just(pair.title != "" && pair.content != "")
-            }
-        
-        var postModel: WritingPost?
-        postCreated = postCreation.asObservable().withLatestFrom(titleAndContent.asObservable()) {
-            print(#fileID, #function, #line, "")
-            if $0 {
-                print($1)
-                
-                // TODO: 현재 로그인하고 있는 회원정보, 현재 접속하고 있는 게시판 정보를 넣어서 새로운 포스트 작성
-                if Constants.currentBoard != nil && Constants.loginUser != nil {
-                    postModel = WritingPost(boardType: Constants.currentBoard!, author: Constants.loginUser!.subInformation.nickname, title: $1.title, content: $1.content)
+        postCreated = input.createButtonTap.withLatestFrom(titleAndContent)
+            .asObservable()
+            .flatMap { val -> Observable<PostModel?> in
+                if val.title == "" {
+                    self.isTitleConfirmed.onNext(false)
+                    return Observable.just(nil)
                 }
+                if val.content == "" {
+                    self.isContentConfiremd.onNext(false)
+                    return Observable.just(nil)
+                }
+                
+                if Constants.currentBoard != nil && Constants.loginUser != nil {
+                    var post = WritingPost(boardType: Constants.currentBoard!, author: Constants.loginUser!._id, title: val.title, content: val.content)
+                    
+                    if val.post != nil {
+                        post._id = val.post!._id
+                        post.author = val.post!.author._id!
+                        return PostServices.modifyPost(post: post)
+                    }
+                    
+                    return PostServices.createPost(post: post)
+                }
+                return Observable.just(nil)
             }
-        }
-        .debug()
-        .flatMap { _ -> Observable<Bool> in
-            if postModel != nil {
-                return PostServices.createPost(post: postModel!).map { $0 }
-            }
-            return Observable.just(false)
-        }
     }
 }
 

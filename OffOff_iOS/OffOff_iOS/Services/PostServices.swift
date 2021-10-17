@@ -27,17 +27,18 @@ public class PostServices {
             .catchErrorJustReturn(nil)
     }
     
-    static func createPost(post: WritingPost) -> Observable<Bool> {
+    static func createPost(post: WritingPost) -> Observable<PostModel?> {
         PostServices.provider
             .rx.request(.makePost(post: post))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
-                    return true
+                    let post = try JSONDecoder().decode(PostModel.self, from: $0.data)
+                    return post
                 }
-                return false
+                return nil
             }
-            .catchErrorJustReturn(false)
+            .catchErrorJustReturn(nil)
     }
     
     static func deletePost(post: DeletingPost) -> Observable<Bool> {
@@ -72,19 +73,22 @@ public class PostServices {
             }
     }
     
-    
-    // 새로 작성한 포스트를 바로 받아오는 버젼
-//    static func createPost(post: Post) -> Observable<Post?> {
-//        PostServices.provider
-//            .rx.request(.makePost(post: post))
-//            .asObservable()
-//            .map {
-//                if $0.statusCode == 200 {
-//                    let post = try JSONDecoder().decode(Post.self, from: $0.data)
-//                    return post
-//                }
-//                return nil
-//            }
-//            .catchErrorJustReturn(nil)
-//    }
+    static func modifyPost(post: WritingPost) -> Observable<PostModel?> {
+        PostServices.provider
+            .rx.request(.modifyPost(post: post))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    do {
+                        let postModel = try JSONDecoder().decode(PostModel.self, from: $0.data)
+                        return postModel
+                    } catch {
+                        print(#fileID, #function, #line, "Failed to decode:\n \(try $0.mapJSON())")
+                        return nil
+                    }
+                } else {
+                    return nil
+                }
+            }
+    }
 }

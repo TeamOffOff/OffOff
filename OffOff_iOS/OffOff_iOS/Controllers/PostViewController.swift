@@ -189,6 +189,14 @@ class PostViewController: UIViewController {
             deleteButton.rx.tap.bind {
                 self.deletingConfirmAlert()
             }.disposed(by: rightButtonsDisposeBag)
+            editButton.rx.tap.asObservable().withLatestFrom(viewModel.post)
+                .bind {
+                    let vc = NewPostViewController()
+                    vc.postToModify = $0
+                    let naviVC = UINavigationController(rootViewController: vc)
+                    naviVC.modalPresentationStyle = .fullScreen
+                    self.present(naviVC, animated: true, completion: nil)
+                }.disposed(by: rightButtonsDisposeBag)
         } else {
             self.navigationItem.setRightBarButtonItems([], animated: false)
             rightButtonsDisposeBag = DisposeBag()

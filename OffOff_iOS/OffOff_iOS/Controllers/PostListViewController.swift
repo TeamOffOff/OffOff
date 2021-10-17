@@ -21,11 +21,7 @@ class PostListViewController: UITableViewController {
         self.tableView.delegate = nil
         self.tableView.dataSource = nil
         self.title = boardName ?? ""
-        self.navigationController?.navigationBar.prefersLargeTitles = false
-        self.navigationController?.navigationBar.barTintColor = .mainColor
-        self.navigationController?.navigationBar.isTranslucent = false
-        self.navigationController?.navigationBar.tintColor = .white
-        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        self.navigationController?.navigationBar.setAppearance()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: nil, action: nil)
         
@@ -45,6 +41,8 @@ class PostListViewController: UITableViewController {
         // tableview refresh control
         let refreshControl = UIRefreshControl()
         self.tableView.refreshControl = refreshControl
+        
+        Constants.currentBoard = self.boardType
         
         // bind result
         viewModel!.postList
@@ -83,7 +81,6 @@ class PostListViewController: UITableViewController {
             .rx.tap
             .bind {
                 let vc = NewPostViewController()
-                Constants.currentBoard = self.boardType
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)

@@ -13,9 +13,9 @@ import Moya
 enum PostAPI {
     case getPost(content_id: String, board_type: String)
     case makePost(post: WritingPost)
-//    case modifyPost
     case deletePost(post: DeletingPost)
     case likePost(post: PostActivity)
+    case modifyPost(post: WritingPost)
 }
 
 extension PostAPI: TargetType {
@@ -33,6 +33,8 @@ extension PostAPI: TargetType {
             return "/post"
         case .likePost(_):
             return "/post"
+        case .modifyPost(_):
+            return "/post"
         }
     }
     
@@ -45,6 +47,8 @@ extension PostAPI: TargetType {
         case .deletePost(_):
             return .delete
         case .likePost(_):
+            return .put
+        case .modifyPost(_):
             return .put
         }
     }
@@ -62,6 +66,8 @@ extension PostAPI: TargetType {
         case .deletePost(let post):
             return .requestJSONEncodable(post)
         case .likePost(let post):
+            return .requestJSONEncodable(post)
+        case .modifyPost(let post):
             return .requestJSONEncodable(post)
         }
     }

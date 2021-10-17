@@ -362,7 +362,7 @@ extension UINavigationBar {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = backgroundColor
         appearance.titleTextAttributes = [.foregroundColor: titleColor]
-        
+        self.tintColor = titleColor
         self.standardAppearance = appearance
         self.scrollEdgeAppearance = appearance
     }
