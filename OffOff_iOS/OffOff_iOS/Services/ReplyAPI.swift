@@ -11,8 +11,8 @@ import Moya
 enum ReplyAPI {
     case getReplies(_ postId: String, _ boardType: String)
     case writeReply(reply: WritingReply)
-//    case deleteReply
     case likeReply(reply: PostActivity)
+    case deleteReply(reply: DeletingReply)
 }
 
 extension ReplyAPI: TargetType {
@@ -28,6 +28,8 @@ extension ReplyAPI: TargetType {
             return "/reply"
         case .likeReply(_):
             return "/reply"
+        case .deleteReply(_):
+            return "/reply"
         }
     }
     
@@ -39,6 +41,8 @@ extension ReplyAPI: TargetType {
             return .post
         case .likeReply(_):
             return .put
+        case .deleteReply(_):
+            return .delete
         }
     }
     
@@ -53,6 +57,8 @@ extension ReplyAPI: TargetType {
         case .writeReply(let reply):
             return .requestJSONEncodable(reply)
         case .likeReply(let reply):
+            return .requestJSONEncodable(reply)
+        case .deleteReply(let reply):
             return .requestJSONEncodable(reply)
         }
     }

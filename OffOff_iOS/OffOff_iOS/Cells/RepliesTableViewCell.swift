@@ -14,9 +14,13 @@ class RepliesTableViewCell: UITableViewCell {
     var reply = BehaviorSubject<Reply?>(value: nil)
     var boardTpye: String?
     var disposeBag = DisposeBag()
+    var alertDisposeBag = DisposeBag()
     
     var activityAlert: ((_ title: String) -> Void)?
     var dismissAlert: ((_ animated: Bool) -> Void)?
+    var presentMenuAlert: ((_ alert: UIAlertController) -> Void)?
+    
+    var replies = BehaviorSubject<[Reply]?>(value: nil)
     
     var profileImageView = UIImageView().then {
         $0.backgroundColor = .lightGray
@@ -48,6 +52,11 @@ class RepliesTableViewCell: UITableViewCell {
         $0.contentHorizontalAlignment = .left
     }
     
+    var menubutton = UIButton().then {
+        $0.setTitle("...", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -64,6 +73,7 @@ class RepliesTableViewCell: UITableViewCell {
         self.contentView.addSubview(dateLabel)
         self.contentView.addSubview(contentTextView)
         self.contentView.addSubview(likeButton)
+        self.contentView.addSubview(menubutton)
         self.contentView.backgroundColor = .white
         makeView()
         bindData()
@@ -76,7 +86,6 @@ class RepliesTableViewCell: UITableViewCell {
         }
         nicknameLabel.snp.makeConstraints {
             $0.left.equalTo(profileImageView.snp.right).offset(8.0)
-            $0.right.equalToSuperview()
             $0.centerY.equalTo(profileImageView)
         }
         dateLabel.snp.makeConstraints {
@@ -94,6 +103,12 @@ class RepliesTableViewCell: UITableViewCell {
             $0.left.equalTo(contentTextView)
             //            $0.right.equalToSuperview()
             $0.bottom.equalToSuperview()
+        }
+        menubutton.snp.makeConstraints {
+            $0.centerY.equalTo(nicknameLabel)
+            $0.width.equalTo(20)
+            $0.right.equalToSuperview().inset(8.0)
+            $0.left.equalTo(nicknameLabel.snp.right)
         }
     }
     
@@ -126,5 +141,42 @@ class RepliesTableViewCell: UITableViewCell {
             .bind { _ in
                 self.dismissAlert!(true)
             }.disposed(by: self.disposeBag)
+        
+        self.menubutton.rx.tap.withLatestFrom(reply)
+            .filter { $0 != nil }
+            .bind {
+                self.showMenuAlert(reply: $0!)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func showMenuAlert(reply: Reply) {
+        self.alertDisposeBag = DisposeBag()
+        let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
+        let delete = UIAlertAction(title: "삭제", style: .default) { _ in
+            let delReply = DeletingReply(_id: reply._id, postId: reply.postId, boardType: reply.boardType, author: reply.author._id!)
+            ReplyServices.deleteReply(reply: delReply)
+                .filter { $0 != nil }
+                .do {
+                    self.activityAlert!("댓글을 삭제했습니다.")
+                    self.replies.onNext($0)
+                }
+                .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+                .bind { _ in
+                    self.dismissAlert!(true)
+                }
+                .disposed(by: self.alertDisposeBag)
+        }
+        
+        let report = UIAlertAction(title: "신고", style: .default)
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        
+        if Constants.loginUser?._id == reply.author._id {
+            alert.addAction(delete)
+        }
+        alert.addAction(report)
+        alert.addAction(cancel)
+    
+        presentMenuAlert!(alert)
     }
 }

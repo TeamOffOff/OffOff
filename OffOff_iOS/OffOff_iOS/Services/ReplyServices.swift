@@ -63,4 +63,18 @@ class ReplyServices {
             }
             .catchErrorJustReturn(nil)
     }
+    
+    static func deleteReply(reply: DeletingReply) -> Observable<[Reply]?> {
+        ReplyServices.provider
+            .rx.request(.deleteReply(reply: reply))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    let replies = try JSONDecoder().decode(ReplyList.self, from: $0.data)
+                    return replies.replyList
+                }
+                return nil
+            }
+            .catchErrorJustReturn(nil)
+    }
 }

@@ -48,3 +48,18 @@ struct Reply: Codable {
 struct ReplyList: Codable {
     var replyList: [Reply]
 }
+
+struct DeletingReply: Codable {
+    var _id: String
+    var postId: String
+    var boardType: String
+    var author: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(postId, forKey: .postId)
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(author, forKey: .author)
+    }
+}

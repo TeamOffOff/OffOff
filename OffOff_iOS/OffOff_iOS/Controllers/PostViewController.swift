@@ -120,12 +120,15 @@ class PostViewController: UIViewController {
         
         viewModel.replies
             .filter { $0 != nil }
+            .do { self.postCell?.commentLabel.label.text = "\($0!.count)"}
             .map { $0! }
             .bind(to: self.postView.repliesTableView.rx.items(cellIdentifier: RepliesTableViewCell.identifier, cellType: RepliesTableViewCell.self)) { (row, element, cell) in
                 cell.boardTpye = self.postInfo?.type
                 cell.reply.onNext(element)
                 cell.activityAlert = self.activityAlert
                 cell.dismissAlert = self.dismissAlert
+                cell.presentMenuAlert = self.presentMenuAlert
+                cell.replies = self.viewModel.replies
             }
             .disposed(by: disposeBag)
         
@@ -220,6 +223,12 @@ class PostViewController: UIViewController {
     
     private func dismissAlert(animated: Bool = true) {
         alert.dismiss(animated: true, completion: nil)
+    }
+    
+    var menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    private func presentMenuAlert(alert: UIAlertController) {
+        menuAlert = alert
+        self.present(menuAlert, animated: true, completion: nil)
     }
 }
 
