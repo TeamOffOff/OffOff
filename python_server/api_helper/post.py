@@ -240,9 +240,11 @@ class ReplyControl(Resource):
             return {"queryStatus": "wrong Token"}, 403
 
         # 클라이언트에서 받은 변수 가져오기
-        request_info, post_id, board_type, user = get_variables()
-        if not user:
-            return {"queryStatus": "wrong Token"}, 403
+        request_info = request.get_json()
+        post_id = request_info["postId"]
+        board_type = request_info["boardType"]
+        del request_info["_id"]
+
         print(board_type)
         
         # post 컬랙션 이름으로
@@ -263,7 +265,7 @@ class ReplyControl(Resource):
         request_info["date"] = datetime.now()
 
         # 회원정보 embedded 형태로 등록
-        making_reference = MakeReference(board_type=reply_board_type, user=user)
+        making_reference = MakeReference(board_type=reply_board_type, user=user_id)
         author = making_reference.embed_author_information_in_object()
         request_info["author"] = author
 
@@ -356,9 +358,9 @@ class ReplyControl(Resource):
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
 
-        # 대댓글 있는지 여부 -> 프론트에서 판단 해줄 수 있나?
-        whether_subreply = mongodb.find_one(query={"_id": reply_id}, collection_name=reply_board_type)
+        whether_subreply = request_info["ChildrenReplies"]
         print(whether_subreply)
+        # 있으면 Ture, 없으면 False
 
         if not whether_subreply:  # 대댓글이 없는 경우
             result = mongodb.delete_one(query={"_id": ObjectId(reply_id)},
@@ -389,6 +391,7 @@ class ReplyControl(Resource):
                        "replyList": reply_list
                    }, 200
 
+
 @SubReply.route("")
 class SubReplyControl(Resource):
     """대댓글 생성, 삭제, 좋아요"""
@@ -400,9 +403,9 @@ class SubReplyControl(Resource):
             return {"queryStatus": "wrong Token"}, 403
 
         # 클라이언트에서 받은 변수 가져오기
-        request_info, post_id, board_type, user = get_variables()
-        if not user:
-            return {"queryStatus": "wrong Token"}, 403
+        request_info = request.get_json()
+        post_id = request_info["postId"]
+        board_type = request_info["boardType"]
         parent_reply_id = request_info["parentReplyId"]
         print(board_type)
 
@@ -425,7 +428,7 @@ class SubReplyControl(Resource):
         request_info["date"] = request_info["date"].strftime("%Y년 %m월 %d일 %H시 %M분")
 
         # 회원정보 embedded 형태로 등록
-        making_reference = MakeReference(board_type=reply_board_type, user=user)
+        making_reference = MakeReference(board_type=reply_board_type, user=user_id)
         author = making_reference.embed_author_information_in_object()
         request_info["author"] = author
 
@@ -433,6 +436,9 @@ class SubReplyControl(Resource):
         request_info["likes"] = []
 
         result = mongodb.update_one(query={"_id":ObjectId(parent_reply_id)}, collection_name=reply_board_type, modify={"$addToSet":{"childrenReplies":request_info}})
+
+        # 회원활동 정보 link 형태로 등록
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=parent_reply_id, operator="$addToSet")
 
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
@@ -448,9 +454,13 @@ class SubReplyControl(Resource):
     def delete(self):  # 대댓글 삭제
         """대댓글 삭제"""
         # 클라이언트에서 받은 변수 가져오기
-        request_info, reply_id, board_type, user = get_variables()
+        request_info = request.get_json()
         post_id = request_info["postId"]
+        board_type = request_info["boardType"]
+        parent_reply_id = request_info["parentReplyId"]
         print(board_type)
+
+        user_id = check_jwt()
 
         # post 컬랙션 이름으로
         post_board_type = board_type + "_board"
@@ -466,19 +476,21 @@ class SubReplyControl(Resource):
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
 
-        # 대댓글 고유 id를 프론트에서 만들어 줄 수 있나?
-        subreply_id = request_info["id"]
-        result = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=reply_board_type, modify={"$pull":{"childrenReplies.id": subreply_id}})
+        # 삭제
+        subreply_id = request_info["_id"]
+        print(subreply_id)
+        # $elemMatch 없어야 삭제됨
+        result = mongodb.update_one(query={"_id": ObjectId(parent_reply_id)}, collection_name=reply_board_type, modify={"$pull":{"childrenReplies":{"_id":subreply_id}}})
 
         if result.raw_result["n"] == 0:
-                    return {"queryStatus": "shift update fail"}, 500
+                    return {"queryStatus": "subrely delete fail"}, 500
 
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
 
         # 회원활동정보 삭제
-        making_reference = MakeReference(board_type=reply_board_type, user=user)
-        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
+        making_reference = MakeReference(board_type=reply_board_type, user=user_id)
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=parent_reply_id, operator="$pull")
 
         return {
                        "replyList": reply_list
@@ -486,3 +498,4 @@ class SubReplyControl(Resource):
 
 
 
+## 댓글 대댓글 author이랑 user랑 일치하는지 확인하기 !!!!
