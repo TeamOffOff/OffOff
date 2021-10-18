@@ -323,7 +323,7 @@ class ReplyControl(Resource):
         reply_past_likes_list = reply["likes"]
 
         if user in reply_past_likes_list:
-            return {"queryStatus": "already like"}
+            return {"queryStatus": "already like"}, 201
         else:
             update_status = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$addToSet": {"likes": user}})
 
@@ -358,7 +358,7 @@ class ReplyControl(Resource):
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
 
-        whether_subreply = request_info["ChildrenReplies"]
+        whether_subreply = request_info["isChildReply"]
         print(whether_subreply)
         # 있으면 Ture, 없으면 False
 
@@ -495,7 +495,50 @@ class SubReplyControl(Resource):
         return {
                        "replyList": reply_list
                    }, 200
+    
+    @jwt_required()
+    def put(self):
+        """좋아요를 저장합니다"""
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
+
+        # 클라이언트에서 받은 변수 가져오기
+        request_info = request.get_json()
+        parent_reply_id, subreply_id = request_info["_id"].split(".")
+        board_type = request_info["boardType"]
 
 
+        # db 댓글컬랙션 명으로 변경
+        board_type = board_type + "_board_reply"
 
+        # 해당 댓글 찾기
+        reply = mongodb.find_one(query={"_id":ObjectId(parent_reply_id)}, collection_name=board_type)
+        
+        # 해당 댓글의 대댓글 리스트
+        children_replies = reply["childrenReplies"]
+
+        # 해당 subreply 찾기
+        for subreply in children_replies:
+            if subreply["_id"] == subreply_id:
+                subreply_past_likes_list = subreply["likes"]
+                break
+        
+        # 이미 좋아요를 누른 경우
+        if user_id in subreply_past_likes_list:
+            return {"queryStatus": "already like"}, 201
+        else:
+            update_status = mongodb.update_one(query={"_id": ObjectId(parent_reply_id)}, collection_name=board_type, modify={"$addToSet": {"childrenReplies.$[elem].likes": user_id}}, array_filters=[{"elem._id":subreply_id}])
+
+        # 좋아요한 사용자 리스트 업데이트 오류 발생
+        if update_status.raw_result["n"] == 0:
+            return {"queryStatus": "likes update fail"}, 500
+
+        modified_reply = mongodb.find_one(query={"_id":ObjectId(parent_reply_id)}, collection_name=board_type)
+        modified_reply["_id"] = str(modified_reply["_id"])
+        if modified_reply["date"]:  # 댓글의 date가 살아있는 경우(대댓글이 있는 상태에서 삭제되면 date도 null로 바뀜)
+            modified_reply["date"] = (modified_reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+        return modified_reply, 200
+
+## subreplies 들은 datetime을 문자열로 바꿔서 저장하는데,,,,,,댓글은 어떻게할지 다시 고민해보기
 ## 댓글 대댓글 author이랑 user랑 일치하는지 확인하기 !!!!
