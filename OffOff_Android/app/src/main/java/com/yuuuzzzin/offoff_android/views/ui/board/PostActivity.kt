@@ -16,13 +16,18 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
-import com.yuuuzzzin.offoff_android.service.models.Comment
+import com.yuuuzzzin.offoff_android.utils.Constants.DELETE_COMMENT
+import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.CommentListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
@@ -74,6 +79,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             invalidateOptionsMenu()
         })
 
+        viewModel.successLike.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                showSuccessLikeDialog(it)
+            }
+        })
+
         viewModel.alreadyLike.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
                 showAlreadyLikeDialog(it)
@@ -85,17 +96,25 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             with(commentListAdapter) { submitList(it.toMutableList()) }
         })
 
-        viewModel.commentList.observe(binding.lifecycleOwner!!, {
-            with(commentListAdapter) { submitList(it.toMutableList()) }
-        })
-
         viewModel.comment.observe(binding.lifecycleOwner!!, {
-            commentListAdapter.notifyItemChanged(0, it)
+            Log.d("tag_item_", "$it")
         })
 
         viewModel.commentSuccessEvent.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
 
+            }
+        })
+
+        viewModel.showCommentDialog.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                showCommentOptionDialog(it)
+            }
+        })
+
+        viewModel.showMyCommentDialog.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                showMyCommentOptionDialog(it)
             }
         })
     }
@@ -136,7 +155,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun initRV() {
-        commentListAdapter = CommentListAdapter()
+        commentListAdapter = CommentListAdapter(binding.lifecycleOwner!!, viewModel)
 
         binding.rvComment.apply {
             adapter = commentListAdapter
@@ -149,13 +168,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             isNestedScrollingEnabled = false
         }
 
-        commentListAdapter.setOnLikeCommentListener(object :
-            CommentListAdapter.OnLikeCommentListener {
-            override fun onLikeComment(position: Int, comment: Comment) {
-                viewModel.likeComment(comment.id)
-                viewModel.updateCommentItem(position)
-            }
-        })
+//        commentListAdapter.setOnLikeCommentListener(object :
+//            CommentListAdapter.OnLikeCommentListener {
+//            override fun onLikeComment(viewHolder: CommentListAdapter.ViewHolder, comment: Comment) {
+//                viewModel.likeComment(comment.id)
+//                viewHolder.comment.value =
+//            }
+//        })
     }
 
     private fun showDeleteDialog(message: String) {
@@ -176,6 +195,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         dialog.show()
     }
 
+    private fun showSuccessLikeDialog(message: String) {
+        val dialog = AlertDialog.Builder(this).create()
+        dialog.setMessage(message)
+        // dialog.setNegativeButton("확인", null)
+        CoroutineScope(Dispatchers.Main).launch {
+            dialog.show()
+            delay(2000)
+            dialog.dismiss()
+        }
+    }
+
     private fun showAlreadyLikeDialog(message: String) {
         val dialog = AlertDialog.Builder(this)
         dialog.setMessage(message)
@@ -188,6 +218,75 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         val imm: InputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+
+    private fun showMyCommentOptionDialog(commentId: String) {
+
+        val array = arrayOf(
+            DELETE_COMMENT,
+            REPORT_COMMENT
+        )
+        val builder = AlertDialog.Builder(this)
+
+        builder.setItems(array) { _, which ->
+            val selected = array[which]
+
+            try {
+                when (which) {
+                    0 -> {
+                        showCommentDeleteDialog(commentId)
+                        //viewModel.deleteComment(commentId, postId, boardType)
+                        true
+                    }
+                    1-> {
+                        true
+                    }
+                }
+
+            } catch (e: IllegalArgumentException) {
+
+            }
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun showCommentOptionDialog(commentId: String) {
+
+        val array = arrayOf(
+            REPORT_COMMENT
+        )
+        val builder = AlertDialog.Builder(this)
+
+        builder.setItems(array) { _, which ->
+            val selected = array[which]
+
+            try {
+                when (which) {
+                    0 -> {
+                        true
+                    }
+                }
+
+            } catch (e: IllegalArgumentException) {
+
+            }
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun showCommentDeleteDialog(commentId: String) {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setMessage("댓글을 삭제하시겠습니까?")
+        dialog.setIcon(android.R.drawable.ic_dialog_alert)
+        dialog.setPositiveButton("예") { dialog, which ->
+            viewModel.deleteComment(commentId, postId, boardType)
+        }
+        dialog.setNegativeButton("아니오", null)
+        dialog.show()
     }
 
     override fun onBackPressed() {

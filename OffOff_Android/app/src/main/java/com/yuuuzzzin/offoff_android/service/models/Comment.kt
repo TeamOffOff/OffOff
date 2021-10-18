@@ -26,7 +26,7 @@ data class Comment(
     @SerializedName("author")
     val author: Author,
     @SerializedName("likes")
-    val likes:List<String> = emptyList()
+    val likes: List<String> = emptyList()
 ) : Identifiable {
     override val identifier: Any
         get() = id
@@ -34,7 +34,8 @@ data class Comment(
 
 /* 보내는 댓글 */
 data class CommentSend(
-
+    @SerializedName("_id")
+    val id: String? = null,
     @SerializedName("boardType")
     val boardType: String,
     @SerializedName("postId")
@@ -42,5 +43,7 @@ data class CommentSend(
     @SerializedName("parentReplyId")
     val parentReplyId: String? = null,
     @SerializedName("content")
-    val content: String,
+    val content: String? = null,
+    @SerializedName("author")
+    val author: String? = null
 )

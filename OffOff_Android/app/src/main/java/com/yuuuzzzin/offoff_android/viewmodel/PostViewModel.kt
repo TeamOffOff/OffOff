@@ -31,7 +31,7 @@ constructor(
     private val _commentList = MutableLiveData<List<Comment>>()
     val commentList: LiveData<List<Comment>> get() = _commentList
 
-    private val _comment = MutableLiveData<Comment>()
+    private val _comment = MutableLiveData<Comment>(null)
     val comment: LiveData<Comment> get() = _comment
 
     private val _author = MutableLiveData<String>()
@@ -40,6 +40,10 @@ constructor(
     private val _likes = MutableLiveData<Int>()
     val likes: LiveData<Int> get() = _likes
 
+    // 좋아요
+    private val _successLike = MutableLiveData<Event<String>>()
+    val successLike: LiveData<Event<String>> = _successLike
+
     // 이미 좋아요
     private val _alreadyLike = MutableLiveData<Event<String>>()
     val alreadyLike: LiveData<Event<String>> = _alreadyLike
@@ -47,6 +51,12 @@ constructor(
     // 댓글
     private val _commentSuccessEvent = MutableLiveData<Event<Boolean>>()
     val commentSuccessEvent: LiveData<Event<Boolean>> = _commentSuccessEvent
+
+    private val _showCommentDialog = MutableLiveData<Event<String>>()
+    val showCommentDialog: LiveData<Event<String>> = _showCommentDialog
+
+    private val _showMyCommentDialog = MutableLiveData<Event<String>>()
+    val showMyCommentDialog: LiveData<Event<String>> = _showMyCommentDialog
 
     fun getPost(postId: String, boardType: String) = viewModelScope.launch(Dispatchers.IO) {
 
@@ -101,10 +111,12 @@ constructor(
                         when (response.code()) {
                             OK -> {
                                 _response.postValue(response.body())
+                                _successLike.postValue(Event("좋아요를 눌렀습니다."))
                                 Log.d("tag_success", "likePost: ${response.body()}")
                             }
                             CREATED ->
-                                _alreadyLike.postValue(Event("이미 좋아요한 게시글입니다."))                        }
+                                _alreadyLike.postValue(Event("이미 좋아요한 게시글입니다."))
+                        }
                     } else {
                         Log.d("tag_fail", "likePost Error: ${response.code()}")
                     }
@@ -147,7 +159,7 @@ constructor(
                     _commentSuccessEvent.postValue(Event(true))
                     Log.d("tag_success", "writeComment: ${response.body()}")
                 } else {
-                    Log.d("tag_fail", "writeComment Error: ${response}")
+                    Log.d("tag_fail", "writeComment Error: $response")
                 }
             }
         }
@@ -161,23 +173,55 @@ constructor(
             activity = "likes"
         )
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             repository.likeComment(OffoffApplication.pref.token.toString(), activityItem)
                 .let { response ->
                     if (response.isSuccessful) {
-                        when (response.code()) {
-                            OK -> {
-                                _comment.postValue(response.body())
-                                Log.d("tag_success", "likeComment: ${response.body()}")
-                            }
-                            CREATED ->
-                                _alreadyLike.postValue(Event("이미 좋아요한 댓글입니다."))                        }
+                        Log.d("tag_success", "likeComment: ${response.body()}")
+                        if (!response.body()!!.id.isNullOrEmpty()) {
+                            _comment.postValue(response.body())
+                            _successLike.postValue(Event("좋아요를 눌렀습니다."))
+                        } else {
+                            _alreadyLike.postValue(Event("이미 좋아요한 댓글입니다."))
+                        }
                     } else {
                         Log.d("tag_fail", "likeComment Error: ${response.code()}")
                     }
                 }
 
         }
+    }
+
+    fun deleteComment(commentId: String, postId: String, boardType: String) {
+
+        val commentSend = CommentSend(
+            id = commentId,
+            postId = postId,
+            boardType = boardType,
+            author = OffoffApplication.user.id,
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.deleteComment(OffoffApplication.pref.token.toString(), commentSend)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        _commentList.postValue(response.body()!!.commentList)
+                        Log.d("tag_success", response.body().toString())
+                    } else {
+                        Log.d("tag_fail", "deleteComment Error: ${response.code()}")
+                    }
+                }
+
+        }
+    }
+
+    fun showMyCommentDialog(commentId: String) {
+        _showMyCommentDialog.postValue(Event(commentId))
+    }
+
+    fun showCommentDialog(commentId: String) {
+        _showCommentDialog.postValue(Event(commentId))
     }
 
     companion object {

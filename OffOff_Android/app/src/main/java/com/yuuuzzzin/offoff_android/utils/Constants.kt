@@ -2,7 +2,10 @@ package com.yuuuzzzin.offoff_android.utils
 
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 
 object Constants {
 
@@ -15,9 +18,22 @@ object Constants {
     const val PROFILE_OPTION3 = "앨범에서 가져오기"
     const val PROFILE_OPTION4 = "취소"
 
+    // 댓글 옵션
+    const val DELETE_COMMENT = "삭제"
+    const val REPORT_COMMENT = "신고"
+
     // MutableLiveData에 저장된 값 가져오기
     fun MutableLiveData<String>.get(): String {
         return this.value ?: ""
+    }
+
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T?) {
+                observer.onChanged(t)
+                removeObserver(this)
+            }
+        })
     }
 
     fun Context.toast(message: String) {

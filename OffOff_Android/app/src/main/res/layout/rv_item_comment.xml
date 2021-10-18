@@ -5,8 +5,16 @@
     <data>
 
         <variable
+            name="viewModel"
+            type="com.yuuuzzzin.offoff_android.viewmodel.PostViewModel" />
+
+        <variable
             name="item"
             type="com.yuuuzzzin.offoff_android.service.models.Comment" />
+
+        <variable
+            name="position"
+            type="int"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +32,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <ImageView
+            android:id="@+id/bt_comment_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
