@@ -15,7 +15,7 @@ mongodb = mongo.MongoHelper()
 
 Post = Namespace("post", description="게시물 관련 API")
 Reply = Namespace("reply", description="댓글 관련 API")
-
+SubReply = Namespace('subreply', description="대댓글 관련 API")
 
 
 """
@@ -230,8 +230,8 @@ class PostControl(Resource):
 
 # 댓글 관련 API
 @Reply.route("")
-class CommentControl(Resource):
-    """ 댓글생성, 삭제, 조회(대댓글 포함) """
+class ReplyControl(Resource):
+    """ 댓글생성, 삭제, 좋아요, 조회"""
     @jwt_required()
     def post(self):  # 댓글 작성
         """댓글을 생성합니다."""
@@ -270,13 +270,15 @@ class CommentControl(Resource):
         # likes 추가
         request_info["likes"] = []
 
+        # childrenReplies 추가
+        request_info["childrenReplies"] = []
+
         # 댓글 db에 저장
         reply_id = mongodb.insert_one(data=request_info, collection_name=reply_board_type)
 
         # 회원활동 정보 link 형태로 등록
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
 
-        
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
 
@@ -386,3 +388,60 @@ class CommentControl(Resource):
         return {
                        "replyList": reply_list
                    }, 200
+
+@SubReply.route("")
+class SubReplyControl(Resource):
+    """대댓글 생성, 삭제, 좋아요"""
+    @jwt_required()
+    def post(self):  # 대댓글 작성
+        """대댓글을 생성합니다"""
+        user_id = check_jwt()
+        if not user_id:
+            return {"queryStatus": "wrong Token"}, 403
+
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, post_id, board_type, user = get_variables()
+        if not user:
+            return {"queryStatus": "wrong Token"}, 403
+        parent_reply_id = request_info["parentReplyId"]
+        print(board_type)
+
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
+
+        # 댓글 수 +1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": 1}})
+        print(update_status)
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
+
+        # reply 컬랙션 이름으로
+        reply_board_type = board_type + "_board_reply"
+        print(reply_board_type)
+
+        # date 추가
+        request_info["date"] = datetime.now()
+        request_info["date"] = request_info["date"].strftime("%Y년 %m월 %d일 %H시 %M분")
+
+        # 회원정보 embedded 형태로 등록
+        making_reference = MakeReference(board_type=reply_board_type, user=user)
+        author = making_reference.embed_author_information_in_object()
+        request_info["author"] = author
+
+        # likes 추가
+        request_info["likes"] = []
+
+        result = mongodb.update_one(query={"_id":ObjectId(parent_reply_id)}, collection_name=reply_board_type, modify={"$addToSet":{"childrenReplies":request_info}})
+
+        # 댓글 조회
+        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
+        
+        if result.raw_result["n"] == 0:
+                    return {"queryStatus": "shift update fail"}, 500
+
+        return {
+            "replyList": reply_list
+        }
+
+

@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from api_helper.utils import APP_SECRET_KEY, JWT_SECRET_KEY
 
 from api_helper.list import BoardList, PostList, UserControl, MessageList, SearchList
-from api_helper.post import Post, Reply
+from api_helper.post import Post, Reply, SubReply
 from api_helper.user import Activity, User, Token
 from api_helper.message import Message
 from api_helper.calendar import Calendar, Shift, SavedShift
@@ -36,6 +36,7 @@ api.add_namespace(SearchList, "/searchlist")
 
 api.add_namespace(Post, "/post")
 api.add_namespace(Reply, "/reply")
+api.add_namespace(SubReply, "/subreply")
 
 api.add_namespace(User, "/user")
 api.add_namespace(Token, '/refresh')
