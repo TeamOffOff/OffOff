@@ -356,7 +356,8 @@ class ReplyControl(Resource):
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
 
-        whether_subreply = mongodb.find_one(query={"parentReplyId": reply_id}, collection_name=reply_board_type)
+        # 대댓글 있는지 여부 -> 프론트에서 판단 해줄 수 있나?
+        whether_subreply = mongodb.find_one(query={"_id": reply_id}, collection_name=reply_board_type)
         print(whether_subreply)
 
         if not whether_subreply:  # 대댓글이 없는 경우
@@ -373,7 +374,6 @@ class ReplyControl(Resource):
                                         collection_name=reply_board_type,
                                         modify={"$set": alert_delete})
 
-        
         
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
@@ -443,5 +443,46 @@ class SubReplyControl(Resource):
         return {
             "replyList": reply_list
         }
+
+    @ownership_required
+    def delete(self):  # 대댓글 삭제
+        """대댓글 삭제"""
+        # 클라이언트에서 받은 변수 가져오기
+        request_info, reply_id, board_type, user = get_variables()
+        post_id = request_info["postId"]
+        print(board_type)
+
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
+
+        # 댓글 -1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": -1}})
+
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
+
+        # reply 컬랙션 이름으로
+        reply_board_type = board_type + "_board_reply"
+        print(reply_board_type)
+
+        # 대댓글 고유 id를 프론트에서 만들어 줄 수 있나?
+        subreply_id = request_info["id"]
+        result = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=reply_board_type, modify={"$pull":{"childrenReplies.id": subreply_id}})
+
+        if result.raw_result["n"] == 0:
+                    return {"queryStatus": "shift update fail"}, 500
+
+        # 댓글 조회
+        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
+
+        # 회원활동정보 삭제
+        making_reference = MakeReference(board_type=reply_board_type, user=user)
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
+
+        return {
+                       "replyList": reply_list
+                   }, 200
+
 
 
