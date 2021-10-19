@@ -20,7 +20,7 @@ constructor(private val boardService: BoardService) {
     suspend fun writePost(auth: String, post: PostSend) = boardService.writePost(auth, post)
     suspend fun editPost(auth: String, post: PostSend) = boardService.editPost(auth, post)
     suspend fun deletePost(auth: String, post: PostSend) = boardService.deletePost(auth, post)
-    suspend fun likePost(auth: String, activityItem: ActivityItem) = boardService.likePost(auth, activityItem)
+    suspend fun doPostActivity(auth: String, activityItem: ActivityItem) = boardService.doPostActivity(auth, activityItem)
 
     suspend fun getComments(auth: String, postId: String, boardType: String) = boardService.getComments(auth, postId, boardType)
     suspend fun writeComment(auth: String, comment: CommentSend) = boardService.writeComment(auth, comment)

@@ -47,9 +47,9 @@ interface BoardService {
         @Body post: PostSend
     ): Response<ResultResponse>
 
-    /* 게시물 좋아요 */
+    /* 게시물 좋아요, 북마크, 신고 */
     @PUT("post")
-    suspend fun likePost(
+    suspend fun doPostActivity(
         @Header("Authorization") auth: String,
         @Body activityItem: ActivityItem
     ): Response<Post>

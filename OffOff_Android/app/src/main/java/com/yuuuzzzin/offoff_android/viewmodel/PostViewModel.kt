@@ -31,7 +31,7 @@ constructor(
     private val _commentList = MutableLiveData<List<Comment>>()
     val commentList: LiveData<List<Comment>> get() = _commentList
 
-    private val _comment = MutableLiveData<Comment>(null)
+    private val _comment = MutableLiveData<Comment>()
     val comment: LiveData<Comment> get() = _comment
 
     private val _author = MutableLiveData<String>()
@@ -105,7 +105,7 @@ constructor(
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.likePost(OffoffApplication.pref.token.toString(), activityItem)
+            repository.doPostActivity(OffoffApplication.pref.token.toString(), activityItem)
                 .let { response ->
                     if (response.isSuccessful) {
                         when (response.code()) {
@@ -116,6 +116,64 @@ constructor(
                             }
                             CREATED ->
                                 _alreadyLike.postValue(Event("이미 좋아요한 게시글입니다."))
+                        }
+                    } else {
+                        Log.d("tag_fail", "likePost Error: ${response.code()}")
+                    }
+                }
+
+        }
+    }
+
+    fun bookmarkPost() {
+
+        val activityItem = ActivityItem(
+            id = postId,
+            boardType = boardType,
+            activity = "bookmarks"
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.doPostActivity(OffoffApplication.pref.token.toString(), activityItem)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        when (response.code()) {
+                            OK -> {
+                                _response.postValue(response.body())
+                                _successLike.postValue(Event("게시물을 북마크했습니다."))
+                                Log.d("tag_success", "likePost: ${response.body()}")
+                            }
+                            CREATED ->
+                                _alreadyLike.postValue(Event("북마크를 취소헀습니다."))
+                        }
+                    } else {
+                        Log.d("tag_fail", "likePost Error: ${response.code()}")
+                    }
+                }
+
+        }
+    }
+
+    fun reportPost() {
+
+        val activityItem = ActivityItem(
+            id = postId,
+            boardType = boardType,
+            activity = "reports"
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.doPostActivity(OffoffApplication.pref.token.toString(), activityItem)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        when (response.code()) {
+                            OK -> {
+                                _response.postValue(response.body())
+                                _successLike.postValue(Event("게시물을 신고했습니다."))
+                                Log.d("tag_success", "likePost: ${response.body()}")
+                            }
+                            CREATED ->
+                                _alreadyLike.postValue(Event("신고를 취소헀습니다."))
                         }
                     } else {
                         Log.d("tag_fail", "likePost Error: ${response.code()}")
@@ -151,6 +209,8 @@ constructor(
             parentReplyId = null,
             content = content.value!!,
         )
+
+        Log.d("tag_comment" ,comment.toString())
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.writeComment(OffoffApplication.pref.token!!, comment).let { response ->
@@ -222,6 +282,16 @@ constructor(
 
     fun showCommentDialog(commentId: String) {
         _showCommentDialog.postValue(Event(commentId))
+    }
+
+    // inside your viewModel
+    private val _singleData = MutableLiveData<Comment>()
+    val singleData: LiveData<Comment>
+        get() = _singleData
+
+    fun update(commentList: Array<Comment>) {
+        _commentList.postValue(commentList.toList())
+        //_commentList.value!!.get(index = position).likes = comment.likes
     }
 
     companion object {

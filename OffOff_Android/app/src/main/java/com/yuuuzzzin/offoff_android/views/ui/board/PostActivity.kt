@@ -16,6 +16,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
+import com.yuuuzzzin.offoff_android.service.models.Comment
 import com.yuuuzzzin.offoff_android.utils.Constants.DELETE_COMMENT
 import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
@@ -36,8 +37,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private lateinit var postId: String
     private lateinit var boardName: String
     private lateinit var boardType: String
+    private var commentPosition: Int = 0
     private var author: String? = null
     private var doLike: Boolean? = false
+    private lateinit var currentCommentList: Array<Comment>
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
     private lateinit var commentListAdapter: CommentListAdapter
@@ -79,13 +82,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             invalidateOptionsMenu()
         })
 
-        viewModel.successLike.observe(this, { event ->
+        viewModel.successLike.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showSuccessLikeDialog(it)
             }
         })
 
-        viewModel.alreadyLike.observe(this, { event ->
+        viewModel.alreadyLike.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showAlreadyLikeDialog(it)
             }
@@ -94,29 +97,41 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.getComments(postId, boardType)
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
             with(commentListAdapter) { submitList(it.toMutableList()) }
+            currentCommentList = it.toTypedArray()
         })
 
         viewModel.comment.observe(binding.lifecycleOwner!!, {
             Log.d("tag_item_", "$it")
+            currentCommentList[commentPosition] = it
+            viewModel.update(currentCommentList)
+            //commentListAdapter.updateComment(commentPosition!!, it)
+
         })
 
-        viewModel.commentSuccessEvent.observe(this, { event ->
+        viewModel.commentSuccessEvent.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
 
             }
         })
 
-        viewModel.showCommentDialog.observe(this, { event ->
+        viewModel.showCommentDialog.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showCommentOptionDialog(it)
             }
         })
 
-        viewModel.showMyCommentDialog.observe(this, { event ->
+        viewModel.showMyCommentDialog.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showMyCommentOptionDialog(it)
             }
         })
+
+//        viewModel.singleData.observe(this, { singleData ->
+////            val index = commentListAdapter.
+////            adapterList.indexOfFirst { singleData.id == it.id }
+////            adapterList[index] = singleData
+//            commentListAdapter.notifyItemChanged(index)
+//        }
     }
 
     private fun initToolbar() {
@@ -155,7 +170,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun initRV() {
-        commentListAdapter = CommentListAdapter(binding.lifecycleOwner!!, viewModel)
+        commentListAdapter = CommentListAdapter()
 
         binding.rvComment.apply {
             adapter = commentListAdapter
@@ -168,11 +183,26 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             isNestedScrollingEnabled = false
         }
 
-//        commentListAdapter.setOnLikeCommentListener(object :
-//            CommentListAdapter.OnLikeCommentListener {
-//            override fun onLikeComment(viewHolder: CommentListAdapter.ViewHolder, comment: Comment) {
-//                viewModel.likeComment(comment.id)
-//                viewHolder.comment.value =
+        commentListAdapter.setOnLikeCommentListener(object :
+            CommentListAdapter.OnLikeCommentListener {
+            override fun onLikeComment(position: Int, comment: Comment) {
+                commentPosition = position
+                viewModel.likeComment(comment.id)
+//                viewModel.comment.observe(binding.lifecycleOwner!!, {
+//                    Log.d("tag_commentobserve", "$it and $position")
+//                    commentListAdapter.notifyItemChanged(position, it)
+//                })
+            }
+        })
+
+//        commentListAdapter.setOnDeleteCommentListener(object :
+//            CommentListAdapter.OnDeleteCommentListener {
+//            override fun onDeleteComment(position: Int, comment: Comment) {
+//                if (OffoffApplication.user.id == comment.value!!.author.id) {
+//                    viewModel.showMyCommentDialog(comment.value!!.id)
+//                } else {
+//                    viewModel.showCommentDialog(comment.value!!.id)
+//                }
 //            }
 //        })
     }
@@ -238,7 +268,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                         //viewModel.deleteComment(commentId, postId, boardType)
                         true
                     }
-                    1-> {
+                    1 -> {
                         true
                     }
                 }

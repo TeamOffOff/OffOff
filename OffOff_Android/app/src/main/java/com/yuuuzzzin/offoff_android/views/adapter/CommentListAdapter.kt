@@ -11,8 +11,8 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemCommentBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
 
-class CommentListAdapter:
-    ListAdapter<Comment, CommentListAdapter.ViewHolder>(diffCallback) {
+class CommentListAdapter :
+    ListAdapter<Comment, CommentListAdapter.CommentViewHolder>(diffCallback) {
 
     companion object {
         private val diffCallback = object : DiffUtil.ItemCallback<Comment>() {
@@ -28,6 +28,8 @@ class CommentListAdapter:
         }
     }
 
+    private val commentList: MutableList<Comment> = mutableListOf()
+
     interface OnLikeCommentListener {
         fun onLikeComment(position: Int, comment: Comment)
     }
@@ -38,7 +40,17 @@ class CommentListAdapter:
         this.likeCommentListener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    interface OnDeleteCommentListener {
+        fun onDeleteComment(position: Int, comment: Comment)
+    }
+
+    private lateinit var deleteCommentListener: OnDeleteCommentListener
+
+    fun setOnDeleteCommentListener(listener: OnDeleteCommentListener) {
+        this.deleteCommentListener = listener
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding: RvItemCommentBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             R.layout.rv_item_comment,
@@ -46,23 +58,46 @@ class CommentListAdapter:
             false
         )
 
-        return ViewHolder(binding)
+        return CommentViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
+        holder.bind(getItem(position), position)
     }
 
-    inner class ViewHolder(
+
+    inner class CommentViewHolder(
         private val binding: RvItemCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Comment) {
-            binding.setVariable(BR.item, item)
+        lateinit var comment: Comment
+
+        fun bind(item: Comment, position: Int) {
+            comment = item
+            binding.setVariable(BR.item, comment)
             binding.executePendingBindings()
             binding.btLikes.setOnClickListener {
-                likeCommentListener.onLikeComment(adapterPosition, item)
+                likeCommentListener.onLikeComment(position, item)
             }
+//            binding.btCommentOption.setOnClickListener {
+//                if(OffoffApplication.user.id == comment.value!!.author.id) {
+//                    viewModel.showMyCommentDialog(comment.value!!.id)
+//                } else {
+//                    viewModel.showCommentDialog(comment.value!!.id)
+//                }
+//            }
+
         }
+
     }
+
+    fun updateComment(position: Int, comment: Comment) {
+        currentList[position] = comment
+        notifyItemChanged(position)
+    }
+
+    private fun findItemPosById(id: String): Int {
+        return currentList.indexOfFirst { it.id == id }
+    }
+
 }
