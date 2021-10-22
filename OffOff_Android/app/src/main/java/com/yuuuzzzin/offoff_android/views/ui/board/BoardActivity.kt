@@ -2,6 +2,7 @@ package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -122,6 +123,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 // 스크롤이 끝에 도달하면
                 if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
                     Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
+                    viewModel.getPosts(boardType)
                 }
             }
         })
@@ -164,7 +166,9 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 1) {
-            if(requestCode == RESULT_OK) {
+            Log.d("tag_like", "requestCode")
+            if(resultCode == RESULT_OK) {
+                Log.d("tag_like", "저아요하고 뒤로가기함")
                 viewModel.updatePost(data!!.getSerializableExtra("postList") as Array<Post>)
             }
         }

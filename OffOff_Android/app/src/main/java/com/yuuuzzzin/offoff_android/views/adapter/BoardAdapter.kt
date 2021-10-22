@@ -70,4 +70,8 @@ class BoardAdapter :
             }
         }
     }
+
+    fun addPostList(postList: List<Post>) {
+
+    }
 }

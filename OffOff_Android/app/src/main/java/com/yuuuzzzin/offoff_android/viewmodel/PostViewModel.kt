@@ -113,7 +113,7 @@ constructor(
                     if (response.isSuccessful) {
                         when (response.code()) {
                             OK -> {
-                                _response.postValue(response.body())
+                                //_response.postValue(response.body())
                                 _newPost.postValue(response.body())
                                 _successLike.postValue(Event("좋아요를 눌렀습니다."))
                                 Log.d("tag_success", "likePost: ${response.body()}")

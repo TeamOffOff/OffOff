@@ -44,7 +44,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private var author: String? = null
     private var doLike: Boolean? = false
     private lateinit var currentCommentList: Array<Comment>
-    private lateinit var currentPostList: Array<Post>
+    private var currentPostList: Array<Post>?=null
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
     private lateinit var commentListAdapter: CommentListAdapter
@@ -81,7 +81,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.newPost.observe(binding.lifecycleOwner!!, {
             binding.post = it
-            currentPostList[postPosition] = it
+            currentPostList?.set(postPosition, it)
         })
 
         viewModel.author.observe(binding.lifecycleOwner!!, {
@@ -322,6 +322,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             startActivity(intent)
             finish()
         } else if (doLike == true) {
+            Log.d("tag_onBackPressed", "뒤로가기")
             val intent = Intent()
             intent.putExtra("postList", currentPostList as Serializable)
             setResult(RESULT_OK, intent)
@@ -386,4 +387,3 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
 }
-

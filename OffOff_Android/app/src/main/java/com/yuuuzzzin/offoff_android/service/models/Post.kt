@@ -39,7 +39,7 @@ data class Post (
     val reports: List<Any> = emptyList(),
     @SerializedName("bookmarks")
     val bookmarks: List<Any> = emptyList(),
-) :Serializable
+) : Serializable
 
 /* 보내는 게시물 */
 data class PostSend(
@@ -67,4 +67,4 @@ data class Author(
     val type: String? = null,
     @SerializedName("profileImage")
     val profile: String? = null
-)
+)  : Serializable
