@@ -119,6 +119,7 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.replies
+            .debug()
             .filter { $0 != nil }
             .do { self.postCell?.commentLabel.label.text = "\($0!.count)"}
             .map { $0! }

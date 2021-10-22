@@ -24,7 +24,13 @@ class PostViewModel {
     init(contentId: String, boardType: String, likeButtonTapped: Observable<PostLikeModel?>, replyButtonTapped: Observable<WritingReply>) {
         ReplyServices.fetchReplies(of: contentId, in: boardType)
             .bind {
-                self.replies.onNext($0)
+                var replies = [Reply]()
+                $0.forEach {
+                    if $0.parentReplyId == "" || $0.parentReplyId == nil {
+                        replies.append($0)
+                    }
+                }
+                self.replies.onNext(replies)
             }.disposed(by: disposeBag)
         
         PostServices.fetchPost(content_id: contentId, board_type: boardType)

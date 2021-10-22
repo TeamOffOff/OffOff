@@ -102,6 +102,9 @@
 		EACF1B3D26B7E42300C153D3 /* BoardListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3C26B7E42300C153D3 /* BoardListViewModel.swift */; };
 		EAD6FED92713146B00563005 /* RepliesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FED82713146B00563005 /* RepliesTableViewCell.swift */; };
 		EAD6FEDB2716C45100563005 /* ContentSizedTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */; };
+		EAD6FEE2271F0E3900563005 /* Differentiator in Frameworks */ = {isa = PBXBuildFile; productRef = EAD6FEE1271F0E3900563005 /* Differentiator */; };
+		EAD6FEE4271F0E3900563005 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = EAD6FEE3271F0E3900563005 /* RxDataSources */; };
+		EAD6FEE6271F147B00563005 /* ChildrenRepliesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
@@ -207,6 +210,7 @@
 		EACF1B3C26B7E42300C153D3 /* BoardListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardListViewModel.swift; sourceTree = "<group>"; };
 		EAD6FED82713146B00563005 /* RepliesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesTableViewCell.swift; sourceTree = "<group>"; };
 		EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentSizedTableView.swift; sourceTree = "<group>"; };
+		EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildrenRepliesTableViewCell.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -265,6 +269,8 @@
 				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
 				EACB84F226C39B9800096E01 /* Amplify in Frameworks */,
+				EAD6FEE2271F0E3900563005 /* Differentiator in Frameworks */,
+				EAD6FEE4271F0E3900563005 /* RxDataSources in Frameworks */,
 				EA9D0AC426BA956200D571EC /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,6 +418,7 @@
 				EA8A333E26D4CC720014D97C /* RoutineCell.swift */,
 				EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */,
 				EAD6FED82713146B00563005 /* RepliesTableViewCell.swift */,
+				EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -547,6 +554,8 @@
 				EA0624D826DBB1B6004FF91A /* Realm */,
 				EA0624DA26DBB1B6004FF91A /* RealmSwift */,
 				EA0624E126DE77A7004FF91A /* RxRealm */,
+				EAD6FEE1271F0E3900563005 /* Differentiator */,
+				EAD6FEE3271F0E3900563005 /* RxDataSources */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -595,6 +604,7 @@
 				EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */,
 				EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				EA0624E026DE77A7004FF91A /* XCRemoteSwiftPackageReference "RxRealm" */,
+				EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -732,6 +742,7 @@
 				EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */,
 				EA8A334726D63ADD0014D97C /* EditShiftViewController.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
+				EAD6FEE6271F147B00563005 /* ChildrenRepliesTableViewCell.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */,
 				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */,
@@ -1155,6 +1166,15 @@
 				minimumVersion = 1.13.3;
 			};
 		};
+		EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
+			requirement = {
+				kind = versionRange;
+				maximumVersion = 5.0.0;
+				minimumVersion = 4.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1242,6 +1262,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */;
 			productName = Amplify;
+		};
+		EAD6FEE1271F0E3900563005 /* Differentiator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = Differentiator;
+		};
+		EAD6FEE3271F0E3900563005 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

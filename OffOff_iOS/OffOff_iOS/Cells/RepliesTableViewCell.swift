@@ -21,6 +21,13 @@ class RepliesTableViewCell: UITableViewCell {
     var presentMenuAlert: ((_ alert: UIAlertController) -> Void)?
     
     var replies = BehaviorSubject<[Reply]?>(value: nil)
+    var childrenReplies = BehaviorSubject<[Reply]?>(value: nil)
+    
+    var childrenRepliesTableView = ContentSizedTableView().then {
+        $0.backgroundColor = .white
+        $0.register(ChildrenRepliesTableViewCell.self, forCellReuseIdentifier: ChildrenRepliesTableViewCell.identifier)
+        $0.isScrollEnabled = false
+    }
     
     var profileImageView = UIImageView().then {
         $0.backgroundColor = .lightGray
@@ -74,6 +81,7 @@ class RepliesTableViewCell: UITableViewCell {
         self.contentView.addSubview(contentTextView)
         self.contentView.addSubview(likeButton)
         self.contentView.addSubview(menubutton)
+        self.contentView.addSubview(childrenRepliesTableView)
         self.contentView.backgroundColor = .white
         makeView()
         bindData()
@@ -82,7 +90,7 @@ class RepliesTableViewCell: UITableViewCell {
     private func makeView() {
         profileImageView.snp.makeConstraints {
             $0.top.left.equalToSuperview().inset(8.0)
-            $0.width.height.equalTo(20)
+            $0.width.height.equalTo(20.0)
         }
         nicknameLabel.snp.makeConstraints {
             $0.left.equalTo(profileImageView.snp.right).offset(8.0)
@@ -102,13 +110,18 @@ class RepliesTableViewCell: UITableViewCell {
             $0.top.equalTo(contentTextView.snp.bottom).offset(8.0)
             $0.left.equalTo(contentTextView)
             //            $0.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
+//            $0.bottom.equalToSuperview()
         }
         menubutton.snp.makeConstraints {
             $0.centerY.equalTo(nicknameLabel)
             $0.width.equalTo(20)
             $0.right.equalToSuperview().inset(8.0)
             $0.left.equalTo(nicknameLabel.snp.right)
+        }
+        childrenRepliesTableView.snp.makeConstraints {
+            $0.top.equalTo(likeButton.snp.bottom)
+            $0.left.right.equalToSuperview()
+            $0.bottom.equalToSuperview()
         }
     }
     
@@ -122,6 +135,7 @@ class RepliesTableViewCell: UITableViewCell {
                 self.dateLabel.text = $0!.date
                 self.contentTextView.text = $0!.content
                 self.likeButton.setTitle("\($0!.likes.count)", for: .normal)
+                self.childrenReplies.onNext($0?.childrenReplies)
             }.disposed(by: disposeBag)
         
         self.likeButton.rx.tap.withLatestFrom(reply)
@@ -148,13 +162,22 @@ class RepliesTableViewCell: UITableViewCell {
                 self.showMenuAlert(reply: $0!)
             }
             .disposed(by: disposeBag)
+        
+        // 대댓글 테이블 뷰 그리기
+        self.childrenReplies
+            .filter { $0 != nil }
+            .map { $0! }
+            .bind(to: self.childrenRepliesTableView.rx.items(cellIdentifier: ChildrenRepliesTableViewCell.identifier, cellType: ChildrenRepliesTableViewCell.self)) { (row, element, cell) in
+                cell.reply.onNext(element)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func showMenuAlert(reply: Reply) {
         self.alertDisposeBag = DisposeBag()
         let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
         let delete = UIAlertAction(title: "삭제", style: .default) { _ in
-            let delReply = DeletingReply(_id: reply._id, postId: reply.postId, boardType: reply.boardType, author: reply.author._id!)
+            let delReply = DeletingReply(_id: reply._id, postId: reply.postId, boardType: reply.boardType, author: reply.author._id!, isChildReply: false)
             ReplyServices.deleteReply(reply: delReply)
                 .filter { $0 != nil }
                 .do {

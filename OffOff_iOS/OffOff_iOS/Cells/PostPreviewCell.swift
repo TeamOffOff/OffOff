@@ -103,12 +103,6 @@ class PostPreviewCell: UITableViewCell {
                 self.commentLabel.label.text = "\(post!.replyCount)"
             }
             .disposed(by: disposeBag)
-        
-//        replies
-//            .bind { replies in
-//                self.commentLabel.label.text = "\(replies.count)"
-//            }
-//            .disposed(by: disposeBag)
     }
     
     private func addViews() {

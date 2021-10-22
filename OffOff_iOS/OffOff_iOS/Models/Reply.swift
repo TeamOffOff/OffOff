@@ -8,6 +8,7 @@
 import Foundation
 
 struct WritingReply: Codable {
+    var _id: String? = nil
     var boardType: String
     var postId: String
     var parentReplyId: String?
@@ -19,6 +20,7 @@ struct WritingReply: Codable {
         try container.encode(postId, forKey: .postId)
         try container.encode(parentReplyId, forKey: .parentReplyId)
         try container.encode(content, forKey: .content)
+        try container.encode(_id, forKey: ._id)
     }
 }
 
@@ -31,6 +33,7 @@ struct Reply: Codable {
     var date: String
     var author: Author
     var likes: [String]
+    var childrenReplies: [Reply]
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -42,6 +45,7 @@ struct Reply: Codable {
         try container.encode(likes, forKey: .likes)
         try container.encode(parentReplyId, forKey: .parentReplyId)
         try container.encode(postId, forKey: .postId)
+        try container.encode(childrenReplies, forKey: .childrenReplies)
     }
 }
 
@@ -54,6 +58,7 @@ struct DeletingReply: Codable {
     var postId: String
     var boardType: String
     var author: String
+    var isChildReply: Bool
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -61,5 +66,6 @@ struct DeletingReply: Codable {
         try container.encode(postId, forKey: .postId)
         try container.encode(boardType, forKey: .boardType)
         try container.encode(author, forKey: .author)
+        try container.encode(isChildReply, forKey: .isChildReply)
     }
 }
