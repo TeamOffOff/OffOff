@@ -44,10 +44,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private var author: String? = null
     private var doLike: Boolean? = false
     private lateinit var currentCommentList: Array<Comment>
-    private var currentPostList: Array<Post>?=null
+    private lateinit var post: Post
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
     private lateinit var commentListAdapter: CommentListAdapter
+    private var isFirst : Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +65,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         postPosition = intent.getIntExtra("position", 0)
         boardType = intent.getStringExtra("boardType").toString()
         boardName = intent.getStringExtra("boardName").toString()
-        currentPostList = intent.getSerializableExtra("postList") as Array<Post>
+        //currentPostList = intent.getSerializableExtra("postList") as Array<Post>
 
         viewModel.postId = postId
         viewModel.boardType = boardType
 
-        viewModel.getPost(postId, boardType).toString()
+        viewModel.getPost(postId, boardType)
     }
 
     private fun initViewModel() {
@@ -77,11 +78,15 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.response.observe(binding.lifecycleOwner!!, {
             binding.post = it
+            this.post = it
+            binding.refreshLayout.isRefreshing = false
         })
 
         viewModel.newPost.observe(binding.lifecycleOwner!!, {
             binding.post = it
-            currentPostList?.set(postPosition, it)
+            this.post = it
+
+            //currentPostList?.set(postPosition, it)
         })
 
         viewModel.author.observe(binding.lifecycleOwner!!, {
@@ -110,6 +115,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
             with(commentListAdapter) { submitList(it.toMutableList()) }
             currentCommentList = it.toTypedArray()
+            if(!isFirst) {
+                post.replyCount = it.size
+            }
+            isFirst=false
+            binding.refreshLayout.isRefreshing = false
         })
 
         viewModel.comment.observe(binding.lifecycleOwner!!, {
@@ -168,7 +178,16 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 binding.nestedScrollView.post {
                     binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
                 }
+                doLike = true
             }
+        }
+
+        binding.refreshLayout.isRefreshing = false
+
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.getPost(postId, boardType)
+            viewModel.getComments(postId, boardType)
+            isFirst = true
         }
     }
 
@@ -259,7 +278,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 when (which) {
                     0 -> {
                         showCommentDeleteDialog(commentId)
-                        //viewModel.deleteComment(commentId, postId, boardType)
+                        doLike = true
                         true
                     }
                     1 -> {
@@ -314,21 +333,23 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     override fun onBackPressed() {
-        if (intent.getStringExtra("update") == "true") {
+        if (intent.getIntExtra("postWriteType", PostWriteType.WRITE) == PostWriteType.WRITE) {
             val intent = Intent(applicationContext, BoardActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("boardType", boardType)
             intent.putExtra("boardName", boardName)
             startActivity(intent)
-            finish()
-        } else if (doLike == true) {
+        } else if (intent.getIntExtra("postWriteType", PostWriteType.WRITE) == PostWriteType.EDIT) {
+            val intent = Intent()
+            intent.putExtra("post", this.post as Serializable)
+            setResult(RESULT_OK, intent)
+        }else if (doLike == true) {
             Log.d("tag_onBackPressed", "뒤로가기")
             val intent = Intent()
-            intent.putExtra("postList", currentPostList as Serializable)
+            intent.putExtra("post", this.post as Serializable)
             setResult(RESULT_OK, intent)
-            finish()
-        } else
-            super.onBackPressed()
+        }
+        finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -357,7 +378,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 intent.putExtra("postId", postId)
                 intent.putExtra("postTitle", binding.post!!.title)
                 intent.putExtra("postContent", binding.post!!.content)
-                startActivity(intent)
+                startActivityForResult(intent, 1)
                 true
             }
             R.id.action_delete -> {
@@ -371,19 +392,22 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 true
             }
             android.R.id.home -> {
-                if (intent.getStringExtra("update") == "true") {
-                    val intent = Intent(applicationContext, BoardActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    intent.putExtra("boardType", boardType)
-                    intent.putExtra("boardName", boardName)
-                    startActivity(intent)
-                    finish()
-                } else
-                    finish()
+                onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) {
+            Log.d("tag_like", "requestCode")
+            if (resultCode == RESULT_OK) {
+                Log.d("tag_like", "저아요하고 뒤로가기함")
+                viewModel.getPost(postId, boardType)
+                doLike = true
+            }
+        }
+    }
 }
