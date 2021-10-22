@@ -22,6 +22,8 @@ import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
 import java.io.Serializable
+import java.lang.Boolean.FALSE
+import java.lang.Boolean.TRUE
 
 @AndroidEntryPoint
 class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board) {
@@ -33,6 +35,9 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private lateinit var searchIcon: FontDrawable
     private lateinit var writeIcon: FontDrawable
     private lateinit var currentPostList: Array<Post>
+    private lateinit var lastPostId: String
+    private var clickedPosition: Int ?= 0
+    private var isFirst : Boolean = TRUE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,15 +58,18 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         viewModel.getPosts(boardType)
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
-            boardAdapter.submitList(it.toMutableList()) {
-                binding.rvPostPreview.scrollToPosition(0)
-            }
+            boardAdapter.addPostList(it, isFirst)
             binding.refreshLayout.isRefreshing = false
+            isFirst = FALSE
             currentPostList = it.toTypedArray()
         })
 
+        viewModel.lastPostId.observe(binding.lifecycleOwner!!, {
+            lastPostId = it
+        })
+
         viewModel.newPostList.observe(binding.lifecycleOwner!!, {
-            boardAdapter.submitList(it.toMutableList())
+            boardAdapter.addPostList(it, isFirst)
             binding.refreshLayout.isRefreshing = false
             currentPostList = it.toTypedArray()
         })
@@ -81,14 +89,8 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     private fun initRV() {
         boardAdapter = BoardAdapter()
-//            itemClick = { item ->
-//                val intent = Intent(this@BoardActivity, PostActivity::class.java)
-//                intent.putExtra("id", item.id)
-//                intent.putExtra("position", )
-//                intent.putExtra("boardName", boardName)
-//                intent.putExtra("boardType", item.boardType)
-//                startActivity(intent)
-//            }
+        boardAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
         binding.rvPostPreview.apply {
             adapter = boardAdapter
@@ -96,9 +98,10 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
 
-        boardAdapter.setOnClickPostListener(object :
-            BoardAdapter.OnClickPostListener {
-            override fun onClickPost(position: Int, item: Post) {
+        boardAdapter.setOnPostClickListener(object :
+            BoardAdapter.OnPostClickListener {
+            override fun onClickPost(item: Post, position: Int) {
+                clickedPosition = position
                 val intent = Intent(this@BoardActivity, PostActivity::class.java)
                 intent.putExtra("id", item.id)
                 intent.putExtra("position", position)
@@ -110,6 +113,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         })
 
         binding.refreshLayout.setOnRefreshListener {
+            isFirst = TRUE
             viewModel.getPosts(boardType)
         }
 
@@ -117,13 +121,14 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                val lastPosition = (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
+                val lastPosition =
+                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
                 val totalCount = recyclerView.adapter!!.itemCount - 1
 
                 // 스크롤이 끝에 도달하면
                 if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
                     Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
-                    viewModel.getPosts(boardType)
+                    viewModel.getNextPosts(boardType, lastPostId)
                 }
             }
         })
@@ -165,11 +170,15 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == 1) {
+        if (requestCode == 1) {
             Log.d("tag_like", "requestCode")
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 Log.d("tag_like", "저아요하고 뒤로가기함")
-                viewModel.updatePost(data!!.getSerializableExtra("postList") as Array<Post>)
+                //viewModel.updatePost(data!!.getSerializableExtra("postList") as Array<Post>)
+                boardAdapter.updateItem(data!!.getSerializableExtra("post") as Post,
+                    clickedPosition!!
+                )
+
             }
         }
     }

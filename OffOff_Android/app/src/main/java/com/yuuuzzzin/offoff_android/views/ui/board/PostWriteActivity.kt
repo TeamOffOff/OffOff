@@ -69,13 +69,20 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
         viewModel.successEvent.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-                val intent = Intent(this@PostWriteActivity, PostActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                intent.putExtra("id", it)
-                intent.putExtra("boardType", boardType)
-                intent.putExtra("boardName", boardName)
-                intent.putExtra("update", "true")
-                startActivity(intent)
+                if(postWriteType == PostWriteType.WRITE) {
+                    val intent = Intent(this@PostWriteActivity, PostActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    intent.putExtra("id", it)
+                    intent.putExtra("boardType", boardType)
+                    intent.putExtra("boardName", boardName)
+                    intent.putExtra("postWriteType", postWriteType)
+                    startActivity(intent)
+                } else {
+                    val intent = Intent()
+                    intent.putExtra("postWriteType", postWriteType)
+                    setResult(RESULT_OK, intent)
+                }
+
                 finish()
             }
         })

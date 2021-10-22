@@ -3,13 +3,12 @@ package com.yuuuzzzin.offoff_android.views.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.BR
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemPostPreviewBinding
 import com.yuuuzzzin.offoff_android.service.models.Post
+import java.lang.Boolean.TRUE
 
 /*
 * BoardActivity의 게시물 목록을 보여주는
@@ -17,33 +16,23 @@ import com.yuuuzzzin.offoff_android.service.models.Post
 */
 
 class BoardAdapter :
-    ListAdapter<Post, BoardAdapter.BoardViewHolder>(diffCallback) {
+    RecyclerView.Adapter<BoardAdapter.PostViewHolder>() {
 
-    companion object {
-        private val diffCallback = object : DiffUtil.ItemCallback<Post>() {
-            // 두 아이템이 동일한 아이템인가? (identifier 기준 비교)
-            override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
-                return oldItem.id == newItem.id
-            }
+    private var postList = ArrayList<Post>()
 
-            // 두 아이템이 동일한 내용을 가지는가?
-            override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-                return oldItem == newItem
-            }
-        }
+    override fun getItemCount(): Int = postList.size
+
+    interface OnPostClickListener {
+        fun onClickPost(item: Post, position: Int)
     }
 
-    interface OnClickPostListener {
-        fun onClickPost(position: Int, item: Post)
+    private lateinit var postClickListener: OnPostClickListener
+
+    fun setOnPostClickListener(listener: OnPostClickListener) {
+        this.postClickListener = listener
     }
 
-    private lateinit var clickPostListener: OnClickPostListener
-
-    fun setOnClickPostListener(listener: OnClickPostListener) {
-        this.clickPostListener = listener
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardAdapter.BoardViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardAdapter.PostViewHolder {
         val binding: RvItemPostPreviewBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             R.layout.rv_item_post_preview,
@@ -51,14 +40,14 @@ class BoardAdapter :
             false
         )
 
-        return BoardViewHolder(binding)
+        return PostViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+        holder.bind(postList[position], position)
     }
 
-    inner class BoardViewHolder(
+    inner class PostViewHolder(
         private val binding: RvItemPostPreviewBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -66,12 +55,22 @@ class BoardAdapter :
             binding.setVariable(BR.item, item)
             binding.executePendingBindings()
             binding.root.setOnClickListener {
-                clickPostListener.onClickPost(position, item)
+                postClickListener.onClickPost(item, position)
             }
         }
     }
 
-    fun addPostList(postList: List<Post>) {
-
+    fun addPostList(postList: List<Post>, isFirst: Boolean) {
+        if(isFirst == TRUE) {
+            this.postList.clear()
+        }
+        this.postList.addAll(postList)
+        notifyDataSetChanged()
     }
+
+    fun updateItem(post : Post, position : Int){
+        postList[position] = post
+        notifyItemChanged(position)
+    }
+
 }
