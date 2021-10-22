@@ -43,18 +43,19 @@ class PostControl(Resource):
         post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                 collection_name=board_type)
 
-        post["image"] = get_image(post["image"], "post")
-
+        # 게시글이 없는 경우 post["image"] 조회시 NoneType 에러 발생
         if not post:
             return {"queryStatus": "not found"}, 404
 
-        elif update_status.raw_result["n"] == 0:
+        post["image"] = get_image(post["image"], "post")
+
+        if update_status.raw_result["n"] == 0:
             return {"queryStatus": "views update fail"}, 500
 
-        else:
-            post["_id"] = str(post["_id"])
-            post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-            return post, 200
+        post["_id"] = str(post["_id"])
+        post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+        return post, 200
+
 
     @ownership_required
     def delete(self):
