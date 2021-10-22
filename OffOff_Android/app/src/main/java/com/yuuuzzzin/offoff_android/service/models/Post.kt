@@ -8,13 +8,13 @@ import java.io.Serializable
 /* 게시물 리스트 */
 data class PostList(
     @SerializedName("lastPostId")
-    val lastId: String,
+    val lastPostId: String,
     @SerializedName("postList")
     val postList: List<Post>
 )
 
 /* 게시물 */
-data class Post (
+data class Post(
     @SerializedName("_id")
     val id: String = "",
     @SerializedName("boardType")
@@ -32,9 +32,9 @@ data class Post (
     @SerializedName("views")
     val views: Int? = 0,
     @SerializedName("replyCount")
-    val replyCount: Int? = 0,
+    var replyCount: Int? = 0,
     @SerializedName("likes")
-    val likes:List<String> = emptyList(),
+    val likes: List<String> = emptyList(),
     @SerializedName("reports")
     val reports: List<Any> = emptyList(),
     @SerializedName("bookmarks")
@@ -67,4 +67,4 @@ data class Author(
     val type: String? = null,
     @SerializedName("profileImage")
     val profile: String? = null
-)  : Serializable
+) : Serializable

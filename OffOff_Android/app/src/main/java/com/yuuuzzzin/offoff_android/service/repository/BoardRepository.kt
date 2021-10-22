@@ -14,6 +14,7 @@ constructor(private val boardService: BoardService) {
 
     suspend fun getBoardList() = boardService.getBoardList()
     suspend fun getPosts(boardType: String) = boardService.getPosts(boardType)
+    suspend fun getNextPosts(boardType: String, lastPostId: String) = boardService.getNextPosts(boardType, lastPostId)
     suspend fun getPost(auth: String, postId: String, boardType: String) =
         boardService.getPost(auth, postId, boardType)
 

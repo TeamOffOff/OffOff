@@ -18,6 +18,13 @@ interface BoardService {
         @Path("boardType") board_type: String
     ): Response<PostList>
 
+    /* 특정 게시판의 다음 게시물들을 불러오기 */
+    @GET("postlist/{boardType}")
+    suspend fun getNextPosts(
+        @Path("boardType") board_type: String,
+        @Query("standardId") lastPostId: String
+    ): Response<PostList>
+
     /* 해당 id의 게시물 불러오기 */
     @GET("post")
     suspend fun getPost(

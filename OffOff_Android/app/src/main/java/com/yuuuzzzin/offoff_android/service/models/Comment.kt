@@ -18,7 +18,7 @@ data class Comment(
     @SerializedName("postId")
     val postId: String,
     @SerializedName("parentReplyId")
-    val parentReplyId: String,
+    val parentReplyId: String?= null,
     @SerializedName("content")
     val content: String,
     @SerializedName("date")
@@ -26,7 +26,9 @@ data class Comment(
     @SerializedName("author")
     val author: Author,
     @SerializedName("likes")
-    val likes: List<String> = emptyList()
+    val likes: List<String> = emptyList(),
+    @SerializedName("childrenReplies")
+    val childrenReplies: List<CommentSend> = emptyList()
 ) : Identifiable {
     override val identifier: Any
         get() = id
@@ -42,8 +44,12 @@ data class CommentSend(
     val postId: String,
     @SerializedName("parentReplyId")
     val parentReplyId: String? = null,
+    @SerializedName("isChildReply")
+    val isChildReply: Boolean? = null,
     @SerializedName("content")
     val content: String? = null,
     @SerializedName("author")
-    val author: String? = null
+    val author: String? = null,
+    @SerializedName("likes")
+    val likes: List<String> = emptyList()
 )
