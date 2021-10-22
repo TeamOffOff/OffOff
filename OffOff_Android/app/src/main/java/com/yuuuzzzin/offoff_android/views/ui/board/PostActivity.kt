@@ -17,6 +17,7 @@ import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
+import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.utils.Constants.DELETE_COMMENT
 import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
@@ -29,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 @AndroidEntryPoint
 class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
@@ -37,10 +39,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private lateinit var postId: String
     private lateinit var boardName: String
     private lateinit var boardType: String
+    private var postPosition: Int = 0
     private var commentPosition: Int = 0
     private var author: String? = null
     private var doLike: Boolean? = false
     private lateinit var currentCommentList: Array<Comment>
+    private lateinit var currentPostList: Array<Post>
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
     private lateinit var commentListAdapter: CommentListAdapter
@@ -57,8 +61,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private fun processIntent() {
         postId = intent.getStringExtra("id").toString()
+        postPosition = intent.getIntExtra("position", 0)
         boardType = intent.getStringExtra("boardType").toString()
         boardName = intent.getStringExtra("boardName").toString()
+        currentPostList = intent.getSerializableExtra("postList") as Array<Post>
 
         viewModel.postId = postId
         viewModel.boardType = boardType
@@ -73,10 +79,15 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             binding.post = it
         })
 
+        viewModel.newPost.observe(binding.lifecycleOwner!!, {
+            binding.post = it
+            currentPostList[postPosition] = it
+        })
+
         viewModel.author.observe(binding.lifecycleOwner!!, {
             author = it
             Log.d(
-                "tag_idviewmodel",
+                "tag_id",
                 "id : " + OffoffApplication.user.id + " / author: " + author.toString()
             )
             invalidateOptionsMenu()
@@ -85,6 +96,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.successLike.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showSuccessLikeDialog(it)
+                doLike = true
             }
         })
 
@@ -104,8 +116,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             Log.d("tag_item_", "$it")
             currentCommentList[commentPosition] = it
             viewModel.update(currentCommentList)
-            //commentListAdapter.updateComment(commentPosition!!, it)
-
         })
 
         viewModel.commentSuccessEvent.observe(binding.lifecycleOwner!!, { event ->
@@ -125,13 +135,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 showMyCommentOptionDialog(it)
             }
         })
-
-//        viewModel.singleData.observe(this, { singleData ->
-////            val index = commentListAdapter.
-////            adapterList.indexOfFirst { singleData.id == it.id }
-////            adapterList[index] = singleData
-//            commentListAdapter.notifyItemChanged(index)
-//        }
     }
 
     private fun initToolbar() {
@@ -175,11 +178,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         binding.rvComment.apply {
             adapter = commentListAdapter
             layoutManager = LinearLayoutManager(context)
-//                object : LinearLayoutManager(context) {
-//                override fun canScrollVertically(): Boolean {
-//                    return false
-//                }
-//            }
             isNestedScrollingEnabled = false
         }
 
@@ -188,23 +186,19 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             override fun onLikeComment(position: Int, comment: Comment) {
                 commentPosition = position
                 viewModel.likeComment(comment.id)
-//                viewModel.comment.observe(binding.lifecycleOwner!!, {
-//                    Log.d("tag_commentobserve", "$it and $position")
-//                    commentListAdapter.notifyItemChanged(position, it)
-//                })
             }
         })
 
-//        commentListAdapter.setOnDeleteCommentListener(object :
-//            CommentListAdapter.OnDeleteCommentListener {
-//            override fun onDeleteComment(position: Int, comment: Comment) {
-//                if (OffoffApplication.user.id == comment.value!!.author.id) {
-//                    viewModel.showMyCommentDialog(comment.value!!.id)
-//                } else {
-//                    viewModel.showCommentDialog(comment.value!!.id)
-//                }
-//            }
-//        })
+        commentListAdapter.setOnClickCommentOptionListener(object :
+            CommentListAdapter.OnClickCommentOptionListener {
+            override fun onClickCommentOption(comment: Comment) {
+                if (OffoffApplication.user.id == comment.author.id) {
+                    viewModel.showMyCommentDialog(comment.id)
+                } else {
+                    viewModel.showCommentDialog(comment.id)
+                }
+            }
+        })
     }
 
     private fun showDeleteDialog(message: String) {
@@ -328,7 +322,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             startActivity(intent)
             finish()
         } else if (doLike == true) {
-
+            val intent = Intent()
+            intent.putExtra("postList", currentPostList as Serializable)
+            setResult(RESULT_OK, intent)
+            finish()
         } else
             super.onBackPressed()
     }

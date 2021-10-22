@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
+import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
+import java.io.Serializable
 
 @AndroidEntryPoint
 class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board) {
@@ -29,6 +31,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private lateinit var boardType: String
     private lateinit var searchIcon: FontDrawable
     private lateinit var writeIcon: FontDrawable
+    private lateinit var currentPostList: Array<Post>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +56,13 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 binding.rvPostPreview.scrollToPosition(0)
             }
             binding.refreshLayout.isRefreshing = false
+            currentPostList = it.toTypedArray()
+        })
+
+        viewModel.newPostList.observe(binding.lifecycleOwner!!, {
+            boardAdapter.submitList(it.toMutableList())
+            binding.refreshLayout.isRefreshing = false
+            currentPostList = it.toTypedArray()
         })
 
     }
@@ -69,22 +79,34 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     }
 
     private fun initRV() {
-        boardAdapter = BoardAdapter(
-            itemClick = { item ->
-                val intent = Intent(this@BoardActivity, PostActivity::class.java)
-                intent.putExtra("id", item.id)
-                // intent.putExtra("position", )
-                intent.putExtra("boardName", boardName)
-                intent.putExtra("boardType", item.boardType)
-                startActivity(intent)
-            }
-        )
+        boardAdapter = BoardAdapter()
+//            itemClick = { item ->
+//                val intent = Intent(this@BoardActivity, PostActivity::class.java)
+//                intent.putExtra("id", item.id)
+//                intent.putExtra("position", )
+//                intent.putExtra("boardName", boardName)
+//                intent.putExtra("boardType", item.boardType)
+//                startActivity(intent)
+//            }
 
         binding.rvPostPreview.apply {
             adapter = boardAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
+
+        boardAdapter.setOnClickPostListener(object :
+            BoardAdapter.OnClickPostListener {
+            override fun onClickPost(position: Int, item: Post) {
+                val intent = Intent(this@BoardActivity, PostActivity::class.java)
+                intent.putExtra("id", item.id)
+                intent.putExtra("position", position)
+                intent.putExtra("boardName", boardName)
+                intent.putExtra("boardType", item.boardType)
+                intent.putExtra("postList", currentPostList as Serializable)
+                startActivityForResult(intent, 1)
+            }
+        })
 
         binding.refreshLayout.setOnRefreshListener {
             viewModel.getPosts(boardType)
@@ -136,6 +158,15 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 1) {
+            if(requestCode == RESULT_OK) {
+                viewModel.updatePost(data!!.getSerializableExtra("postList") as Array<Post>)
+            }
         }
     }
 }

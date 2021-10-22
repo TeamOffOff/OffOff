@@ -22,6 +22,9 @@ constructor(
     private val _postList = MutableLiveData<List<Post>>()
     val postList: LiveData<List<Post>> get() = _postList
 
+    private val _newPostList = MutableLiveData<List<Post>>()
+    val newPostList: LiveData<List<Post>> get() = _newPostList
+
     private var count: Int = 0 // 가져온 아이템 개수
 
     fun getPosts(boardType: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -36,5 +39,9 @@ constructor(
                 Log.d("tag_fail", "getPosts Error: ${response.code()}")
             }
         }
+    }
+
+    fun updatePost(postList: Array<Post>) {
+        _newPostList.postValue(postList.toList())
     }
 }

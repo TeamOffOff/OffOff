@@ -1,7 +1,7 @@
 package com.yuuuzzzin.offoff_android.service.models
 
 import com.google.gson.annotations.SerializedName
-import com.yuuuzzzin.offoff_android.utils.Identifiable
+import java.io.Serializable
 
 // 게시물 관련 객체 모델
 
@@ -14,7 +14,7 @@ data class PostList(
 )
 
 /* 게시물 */
-data class Post(
+data class Post (
     @SerializedName("_id")
     val id: String = "",
     @SerializedName("boardType")
@@ -39,10 +39,7 @@ data class Post(
     val reports: List<Any> = emptyList(),
     @SerializedName("bookmarks")
     val bookmarks: List<Any> = emptyList(),
-) : Identifiable {
-    override val identifier: Any
-        get() = id
-}
+) :Serializable
 
 /* 보내는 게시물 */
 data class PostSend(

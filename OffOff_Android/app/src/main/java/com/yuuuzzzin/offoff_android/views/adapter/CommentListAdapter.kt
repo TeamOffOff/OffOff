@@ -28,8 +28,6 @@ class CommentListAdapter :
         }
     }
 
-    private val commentList: MutableList<Comment> = mutableListOf()
-
     interface OnLikeCommentListener {
         fun onLikeComment(position: Int, comment: Comment)
     }
@@ -40,14 +38,14 @@ class CommentListAdapter :
         this.likeCommentListener = listener
     }
 
-    interface OnDeleteCommentListener {
-        fun onDeleteComment(position: Int, comment: Comment)
+    interface OnClickCommentOptionListener {
+        fun onClickCommentOption(comment: Comment)
     }
 
-    private lateinit var deleteCommentListener: OnDeleteCommentListener
+    private lateinit var clickCommentOptionListener: OnClickCommentOptionListener
 
-    fun setOnDeleteCommentListener(listener: OnDeleteCommentListener) {
-        this.deleteCommentListener = listener
+    fun setOnClickCommentOptionListener(listener: OnClickCommentOptionListener) {
+        this.clickCommentOptionListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -65,39 +63,19 @@ class CommentListAdapter :
         holder.bind(getItem(position), position)
     }
 
-
     inner class CommentViewHolder(
         private val binding: RvItemCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        lateinit var comment: Comment
-
         fun bind(item: Comment, position: Int) {
-            comment = item
-            binding.setVariable(BR.item, comment)
+            binding.setVariable(BR.item, item)
             binding.executePendingBindings()
             binding.btLikes.setOnClickListener {
                 likeCommentListener.onLikeComment(position, item)
             }
-//            binding.btCommentOption.setOnClickListener {
-//                if(OffoffApplication.user.id == comment.value!!.author.id) {
-//                    viewModel.showMyCommentDialog(comment.value!!.id)
-//                } else {
-//                    viewModel.showCommentDialog(comment.value!!.id)
-//                }
-//            }
-
+            binding.btCommentOption.setOnClickListener {
+                clickCommentOptionListener.onClickCommentOption(item)
+            }
         }
-
     }
-
-    fun updateComment(position: Int, comment: Comment) {
-        currentList[position] = comment
-        notifyItemChanged(position)
-    }
-
-    private fun findItemPosById(id: String): Int {
-        return currentList.indexOfFirst { it.id == id }
-    }
-
 }

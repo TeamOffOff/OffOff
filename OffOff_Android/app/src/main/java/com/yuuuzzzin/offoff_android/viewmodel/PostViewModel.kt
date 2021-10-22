@@ -28,6 +28,9 @@ constructor(
     private val _response = MutableLiveData<Post>()
     val response: LiveData<Post> get() = _response
 
+    private val _newPost = MutableLiveData<Post>()
+    val newPost: LiveData<Post> get() = _newPost
+
     private val _commentList = MutableLiveData<List<Comment>>()
     val commentList: LiveData<List<Comment>> get() = _commentList
 
@@ -111,6 +114,7 @@ constructor(
                         when (response.code()) {
                             OK -> {
                                 _response.postValue(response.body())
+                                _newPost.postValue(response.body())
                                 _successLike.postValue(Event("좋아요를 눌렀습니다."))
                                 Log.d("tag_success", "likePost: ${response.body()}")
                             }
@@ -168,7 +172,7 @@ constructor(
                     if (response.isSuccessful) {
                         when (response.code()) {
                             OK -> {
-                                _response.postValue(response.body())
+                                _newPost.postValue(response.body())
                                 _successLike.postValue(Event("게시물을 신고했습니다."))
                                 Log.d("tag_success", "likePost: ${response.body()}")
                             }
@@ -283,11 +287,6 @@ constructor(
     fun showCommentDialog(commentId: String) {
         _showCommentDialog.postValue(Event(commentId))
     }
-
-    // inside your viewModel
-    private val _singleData = MutableLiveData<Comment>()
-    val singleData: LiveData<Comment>
-        get() = _singleData
 
     fun update(commentList: Array<Comment>) {
         _commentList.postValue(commentList.toList())
