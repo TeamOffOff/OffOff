@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import request
+from flask import request, make_response
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from pymongo.message import query
@@ -9,13 +9,12 @@ from controller.image import *
 from controller.reference import *
 from controller.filter import check_jwt, ownership_required
 from controller.etc import get_variables, get_reply_list
+
 import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
 Post = Namespace("post", description="게시물 관련 API")
-
-
 
 """
 게시글 관련 API
@@ -26,6 +25,8 @@ class PostControl(Resource):
     @jwt_required()  # token이 있는지
     def get(self):
         """특정 id의 게시글을 조회합니다."""
+        print(request)
+        print(Resource)
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         print("user_id: ", user_id)
         if not user_id:
@@ -45,7 +46,9 @@ class PostControl(Resource):
 
         # 게시글이 없는 경우 post["image"] 조회시 NoneType 에러 발생
         if not post:
-            return {"queryStatus": "not found"}, 404
+            result = make_response({"queryStatus": "not found"}, 404)
+            print(result.status_code)
+            return result
 
         post["image"] = get_image(post["image"], "post")
 

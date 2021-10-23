@@ -14,7 +14,6 @@ from api_helper.calendar import Calendar, Shift, SavedShift
 
 import mongo as mongo
 
-# import logging
 
 
 app = Flask(__name__)
@@ -54,32 +53,6 @@ api.add_namespace(MessageList, "/messagelist")
 api.add_namespace(Calendar, "/calendar")
 api.add_namespace(Shift, '/shift')
 api.add_namespace(SavedShift, '/savedshift')
-
-# if not app.debug :
-#         # 여기 지금 작동 안 함 ㅠㅠ
-#         # logging
-#         logger = logging.getLogger(__name__)
-#         logger.setLevel(logging.DEBUG)
-
-#         formatter = logging.Formatter(fmt='%(asctime)s:%(module)s:%(levelname)s:%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-
-#         # INFO 레벨 이상의 로그를 콘솔에 출하는 Handler
-#         console_handler = logging.StreamHandler()
-#         console_handler.setLevel(logging.INFO)
-#         console_handler.setFormatter(formatter)
-#         logger.addHandler(console_handler)
-
-#         # DEBUG 레벨 이상의 로그를 'debug.log'에 출력하는 Handler
-#         file_debug_handler = logging.FileHandler('debug.log')
-#         file_debug_handler.setLevel(logging.DEBUG)
-#         file_debug_handler.setFormatter(formatter)
-#         logger.addHandler(file_debug_handler)
-
-#         # ERROR 레벨 이상의 로그를 'error.log'에 출력하는 Handler
-#         file_error_handler = logging.FileHandler('error.log')
-#         file_error_handler.setLevel(logging.ERROR)
-#         file_error_handler.setFormatter(formatter)
-#         logger.addHandler(file_error_handler)   
 
 
 if __name__ == "__main__":
