@@ -43,6 +43,8 @@
 		EA83564926D38C4900D60C46 /* ScheduleCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564826D38C4900D60C46 /* ScheduleCalendarCell.swift */; };
 		EA83564B26D3A47600D60C46 /* RoutineModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564A26D3A47600D60C46 /* RoutineModel.swift */; };
 		EA83564D26D3A6D500D60C46 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA83564C26D3A6D500D60C46 /* ScheduleView.swift */; };
+		EA88BD4E2725823E004D8415 /* SubReplyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA88BD4D2725823D004D8415 /* SubReplyAPI.swift */; };
+		EA88BD502725854B004D8415 /* SubReplyServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA88BD4F2725854B004D8415 /* SubReplyServices.swift */; };
 		EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333826D4C7540014D97C /* SetShiftViewController.swift */; };
 		EA8A333B26D4CB490014D97C /* SetRoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333A26D4CB490014D97C /* SetRoutineView.swift */; };
 		EA8A333D26D4CB600014D97C /* SetShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */; };
@@ -171,6 +173,8 @@
 		EA83564826D38C4900D60C46 /* ScheduleCalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCalendarCell.swift; sourceTree = "<group>"; };
 		EA83564A26D3A47600D60C46 /* RoutineModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineModel.swift; sourceTree = "<group>"; };
 		EA83564C26D3A6D500D60C46 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		EA88BD4D2725823D004D8415 /* SubReplyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubReplyAPI.swift; sourceTree = "<group>"; };
+		EA88BD4F2725854B004D8415 /* SubReplyServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubReplyServices.swift; sourceTree = "<group>"; };
 		EA8A333826D4C7540014D97C /* SetShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetShiftViewController.swift; sourceTree = "<group>"; };
 		EA8A333A26D4CB490014D97C /* SetRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRoutineView.swift; sourceTree = "<group>"; };
 		EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetShiftViewModel.swift; sourceTree = "<group>"; };
@@ -399,6 +403,8 @@
 				EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */,
 				EAA89BC027074F5E00EB3818 /* ReplyAPI.swift */,
 				EAA89BC2270752A000EB3818 /* ReplyServices.swift */,
+				EA88BD4D2725823D004D8415 /* SubReplyAPI.swift */,
+				EA88BD4F2725854B004D8415 /* SubReplyServices.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -714,6 +720,7 @@
 				EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */,
 				EA983F0D26C0E4980070604E /* NewPostViewModel.swift in Sources */,
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
+				EA88BD502725854B004D8415 /* SubReplyServices.swift in Sources */,
 				EA83564726D37BBE00D60C46 /* ScheduleViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
@@ -743,6 +750,7 @@
 				EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */,
 				EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */,
 				EAF212882690355B00E47942 /* HomeViewController.swift in Sources */,
+				EA88BD4E2725823E004D8415 /* SubReplyAPI.swift in Sources */,
 				EAA89BC127074F5E00EB3818 /* ReplyAPI.swift in Sources */,
 				EA8A333D26D4CB600014D97C /* SetShiftViewModel.swift in Sources */,
 				EA983F0F26C1183D0070604E /* Constants.swift in Sources */,

@@ -74,3 +74,20 @@ struct DeletingReply: Codable {
         try container.encode(isChildReply, forKey: .isChildReply)
     }
 }
+
+struct DeletingSubReply: Codable {
+    var _id: String
+    var boardType: String
+    var postId: String
+    var parentReplyId: String
+    var author: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(postId, forKey: .postId)
+        try container.encode(parentReplyId, forKey: .parentReplyId)
+        try container.encode(author, forKey: .author)
+    }
+}

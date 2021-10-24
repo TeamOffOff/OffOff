@@ -57,6 +57,11 @@ class RepliesTableViewCell: UITableViewCell {
         $0.setTitleColor(.black, for: .normal)
     }
     
+    var addSubReplyButton = UIButton().then {
+        $0.setTitle("+", for: .normal)
+        $0.setTitleColor(.red, for: .normal)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -66,6 +71,11 @@ class RepliesTableViewCell: UITableViewCell {
         // Initialization code
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        bindData()
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.addSubview(profileImageView)
@@ -73,6 +83,7 @@ class RepliesTableViewCell: UITableViewCell {
         self.contentView.addSubview(dateLabel)
         self.contentView.addSubview(contentTextView)
         self.contentView.addSubview(likeButton)
+        self.contentView.addSubview(addSubReplyButton)
         self.contentView.addSubview(menubutton)
         self.contentView.backgroundColor = .white
         makeView()
@@ -103,6 +114,10 @@ class RepliesTableViewCell: UITableViewCell {
             $0.left.equalTo(contentTextView)
             //            $0.right.equalToSuperview()
             $0.bottom.equalToSuperview()
+        }
+        addSubReplyButton.snp.makeConstraints {
+            $0.centerY.equalTo(likeButton)
+            $0.right.equalToSuperview().inset(8.0)
         }
         menubutton.snp.makeConstraints {
             $0.centerY.equalTo(nicknameLabel)
@@ -148,6 +163,8 @@ class RepliesTableViewCell: UITableViewCell {
                 self.showMenuAlert(reply: $0!)
             }
             .disposed(by: disposeBag)
+        
+        self.addSubReplyButton.rx.tap
     }
     
     private func showMenuAlert(reply: Reply) {
