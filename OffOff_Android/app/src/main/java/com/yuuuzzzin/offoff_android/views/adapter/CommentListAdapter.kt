@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.BR
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemCommentBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
+import com.yuuuzzzin.offoff_android.service.models.Reply
 
 class CommentListAdapter :
     ListAdapter<Comment, CommentListAdapter.CommentViewHolder>(diffCallback) {
@@ -72,6 +74,13 @@ class CommentListAdapter :
             binding.executePendingBindings()
             binding.btLikes.setOnClickListener {
                 likeCommentListener.onLikeComment(position, item)
+            }
+            if(item.childrenReplies != null) {
+                val replyListAdapter = ReplyListAdapter()
+                replyListAdapter.replyList = item.childrenReplies as ArrayList<Reply>
+                replyListAdapter.notifyDataSetChanged()
+                binding.rvReply.adapter = replyListAdapter
+                binding.rvReply.layoutManager = LinearLayoutManager(binding.root.context)
             }
             binding.btCommentOption.setOnClickListener {
                 clickCommentOptionListener.onClickCommentOption(item)
