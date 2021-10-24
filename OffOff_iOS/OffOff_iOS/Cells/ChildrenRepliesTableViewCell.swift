@@ -15,6 +15,13 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     var reply = BehaviorSubject<Reply?>(value: nil)
     var disposeBag = DisposeBag()
     
+    var boardTpye: String?
+    var activityAlert: ((_ title: String) -> Void)?
+    var dismissAlert: ((_ animated: Bool) -> Void)?
+    var presentMenuAlert: ((_ alert: UIAlertController) -> Void)?
+    
+    var replies = BehaviorSubject<[Reply]?>(value: nil)
+    
     var profileImageView = UIImageView().then {
         $0.backgroundColor = .lightGray
     }
@@ -58,8 +65,8 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         self.contentView.addSubview(contentTextView)
         self.contentView.addSubview(likeButton)
         self.contentView.addSubview(menubutton)
-        makeView()
         bindData()
+        makeView()
     }
     
     required init?(coder: NSCoder) {

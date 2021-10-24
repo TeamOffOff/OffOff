@@ -1,45 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3zI-y6-Vbc">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
-        <scene sceneID="EHf-IW-A2E">
+        <scene sceneID="qMA-d4-PJc">
             <objects>
-                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                <viewController id="3zI-y6-Vbc" sceneMemberID="viewController">
+                    <view key="view" userInteractionEnabled="NO" contentMode="scaleToFill" id="VmG-eW-0je">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IconImage" translatesAutoresizingMaskIntoConstraints="NO" id="CyO-4M-ARd">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IconImage" highlightedImage="IconImage" translatesAutoresizingMaskIntoConstraints="NO" id="mOn-1g-Hh9">
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                             </imageView>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" name="MainColor"/>
+                        <viewLayoutGuide key="safeArea" id="tHk-OS-T7u"/>
+                        <color key="backgroundColor" red="0.094117647058823528" green="0.3411764705882353" blue="0.22745098039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="CyO-4M-ARd" secondAttribute="trailing" id="Jbi-as-44F"/>
-                            <constraint firstItem="CyO-4M-ARd" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="QGH-B2-HaG"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="CyO-4M-ARd" secondAttribute="bottom" id="Rl2-QC-J0a"/>
-                            <constraint firstItem="CyO-4M-ARd" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="pIP-In-7pN"/>
+                            <constraint firstItem="tHk-OS-T7u" firstAttribute="trailing" secondItem="mOn-1g-Hh9" secondAttribute="trailing" id="BRg-rl-J9z"/>
+                            <constraint firstItem="tHk-OS-T7u" firstAttribute="bottom" secondItem="mOn-1g-Hh9" secondAttribute="bottom" id="aqx-BB-q1V"/>
+                            <constraint firstItem="mOn-1g-Hh9" firstAttribute="top" secondItem="tHk-OS-T7u" secondAttribute="top" id="d2v-CO-dpu"/>
+                            <constraint firstItem="mOn-1g-Hh9" firstAttribute="leading" secondItem="tHk-OS-T7u" secondAttribute="leading" id="uur-dx-rKe"/>
                         </constraints>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xbp-sS-ubn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="-559" y="285"/>
         </scene>
     </scenes>
     <resources>
         <image name="IconImage" width="1024" height="1024"/>
-        <namedColor name="MainColor">
-            <color red="0.29803921568627451" green="0.71372549019607845" blue="0.56470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
     </resources>
 </document>

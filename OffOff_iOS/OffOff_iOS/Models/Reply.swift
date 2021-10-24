@@ -26,14 +26,14 @@ struct WritingReply: Codable {
 
 struct Reply: Codable {
     var _id: String
+    var author: Author
     var boardType: String
-    var postId: String
-    var parentReplyId: String?
     var content: String
     var date: String
-    var author: Author
     var likes: [String]
-    var childrenReplies: [Reply]
+    var parentReplyId: String?
+    var postId: String
+    var childrenReplies: [Reply]?
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -51,6 +51,11 @@ struct Reply: Codable {
 
 struct ReplyList: Codable {
     var replyList: [Reply]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(replyList, forKey: .replyList)
+    }
 }
 
 struct DeletingReply: Codable {

@@ -73,6 +73,7 @@ class PostView: UIScrollView {
     var repliesTableView = ContentSizedTableView().then {
         $0.backgroundColor = .white
         $0.register(RepliesTableViewCell.self, forCellReuseIdentifier: RepliesTableViewCell.identifier)
+        $0.register(ChildrenRepliesTableViewCell.self, forCellReuseIdentifier: ChildrenRepliesTableViewCell.identifier)
         $0.isScrollEnabled = false
     }
     
@@ -88,7 +89,7 @@ class PostView: UIScrollView {
         self.addSubview(likeButton)
         self.addSubview(scrapButton)
         self.addSubview(repliesTableView)
-        self.makeView()
+        
     }   
     
     required init?(coder: NSCoder) {

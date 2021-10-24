@@ -26,8 +26,9 @@ class PostViewModel {
             .bind {
                 var replies = [Reply]()
                 $0.forEach {
-                    if $0.parentReplyId == "" || $0.parentReplyId == nil {
-                        replies.append($0)
+                    replies.append($0)
+                    if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
+                        replies.append(contentsOf: $0.childrenReplies!)
                     }
                 }
                 self.replies.onNext(replies)
@@ -98,7 +99,14 @@ class PostViewModel {
                     self.activityDisposeBag = DisposeBag()
                     ReplyServices.writeReply(reply: $0).bind {
                         if $0 != nil {
-                            self.replies.onNext($0)
+                            var replies = [Reply]()
+                            $0!.forEach {
+                                replies.append($0)
+                                if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
+                                    replies.append(contentsOf: $0.childrenReplies!)
+                                }
+                            }
+                            self.replies.onNext(replies)
                             self.replyAdded.onNext(true)
                         }
                     }.disposed(by: self.activityDisposeBag)

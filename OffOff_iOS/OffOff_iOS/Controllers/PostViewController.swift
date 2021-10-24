@@ -54,6 +54,10 @@ class PostViewController: UIViewController {
         replyTextView.delegate = self
         addKeyboardNotifications()
         
+        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
+        self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
+        self.postView.repliesTableView.estimatedRowHeight = 400
+        
         // view model
         viewModel = PostViewModel(
             contentId: postInfo?.id ?? "",
@@ -67,10 +71,7 @@ class PostViewController: UIViewController {
                 return reply
             }
         )
-        
-        self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
-        self.postView.repliesTableView.estimatedRowHeight = 400
-        
+
         // bind result
         viewModel.post
             .filter { $0 != nil }
@@ -123,13 +124,27 @@ class PostViewController: UIViewController {
             .filter { $0 != nil }
             .do { self.postCell?.commentLabel.label.text = "\($0!.count)"}
             .map { $0! }
-            .bind(to: self.postView.repliesTableView.rx.items(cellIdentifier: RepliesTableViewCell.identifier, cellType: RepliesTableViewCell.self)) { (row, element, cell) in
-                cell.boardTpye = self.postInfo?.type
-                cell.reply.onNext(element)
-                cell.activityAlert = self.activityAlert
-                cell.dismissAlert = self.dismissAlert
-                cell.presentMenuAlert = self.presentMenuAlert
-                cell.replies = self.viewModel.replies
+            .bind(to: self.postView.repliesTableView.rx.items) { (tv, row, item) -> UITableViewCell in
+                if item.parentReplyId != nil {
+                    let cell = tv.dequeueReusableCell(withIdentifier: ChildrenRepliesTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! ChildrenRepliesTableViewCell
+                    
+                    cell.boardTpye = self.postInfo?.type
+                    cell.reply.onNext(item)
+                    cell.activityAlert = self.activityAlert
+                    cell.dismissAlert = self.dismissAlert
+                    cell.presentMenuAlert = self.presentMenuAlert
+                    return cell
+                } else {
+                    let cell = tv.dequeueReusableCell(withIdentifier: RepliesTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! RepliesTableViewCell
+                    
+                    cell.boardTpye = self.postInfo?.type
+                    cell.reply.onNext(item)
+                    cell.activityAlert = self.activityAlert
+                    cell.dismissAlert = self.dismissAlert
+                    cell.presentMenuAlert = self.presentMenuAlert
+                    cell.replies = self.viewModel.replies
+                    return cell
+                }
             }
             .disposed(by: disposeBag)
         
@@ -152,6 +167,7 @@ class PostViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        self.postView.makeView()
     }
     
     override func viewDidAppear(_ animated: Bool) {

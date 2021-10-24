@@ -76,9 +76,6 @@
 		EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */; };
 		EABD99C726A2EB4B001DE8BF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */; };
 		EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABD99C826A32B9D001DE8BF /* CommunityTableViewCell.swift */; };
-		EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */; };
-		EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */; };
-		EACB84F226C39B9800096E01 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EACB84F126C39B9800096E01 /* Amplify */; };
 		EACB84F626C3A83C00096E01 /* swiftlogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EACB84F526C3A83C00096E01 /* swiftlogo.jpg */; };
 		EACC255B26A5B3B0000B12B6 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC255A26A5B3B0000B12B6 /* UserModel.swift */; };
 		EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */ = {isa = PBXBuildFile; fileRef = EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */; };
@@ -257,7 +254,6 @@
 				EA83564226D3727100D60C46 /* FSCalendar in Frameworks */,
 				EA9D0AD026BAC93100D571EC /* Then in Frameworks */,
 				EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */,
-				EACB84EE26C39B9800096E01 /* AWSDataStorePlugin in Frameworks */,
 				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
 				EA8A334226D61B5F0014D97C /* RxGesture in Frameworks */,
 				EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */,
@@ -265,10 +261,8 @@
 				EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */,
 				EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */,
 				EA0624D926DBB1B6004FF91A /* Realm in Frameworks */,
-				EACB84F026C39B9800096E01 /* AWSS3StoragePlugin in Frameworks */,
 				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
-				EACB84F226C39B9800096E01 /* Amplify in Frameworks */,
 				EAD6FEE2271F0E3900563005 /* Differentiator in Frameworks */,
 				EAD6FEE4271F0E3900563005 /* RxDataSources in Frameworks */,
 				EA9D0AC426BA956200D571EC /* Moya in Frameworks */,
@@ -545,9 +539,6 @@
 				EA9D0AD226BAC96D00D571EC /* SnapKit */,
 				EA9D0AD526BAC97C00D571EC /* SkyFloatingLabelTextField */,
 				EA9D0AD826BAC9DF00D571EC /* FontAwesome */,
-				EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */,
-				EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */,
-				EACB84F126C39B9800096E01 /* Amplify */,
 				EA285A6726C565F000E65EB2 /* RxCocoa */,
 				EA83564126D3727100D60C46 /* FSCalendar */,
 				EA8A334126D61B5F0014D97C /* RxGesture */,
@@ -599,7 +590,6 @@
 				EA9D0AD126BAC96D00D571EC /* XCRemoteSwiftPackageReference "SnapKit" */,
 				EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
 				EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */,
-				EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */,
 				EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */,
 				EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */,
@@ -1158,14 +1148,6 @@
 				minimumVersion = 1.9.1;
 			};
 		};
-		EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/aws-amplify/amplify-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.13.3;
-			};
-		};
 		EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
@@ -1247,21 +1229,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */;
 			productName = FontAwesome;
-		};
-		EACB84ED26C39B9800096E01 /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */;
-			productName = AWSDataStorePlugin;
-		};
-		EACB84EF26C39B9800096E01 /* AWSS3StoragePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */;
-			productName = AWSS3StoragePlugin;
-		};
-		EACB84F126C39B9800096E01 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EACB84EC26C39B9800096E01 /* XCRemoteSwiftPackageReference "amplify-ios" */;
-			productName = Amplify;
 		};
 		EAD6FEE1271F0E3900563005 /* Differentiator */ = {
 			isa = XCSwiftPackageProductDependency;
