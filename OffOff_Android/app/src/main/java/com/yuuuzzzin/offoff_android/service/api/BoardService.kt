@@ -90,4 +90,24 @@ interface BoardService {
         @Body activityItem: ActivityItem
     ): Response<Comment>
 
+    /* 대댓글 작성 */
+    @POST("subreply")
+    suspend fun writeReply(
+        @Header("Authorization") auth: String,
+        @Body reply: Reply
+    ): Response<CommentList>
+
+    /* 대댓글 좋아요 */
+    @PUT("subreply")
+    suspend fun likeReply(
+        @Header("Authorization") auth: String,
+        @Body activityItem: ActivityItem
+    ): Response<Reply>
+
+    /* 대댓글 삭제 */
+    @HTTP(method = "DELETE", path = "subreply", hasBody = true)
+    suspend fun deleteReply(
+        @Header("Authorization") auth: String,
+        @Body reply: Reply
+    ): Response<CommentList>
 }
