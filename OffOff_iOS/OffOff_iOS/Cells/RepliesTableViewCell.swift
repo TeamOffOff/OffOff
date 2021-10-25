@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 class RepliesTableViewCell: UITableViewCell {
     
@@ -21,6 +22,8 @@ class RepliesTableViewCell: UITableViewCell {
     var presentMenuAlert: ((_ alert: UIAlertController) -> Void)?
     
     var replies = BehaviorSubject<[Reply]?>(value: nil)
+    
+    var isSubReplyInputting = BehaviorSubject<Reply?>(value: nil)
     
     var profileImageView = UIImageView().then {
         $0.backgroundColor = .lightGray
@@ -164,7 +167,11 @@ class RepliesTableViewCell: UITableViewCell {
             }
             .disposed(by: disposeBag)
         
-        self.addSubReplyButton.rx.tap
+        self.addSubReplyButton.rx.tap.withLatestFrom(self.reply)
+            .bind {
+                self.isSubReplyInputting.onNext($0)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func showMenuAlert(reply: Reply) {

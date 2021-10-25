@@ -136,7 +136,7 @@ class PostViewController: UIViewController {
                     return cell
                 } else {
                     let cell = tv.dequeueReusableCell(withIdentifier: RepliesTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! RepliesTableViewCell
-                    
+                    cell.isSubReplyInputting = self.viewModel.isSubReplyInputting
                     cell.boardTpye = self.postInfo?.type
                     cell.reply.onNext(item)
                     cell.activityAlert = self.activityAlert

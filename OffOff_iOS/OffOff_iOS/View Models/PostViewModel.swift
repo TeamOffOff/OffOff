@@ -18,6 +18,8 @@ class PostViewModel {
     var liked = BehaviorSubject<Bool>(value: false)
     var replyAdded = BehaviorSubject<Bool>(value: false)
     
+    var isSubReplyInputting = BehaviorSubject<Reply?>(value: nil)
+    
     var disposeBag = DisposeBag()
     var activityDisposeBag = DisposeBag()
     
@@ -92,24 +94,29 @@ class PostViewModel {
             .disposed(by: disposeBag)
         
         replyButtonTapped
-            .bind {
-                if $0.content == "" {
-                    self.replyAdded.onNext(false)
+            .filter { $0.content != "" }
+            .withLatestFrom(isSubReplyInputting) { WritingReply(_id: nil, boardType: $0.boardType, postId: $0.postId, parentReplyId: ($1 != nil) ? $1?._id : nil, content: $0.content) }
+            .flatMap { reply -> Observable<[Reply]?> in
+                if reply.parentReplyId != nil {
+                    var subReply = reply
+                    subReply._id = "\(reply.parentReplyId!)_\(Date().toString("yyyy.MM.dd.HH.mm.ss.SSS"))"
+                    return SubReplyServices.writeSubReply(writingSubReply: subReply)
                 } else {
-                    self.activityDisposeBag = DisposeBag()
-                    ReplyServices.writeReply(reply: $0).bind {
-                        if $0 != nil {
-                            var replies = [Reply]()
-                            $0!.forEach {
-                                replies.append($0)
-                                if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
-                                    replies.append(contentsOf: $0.childrenReplies!)
-                                }
-                            }
-                            self.replies.onNext(replies)
-                            self.replyAdded.onNext(true)
+                    return ReplyServices.writeReply(reply: reply)
+                }
+            }
+            .bind {
+                self.isSubReplyInputting.onNext(nil)
+                if $0 != nil {
+                    var replies = [Reply]()
+                    $0!.forEach {
+                        replies.append($0)
+                        if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
+                            replies.append(contentsOf: $0.childrenReplies!)
                         }
-                    }.disposed(by: self.activityDisposeBag)
+                    }
+                    self.replies.onNext(replies)
+                    self.replyAdded.onNext(true)
                 }
             }
             .disposed(by: disposeBag)
