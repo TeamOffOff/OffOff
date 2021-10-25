@@ -23,6 +23,7 @@ constructor(
 
     lateinit var boardType: String
     lateinit var postId: String
+    var parentReplyId: String?= null
     val content = MutableLiveData("")
 
     private val _response = MutableLiveData<Post>()
@@ -210,7 +211,6 @@ constructor(
         val comment = CommentSend(
             boardType = boardType,
             postId = postId,
-            parentReplyId = null,
             content = content.value!!,
         )
 
@@ -278,6 +278,33 @@ constructor(
                 }
 
         }
+    }
+
+    fun writeReply(postId: String, boardType: String) {
+
+        val reply = Reply(
+            id = "1234",
+            boardType = boardType,
+            postId = postId,
+            parentReplyId = parentReplyId,
+            content = content.value!!
+        )
+
+        Log.d("tag_comment" ,comment.toString())
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.writeReply(OffoffApplication.pref.token!!, reply).let { response ->
+                if (response.isSuccessful) {
+                    _commentList.postValue(response.body()!!.commentList)
+                    _commentSuccessEvent.postValue(Event(true))
+                    Log.d("tag_success", "writeReply: ${response.body()}")
+                } else {
+                    Log.d("tag_fail", "writeReply Error: $response")
+                }
+            }
+        }
+
+        parentReplyId = null
     }
 
     fun showMyCommentDialog(commentId: String) {

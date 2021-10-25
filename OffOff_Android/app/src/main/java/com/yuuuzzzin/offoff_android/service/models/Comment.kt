@@ -43,15 +43,15 @@ data class Reply(
     @SerializedName("postId")
     val postId: String,
     @SerializedName("parentReplyId")
-    val parentReplyId: String,
+    val parentReplyId: String?= null,
     @SerializedName("content")
     val content: String? = null,
     @SerializedName("date")
-    val date: String,
+    val date: String? = null,
     @SerializedName("author")
-    val author: Author,
+    val author: Author? = null,
     @SerializedName("likes")
-    val likes: List<String> = emptyList()
+    val likes: List<String> ?= emptyList()
 )
 
 /* 보내는 댓글 */

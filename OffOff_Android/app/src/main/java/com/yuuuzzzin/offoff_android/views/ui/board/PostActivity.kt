@@ -48,7 +48,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
     private lateinit var commentListAdapter: CommentListAdapter
-    private var isFirst : Boolean = true
+    private var isFirst: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,10 +115,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
             with(commentListAdapter) { submitList(it.toMutableList()) }
             currentCommentList = it.toTypedArray()
-            if(!isFirst) {
+            if (!isFirst) {
                 post.replyCount = it.size
             }
-            isFirst=false
+            isFirst = false
             binding.refreshLayout.isRefreshing = false
         })
 
@@ -172,7 +172,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         binding.tfComment.setEndIconOnClickListener {
             if (!binding.etComment.text.isNullOrBlank()) {
-                viewModel.writeComment(postId, boardType)
+                if(viewModel.parentReplyId == null) {
+                    viewModel.writeComment(postId, boardType)
+                } else {
+                    viewModel.writeReply(postId, boardType)
+                }
                 binding.etComment.text = null
                 hideKeyboard()
                 binding.nestedScrollView.post {
@@ -218,6 +222,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 }
             }
         })
+
+        commentListAdapter.setOnWriteReplyListener(object :
+            CommentListAdapter.OnWriteReplyListener {
+            override fun onWriteReply(comment: Comment) {
+                Log.d("tag_parentReply", comment.id)
+                viewModel.parentReplyId = comment.id
+                binding.etComment.isFocusableInTouchMode = true
+                binding.etComment.requestFocus()
+                showKeyboard()
+            }
+        })
     }
 
     private fun showDeleteDialog(message: String) {
@@ -244,7 +259,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         // dialog.setNegativeButton("확인", null)
         CoroutineScope(Dispatchers.Main).launch {
             dialog.show()
-            delay(2000)
+            delay(1000)
             dialog.dismiss()
         }
     }
@@ -261,6 +276,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         val imm: InputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+
+    private fun showKeyboard() {
+        val imm: InputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
     private fun showMyCommentOptionDialog(commentId: String) {
@@ -343,7 +364,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             val intent = Intent()
             intent.putExtra("post", this.post as Serializable)
             setResult(RESULT_OK, intent)
-        }else if (doLike == true) {
+        } else if (doLike == true) {
             Log.d("tag_onBackPressed", "뒤로가기")
             val intent = Intent()
             intent.putExtra("post", this.post as Serializable)

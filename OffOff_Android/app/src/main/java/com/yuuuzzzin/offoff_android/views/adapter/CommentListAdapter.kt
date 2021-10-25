@@ -34,10 +34,19 @@ class CommentListAdapter :
         fun onLikeComment(position: Int, comment: Comment)
     }
 
+    interface OnWriteReplyListener {
+        fun onWriteReply(comment: Comment)
+    }
+
     private lateinit var likeCommentListener: OnLikeCommentListener
+    private lateinit var writeReplyListener: OnWriteReplyListener
 
     fun setOnLikeCommentListener(listener: OnLikeCommentListener) {
         this.likeCommentListener = listener
+    }
+
+    fun setOnWriteReplyListener(listener: OnWriteReplyListener) {
+        this.writeReplyListener = listener
     }
 
     interface OnClickCommentOptionListener {
@@ -84,6 +93,9 @@ class CommentListAdapter :
             }
             binding.btCommentOption.setOnClickListener {
                 clickCommentOptionListener.onClickCommentOption(item)
+            }
+            binding.btReply.setOnClickListener {
+                writeReplyListener.onWriteReply(item)
             }
         }
     }
