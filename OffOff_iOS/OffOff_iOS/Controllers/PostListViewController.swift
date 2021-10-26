@@ -46,7 +46,7 @@ class PostListViewController: UITableViewController {
         
         // bind result
         viewModel!.postList
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .do(onNext: { _ in refreshControl.endRefreshing() })
             .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)

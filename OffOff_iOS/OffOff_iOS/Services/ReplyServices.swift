@@ -63,7 +63,7 @@ class ReplyServices {
                     return nil
                 }
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
     
     static func deleteReply(reply: DeletingReply) -> Observable<[Reply]?> {
@@ -77,6 +77,6 @@ class ReplyServices {
                 }
                 return nil
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
 }

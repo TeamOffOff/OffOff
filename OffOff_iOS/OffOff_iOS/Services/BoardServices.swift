@@ -32,13 +32,13 @@ public class BoardServices {
                 }
                 return nil
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
     
     static func fetchPostList(board_type: String) -> Observable<PostList?> {
         BoardServices.provider
             .rx.request(.getPostList(board_type, nil))
-            .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -53,6 +53,6 @@ public class BoardServices {
                 }
                 return nil
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
 }

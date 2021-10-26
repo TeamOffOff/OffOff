@@ -58,7 +58,7 @@ extension BoardAPI: TargetType {
             return .requestPlain
         case .getBoardList:
             return .requestPlain
-        case .getPostList(let boardType, let lastContentID):
+        case .getPostList(_, _):
             return .requestPlain
         }
     }

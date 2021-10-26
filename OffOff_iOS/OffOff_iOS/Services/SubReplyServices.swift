@@ -18,9 +18,6 @@ class SubReplyServices {
             .rx.request(.writeSubReply(subReply: writingSubReply))
             .asObservable()
             .map {
-                print(try $0.mapJSON())
-                
-                print(String(data: ($0.request?.httpBody!)!, encoding: .utf8))
                 if $0.statusCode == 200 {
                     do {
                         let replyList = try JSONDecoder().decode(ReplyList.self, from: $0.data)

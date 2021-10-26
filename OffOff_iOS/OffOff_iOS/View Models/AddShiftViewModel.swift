@@ -66,7 +66,7 @@ class AddShiftViewModel {
         
         let titleStartEnd = Observable.combineLatest(input.titleText, startTimeChanged, endTimeChanged, isEditingShift)
         isShiftChanged = input.saveButtonTapped.asObservable().withLatestFrom(titleStartEnd)
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .flatMapLatest { (values) -> Observable<Bool> in
                 if values.0 == nil || values.0 == "" {
                     return Observable.just(false)

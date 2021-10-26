@@ -37,7 +37,7 @@ class FirstViewController: UIViewController {
             UserServices.getUserInfo(token: token)
                 .debug()
                 .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
-                .observeOn(MainScheduler.instance)
+                .observe(on: MainScheduler.instance)
                 .bind {
                     if $0 != nil {
                         Constants.loginUser = $0

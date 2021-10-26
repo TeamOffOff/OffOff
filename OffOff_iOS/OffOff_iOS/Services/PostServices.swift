@@ -24,7 +24,7 @@ public class PostServices {
                 }
                 return nil
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
     
     static func createPost(post: WritingPost) -> Observable<PostModel?> {
@@ -38,7 +38,7 @@ public class PostServices {
                 }
                 return nil
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
     
     static func deletePost(post: DeletingPost) -> Observable<Bool> {
