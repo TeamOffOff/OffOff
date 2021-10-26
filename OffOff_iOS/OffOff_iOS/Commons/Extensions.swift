@@ -159,6 +159,12 @@ extension UIView {
         self.layer.cornerRadius = cornerRadius
         self.clipsToBounds = cornerRadius > 0
     }
+    
+    func removeBorder() {
+        self.layer.borderColor = nil
+        self.layer.borderWidth = 0
+        self.layer.cornerRadius = 0
+    }
 }
 
 extension UIColor {
@@ -403,3 +409,4 @@ extension UIViewController {
         view.endEditing(true)
     }
 }
+

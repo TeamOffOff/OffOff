@@ -75,6 +75,7 @@ class PostView: UIScrollView {
         $0.register(RepliesTableViewCell.self, forCellReuseIdentifier: RepliesTableViewCell.identifier)
         $0.register(ChildrenRepliesTableViewCell.self, forCellReuseIdentifier: ChildrenRepliesTableViewCell.identifier)
         $0.isScrollEnabled = false
+        $0.allowsSelection = false
     }
     
     override init(frame: CGRect) {
@@ -97,7 +98,6 @@ class PostView: UIScrollView {
     }
     
     func makeView() {
-        print(#fileID, #function, #line, "")
         repliesTableView.snp.makeConstraints {
             $0.top.equalTo(likeButton.snp.bottom).offset(8.0)
             $0.left.right.bottom.equalToSuperview()

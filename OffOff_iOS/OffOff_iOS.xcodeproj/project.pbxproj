@@ -17,6 +17,8 @@
 		EA0734572692A0B8007830ED /* PostsDummyData.json in Resources */ = {isa = PBXBuildFile; fileRef = EA0734562692A0B8007830ED /* PostsDummyData.json */; };
 		EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345E2692CECA007830ED /* PostListViewController.swift */; };
+		EA0747DB2727B3DC004DB13C /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA0747DA2727B3DC004DB13C /* RxMoya */; };
+		EA0747DE2727B48F004DB13C /* RxKeyboard in Frameworks */ = {isa = PBXBuildFile; productRef = EA0747DD2727B48F004DB13C /* RxKeyboard */; };
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
 		EA285A6526C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
@@ -62,8 +64,6 @@
 		EA983F0D26C0E4980070604E /* NewPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA983F0C26C0E4980070604E /* NewPostViewModel.swift */; };
 		EA983F0F26C1183D0070604E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA983F0E26C1183D0070604E /* Constants.swift */; };
 		EA9D0AC426BA956200D571EC /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC326BA956200D571EC /* Moya */; };
-		EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC526BA956200D571EC /* RxMoya */; };
-		EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AC726BA956200D571EC /* ReactiveMoya */; };
 		EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACC26BA95A700D571EC /* RxSwift */; };
 		EA9D0AD026BAC93100D571EC /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0ACF26BAC93100D571EC /* Then */; };
 		EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EA9D0AD226BAC96D00D571EC /* SnapKit */; };
@@ -101,8 +101,6 @@
 		EACF1B3D26B7E42300C153D3 /* BoardListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF1B3C26B7E42300C153D3 /* BoardListViewModel.swift */; };
 		EAD6FED92713146B00563005 /* RepliesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FED82713146B00563005 /* RepliesTableViewCell.swift */; };
 		EAD6FEDB2716C45100563005 /* ContentSizedTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */; };
-		EAD6FEE2271F0E3900563005 /* Differentiator in Frameworks */ = {isa = PBXBuildFile; productRef = EAD6FEE1271F0E3900563005 /* Differentiator */; };
-		EAD6FEE4271F0E3900563005 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = EAD6FEE3271F0E3900563005 /* RxDataSources */; };
 		EAD6FEE6271F147B00563005 /* ChildrenRepliesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
@@ -254,21 +252,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA0747DB2727B3DC004DB13C /* RxMoya in Frameworks */,
 				EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */,
 				EA83564226D3727100D60C46 /* FSCalendar in Frameworks */,
+				EA0747DE2727B48F004DB13C /* RxKeyboard in Frameworks */,
 				EA9D0AD026BAC93100D571EC /* Then in Frameworks */,
 				EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */,
-				EA9D0AC826BA956200D571EC /* ReactiveMoya in Frameworks */,
 				EA8A334226D61B5F0014D97C /* RxGesture in Frameworks */,
 				EA9D0AD326BAC96D00D571EC /* SnapKit in Frameworks */,
 				EA0624E226DE77A7004FF91A /* RxRealm in Frameworks */,
 				EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */,
 				EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */,
 				EA0624D926DBB1B6004FF91A /* Realm in Frameworks */,
-				EA9D0AC626BA956200D571EC /* RxMoya in Frameworks */,
 				EA9D0AD626BAC97C00D571EC /* SkyFloatingLabelTextField in Frameworks */,
-				EAD6FEE2271F0E3900563005 /* Differentiator in Frameworks */,
-				EAD6FEE4271F0E3900563005 /* RxDataSources in Frameworks */,
 				EA9D0AC426BA956200D571EC /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -538,8 +534,6 @@
 			name = OffOff_iOS;
 			packageProductDependencies = (
 				EA9D0AC326BA956200D571EC /* Moya */,
-				EA9D0AC526BA956200D571EC /* RxMoya */,
-				EA9D0AC726BA956200D571EC /* ReactiveMoya */,
 				EA9D0ACC26BA95A700D571EC /* RxSwift */,
 				EA9D0ACF26BAC93100D571EC /* Then */,
 				EA9D0AD226BAC96D00D571EC /* SnapKit */,
@@ -551,8 +545,8 @@
 				EA0624D826DBB1B6004FF91A /* Realm */,
 				EA0624DA26DBB1B6004FF91A /* RealmSwift */,
 				EA0624E126DE77A7004FF91A /* RxRealm */,
-				EAD6FEE1271F0E3900563005 /* Differentiator */,
-				EAD6FEE3271F0E3900563005 /* RxDataSources */,
+				EA0747DA2727B3DC004DB13C /* RxMoya */,
+				EA0747DD2727B48F004DB13C /* RxKeyboard */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -600,7 +594,7 @@
 				EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */,
 				EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				EA0624E026DE77A7004FF91A /* XCRemoteSwiftPackageReference "RxRealm" */,
-				EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */,
+				EA0747DC2727B48F004DB13C /* XCRemoteSwiftPackageReference "RxKeyboard" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -1087,7 +1081,15 @@
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxRealm";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
+				minimumVersion = 5.0.0;
+			};
+		};
+		EA0747DC2727B48F004DB13C /* XCRemoteSwiftPackageReference "RxKeyboard" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxKeyboard";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 		EA83564026D3727100D60C46 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
@@ -1095,33 +1097,31 @@
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.8.2;
+				minimumVersion = 2.8.0;
 			};
 		};
 		EA8A334026D61B5F0014D97C /* XCRemoteSwiftPackageReference "RxGesture" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxGesture";
 			requirement = {
-				kind = versionRange;
-				maximumVersion = 4.0.0;
-				minimumVersion = 3.0.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
 			};
 		};
 		EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 14.0.1;
+				kind = upToNextMinorVersion;
+				minimumVersion = 15.0.0;
 			};
 		};
 		EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
 			requirement = {
-				kind = versionRange;
-				maximumVersion = 6.0.0;
-				minimumVersion = 5.0.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
 			};
 		};
 		EA9D0ACE26BAC93100D571EC /* XCRemoteSwiftPackageReference "Then" */ = {
@@ -1129,7 +1129,7 @@
 			repositoryURL = "https://github.com/devxoul/Then";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.7.0;
+				minimumVersion = 2.5.0;
 			};
 		};
 		EA9D0AD126BAC96D00D571EC /* XCRemoteSwiftPackageReference "SnapKit" */ = {
@@ -1137,7 +1137,7 @@
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.1;
+				minimumVersion = 5.0.0;
 			};
 		};
 		EA9D0AD426BAC97C00D571EC /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */ = {
@@ -1154,15 +1154,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.9.1;
-			};
-		};
-		EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
-			requirement = {
-				kind = versionRange;
-				maximumVersion = 5.0.0;
-				minimumVersion = 4.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1183,6 +1174,16 @@
 			package = EA0624E026DE77A7004FF91A /* XCRemoteSwiftPackageReference "RxRealm" */;
 			productName = RxRealm;
 		};
+		EA0747DA2727B3DC004DB13C /* RxMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = RxMoya;
+		};
+		EA0747DD2727B48F004DB13C /* RxKeyboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA0747DC2727B48F004DB13C /* XCRemoteSwiftPackageReference "RxKeyboard" */;
+			productName = RxKeyboard;
+		};
 		EA285A6726C565F000E65EB2 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AC926BA95A700D571EC /* XCRemoteSwiftPackageReference "RxSwift" */;
@@ -1202,16 +1203,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
-		};
-		EA9D0AC526BA956200D571EC /* RxMoya */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
-			productName = RxMoya;
-		};
-		EA9D0AC726BA956200D571EC /* ReactiveMoya */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EA9D0AC226BA956200D571EC /* XCRemoteSwiftPackageReference "Moya" */;
-			productName = ReactiveMoya;
 		};
 		EA9D0ACC26BA95A700D571EC /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1237,16 +1228,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */;
 			productName = FontAwesome;
-		};
-		EAD6FEE1271F0E3900563005 /* Differentiator */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */;
-			productName = Differentiator;
-		};
-		EAD6FEE3271F0E3900563005 /* RxDataSources */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EAD6FEE0271F0E3800563005 /* XCRemoteSwiftPackageReference "RxDataSources" */;
-			productName = RxDataSources;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

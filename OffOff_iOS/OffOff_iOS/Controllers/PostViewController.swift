@@ -6,7 +6,10 @@
 //
 
 import UIKit
+
 import RxSwift
+import RxKeyboard
+import RxGesture
 
 class PostViewController: UIViewController {
     var postView = PostView(frame: .zero)
@@ -36,6 +39,7 @@ class PostViewController: UIViewController {
         $0.isScrollEnabled = false
         $0.tintColor = .mainColor
         $0.autocorrectionType = .no
+        $0.textContentType = .none
     }
     var replyButton = UIButton().then {
         $0.setImage(.getIcon(name: .pen, color: .mainColor, size: Constants.BUTTON_ICON_SIZE), for: .normal)
@@ -52,7 +56,6 @@ class PostViewController: UIViewController {
         self.makeView()
         
         replyTextView.delegate = self
-        addKeyboardNotifications()
         
         self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
         self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
@@ -83,7 +86,6 @@ class PostViewController: UIViewController {
                 self.postView.profileImageView.image = UIImage(systemName: "person.fil")
                 self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
                 if $0?.author._id == Constants.loginUser?._id {
-                    print(#fileID, #function, #line, "")
                     self.setRightButtons(set: true)
                 } else {
                     self.setRightButtons(set: false)
@@ -120,7 +122,6 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.replies
-            .debug()
             .filter { $0 != nil }
             .do { self.postCell?.commentLabel.label.text = "\($0!.count)"}
             .map { $0! }
@@ -143,7 +144,18 @@ class PostViewController: UIViewController {
                     cell.dismissAlert = self.dismissAlert
                     cell.presentMenuAlert = self.presentMenuAlert
                     cell.replies = self.viewModel.replies
+                    cell.bindData()
                     return cell
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.isSubReplyInputting
+            .bind {
+                if $0 != nil {
+                    self.replyTextView.becomeFirstResponder()
+                } else {
+                    self.replyTextView.endEditing(true)
                 }
             }
             .disposed(by: disposeBag)
@@ -168,16 +180,50 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         self.postView.makeView()
+        
+        // MARK: 댓글 입력 시 키보드 높이에 맞춰 댓글 입력 뷰 높이 조정
+        RxKeyboard.instance.visibleHeight
+            .skip(1)
+            .debug()
+            .drive(onNext: { keyboardVisibleHeight in
+                let window = UIApplication.shared.windows.first
+                
+                if keyboardVisibleHeight > 0.0 {
+                    self.postView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardVisibleHeight, right: 0)
+                    UIView.animate(withDuration: 0) {
+                        self.replyContainer.snp.remakeConstraints {
+                            $0.right.left.equalToSuperview().inset(12)
+                            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardVisibleHeight - window!.safeAreaInsets.bottom)
+                        }
+                        self.view.layoutIfNeeded()
+                    }
+                } else {
+                    self.postView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    UIView.animate(withDuration: 0) {
+                        self.replyContainer.snp.remakeConstraints {
+                            $0.right.left.equalToSuperview().inset(12)
+                            $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
+                        }
+                        self.view.layoutIfNeeded()
+                    }
+                }
+                
+            })
+            .disposed(by: disposeBag)
+        
+        // MARK: 화면 터치시 키보드 내리기
+//        self.view.rx
+//            .anyGesture(.tap(), .swipe(direction: .up))
+//            .when(.recognized)
+//            .subscribe(onNext: { gesture in
+//                self.viewModel.isSubReplyInputting.onNext(nil)
+//            })
+//            .disposed(by: disposeBag)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        removeKeyboardNotifications()
     }
     
     // MARK: - Private Funcs
@@ -250,35 +296,6 @@ class PostViewController: UIViewController {
 }
 
 // MARK: - TextView가 키보드 위로 이동하도록 하는 함수
-extension PostViewController {
-    func addKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification , object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    func removeKeyboardNotifications() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification , object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc func keyboardWillShow(_ noti: NSNotification) {
-        if let keyboardFrame: NSValue = noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
-            self.replyContainer.snp.remakeConstraints {
-                $0.right.left.equalToSuperview().inset(12)
-                $0.bottom.equalTo(self.view.snp.bottom).inset(keyboardHeight)
-            }
-        }
-    }
-    
-    @objc func keyboardWillHide(_ noti: NSNotification) {
-        self.replyContainer.snp.remakeConstraints {
-            $0.right.left.equalToSuperview().inset(12)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(8)
-        }
-    }
-}
 
 extension PostViewController: UITextViewDelegate {
     func sizeOfString (string: String, constrainedToWidth width: Double, font: UIFont) -> CGSize {

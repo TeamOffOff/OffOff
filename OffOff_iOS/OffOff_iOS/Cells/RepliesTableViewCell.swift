@@ -71,7 +71,7 @@ class RepliesTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        print(#fileID, #function, #line, "")
     }
     
     override func prepareForReuse() {
@@ -89,8 +89,9 @@ class RepliesTableViewCell: UITableViewCell {
         self.contentView.addSubview(addSubReplyButton)
         self.contentView.addSubview(menubutton)
         self.contentView.backgroundColor = .white
+        
         makeView()
-        bindData()
+//        bindData()
     }
     
     private func makeView() {
@@ -130,8 +131,9 @@ class RepliesTableViewCell: UITableViewCell {
         }
     }
     
-    private func bindData() {
+    func bindData() {
         self.disposeBag = DisposeBag()
+
         reply
             .filter { $0 != nil }
             .bind {
@@ -164,6 +166,22 @@ class RepliesTableViewCell: UITableViewCell {
             .filter { $0 != nil }
             .bind {
                 self.showMenuAlert(reply: $0!)
+            }
+            .disposed(by: disposeBag)
+        
+        Observable.combineLatest(self.isSubReplyInputting, self.reply)
+            .map { one, two -> Bool in
+                if one == nil || two == nil {
+                    return false
+                }
+                return one!._id == two!._id
+            }
+            .bind {
+                if $0 {
+                    self.contentView.makeBorder(color: UIColor.lightGray.cgColor, width: 1.0, cornerRadius: 0)
+                } else {
+                    self.contentView.removeBorder()
+                }
             }
             .disposed(by: disposeBag)
         
