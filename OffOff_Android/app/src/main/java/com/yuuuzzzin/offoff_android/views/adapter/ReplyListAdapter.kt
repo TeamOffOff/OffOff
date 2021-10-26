@@ -12,6 +12,15 @@ import com.yuuuzzzin.offoff_android.service.models.Reply
 class ReplyListAdapter
     : RecyclerView.Adapter<ReplyListAdapter.ReplyViewHolder>() {
 
+    interface OnReplyClickListener {
+        fun onClickOption(item: Reply, position: Int)
+    }
+
+    private lateinit var replyClickListener: OnReplyClickListener
+
+    fun setOnReplyClickListener(listener: OnReplyClickListener) {
+        this.replyClickListener = listener
+    }
 
     var replyList = ArrayList<Reply>()
 
@@ -41,6 +50,9 @@ class ReplyListAdapter
 
         fun bind(item: Reply, position: Int) {
             binding.setVariable(BR.item, item)
+            binding.btCommentOption.setOnClickListener {
+                replyClickListener.onClickOption(item, position)
+            }
             binding.executePendingBindings()
         }
 

@@ -73,3 +73,17 @@ data class CommentSend(
     @SerializedName("likes")
     val likes: List<String> = emptyList()
 )
+
+/* 보내는 대댓글 */
+data class ReplySend(
+    @SerializedName("_id")
+    val id: String? = null,
+    @SerializedName("boardType")
+    val boardType: String,
+    @SerializedName("postId")
+    val postId: String,
+    @SerializedName("parentReplyId")
+    val parentReplyId: String? = null,
+    @SerializedName("author")
+    val author: String? = null
+)

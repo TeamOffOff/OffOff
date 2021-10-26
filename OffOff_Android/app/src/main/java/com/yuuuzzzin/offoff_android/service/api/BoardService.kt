@@ -108,6 +108,6 @@ interface BoardService {
     @HTTP(method = "DELETE", path = "subreply", hasBody = true)
     suspend fun deleteReply(
         @Header("Authorization") auth: String,
-        @Body reply: Reply
+        @Body reply: ReplySend
     ): Response<CommentList>
 }

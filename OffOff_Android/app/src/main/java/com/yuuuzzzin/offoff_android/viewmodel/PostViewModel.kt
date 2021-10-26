@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.*
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
+import com.yuuuzzzin.offoff_android.utils.DateUtils.currentTime
+import com.yuuuzzzin.offoff_android.utils.DateUtils.dateFormat
 import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +39,9 @@ constructor(
 
     private val _comment = MutableLiveData<Comment>()
     val comment: LiveData<Comment> get() = _comment
+
+    private val _reply = MutableLiveData<Reply>()
+    val reply: LiveData<Reply> get() = _reply
 
     private val _author = MutableLiveData<String>()
     val author: LiveData<String> get() = _author
@@ -283,7 +288,7 @@ constructor(
     fun writeReply(postId: String, boardType: String) {
 
         val reply = Reply(
-            id = "1234",
+            id = "${parentReplyId}_${dateFormat.format(currentTime)}",
             boardType = boardType,
             postId = postId,
             parentReplyId = parentReplyId,
@@ -305,6 +310,57 @@ constructor(
         }
 
         parentReplyId = null
+    }
+
+    fun likeReply (id: String) {
+
+        val activityItem = ActivityItem(
+            id = id,
+            boardType = boardType,
+            activity = "likes"
+        )
+
+        viewModelScope.launch(Dispatchers.Main) {
+            repository.likeReply(OffoffApplication.pref.token.toString(), activityItem)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        Log.d("tag_success", "likeComment: ${response.body()}")
+                        if (!response.body()!!.id.isNullOrEmpty()) {
+                            _reply.postValue(response.body())
+                            _successLike.postValue(Event("좋아요를 눌렀습니다."))
+                        } else {
+                            _alreadyLike.postValue(Event("이미 좋아요한 댓글입니다."))
+                        }
+                    } else {
+                        Log.d("tag_fail", "likeComment Error: ${response.code()}")
+                    }
+                }
+
+        }
+    }
+    fun deleteReply(id: String, postId: String, boardType: String) {
+
+        val replySend = ReplySend(
+            id = id,
+            boardType = boardType,
+            postId = postId,
+            parentReplyId = parentReplyId,
+            author = OffoffApplication.user.id
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.deleteReply(OffoffApplication.pref.token.toString(), replySend)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        _commentList.postValue(response.body()!!.commentList)
+                        Log.d("tag_success", response.body().toString())
+                    } else {
+                        Log.d("tag_fail", "deleteComment Error: ${response.code()}")
+                    }
+                }
+
+        }
     }
 
     fun showMyCommentDialog(commentId: String) {

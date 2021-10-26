@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.BR
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemCommentBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
 import com.yuuuzzzin.offoff_android.service.models.Reply
+import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 
-class CommentListAdapter :
+class CommentListAdapter(private val viewModel: PostViewModel) :
     ListAdapter<Comment, CommentListAdapter.CommentViewHolder>(diffCallback) {
 
     companion object {
@@ -71,14 +73,14 @@ class CommentListAdapter :
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position), position, viewModel)
     }
 
     inner class CommentViewHolder(
         private val binding: RvItemCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Comment, position: Int) {
+        fun bind(item: Comment, position: Int, viewModel: PostViewModel) {
             binding.setVariable(BR.item, item)
             binding.executePendingBindings()
             binding.btLikes.setOnClickListener {
@@ -90,6 +92,18 @@ class CommentListAdapter :
                 replyListAdapter.notifyDataSetChanged()
                 binding.rvReply.adapter = replyListAdapter
                 binding.rvReply.layoutManager = LinearLayoutManager(binding.root.context)
+
+                replyListAdapter.setOnReplyClickListener(object :
+                    ReplyListAdapter.OnReplyClickListener {
+
+                    override fun onClickOption(reply: Reply, position: Int) {
+                        if (OffoffApplication.user.id == reply.author!!.id) {
+                            viewModel.showMy(reply.id!!)
+                        } else {
+                            viewModel.showCommentDialog(reply.id!!)
+                        }
+                    }
+                })
             }
             binding.btCommentOption.setOnClickListener {
                 clickCommentOptionListener.onClickCommentOption(item)

@@ -1,10 +1,7 @@
 package com.yuuuzzzin.offoff_android.service.repository
 
 import com.yuuuzzzin.offoff_android.service.api.BoardService
-import com.yuuuzzzin.offoff_android.service.models.ActivityItem
-import com.yuuuzzzin.offoff_android.service.models.CommentSend
-import com.yuuuzzzin.offoff_android.service.models.PostSend
-import com.yuuuzzzin.offoff_android.service.models.Reply
+import com.yuuuzzzin.offoff_android.service.models.*
 import javax.inject.Inject
 
 /* 게시판 Repository */
@@ -30,5 +27,7 @@ constructor(private val boardService: BoardService) {
     suspend fun likeComment(auth: String, activityItem: ActivityItem) = boardService.likeComment(auth, activityItem)
 
     suspend fun writeReply(auth: String, reply: Reply) = boardService.writeReply(auth, reply)
+    suspend fun deleteReply(auth: String, reply: ReplySend) = boardService.deleteReply(auth, reply)
+    suspend fun likeReply(auth: String, activityItem: ActivityItem) = boardService.likeReply(auth, activityItem)
 
 }
