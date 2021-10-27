@@ -295,9 +295,11 @@ class SubReplyControl(Resource):
 
         # 클라이언트에서 받은 변수 가져오기
         request_info = request.get_json()
-        parent_reply_id, subreply_id = request_info["_id"].split(".")
+        subreply_id = request_info["_id"]
+        parent_reply_id = request_info["_id"].split("_")[0]
         board_type = request_info["boardType"]
 
+        print(parent_reply_id, subreply_id)
 
         # db 댓글컬랙션 명으로 변경
         board_type = board_type + "_board_reply"
@@ -312,13 +314,13 @@ class SubReplyControl(Resource):
         for subreply in children_replies:
             if subreply["_id"] == subreply_id:
                 subreply_past_likes_list = subreply["likes"]
-                break
-        
-        # 이미 좋아요를 누른 경우
-        if user_id in subreply_past_likes_list:
-            return {"queryStatus": "already like"}, 201
-        else:
-            update_status = mongodb.update_one(query={"_id": ObjectId(parent_reply_id)}, collection_name=board_type, modify={"$addToSet": {"childrenReplies.$[elem].likes": user_id}}, array_filters=[{"elem._id":subreply_id}])
+                
+                # 이미 좋아요를 누른 경우
+                if user_id in subreply_past_likes_list:
+                    return {"queryStatus": "already like"}, 201
+                
+        print(user_id)
+        update_status = mongodb.update_one(query={"_id": ObjectId(parent_reply_id)}, collection_name=board_type, modify={"$addToSet": {"childrenReplies.$[elem].likes": user_id}}, array_filters=[{"elem._id":subreply_id}])
 
         # 좋아요한 사용자 리스트 업데이트 오류 발생
         if update_status.raw_result["n"] == 0:
