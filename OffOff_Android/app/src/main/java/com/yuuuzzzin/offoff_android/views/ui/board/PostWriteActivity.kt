@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.ui.board
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -80,7 +81,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                 } else {
                     val intent = Intent()
                     intent.putExtra("postWriteType", postWriteType)
-                    setResult(RESULT_OK, intent)
+                    setResult(Activity.RESULT_OK, intent)
                 }
 
                 finish()

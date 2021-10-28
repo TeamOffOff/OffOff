@@ -23,13 +23,11 @@ constructor(
     private val repository: BoardRepository
 ) : ViewModel() {
 
-    lateinit var boardType: String
-    lateinit var postId: String
     var parentReplyId: String?= null
     val content = MutableLiveData("")
 
-    private val _response = MutableLiveData<Post>()
-    val response: LiveData<Post> get() = _response
+    private val _post = MutableLiveData<Post>()
+    val post: LiveData<Post> get() = _post
 
     private val _newPost = MutableLiveData<Post>()
     val newPost: LiveData<Post> get() = _newPost
@@ -42,12 +40,6 @@ constructor(
 
     private val _reply = MutableLiveData<Reply>()
     val reply: LiveData<Reply> get() = _reply
-
-    private val _author = MutableLiveData<String>()
-    val author: LiveData<String> get() = _author
-
-    private val _likes = MutableLiveData<Int>()
-    val likes: LiveData<Int> get() = _likes
 
     // 좋아요
     private val _successLike = MutableLiveData<Event<String>>()
@@ -72,9 +64,7 @@ constructor(
         repository.getPost(OffoffApplication.pref.token.toString(), postId, boardType)
             .let { response ->
                 if (response.isSuccessful) {
-                    _response.postValue(response.body())
-                    _author.postValue(response.body()!!.author.id)
-                    _likes.postValue(response.body()!!.likes.size)
+                    _post.postValue(response.body())
                     Log.d("tag_success", response.body().toString())
                 } else {
                     Log.d("tag_fail", "getPost Error: ${response.code()}")
@@ -105,7 +95,7 @@ constructor(
         }
     }
 
-    fun likePost() {
+    fun likePost(postId: String, boardType: String) {
 
         val activityItem = ActivityItem(
             id = postId,
@@ -135,7 +125,7 @@ constructor(
         }
     }
 
-    fun bookmarkPost() {
+    fun bookmarkPost(postId: String, boardType: String) {
 
         val activityItem = ActivityItem(
             id = postId,
@@ -149,7 +139,7 @@ constructor(
                     if (response.isSuccessful) {
                         when (response.code()) {
                             OK -> {
-                                _response.postValue(response.body())
+                                _post.postValue(response.body())
                                 _successLike.postValue(Event("게시물을 북마크했습니다."))
                                 Log.d("tag_success", "likePost: ${response.body()}")
                             }
@@ -164,7 +154,7 @@ constructor(
         }
     }
 
-    fun reportPost() {
+    fun reportPost(postId: String, boardType: String) {
 
         val activityItem = ActivityItem(
             id = postId,
@@ -234,7 +224,7 @@ constructor(
         }
     }
 
-    fun likeComment(commentId: String) {
+    fun likeComment(commentId: String, boardType: String) {
 
         val activityItem = ActivityItem(
             id = commentId,
@@ -312,7 +302,7 @@ constructor(
         parentReplyId = null
     }
 
-    fun likeReply (id: String) {
+    fun likeReply (id: String, boardType: String) {
 
         val activityItem = ActivityItem(
             id = id,
@@ -338,6 +328,7 @@ constructor(
 
         }
     }
+
     fun deleteReply(id: String, postId: String, boardType: String) {
 
         val replySend = ReplySend(

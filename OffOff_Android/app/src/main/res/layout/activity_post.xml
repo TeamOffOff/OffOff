@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="activity"
+            type="com.yuuuzzzin.offoff_android.views.ui.board.PostActivity" />
+
+        <variable
             name="viewModel"
             type="com.yuuuzzzin.offoff_android.viewmodel.PostViewModel" />
 
@@ -137,7 +141,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="4dp"
-                        android:onClick="@{()->viewModel.likePost()}"
+                        android:onClick="@{()->viewModel.likePost(post.id, activity.boardType)}"
                         android:text="@string/fa_thumbs_up_solid"
                         android:textColor="@color/red"
                         android:textSize="12sp"
