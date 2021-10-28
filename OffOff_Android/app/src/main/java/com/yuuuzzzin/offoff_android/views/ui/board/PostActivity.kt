@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.ui.board
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,19 +38,32 @@ import java.io.Serializable
 class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private val viewModel: PostViewModel by viewModels()
-    private lateinit var postId: String
+    lateinit var postId: String
     private lateinit var boardName: String
-    private lateinit var boardType: String
+    lateinit var boardType: String
     private var postPosition: Int = 0
     private var commentPosition: Int = 0
-    private var author: String? = null
+    //private var author: String? = null
     private var doLike: Boolean? = false
     private lateinit var currentCommentList: Array<Comment>
-    private lateinit var post: Post
+    private var post: Post ?= null
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
     private lateinit var commentListAdapter: CommentListAdapter
     private var isFirst: Boolean = true
+
+    // 게시물 수정 액티비티 요청 및 결과 처리
+    private val requestEditPost = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        val resultCode = activityResult.resultCode // 결과 코드
+        // val data = activityResult.data // 인텐트 데이터
+
+        if (resultCode == Activity.RESULT_OK) {
+            viewModel.getPost(postId, boardType)
+            doLike = true
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,19 +82,18 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         boardName = intent.getStringExtra("boardName").toString()
         //currentPostList = intent.getSerializableExtra("postList") as Array<Post>
 
-        viewModel.postId = postId
-        viewModel.boardType = boardType
-
         viewModel.getPost(postId, boardType)
     }
 
     private fun initViewModel() {
+        binding.activity = this
         binding.viewModel = viewModel
 
-        viewModel.response.observe(binding.lifecycleOwner!!, {
+        viewModel.post.observe(binding.lifecycleOwner!!, {
             binding.post = it
             this.post = it
             binding.refreshLayout.isRefreshing = false
+            invalidateOptionsMenu()
         })
 
         viewModel.newPost.observe(binding.lifecycleOwner!!, {
@@ -89,14 +103,14 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             //currentPostList?.set(postPosition, it)
         })
 
-        viewModel.author.observe(binding.lifecycleOwner!!, {
-            author = it
-            Log.d(
-                "tag_id",
-                "id : " + OffoffApplication.user.id + " / author: " + author.toString()
-            )
-            invalidateOptionsMenu()
-        })
+//        viewModel.author.observe(binding.lifecycleOwner!!, {
+//            author = it
+//            Log.d(
+//                "tag_id",
+//                "id : " + OffoffApplication.user.id + " / author: " + author.toString()
+//            )
+//            invalidateOptionsMenu()
+//        })
 
         viewModel.successLike.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
@@ -116,7 +130,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             with(commentListAdapter) { submitList(it.toMutableList()) }
             currentCommentList = it.toTypedArray()
             if (!isFirst) {
-                post.replyCount = it.size
+                post?.replyCount = it.size
             }
             isFirst = false
             binding.refreshLayout.isRefreshing = false
@@ -137,6 +151,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.showCommentDialog.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showCommentOptionDialog(it)
+            }
+        })
+
+        viewModel.showMyCommentDialog.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                showMyCommentOptionDialog(it)
             }
         })
 
@@ -172,7 +192,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         binding.tfComment.setEndIconOnClickListener {
             if (!binding.etComment.text.isNullOrBlank()) {
-                if(viewModel.parentReplyId == null) {
+                if (viewModel.parentReplyId == null) {
                     viewModel.writeComment(postId, boardType)
                 } else {
                     viewModel.writeReply(postId, boardType)
@@ -196,7 +216,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun initRV() {
-        commentListAdapter = CommentListAdapter()
+        commentListAdapter = CommentListAdapter(viewModel)
 
         binding.rvComment.apply {
             adapter = commentListAdapter
@@ -208,7 +228,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             CommentListAdapter.OnLikeCommentListener {
             override fun onLikeComment(position: Int, comment: Comment) {
                 commentPosition = position
-                viewModel.likeComment(comment.id)
+                viewModel.likeComment(comment.id, boardType)
             }
         })
 
@@ -353,6 +373,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         dialog.show()
     }
 
+    private fun showReplyDeleteDialog(id: String) {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setMessage("댓글을 삭제하시겠습니까?")
+        dialog.setIcon(android.R.drawable.ic_dialog_alert)
+        dialog.setPositiveButton("예") { dialog, which ->
+            viewModel.deleteReply(id, postId, boardType)
+        }
+        dialog.setNegativeButton("아니오", null)
+        dialog.show()
+    }
+
     override fun onBackPressed() {
         if (intent.getIntExtra("postWriteType", PostWriteType.WRITE) == PostWriteType.WRITE) {
             val intent = Intent(applicationContext, BoardActivity::class.java)
@@ -376,10 +407,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_post, menu)
 
-        if (OffoffApplication.user.id != author) {
+        if (OffoffApplication.user.id != post?.author?.id) {
             Log.d(
                 "tag_id",
-                "id : " + OffoffApplication.user.id + "/ author: " + author.toString()
+                "id : " + OffoffApplication.user.id + "/ author: " + post?.author?.id.toString()
             )
             menu!!.findItem(R.id.action_delete).isVisible = false
             menu.findItem(R.id.action_edit).isVisible = false
@@ -392,14 +423,16 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         return when (item.itemId) {
             R.id.action_edit -> {
                 // 수정 버튼 누를 시
-                val intent = Intent(applicationContext, PostWriteActivity::class.java)
-                intent.putExtra("boardType", boardType)
-                intent.putExtra("boardName", boardName)
-                intent.putExtra("postWriteType", PostWriteType.EDIT)
-                intent.putExtra("postId", postId)
-                intent.putExtra("postTitle", binding.post!!.title)
-                intent.putExtra("postContent", binding.post!!.content)
-                startActivityForResult(intent, 1)
+                val intent = Intent(applicationContext, PostWriteActivity::class.java).apply {
+                    putExtra("boardType", boardType)
+                    putExtra("boardName", boardName)
+                    putExtra("postWriteType", PostWriteType.EDIT)
+                    putExtra("postId", postId)
+                    putExtra("postTitle", binding.post!!.title)
+                    putExtra("postContent", binding.post!!.content)
+                }
+
+                requestEditPost.launch(intent)
                 true
             }
             R.id.action_delete -> {
@@ -420,15 +453,14 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
-            Log.d("tag_like", "requestCode")
-            if (resultCode == RESULT_OK) {
-                Log.d("tag_like", "저아요하고 뒤로가기함")
-                viewModel.getPost(postId, boardType)
-                doLike = true
-            }
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == 1) {
+//            Log.d("tag_like", "requestCode")
+//            if (resultCode == RESULT_OK) {
+//                viewModel.getPost(postId, boardType)
+//                doLike = true
+//            }
+//        }
+//    }
 }
