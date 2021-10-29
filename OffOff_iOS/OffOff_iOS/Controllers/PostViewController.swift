@@ -79,6 +79,7 @@ class PostViewController: UIViewController {
         viewModel.post
             .filter { $0 != nil }
             .bind {
+                print(#fileID, #function, #line, $0?._id)
                 self.postView.titleLabel.text = $0!.title
                 self.postView.authorLabel.text = $0!.author.nickname
                 self.postView.contentTextView.text = $0!.content
@@ -134,6 +135,7 @@ class PostViewController: UIViewController {
                     cell.activityAlert = self.activityAlert
                     cell.dismissAlert = self.dismissAlert
                     cell.presentMenuAlert = self.presentMenuAlert
+                    cell.replies = self.viewModel.replies
                     return cell
                 } else {
                     let cell = tv.dequeueReusableCell(withIdentifier: RepliesTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! RepliesTableViewCell
@@ -211,14 +213,17 @@ class PostViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        // MARK: 화면 터치시 키보드 내리기
-//        self.view.rx
-//            .anyGesture(.tap(), .swipe(direction: .up))
-//            .when(.recognized)
-//            .subscribe(onNext: { gesture in
-//                self.viewModel.isSubReplyInputting.onNext(nil)
-//            })
-//            .disposed(by: disposeBag)
+        // MARK: 화면 터치시 키보드 내리기 (대댓글 작성일 때만)
+        self.postView.rx
+            .anyGesture(.tap(), .swipe(direction: .up))
+            .when(.recognized)
+            .withLatestFrom(self.viewModel.isSubReplyInputting)
+            .bind {
+                if $0 != nil {
+                    self.viewModel.isSubReplyInputting.onNext(nil)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -14,6 +14,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
 
     var reply = BehaviorSubject<Reply?>(value: nil)
     var disposeBag = DisposeBag()
+    var alertDisposeBag = DisposeBag()
     
     var boardTpye: String?
     var activityAlert: ((_ title: String) -> Void)?
@@ -131,5 +132,68 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
                 self.likeButton.setTitle("\($0.likes.count)", for: .normal)
             }
             .disposed(by: disposeBag)
+        
+        self.likeButton.rx.tap.withLatestFrom(reply)
+            .filter { $0 != nil }
+            .flatMap {
+                SubReplyServices.likeSubReply(likeSubReply: PostActivity(boardType: self.boardTpye!, _id: $0!._id, activity: "likes"))
+            }
+            .do {
+                if $0 != nil {
+                    self.activityAlert!("좋아요를 했습니다.")
+                    self.reply.onNext($0)
+                } else {
+                    self.activityAlert!("이미 좋아요를 누른 댓글입니다.")
+                }
+            }
+            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .bind { _ in
+                self.dismissAlert!(true)
+            }.disposed(by: disposeBag)
+        
+        self.menubutton.rx.tap.withLatestFrom(reply)
+            .filter { $0 != nil }
+            .bind {
+                self.showMenuAlert(reply: $0!)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func showMenuAlert(reply: Reply) {
+        self.alertDisposeBag = DisposeBag()
+        let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
+        let delete = UIAlertAction(title: "삭제", style: .default) { _ in
+            let delReply = DeletingSubReply(_id: reply._id, boardType: reply.boardType, postId: reply.postId, parentReplyId: reply.parentReplyId!, author: reply.author._id!)
+            
+            SubReplyServices.deleteSubReply(deletingSubReply: delReply)
+                .filter { $0 != nil }
+                .do {
+                    self.activityAlert!("댓글을 삭제했습니다.")
+                    var replies = [Reply]()
+                    $0!.forEach {
+                        replies.append($0)
+                        if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
+                            replies.append(contentsOf: $0.childrenReplies!)
+                        }
+                    }
+                    self.replies.onNext(replies)
+                }
+                .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+                .bind { _ in
+                    self.dismissAlert!(true)
+                }
+                .disposed(by: self.alertDisposeBag)
+        }
+        
+        let report = UIAlertAction(title: "신고", style: .default)
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        
+        if Constants.loginUser?._id == reply.author._id {
+            alert.addAction(delete)
+        }
+        alert.addAction(report)
+        alert.addAction(cancel)
+    
+        presentMenuAlert!(alert)
     }
 }

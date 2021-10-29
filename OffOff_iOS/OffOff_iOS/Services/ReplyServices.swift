@@ -55,7 +55,9 @@ class ReplyServices {
             .rx.request(.likeReply(reply: reply))
             .asObservable()
             .map {
-                
+                print(reply)
+                print($0)
+                print($0.request)
                 if $0.statusCode == 200 {
                     let reply = try JSONDecoder().decode(Reply.self, from: $0.data)
                     return reply
