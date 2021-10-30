@@ -100,19 +100,9 @@
             android:text="@{String.valueOf(item.likes.size)}"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/bt_reply"
-            app:layout_constraintEnd_toStartOf="@id/bt_reply"
-            app:layout_constraintTop_toBottomOf="@id/tv_content" />
-
-        <info.androidhive.fontawesome.FontTextView
-            android:id="@+id/bt_reply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:text="@string/fa_comment_alt"
-            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_content" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

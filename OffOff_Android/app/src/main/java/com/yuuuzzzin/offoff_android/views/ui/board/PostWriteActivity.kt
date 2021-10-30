@@ -39,7 +39,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         boardType = intent.getStringExtra("boardType").toString()
         postWriteType = intent.getIntExtra("postWriteType", PostWriteType.WRITE)
 
-        if(postWriteType == 1) {
+        if (postWriteType == 1) {
             val postTitle = intent.getStringExtra("postTitle").toString()
             val postContent = intent.getStringExtra("postContent").toString()
             viewModel.setPostText(postTitle, postContent)
@@ -70,7 +70,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
         viewModel.successEvent.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-                if(postWriteType == PostWriteType.WRITE) {
+                if (postWriteType == PostWriteType.WRITE) {
                     val intent = Intent(this@PostWriteActivity, PostActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     intent.putExtra("id", it)
@@ -89,11 +89,11 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         })
     }
 
-    fun showDialog(message : String) {
+    fun showDialog(message: String) {
         val dialog = AlertDialog.Builder(this)
         dialog.setMessage(message)
         dialog.setIcon(android.R.drawable.ic_dialog_alert)
-        dialog.setNegativeButton("확인",null)
+        dialog.setNegativeButton("확인", null)
         dialog.show()
     }
 
@@ -102,7 +102,12 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         menuInflater.inflate(R.menu.menu_post_write, menu)
         val menuItem = menu!!.getItem(0)
         val spanString = SpannableString(menu.getItem(0).title.toString())
-        spanString.setSpan(ForegroundColorSpan(resources.getColor(R.color.white)), 0, spanString.length, 0)
+        spanString.setSpan(
+            ForegroundColorSpan(resources.getColor(R.color.white)),
+            0,
+            spanString.length,
+            0
+        )
         menuItem.title = (spanString)
 
         return true
@@ -112,7 +117,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_done -> {
-                when(postWriteType){
+                when (postWriteType) {
                     PostWriteType.WRITE -> viewModel.writePost(boardType)
                     PostWriteType.EDIT -> {
                         Log.d("tag_postId", intent.getStringExtra("postId").toString())

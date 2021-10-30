@@ -36,8 +36,8 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private lateinit var writeIcon: FontDrawable
     private lateinit var currentPostList: Array<Post>
     private lateinit var lastPostId: String
-    private var clickedPosition: Int ?= 0
-    private var isFirst : Boolean = TRUE
+    private var clickedPosition: Int? = 0
+    private var isFirst: Boolean = TRUE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,7 +175,8 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             if (resultCode == RESULT_OK) {
                 Log.d("tag_like", "저아요하고 뒤로가기함")
                 //viewModel.updatePost(data!!.getSerializableExtra("postList") as Array<Post>)
-                boardAdapter.updateItem(data!!.getSerializableExtra("post") as Post,
+                boardAdapter.updateItem(
+                    data!!.getSerializableExtra("post") as Post,
                     clickedPosition!!
                 )
 

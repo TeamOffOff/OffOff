@@ -2,14 +2,14 @@ package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -20,37 +20,40 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
 import com.yuuuzzzin.offoff_android.service.models.Post
+import com.yuuuzzzin.offoff_android.service.models.Reply
+import com.yuuuzzzin.offoff_android.utils.*
 import com.yuuuzzzin.offoff_android.utils.Constants.DELETE_COMMENT
 import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
-import com.yuuuzzzin.offoff_android.utils.PostWriteType
+import com.yuuuzzzin.offoff_android.utils.DialogUtils.showAutoCloseDialog
+import com.yuuuzzzin.offoff_android.utils.DialogUtils.showYesNoDialog
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.CommentListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.Serializable
 
 @AndroidEntryPoint
 class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private val viewModel: PostViewModel by viewModels()
+
+    private lateinit var commentListAdapter: CommentListAdapter
+    private lateinit var currentCommentList: Array<Comment>
+
     lateinit var postId: String
-    private lateinit var boardName: String
     lateinit var boardType: String
+    private lateinit var boardName: String
+    private var post: Post? = null
     private var postPosition: Int = 0
     private var commentPosition: Int = 0
-    //private var author: String? = null
-    private var doLike: Boolean? = false
-    private lateinit var currentCommentList: Array<Comment>
-    private var post: Post ?= null
+    var parentReplyId: String? = null
+
+    private var requestUpdate: Boolean? = false
+    private var isFirst: Boolean = true
+
     private lateinit var writeIcon: FontDrawable
     private lateinit var likeIcon: FontDrawable
-    private lateinit var commentListAdapter: CommentListAdapter
-    private var isFirst: Boolean = true
 
     // 게시물 수정 액티비티 요청 및 결과 처리
     private val requestEditPost = registerForActivityResult(
@@ -61,7 +64,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         if (resultCode == Activity.RESULT_OK) {
             viewModel.getPost(postId, boardType)
-            doLike = true
+            requestUpdate = true
         }
     }
 
@@ -83,6 +86,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         //currentPostList = intent.getSerializableExtra("postList") as Array<Post>
 
         viewModel.getPost(postId, boardType)
+        viewModel.getComments(postId, boardType)
     }
 
     private fun initViewModel() {
@@ -93,29 +97,15 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             binding.post = it
             this.post = it
             binding.refreshLayout.isRefreshing = false
-            invalidateOptionsMenu()
+            if (isFirst) {
+                invalidateOptionsMenu()
+            }
         })
-
-        viewModel.newPost.observe(binding.lifecycleOwner!!, {
-            binding.post = it
-            this.post = it
-
-            //currentPostList?.set(postPosition, it)
-        })
-
-//        viewModel.author.observe(binding.lifecycleOwner!!, {
-//            author = it
-//            Log.d(
-//                "tag_id",
-//                "id : " + OffoffApplication.user.id + " / author: " + author.toString()
-//            )
-//            invalidateOptionsMenu()
-//        })
 
         viewModel.successLike.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showSuccessLikeDialog(it)
-                doLike = true
+                requestUpdate = true
             }
         })
 
@@ -125,7 +115,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         })
 
-        viewModel.getComments(postId, boardType)
+        //viewModel.getComments(postId, boardType)
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
             with(commentListAdapter) { submitList(it.toMutableList()) }
             currentCommentList = it.toTypedArray()
@@ -137,32 +127,32 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         })
 
         viewModel.comment.observe(binding.lifecycleOwner!!, {
-            Log.d("tag_item_", "$it")
             currentCommentList[commentPosition] = it
             viewModel.update(currentCommentList)
         })
 
-        viewModel.commentSuccessEvent.observe(binding.lifecycleOwner!!, { event ->
-            event.getContentIfNotHandled()?.let {
+        viewModel.reply.observe(binding.lifecycleOwner!!, {
+            commentListAdapter.replyListAdapter.updateItem(
+                it,
+                commentPosition!!
+            )
+        })
 
+        viewModel.replySuccessEvent.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                parentReplyId = null
             }
         })
 
-        viewModel.showCommentDialog.observe(binding.lifecycleOwner!!, { event ->
+        viewModel.showReplyOptionDialog.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                showCommentOptionDialog(it)
+                showReplyOptionDialog(it, isMine = false)
             }
         })
 
-        viewModel.showMyCommentDialog.observe(binding.lifecycleOwner!!, { event ->
+        viewModel.showMyReplyOptionDialog.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                showMyCommentOptionDialog(it)
-            }
-        })
-
-        viewModel.showMyCommentDialog.observe(binding.lifecycleOwner!!, { event ->
-            event.getContentIfNotHandled()?.let {
-                showMyCommentOptionDialog(it)
+                showReplyOptionDialog(it, isMine = true)
             }
         })
     }
@@ -192,17 +182,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         binding.tfComment.setEndIconOnClickListener {
             if (!binding.etComment.text.isNullOrBlank()) {
-                if (viewModel.parentReplyId == null) {
+                if (parentReplyId.isNullOrBlank()) {
                     viewModel.writeComment(postId, boardType)
                 } else {
-                    viewModel.writeReply(postId, boardType)
+                    viewModel.writeReply(postId, boardType, parentReplyId!!)
                 }
                 binding.etComment.text = null
                 hideKeyboard()
                 binding.nestedScrollView.post {
                     binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
                 }
-                doLike = true
+                requestUpdate = true
             }
         }
 
@@ -224,42 +214,37 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             isNestedScrollingEnabled = false
         }
 
-        commentListAdapter.setOnLikeCommentListener(object :
-            CommentListAdapter.OnLikeCommentListener {
+        commentListAdapter.setOnCommentClickListener(object :
+            CommentListAdapter.OnCommentClickListener {
+            override fun onClickCommentOption(comment: Comment) {
+                if (OffoffApplication.user.id == comment.author.id) {
+                    showCommentOptionDialog(comment.id, true)
+                } else {
+                    showCommentOptionDialog(comment.id, isMine = false)
+                }
+            }
+
             override fun onLikeComment(position: Int, comment: Comment) {
                 commentPosition = position
                 viewModel.likeComment(comment.id, boardType)
             }
-        })
 
-        commentListAdapter.setOnClickCommentOptionListener(object :
-            CommentListAdapter.OnClickCommentOptionListener {
-            override fun onClickCommentOption(comment: Comment) {
-                if (OffoffApplication.user.id == comment.author.id) {
-                    viewModel.showMyCommentDialog(comment.id)
-                } else {
-                    viewModel.showCommentDialog(comment.id)
-                }
-            }
-        })
-
-        commentListAdapter.setOnWriteReplyListener(object :
-            CommentListAdapter.OnWriteReplyListener {
             override fun onWriteReply(comment: Comment) {
-                Log.d("tag_parentReply", comment.id)
-                viewModel.parentReplyId = comment.id
+                parentReplyId = comment.id
                 binding.etComment.isFocusableInTouchMode = true
-                binding.etComment.requestFocus()
-                showKeyboard()
+                binding.etComment.requestFocusAndShowKeyboard(this@PostActivity)
+            }
+
+            override fun onLikeReply(position: Int, reply: Reply) {
+                commentPosition = position
+                viewModel.likeReply(reply.id!!, boardType)
             }
         })
     }
 
-    private fun showDeleteDialog(message: String) {
-        val dialog = AlertDialog.Builder(this)
-        dialog.setMessage(message)
-        dialog.setIcon(android.R.drawable.ic_dialog_alert)
-        dialog.setPositiveButton("예") { dialog, which ->
+    // 게시물 삭제 다이얼로그
+    private fun showDeletePostDialog(message: String) {
+        showYesNoDialog(this, message, onPositiveClick = { dialog, which ->
             viewModel.deletePost(postId, boardType)
 
             val intent = Intent(applicationContext, BoardActivity::class.java)
@@ -268,120 +253,40 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             intent.putExtra("boardName", boardName)
             startActivity(intent)
             finish()
-        }
-        dialog.setNegativeButton("아니오", null)
-        dialog.show()
+        },
+            onNegativeClick = { dialog, which ->
+                null
+            })
     }
 
+    // 좋아요 성공 다이얼로그
     private fun showSuccessLikeDialog(message: String) {
-        val dialog = AlertDialog.Builder(this).create()
-        dialog.setMessage(message)
-        // dialog.setNegativeButton("확인", null)
-        CoroutineScope(Dispatchers.Main).launch {
-            dialog.show()
-            delay(1000)
-            dialog.dismiss()
-        }
+        showAutoCloseDialog(this, message)
     }
 
+    // 이미 좋아요를 한 경우의 다이얼로그
     private fun showAlreadyLikeDialog(message: String) {
-        val dialog = AlertDialog.Builder(this)
-        dialog.setMessage(message)
-        dialog.setIcon(android.R.drawable.ic_dialog_alert)
-        dialog.setNegativeButton("확인", null)
-        dialog.show()
+        DialogUtils.showYesDialog(this, message)
     }
 
-    private fun hideKeyboard() {
-        val imm: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-    }
-
-    private fun showKeyboard() {
-        val imm: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-    }
-
-    private fun showMyCommentOptionDialog(commentId: String) {
-
-        val array = arrayOf(
-            DELETE_COMMENT,
-            REPORT_COMMENT
-        )
-        val builder = AlertDialog.Builder(this)
-
-        builder.setItems(array) { _, which ->
-            val selected = array[which]
-
-            try {
-                when (which) {
-                    0 -> {
-                        showCommentDeleteDialog(commentId)
-                        doLike = true
-                        true
-                    }
-                    1 -> {
-                        true
-                    }
-                }
-
-            } catch (e: IllegalArgumentException) {
-
-            }
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
-
-    private fun showCommentOptionDialog(commentId: String) {
-
-        val array = arrayOf(
-            REPORT_COMMENT
-        )
-        val builder = AlertDialog.Builder(this)
-
-        builder.setItems(array) { _, which ->
-            val selected = array[which]
-
-            try {
-                when (which) {
-                    0 -> {
-                        true
-                    }
-                }
-
-            } catch (e: IllegalArgumentException) {
-
-            }
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
-
+    // 댓글 삭제 다이얼로그
     private fun showCommentDeleteDialog(commentId: String) {
-        val dialog = AlertDialog.Builder(this)
-        dialog.setMessage("댓글을 삭제하시겠습니까?")
-        dialog.setIcon(android.R.drawable.ic_dialog_alert)
-        dialog.setPositiveButton("예") { dialog, which ->
+        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
             viewModel.deleteComment(commentId, postId, boardType)
-        }
-        dialog.setNegativeButton("아니오", null)
-        dialog.show()
+        },
+            onNegativeClick = { dialog, which ->
+                null
+            })
     }
 
-    private fun showReplyDeleteDialog(id: String) {
-        val dialog = AlertDialog.Builder(this)
-        dialog.setMessage("댓글을 삭제하시겠습니까?")
-        dialog.setIcon(android.R.drawable.ic_dialog_alert)
-        dialog.setPositiveButton("예") { dialog, which ->
-            viewModel.deleteReply(id, postId, boardType)
-        }
-        dialog.setNegativeButton("아니오", null)
-        dialog.show()
+    // 대댓글 삭제 다이얼로그
+    private fun showReplyDeleteDialog(reply: Reply) {
+        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
+            viewModel.deleteReply(reply.id!!, postId, boardType, reply.parentReplyId!!)
+        },
+            onNegativeClick = { dialog, which ->
+                null
+            })
     }
 
     override fun onBackPressed() {
@@ -395,7 +300,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             val intent = Intent()
             intent.putExtra("post", this.post as Serializable)
             setResult(RESULT_OK, intent)
-        } else if (doLike == true) {
+        } else if (requestUpdate == true) {
             Log.d("tag_onBackPressed", "뒤로가기")
             val intent = Intent()
             intent.putExtra("post", this.post as Serializable)
@@ -437,7 +342,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
             R.id.action_delete -> {
                 // 삭제 버튼 누를 시
-                showDeleteDialog("게시글을 삭제하시겠습니까?")
+                showDeletePostDialog("게시글을 삭제하시겠습니까?")
 
                 true
             }
@@ -453,14 +358,88 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == 1) {
-//            Log.d("tag_like", "requestCode")
-//            if (resultCode == RESULT_OK) {
-//                viewModel.getPost(postId, boardType)
-//                doLike = true
-//            }
-//        }
-//    }
+    // 댓글 옵션 다이얼로그
+    private fun showCommentOptionDialog(id: String, isMine: Boolean) {
+
+        val builder = AlertDialog.Builder(this)
+        val array = if (isMine) arrayMine else arrayNotMine
+
+        builder.setItems(array) { _, which ->
+            val selected = array[which]
+
+            try {
+                when (selected) {
+                    DELETE_COMMENT -> {
+                        showCommentDeleteDialog(id)
+                        requestUpdate = true
+                        true
+                    }
+                    REPORT_COMMENT -> {
+                        true
+                    }
+                }
+
+            } catch (e: IllegalArgumentException) {
+
+            }
+        }
+
+        builder.create().show()
+    }
+
+    // 대댓글 옵션 다이얼로그
+    private fun showReplyOptionDialog(reply: Reply, isMine: Boolean) {
+
+        val builder = AlertDialog.Builder(this)
+        val array = if (isMine) arrayMine else arrayNotMine
+
+        builder.setItems(array) { _, which ->
+            val selected = array[which]
+
+            try {
+                when (selected) {
+                    DELETE_COMMENT -> {
+                        showReplyDeleteDialog(reply)
+                        requestUpdate = true
+                        true
+                    }
+                    REPORT_COMMENT -> {
+                        true
+                    }
+                }
+
+            } catch (e: IllegalArgumentException) {
+
+            }
+        }
+
+        builder.create().show()
+    }
+
+    companion object {
+        val arrayMine = arrayOf(
+            DELETE_COMMENT
+        )
+
+        val arrayNotMine = arrayOf(
+            REPORT_COMMENT
+        )
+    }
+
+    override fun dispatchTouchEvent(motionEvent: MotionEvent?): Boolean {
+        val focusView = binding.etComment
+        if (focusView != null) {
+
+            var rect = Rect()
+            focusView.getGlobalVisibleRect(rect)
+            val x = motionEvent!!.x.toInt()
+            val y = motionEvent.y.toInt()
+            if (!rect.contains(x, y)) {
+                hideKeyboard()
+                focusView.clearFocus()
+                parentReplyId = null
+            }
+        }
+        return super.dispatchTouchEvent(motionEvent)
+    }
 }
