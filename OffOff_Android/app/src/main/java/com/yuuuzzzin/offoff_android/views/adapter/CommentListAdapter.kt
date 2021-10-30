@@ -32,33 +32,19 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
         }
     }
 
-    interface OnLikeCommentListener {
-        fun onLikeComment(position: Int, comment: Comment)
-    }
+    lateinit var replyListAdapter: ReplyListAdapter
 
-    interface OnWriteReplyListener {
-        fun onWriteReply(comment: Comment)
-    }
-
-    private lateinit var likeCommentListener: OnLikeCommentListener
-    private lateinit var writeReplyListener: OnWriteReplyListener
-
-    fun setOnLikeCommentListener(listener: OnLikeCommentListener) {
-        this.likeCommentListener = listener
-    }
-
-    fun setOnWriteReplyListener(listener: OnWriteReplyListener) {
-        this.writeReplyListener = listener
-    }
-
-    interface OnClickCommentOptionListener {
+    interface OnCommentClickListener {
         fun onClickCommentOption(comment: Comment)
+        fun onLikeComment(position: Int, comment: Comment)
+        fun onWriteReply(comment: Comment)
+        fun onLikeReply(position: Int, reply: Reply)
     }
 
-    private lateinit var clickCommentOptionListener: OnClickCommentOptionListener
+    private lateinit var commentClickListener: OnCommentClickListener
 
-    fun setOnClickCommentOptionListener(listener: OnClickCommentOptionListener) {
-        this.clickCommentOptionListener = listener
+    fun setOnCommentClickListener(listener: OnCommentClickListener) {
+        this.commentClickListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -84,10 +70,11 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
             binding.setVariable(BR.item, item)
             binding.executePendingBindings()
             binding.btLikes.setOnClickListener {
-                likeCommentListener.onLikeComment(position, item)
+                commentClickListener.onLikeComment(position, item)
             }
-            if(item.childrenReplies != null) {
-                val replyListAdapter = ReplyListAdapter()
+
+            if (item.childrenReplies != null) {
+                replyListAdapter = ReplyListAdapter()
                 replyListAdapter.replyList = item.childrenReplies as ArrayList<Reply>
                 replyListAdapter.notifyDataSetChanged()
                 binding.rvReply.adapter = replyListAdapter
@@ -98,18 +85,24 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
 
                     override fun onClickOption(reply: Reply, position: Int) {
                         if (OffoffApplication.user.id == reply.author!!.id) {
-                            viewModel.showMy(reply.id!!)
+                            viewModel.showMyReplyOptionDialog(reply)
                         } else {
-                            viewModel.showCommentDialog(reply.id!!)
+                            viewModel.showReplyOptionDialog(reply)
                         }
+                    }
+
+                    override fun onLikeReply(position: Int, reply: Reply) {
+                        commentClickListener.onLikeReply(position, reply)
                     }
                 })
             }
+
             binding.btCommentOption.setOnClickListener {
-                clickCommentOptionListener.onClickCommentOption(item)
+                commentClickListener.onClickCommentOption(item)
             }
+
             binding.btReply.setOnClickListener {
-                writeReplyListener.onWriteReply(item)
+                commentClickListener.onWriteReply(item)
             }
         }
     }

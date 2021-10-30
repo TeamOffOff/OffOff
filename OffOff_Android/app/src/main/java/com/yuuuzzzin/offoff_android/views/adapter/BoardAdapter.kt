@@ -61,14 +61,14 @@ class BoardAdapter :
     }
 
     fun addPostList(postList: List<Post>, isFirst: Boolean) {
-        if(isFirst == TRUE) {
+        if (isFirst == TRUE) {
             this.postList.clear()
         }
         this.postList.addAll(postList)
         notifyDataSetChanged()
     }
 
-    fun updateItem(post : Post, position : Int){
+    fun updateItem(post: Post, position: Int) {
         postList[position] = post
         notifyItemChanged(position)
     }

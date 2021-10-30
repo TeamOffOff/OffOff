@@ -14,6 +14,7 @@ class ReplyListAdapter
 
     interface OnReplyClickListener {
         fun onClickOption(item: Reply, position: Int)
+        fun onLikeReply(position: Int, reply: Reply)
     }
 
     private lateinit var replyClickListener: OnReplyClickListener
@@ -53,9 +54,16 @@ class ReplyListAdapter
             binding.btCommentOption.setOnClickListener {
                 replyClickListener.onClickOption(item, position)
             }
+            binding.btLikes.setOnClickListener {
+                replyClickListener.onLikeReply(position, item)
+            }
             binding.executePendingBindings()
         }
 
     }
 
+    fun updateItem(reply: Reply, position: Int) {
+        replyList[position] = reply
+        notifyItemChanged(position)
+    }
 }
