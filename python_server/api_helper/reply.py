@@ -318,7 +318,9 @@ class SubReplyControl(Resource):
                 # 이미 좋아요를 누른 경우
                 if user_id in subreply_past_likes_list:
                     return {"queryStatus": "already like"}, 201
-                
+        
+        # 만약에 addtoset해서 달라진 게 없으면 좋아요 했떤 거라고 하면되나? 그런데 그러면 오류 발생을 못잡아낼 수도 있는디
+
         print(user_id)
         update_status = mongodb.update_one(query={"_id": ObjectId(parent_reply_id)}, collection_name=board_type, modify={"$addToSet": {"childrenReplies.$[elem].likes": user_id}}, array_filters=[{"elem._id":subreply_id}])
 
@@ -327,10 +329,15 @@ class SubReplyControl(Resource):
             return {"queryStatus": "likes update fail"}, 500
 
         modified_reply = mongodb.find_one(query={"_id":ObjectId(parent_reply_id)}, collection_name=board_type)
-        modified_reply["_id"] = str(modified_reply["_id"])
-        if modified_reply["date"]:  # 댓글의 date가 살아있는 경우(대댓글이 있는 상태에서 삭제되면 date도 null로 바뀜)
-            modified_reply["date"] = (modified_reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-        return modified_reply, 200
+        children_replies = modified_reply["childrenReplies"]
+
+        # 해당 subreply만 찾아서 보내기
+        for subreply in children_replies:
+            if subreply["_id"] == subreply_id:
+                return subreply, 200
 
 ## subreplies 들은 datetime을 문자열로 바꿔서 저장하는데,,,,,,댓글은 어떻게할지 다시 고민해보기
 ## 댓글 대댓글 author이랑 user랑 일치하는지 확인하기 !!!!
+
+
+## 회원탈퇴 했을 때 도 access token발급되는 문제, 캘린더 문제
