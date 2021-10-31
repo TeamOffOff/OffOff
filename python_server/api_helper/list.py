@@ -3,6 +3,8 @@ from flask.helpers import make_response
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
+
+from werkzeug.wrappers import Response
 from flask_jwt_extended import jwt_required
 from controller.filter import check_jwt
 from pymongo import collection, message
@@ -12,9 +14,13 @@ import mongo as mongo
 import pprint
 
 mongodb = mongo.MongoHelper()
+TotalSearchList = Namespace(
+    "totalsearch",
+    description="통합검색 관련 API"
+)
 
 SearchList = Namespace(
-    "searchlist", 
+    "search", 
     description="검색 관련 API")
 
 BoardList = Namespace(
@@ -198,6 +204,10 @@ class PostListControl(Resource):
 """
 검색 관련 API
 """
+@TotalSearchList.route("")
+class TotalSearchControl(Resource):
+    pass
+
 @SearchList.route("/<string:board_type>")
 class SearchControl(Resource):
     @jwt_required()
@@ -210,28 +220,39 @@ class SearchControl(Resource):
 
         keyword = request.args.get("key")
         print(keyword)
+        board_type = board_type + "_board"
+        volume = int(request.args.get("volume", default=20))
+        standard_id = request.args.get("standardId", default="")
+        print(board_type)
+        # 현재는 오름차순 -> 내림차순으로 정리해야함
 
-        # 전체 게시판
-        if board_type == "all":
-            pass
 
-        # 특정 게시판
-        else:
-            board_type = board_type + "_board"
-            print(board_type)
-            # 현재는 오름차순 -> 내림차순으로 정리해야함
-            result = list(mongodb.find(collection_name=board_type,query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}))
-            # result = list(mongodb.find(collection_name=board_type,query={"$text":{"$search":keyword}}))
-            print(result)
-        
-        for post in result:
-            post["_id"] = str(post["_id"])
-            post["date"] = str(post["date"])
+        if not standard_id:  # 검색한 즉시
+            total_list = list(mongodb.find(collection_name=board_type,query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}).sort([("_id", -1)]).limit(volume))
 
-        response_result = make_response({
-            "postList": result
-        }, 200)
-        
+        elif standard_id:  # 과거 게시글 불러올 때
+            standard_id = ObjectId(standard_id)
+            total_list = list(mongodb.find(collection_name=board_type,query={'_id': {'$lt': standard_id}, "$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}).sort(
+                [("_id", -1)]).limit(volume))
+
+        if total_list:  # 불러올 게시글이 남아있는 경우
+            for post in total_list:
+                post["_id"] = str(post["_id"])
+                post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
+            last_post_id = total_list[-1]["_id"]
+
+            response_result = make_response({
+                        "lastPostId": last_post_id,
+                        "postList": total_list
+                    }, 200)
+
+        else: # 불러올 게시글이 없는 경우
+            response_result = make_response({
+                "lastPostId": None,
+                "postList": None
+            }, 200)
+
         return response_result
 
 

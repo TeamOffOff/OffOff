@@ -23,6 +23,7 @@ Token = Namespace(name="token", description="access토큰 재발급 API")
 
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
+# db 초기화했는데, 그 전에 만들어뒀던 token으로 활동가능한 문제
 
 @Token.route('')
 class TokenControl(Resource):
