@@ -176,9 +176,9 @@ class PostControl(Resource):
                 print(past_likes)
 
             if user in past_user_list:  # 해당 활동을 한 적이 있는 경우
-                if activity == "likes":
+                if activity == "likes":  # 좋아요는 취소가 불가능함
                     return {"queryStatus": "already like"}, 201
-                else:
+                else:  # 좋아요 이외의 활동은 취소가 가능함
                     operator = "$pull"
                     result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
 

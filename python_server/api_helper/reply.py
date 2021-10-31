@@ -37,16 +37,6 @@ class ReplyControl(Resource):
 
         print(board_type)
         
-        # post 컬랙션 이름으로
-        post_board_type = board_type + "_board"
-        print(post_board_type)
-
-        # 댓글 수 +1
-        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": 1}})
-        print(update_status)
-        if update_status.raw_result["n"] == 0:
-            return{"queryStatus": "replyCount update fail"}, 500
-
         # reply 컬랙션 이름으로
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
@@ -70,6 +60,16 @@ class ReplyControl(Resource):
 
         # 회원활동 정보 link 형태로 등록
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$addToSet")
+
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
+
+        # 댓글 수 +1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": 1}})
+        print(update_status)
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
 
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
@@ -134,16 +134,6 @@ class ReplyControl(Resource):
         post_id = request_info["postId"]
         print(board_type)
 
-        # post 컬랙션 이름으로
-        post_board_type = board_type + "_board"
-        print(post_board_type)
-
-        # 댓글 -1
-        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": -1}})
-
-        if update_status.raw_result["n"] == 0:
-            return{"queryStatus": "replyCount update fail"}, 500
-
         # reply 컬랙션 이름으로
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
@@ -151,7 +141,7 @@ class ReplyControl(Resource):
         whether_subreply = request_info["isChildReply"]
         print(whether_subreply)
         # 있으면 Ture, 없으면 False
-
+    
         if not whether_subreply:  # 대댓글이 없는 경우
             result = mongodb.delete_one(query={"_id": ObjectId(reply_id)},
                                         collection_name=reply_board_type)
@@ -165,18 +155,26 @@ class ReplyControl(Resource):
             result = mongodb.update_one(query={"_id": ObjectId(reply_id)},
                                         collection_name=reply_board_type,
                                         modify={"$set": alert_delete})
-
-        
-        # 댓글 조회
-        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
+        if result.raw_result["n"] == 0:
+            return {"queryStatus": "reply delete failed"}, 500
 
         # 회원활동정보 삭제
         making_reference = MakeReference(board_type=reply_board_type, user=user)
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=reply_id, operator="$pull")
 
-        if result.raw_result["n"] == 0:
-            return {"queryStatus": "reply delete failed"}, 500
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
+
+        # 댓글 -1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": -1}})
+
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
         
+        # 댓글 조회
+        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
+
         return {
                        "replyList": reply_list
                    }, 200
@@ -199,16 +197,6 @@ class SubReplyControl(Resource):
         parent_reply_id = request_info["parentReplyId"]
         print(board_type)
 
-        # post 컬랙션 이름으로
-        post_board_type = board_type + "_board"
-        print(post_board_type)
-
-        # 댓글 수 +1
-        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": 1}})
-        print(update_status)
-        if update_status.raw_result["n"] == 0:
-            return{"queryStatus": "replyCount update fail"}, 500
-
         # reply 컬랙션 이름으로
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
@@ -229,6 +217,16 @@ class SubReplyControl(Resource):
 
         # 회원활동 정보 link 형태로 등록
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=parent_reply_id, operator="$addToSet")
+
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
+
+        # 댓글 수 +1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": 1}})
+        print(update_status)
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
 
         # 댓글 조회
         reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
@@ -252,16 +250,6 @@ class SubReplyControl(Resource):
 
         user_id = check_jwt()
 
-        # post 컬랙션 이름으로
-        post_board_type = board_type + "_board"
-        print(post_board_type)
-
-        # 댓글 -1
-        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": -1}})
-
-        if update_status.raw_result["n"] == 0:
-            return{"queryStatus": "replyCount update fail"}, 500
-
         # reply 컬랙션 이름으로
         reply_board_type = board_type + "_board_reply"
         print(reply_board_type)
@@ -275,13 +263,23 @@ class SubReplyControl(Resource):
         if result.raw_result["n"] == 0:
                     return {"queryStatus": "subrely delete fail"}, 500
 
-        # 댓글 조회
-        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
-
         # 회원활동정보 삭제
         making_reference = MakeReference(board_type=reply_board_type, user=user_id)
         making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=parent_reply_id, operator="$pull")
 
+        # post 컬랙션 이름으로
+        post_board_type = board_type + "_board"
+        print(post_board_type)
+
+        # 댓글 -1
+        update_status = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=post_board_type, modify={"$inc": {"replyCount": -1}})
+
+        if update_status.raw_result["n"] == 0:
+            return{"queryStatus": "replyCount update fail"}, 500
+            
+        # 댓글 조회
+        reply_list = get_reply_list(post_id=post_id, board_type=reply_board_type)
+    
         return {
                        "replyList": reply_list
                    }, 200

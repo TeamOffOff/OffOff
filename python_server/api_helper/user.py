@@ -190,8 +190,6 @@ class AuthRegister(Resource):
         if not user_id:
             return {"queryStatus": "wrong Token"}, 403
 
-        
-        
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
         # 활동 알수없음으로 바꾸기
@@ -244,10 +242,10 @@ class AuthRegister(Resource):
         
         # 캘린더 삭제하기
         calendar_id = user_info["calendar"]
-        result = mongodb.delete_one(query={"_id":calendar_id}, collection_name="calendar")
-
-        if result.raw_result["n"] == 0:
-            return{"queryStatus": "calendar delete fail"}, 500
+        if calendar_id:
+            result = mongodb.delete_one(query={"_id":calendar_id}, collection_name="calendar")
+            if result.raw_result["n"] == 0:
+                return{"queryStatus": "calendar delete fail"}, 500
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": user_id}, collection_name="user")
