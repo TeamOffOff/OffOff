@@ -206,7 +206,46 @@ class PostListControl(Resource):
 """
 @TotalSearchList.route("")
 class TotalSearchControl(Resource):
-    pass
+    @jwt_required()
+    def get(self):
+        # 회원여부
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
+
+        keyword = request.args.get("key")
+        print(keyword)
+        volume = int(request.args.get("volume", default=5)) # 각 게시판에서 10개씩만 긁어옴
+        standard_id = request.args.get("standardId", default="")
+        # standard_time = datetime.now()
+
+        board_list = ["free", "job"]
+        
+        total_list = []
+        for board in board_list:
+            board_type = board + "_board"
+            part_list = list(mongodb.find(collection_name=board_type,query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}).sort([("_id", -1)]).limit(volume))
+            total_list.extend(part_list)
+
+        total_list.sort(key=lambda x: x["_id"], reverse=True)  #_id의 처음 4부분은 시간 정보를 담고 있다.
+        
+        if total_list:  # 불러올 게시글이 남아있는 경우
+            for post in total_list:
+                post["_id"] = str(post["_id"])
+                post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
+            last_post_id = total_list[-1]["_id"]
+
+        response_result = make_response({
+            "lastPostId": last_post_id,
+            "postList": total_list
+        }, 200)
+
+        return response_result
+
+
+
 
 @SearchList.route("/<string:board_type>")
 class SearchControl(Resource):
@@ -224,8 +263,6 @@ class SearchControl(Resource):
         volume = int(request.args.get("volume", default=20))
         standard_id = request.args.get("standardId", default="")
         print(board_type)
-        # 현재는 오름차순 -> 내림차순으로 정리해야함
-
 
         if not standard_id:  # 검색한 즉시
             total_list = list(mongodb.find(collection_name=board_type,query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}).sort([("_id", -1)]).limit(volume))
