@@ -1,4 +1,8 @@
+import re
+from warnings import resetwarnings
 from flask import request
+from flask.helpers import make_response
+from werkzeug.wrappers import Response, ResponseStreamMixin
 from flask_jwt_extended.utils import get_jwt
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
@@ -26,17 +30,22 @@ class TokenControl(Resource):
     def get(self):  # refresh 로 access 발급
         user_id = get_jwt_identity()
         refresh_token = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["refreshToken"]
+        
         if not refresh_token:  # refresh token이 탈취되어서 db에서 삭제한 경우
-            return {
+            response_result = make_response({
                        "queryStatus": "refresh token was taken"
-                   }, 403
-        delta = timedelta(minutes=1)
-        access_token = create_access_token(identity=user_id, expires_delta=delta)
+                   }, 403)
 
-        return {
-                   "accessToken": access_token,
-                   "queryStatus": 'success'
-               }, 200
+        else:
+            delta = timedelta(minutes=1)
+            access_token = create_access_token(identity=user_id, expires_delta=delta)
+
+            response_result = make_response({
+                    "accessToken": access_token,
+                    "queryStatus": 'success'
+                }, 200)
+
+        return response_result
 
     @jwt_required()
     def delete(self):  # access or refresh 가 탈취된 경우 or 로그아웃하는 경우 => 현재 access blocklist에 추가 + 현재 refresh db 에서 삭제
@@ -44,7 +53,8 @@ class TokenControl(Resource):
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         print("user_id: ", user_id)
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         jti = get_jwt()["jti"]
         print(jti)
@@ -61,18 +71,22 @@ class TokenControl(Resource):
         result2 = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": ""}})  # unset으로 아예 삭제할 수도 있음
 
         if not result1:
-            return {
+            response_result = make_response({
                        "queryStatus": "add accessToken fail"
-                   }, 500
+                   }, 500)
+            return response_result
 
         if result2.raw_result["n"] == 0:
-            return {
+            response_result = make_response({
                        "queryStatus": "delete refreshToken fail"
-                   }, 500
+                   }, 500)
+            return response_result
 
-        return {
+        response_result = make_response({
                    "queryStatus": "success"
-               }, 200
+               }, 200)
+
+        return response_result
 
 
 @User.route('/register')
@@ -96,9 +110,9 @@ class AuthRegister(Resource):
             result = check_duplicate(key="subInformation.nickname", target=check_nickname)
 
         if not result:
-            result = {"queryStatus": "possible"}, 200
+            response_result = make_response({"queryStatus": "possible"}, 200)
 
-        return result
+        return response_result
 
     def post(self):  # 회원가입
         """
@@ -108,17 +122,20 @@ class AuthRegister(Resource):
 
         # 중복확인
         if check_duplicate(key="_id", target=user_info["_id"]):
-            return {
+            response_result = make_response({
                        "queryStatus": "id already exist"
-                   }, 409
+                   }, 409)
+            return response_result
         if check_duplicate(key="information.email", target=user_info["information"]["email"]):
-            return {
+            response_result = make_response({
                        "queryStatus": "email already exist"
-                   }, 409
+                   }, 409)
+            return response_result
         if check_duplicate(key="subInformation.nickname", target=user_info["subInformation"]["nickname"]):
-            return {
+            response_result = make_response({
                        "queryStatus": "nickname already exist"
-                   }, 409
+                   }, 409)
+            return response_result
 
         # 비밀번호를 암호화: 암호화할 때는 string이면 안 되고 byte여야 해서 encode
         encrypted_password = bcrypt.hashpw(str(user_info["password"]).encode("utf-8"), bcrypt.gensalt())
@@ -151,10 +168,11 @@ class AuthRegister(Resource):
 
             mongodb.insert_one(data=real_user_info, collection_name="user")  # 데이터베이스에 저장
 
-            return {
-                       "queryStatus": 'success'
-                   }, 200
+            response_result = make_response({"queryStatus": 'success'}, 200)
 
+            return response_result
+
+        # 타입에러 발생하는 경우 찾고, try-excpet 가 아니라 if-else 문으로 바꾸기
         except TypeError:
             return TypeError
 
@@ -167,7 +185,8 @@ class AuthRegister(Resource):
         """
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         new_password = (request.get_json())["password"]
         new_encrypted_password = bcrypt.hashpw(str(new_password).encode("utf-8"), bcrypt.gensalt())
@@ -176,9 +195,12 @@ class AuthRegister(Resource):
         result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"password": final_new_password}})
 
         if result.raw_result["n"] == 1:
-            return {"queryStatus": "success"}, 200
+            response_result = make_response({"queryStatus": "success"}, 200)
         else:
-            return {"queryStatus": "password update fail"}, 500
+            response_result = make_response({"queryStatus": "password update fail"}, 500)
+        
+        return response_result
+
 
     @jwt_required()
     def delete(self):
@@ -188,7 +210,8 @@ class AuthRegister(Resource):
         """
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
@@ -218,7 +241,8 @@ class AuthRegister(Resource):
                 post_change_result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={"$set": alert_delete})
 
                 if post_change_result.raw_result["n"] == 0:
-                    return {"queryStatus": "author information change fail"}, 500
+                    response_result = make_response({"queryStatus": "author information change fail"}, 500)
+                    return response_result
         
         # 댓글 알 수 없음
         if replies:
@@ -238,22 +262,27 @@ class AuthRegister(Resource):
                 reply_change_result = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$set": alert_delete})
 
                 if reply_change_result.raw_result["n"] == 0:
-                    return {"queryStatus": "author information change fail"}, 500
+                    response_result = make_response({"queryStatus": "author information change fail"}, 500)
+                    return response_result
         
         # 캘린더 삭제하기
         calendar_id = user_info["calendar"]
-        if calendar_id:
+        if calendar_id:  # 캘린더 아이디 있는 경우에만 (캘린더 안 만들고 탈퇴하는 경우 발생하는 오류 방지)
             result = mongodb.delete_one(query={"_id":calendar_id}, collection_name="calendar")
             if result.raw_result["n"] == 0:
-                return{"queryStatus": "calendar delete fail"}, 500
+                response_result = make_response({"queryStatus": "calendar delete fail"}, 500)
+                return response_result
 
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": user_id}, collection_name="user")
 
         if result.raw_result["n"] == 1:
-            return {"queryStatus": "success"}, 200
+            response_result = make_response({"queryStatus": "success"}, 200)
         
-        return {"queryStatus": "user delete fail"}, 500
+        else:
+            response_result = make_response({"queryStatus": "user delete fail"}, 500)
+        
+        return response_result
 
 
 @User.route('/login')
@@ -274,15 +303,16 @@ class AuthLogin(Resource):
 
         if not user_info:
             # 해당 아이디가 없는 경우
-            return {
+            response_result = make_response({
                        "queryStatus": "not exist"
-                   }, 403
+                   }, 403)
 
         elif not bcrypt.checkpw((user_pw).encode("utf-8"), user_info["password"].encode("utf-8")):
             # 비밀번호가 일치하지 않는 경우
-            return {
+            response_result = make_response({
                        "queryStatus": "wrong password"
-                   }, 401
+                   }, 401)
+        
 
         else:
             # 비밀번호 일치한 경우
@@ -291,7 +321,8 @@ class AuthLogin(Resource):
 
             add_refresh_token = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": refresh_token}})
             if add_refresh_token.raw_result["n"] != 1:
-                return {"queryStatus": "add token fail"}, 500
+                response_result = make_response({"queryStatus": "add token fail"}, 500)
+                return response_result
 
             # 회원정보 조회
             user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
@@ -309,12 +340,13 @@ class AuthLogin(Resource):
                                 "subInformation": sub_information,
                                 "activity": activity}
 
-            
-            return {
+            response_result = make_response({
                        "accessToken": access_token,
                        "refreshToken": refresh_token,
                        "user": real_user_info
-                   }, 200
+                   }, 200)
+
+        return response_result
 
     @jwt_required()  # jwt 보냈는지, 만료된 건 아닌지
     def get(self):  # 회원정보조회
@@ -324,7 +356,8 @@ class AuthLogin(Resource):
 
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
@@ -342,7 +375,9 @@ class AuthLogin(Resource):
                           "activity": activity,
                           "calendar": user_info["calendar"]}
 
-        return {"user": real_user_info}, 200
+        response_result = make_response({"user": real_user_info}, 200)
+        
+        return response_result
 
     @jwt_required()
     def put(self):  # 회원정보수정 => 순서고정 코드 추가 고려
@@ -352,7 +387,8 @@ class AuthLogin(Resource):
 
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         request_info = request.get_json()
         del (request_info["activity"])
@@ -363,10 +399,13 @@ class AuthLogin(Resource):
             modified_user = mongodb.find_one(query={"_id": user_id},
                                              collection_name="user")
             modified_user["password"] = "비밀번호"
+            
+            response_result = make_response(modified_user, 200)
 
-            return modified_user, 200
         else:
-            return {"queryStatus": "infomation update fail"}, 500
+            response_result = make_response({"queryStatus": "infomation update fail"}, 500)
+        
+        return response_result
 
 
 @Activity.route("/<string:activity_type>")
@@ -382,7 +421,8 @@ class ActivityControl(Resource):
         """
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
@@ -390,10 +430,11 @@ class ActivityControl(Resource):
 
         if not target_activity:  # 타겟 activity 가 없는 경우
             # 리스트로 이루어진 리스트  "likes" : [["board_type", "content_id"], ["board_type", "content_id"]
-            return {
+            response_result = make_response({
                        "{}List".format(activity_type): None
-                   }, 200
-        else:
+                   }, 200)
+
+        else:  # 타켓 activity 가 있는 경우
             post_list = []
             for post in target_activity:
                 board_type = post[0] + "_board"
@@ -410,7 +451,8 @@ class ActivityControl(Resource):
                     continue
 
             post_list.sort(key=lambda x: x["_id"], reverse=True)
-
-            return {
+            response_result = make_response({
                        "{}List".format(activity_type): post_list
-                   }, 200
+                   }, 200)
+
+        return response_result

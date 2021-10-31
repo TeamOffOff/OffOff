@@ -1,5 +1,6 @@
 from logging import disable, shutdown
 from flask import request
+from flask.helpers import make_response
 from pymongo import collection
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -24,7 +25,8 @@ class CalendarControl(Resource):
         # 자기가 캘린더인지 확인하는 과정 필요
         user_id = check_jwt()
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         calendar_id = request.args.get("id")
         print(calendar_id)
@@ -33,7 +35,8 @@ class CalendarControl(Resource):
 
         # 순서고정
 
-        return calendar_info, 200
+        response_result = make_response(calendar_info, 200)
+        return response_result
 
 
 @Shift.route("")
@@ -54,7 +57,8 @@ class ShiftControl(Resource):
         # 회원 확인
         user_id = check_jwt()
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
         print(user_id)
 
         # 유저와 calendar_id 가 매칭되는지 확인하는 과정 넣을까 말까?
@@ -71,8 +75,11 @@ class ShiftControl(Resource):
             result = calendar_post_or_delete(field=field, operator=operator)
             
             if result.raw_result["n"] == 0:
-                    return {"queryStatus": "shift update fail"}, 500
-            return {"queryStatus": "success"}, 200
+                response_result = make_response({"queryStatus": "shift update fail"}, 500)
+            else:
+                response_result = make_response({"queryStatus": "success"}, 200)
+
+            return response_result
         
         # 캘린더를 생성한 적이 없는 경우
         shift = request_info["shift"]
@@ -85,19 +92,23 @@ class ShiftControl(Resource):
         calendar_id = mongodb.insert_one(data=data, collection_name="calendar")
 
         if not str(calendar_id):
-            return{"queryStatus": "fail"}, 500
+            response_result = make_response({"queryStatus": "fail"}, 500)
+            return response_result
         
         # user 컬랙션에 참조 달기
         link_calendar = {"calendar" : str(calendar_id)}
         result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set":link_calendar})
 
         if result.raw_result["n"] == 0:
-            return{"queryStatus": "user info update fail"}, 500
-
-        return {
+            response_result = make_response({"queryStatus": "user info update fail"}, 500)
+        
+        else:
+            response_result = make_response({
             "queryStatus": "success",
             "calendarId": str(calendar_id)
-        }, 200
+        }, 200)
+
+        return response_result
 
 
     @jwt_required()
@@ -120,8 +131,11 @@ class ShiftControl(Resource):
         result = calendar_update(field=field, operator=operator)
 
         if result.raw_result["n"] == 0:
-                return {"queryStatus": "shift update fail"}, 500
-        return {"queryStatus": "success"}, 200
+            response_result = make_response({"queryStatus": "shift update fail"}, 500)
+        else:
+            response_result = make_response({"queryStatus": "success"}, 200)
+
+        return response_result 
         
     @jwt_required()
     def delete(self):
@@ -143,8 +157,11 @@ class ShiftControl(Resource):
         result = calendar_post_or_delete(field=field, operator=operator)
 
         if result.raw_result["n"] == 0:
-                return {"queryStatus": "shift update fail"}, 500
-        return {"queryStatus": "success"}, 200
+            response_result = make_response({"queryStatus": "shift update fail"}, 500)
+        else:
+            response_result = make_response({"queryStatus": "success"}, 200)
+
+        return response_result
 
 
 @SavedShift.route("")
@@ -176,8 +193,11 @@ class ShiftControl(Resource):
         result = calendar_post_or_delete(field=field, operator=operator)
 
         if result.raw_result["n"] == 0:
-                return {"queryStatus": "savedShift update fail"}, 500
-        return {"queryStatus": "success"}, 200
+            response_result = make_response({"queryStatus": "savedShift update fail"}, 500)
+        else:
+            response_result = make_response({"queryStatus": "success"}, 200)
+        
+        return response_result
 
     @jwt_required()
     def put(self):
@@ -204,8 +224,11 @@ class ShiftControl(Resource):
         result = calendar_update(field=field, operator=operator)
 
         if result.raw_result["n"] == 0:
-                return {"queryStatus": "savedShift update fail"}, 500
-        return {"queryStatus": "success"}, 200
+            response_result = make_response({"queryStatus": "savedShift update fail"}, 500)
+        else:
+            response_result = make_response({"queryStatus": "success"}, 200)
+        
+        return response_result
         
     @jwt_required()
     def delete(self):
@@ -231,5 +254,8 @@ class ShiftControl(Resource):
         result = calendar_post_or_delete(field=field, operator=operator)
         
         if result.raw_result["n"] == 0:
-                return {"queryStatus": "savedShift update fail"}, 500
-        return {"queryStatus": "success"}, 200
+            response_result = make_response({"queryStatus": "savedShift update fail"}, 500)
+        else:
+            response_result = make_response({"queryStatus": "success"}, 200)
+
+        return response_result 

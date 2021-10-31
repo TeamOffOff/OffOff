@@ -1,4 +1,5 @@
 from flask import request
+from flask.helpers import make_response
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
@@ -58,9 +59,11 @@ class BoardListControl(Resource):
             if result:
                 board["newPost"] = True
 
-        return {
+        response_result = make_response({
             "boardList": total_list
-        }
+        }, 200)
+
+        return response_result 
 
     def delete(self):  # 게시판 목록 삭제
         """특정 게시판 정보를 삭제합니다."""
@@ -70,9 +73,12 @@ class BoardListControl(Resource):
         result = mongodb.delete_one(query={"boardType": board_type}, collection_name="board_list")
 
         if result.raw_result["n"] == 1:
-            return {"queryStatus": "해당 게시판을 삭제했습니다."}
+            response_result = make_response({"queryStatus": "해당 게시판을 삭제했습니다."}, 200)
         else:
-            return {"queryStatus": "게시판 삭제를 실패했습니다."}, 500
+            response_result = make_response({"queryStatus": "게시판 삭제를 실패했습니다."}, 500)
+        
+        return response_result
+
 
     def post(self):  # 게시판 목록 등록
         """특정 게시판 정보를 등록합니다."""
@@ -80,7 +86,9 @@ class BoardListControl(Resource):
 
         mongodb.insert_one(data=board_info, collection_name="board_list")
 
-        return {"queryStatus": "게시판을 등록했습니다"}
+        response_result = make_response({"queryStatus": "게시판을 등록했습니다"}, 200)
+
+        return response_result
 
 
 @UserControl.route("")
@@ -98,17 +106,20 @@ class UserListControl(Resource):
             result = list(mongodb.find(collection_name="block_list"))
             for i in result:
                 i["createdAt"] = str(i["createdAt"])
+        
+        response_result = make_response(result, 200)
 
-        return result
+        return response_result
 
     def post(self):
         """
         token block 설정 위한 block_list 컬렉션 설정
         """
         result = mongodb.create_index(standard="createdAt", collection_name="block_list", expire_time=10)
-        return {
+        response_result = make_response({
             "queryStatus": result
-        }
+        }, 200)
+        return response_result 
 
 
 @PostList.route("/<string:board_type>")
@@ -158,27 +169,31 @@ class PostListControl(Resource):
 
                 print("인기게시판에 들어간 각 게시글의 정보:", hot_post_list)
 
-                return {
+                response_reuslt = make_response({
                     "lastPostId": last_post_id,
                     "postList": hot_post_list
-                }
+                }, 200)
 
             else:
-                return {
+                response_result = make_response({
                     "lastPostId": last_post_id,
                     "postList": total_list
-                }
+                }, 200)
+
         else:
-            return {
+            response_result = make_response({
                 "lastPostId": None,
                 "postList": None
-            }
+            }, 200)
+        
+        return response_result
 
     def delete(self, board_type):  # 컬렉션 자체를 삭제
 
         result = mongodb.drop(collection_name=board_type)
+        response_result = make_response({"queryStatus": result}, 200)
 
-        return {"queryStatus": result}
+        return response_result
 
 """
 검색 관련 API
@@ -190,7 +205,8 @@ class SearchControl(Resource):
         # 회원여부
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         keyword = request.args.get("key")
         print(keyword)
@@ -211,10 +227,12 @@ class SearchControl(Resource):
         for post in result:
             post["_id"] = str(post["_id"])
             post["date"] = str(post["date"])
-        
-        return{
+
+        response_result = make_response({
             "postList": result
-        }
+        }, 200)
+        
+        return response_result
 
 
 @MessageList.route("/<string:message_type>")  # send, receive
@@ -226,35 +244,37 @@ class MassageListControl(Resource):
         """
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
         print(user_id)
         message_field = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["message"]
 
-        # 아직 message_type이 user db에 message field에 없으면 KeyError 발생
-        if not (message_type in message_field):
-            return {"queryStatus": "no message"}
+        # 아직 message_type이 user db에 message field에 없으면 KeyError 발생 -> 이걸 고친건가?
+        if not (message_type in message_field):  # send, receive 이외로 검색하면
+            response_result = make_response({"queryStatus": "wrong massageType"})
+            return response_result
 
         message_id_list = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["message"][message_type]
         print(message_id_list)
-
-            
 
         # 회원활동 게시글 조회와 구조 동일
         message_list = []
         for message_id in message_id_list:
             print("개별 메시지 id : ", message_id)
             result = mongodb.find_one(query={"_id": ObjectId(message_id)}, collection_name="message")
-            if result:
+            if result:  # 쪽지 컬랙션에 있는 경우
                 result["_id"] = str(result["_id"])
                 result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
                 message_list.append(result)
 
-            else:
+            else:  # 쪽지 컬랙션에 없는 경우
                 continue
             
         message_list.sort(key=lambda x: x["_id"], reverse=True)
-
-        return{
+        
+        response_result = make_response({
             f"{message_type}List": message_list
-        }, 200
+        }, 200)
+
+        return response_result
 

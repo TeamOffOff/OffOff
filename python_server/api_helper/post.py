@@ -30,7 +30,8 @@ class PostControl(Resource):
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         print("user_id: ", user_id)
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         post_id = request.args.get("postId")
         board_type = request.args.get("boardType") + "_board"
@@ -46,18 +47,20 @@ class PostControl(Resource):
 
         # 게시글이 없는 경우 post["image"] 조회시 NoneType 에러 발생
         if not post:
-            result = make_response({"queryStatus": "not found"}, 404)
-            print(result.status_code)
-            return result
+            response_result = make_response({"queryStatus": "not found"}, 404)
+            print(response_result.status_code)
+            return response_result
 
         post["image"] = get_image(post["image"], "post")
 
         if update_status.raw_result["n"] == 0:
-            return {"queryStatus": "views update fail"}, 500
+            response_result = make_response({"queryStatus": "views update fail"}, 500)
+            return response_result
 
         post["_id"] = str(post["_id"])
         post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-        return post, 200
+        response_result = make_response(post, 200)
+        return response_result
 
 
     @ownership_required
@@ -77,12 +80,16 @@ class PostControl(Resource):
         making_reference = MakeReference(board_type=board_type, user=user)
         activity_result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$pull")
 
-        if result.raw_result["n"] == 0:
-            return {"queryStatus": "post delete fail"}, 500
-        elif activity_result.raw_result["n"] == 0:
-            return {"queryStatus": "delete activity fail"}, 500
+        if result.raw_result["n"] == 0:  # 게시글 삭제 실패
+            response_result = make_response({"queryStatus": "post delete fail"}, 500)
+
+        elif activity_result.raw_result["n"] == 0:  # 활동 업데이트 실패
+            reponse_result = make_response({"queryStatus": "delete activity fail"}, 500)
+
+        else :
+            response_result = make_response({"queryStatus": "success"}, 200)
         
-        return {"queryStatus": "success"}, 200
+        return response_result
 
 
     @jwt_required()  # token이 있는지
@@ -90,12 +97,14 @@ class PostControl(Resource):
         """게시글을 생성합니다."""
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         if not user_id:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
             
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
         if not user:
-            return {"queryStatus": "wrong Token"}, 403
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board"
@@ -131,14 +140,14 @@ class PostControl(Resource):
 
         # 등록완료된 게시글 조회
         if result.raw_result["n"] == 0:
-            return {"queryStatus": "update activity fail"}, 500
+            response_result = make_response({"queryStatus": "update activity fail"}, 500)
         else:
             post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                     collection_name=board_type)
             post["_id"] = str(post["_id"])
             post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-
-            return post, 200
+            response_result = make_response(post, 200)
+        return response_result
 
     @ownership_required
     def put(self):  # 게시글 수정
@@ -177,7 +186,8 @@ class PostControl(Resource):
 
             if user in past_user_list:  # 해당 활동을 한 적이 있는 경우
                 if activity == "likes":  # 좋아요는 취소가 불가능함
-                    return {"queryStatus": "already like"}, 201
+                    response_result = make_response({"queryStatus": "already like"}, 201)
+                    return response_result
                 else:  # 좋아요 이외의 활동은 취소가 가능함
                     operator = "$pull"
                     result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
@@ -212,18 +222,20 @@ class PostControl(Resource):
 
             activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator)
             if activity_result.raw_result["n"] == 0:
-                return {"queryStatus": "user activity update fail"}, 500
+                response_result = make_response({"queryStatus": "user activity update fail"}, 500)
+                return response_result
 
         if result.raw_result["n"] == 0:  # 게시글 정보(string, likes, reports, bookmarks) 업데이트 실패한 경우
-            return {"queryStatus": "post update fail"}, 500
+            response_result = make_response({"queryStatus": "post update fail"}, 500)
+            return response_result
         else:
             modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                              collection_name=board_type)
 
             modified_post["_id"] = str(modified_post["_id"])
             modified_post["date"] = (modified_post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-
-            return modified_post
+            response_result = make_response(modified_post, 200)
+            return response_result
 
 
 
