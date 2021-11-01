@@ -165,9 +165,54 @@ extension UIView {
         self.layer.borderWidth = 0
         self.layer.cornerRadius = 0
     }
+    
+    func setCornerRadius(_ radius: Double) {
+        self.layer.cornerRadius = radius
+        self.clipsToBounds = radius > 0
+    }
 }
 
 extension UIColor {
+    static var w1: UIColor {
+        return UIColor(hex: "FFFFFF")
+    }
+    
+    static var w2: UIColor {
+        return UIColor(hex: "F1F3F4")
+    }
+    
+    static var w3: UIColor {
+        return UIColor(hex: "DEE1E6")
+    }
+    
+    static var w4: UIColor {
+        return UIColor(hex: "C4C4C4")
+    }
+    
+    static var w5: UIColor {
+        return UIColor(hex: "626365")
+    }
+    
+    static var w6: UIColor {
+        return UIColor(hex: "000000")
+    }
+    
+    static var g1: UIColor {
+        return UIColor(hex: "BAC9C2")
+    }
+    
+    static var g2: UIColor {
+        return UIColor(hex: "6D9570")
+    }
+    
+    static var g3: UIColor {
+        return UIColor(hex: "598672")
+    }
+    
+    static var g4: UIColor {
+        return UIColor(hex: "18573A")
+    }
+    
     static var mainColor: UIColor {
         return Constants.mainColor
     }
@@ -336,6 +381,11 @@ extension UIFont {
     func italic() -> UIFont {
         return withTraits(traits: .traitItalic)
     }
+    
+    static func defaultFont(size: Double, bold: Bool = false) -> UIFont {
+        let name = bold ? "Roboto-Bold" : "Roboto-Regular"
+        return UIFont(name: name, size: size)!
+    }
 }
 
 
@@ -410,3 +460,20 @@ extension UIViewController {
     }
 }
 
+extension Double {
+    var adjustedWidth: Double {
+        return (Double(UIScreen.main.bounds.size.height) * self) / 390.0
+    }
+    
+    var adjustedHeight: Double {
+        return (Double(UIScreen.main.bounds.size.height) * self) / 844.0
+    }
+}
+
+extension UITextField {
+    func addLeftPadding(value: Double) {
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: value, height: self.frame.height))
+        self.leftView = paddingView
+        self.leftViewMode = ViewMode.always
+    }
+}
