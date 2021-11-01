@@ -9,6 +9,7 @@ import RealmSwift
 import SkyFloatingLabelTextField
 import FontAwesome
 import RxSwift
+import UIKit
 
 let dateFormatter = DateFormatter() //2020-01-29
 
@@ -280,6 +281,8 @@ extension UIImage {
     static let ICON_REPORT_GRAY = UIImage.fontAwesomeIcon(name: .exclamationCircle, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
     static let ICON_WRITE_GRAY = UIImage.fontAwesomeIcon(name: .pen, style: .solid, textColor: .systemGray, size: Constants.BUTTON_ICON_SIZE)
     static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
+    
+    static let LEFTARROW = UIImage(named: "LeftArrow")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)

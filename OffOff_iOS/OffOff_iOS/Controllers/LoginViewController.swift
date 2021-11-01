@@ -64,7 +64,7 @@ class LoginViewController: UIViewController {
                     self.loginView.loginButton.backgroundColor = .mainColor
                 } else {
                     self.loginView.loginButton.isUserInteractionEnabled = false
-                    self.loginView.loginButton.backgroundColor = .lightGray
+                    self.loginView.loginButton.backgroundColor = .g1
                 }
             })
             .disposed(by: disposeBag)

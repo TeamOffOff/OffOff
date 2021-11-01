@@ -49,6 +49,7 @@ class LoginView: UIView {
         $0.setTitleColor(.w1, for: .normal)
         
         $0.isUserInteractionEnabled = false
+        $0.backgroundColor = .g1
         
         $0.setCornerRadius(15.0)
     }
