@@ -62,6 +62,12 @@ class ReplyListAdapter
 
     }
 
+    fun addReplyList(replyList: List<Reply>) {
+        this.replyList.clear()
+        this.replyList.addAll(replyList)
+        notifyDataSetChanged()
+    }
+
     fun updateItem(reply: Reply, position: Int) {
         replyList[position] = reply
         notifyItemChanged(position)

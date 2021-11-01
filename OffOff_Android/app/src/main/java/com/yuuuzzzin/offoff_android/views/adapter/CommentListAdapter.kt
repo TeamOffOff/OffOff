@@ -75,7 +75,8 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
 
             if (item.childrenReplies != null) {
                 replyListAdapter = ReplyListAdapter()
-                replyListAdapter.replyList = item.childrenReplies as ArrayList<Reply>
+                replyListAdapter.addReplyList(item.childrenReplies as ArrayList<Reply>)
+                //replyListAdapter.replyList = item.childrenReplies as ArrayList<Reply>
                 replyListAdapter.notifyDataSetChanged()
                 binding.rvReply.adapter = replyListAdapter
                 binding.rvReply.layoutManager = LinearLayoutManager(binding.root.context)

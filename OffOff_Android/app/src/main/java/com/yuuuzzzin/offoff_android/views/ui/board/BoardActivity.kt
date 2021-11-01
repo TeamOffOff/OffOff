@@ -174,7 +174,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             Log.d("tag_like", "requestCode")
             if (resultCode == RESULT_OK) {
                 Log.d("tag_like", "저아요하고 뒤로가기함")
-                //viewModel.updatePost(data!!.getSerializableExtra("postList") as Array<Post>)
                 boardAdapter.updateItem(
                     data!!.getSerializableExtra("post") as Post,
                     clickedPosition!!
