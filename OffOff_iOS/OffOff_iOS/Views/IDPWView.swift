@@ -71,9 +71,10 @@ class IDPWView: UIView {
     
     var nextButton = UIButton().then {
         $0.backgroundColor = .g1
-        $0.isUserInteractionEnabled = false
+        $0.isUserInteractionEnabled = true
         $0.setTitle("다음", for: .normal)
         $0.setTitleColor(.w1, for: .normal)
+        $0.titleLabel?.font = .defaultFont(size: 16.0)
         
         $0.setCornerRadius(15.0)
     }

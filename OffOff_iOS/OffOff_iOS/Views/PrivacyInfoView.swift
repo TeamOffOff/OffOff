@@ -9,61 +9,77 @@ import UIKit
 import SnapKit
 
 class PrivacyInfoView: UIView {
-    var nameTextField = TextField().then {
+    var nameTextField = UITextField().then {
         $0.placeholder = "이름"
-        $0.font = UIFont.preferredFont(forTextStyle: .callout)
-        $0.adjustsFontForContentSizeCategory = true
-        $0.tintColor = .mainColor
-        $0.backgroundColor = .white
+        $0.font = .defaultFont(size: 14.0)
+        $0.backgroundColor = .w2
+        
+        $0.textContentType = .username
         $0.autocapitalizationType = .none
-        $0.clearButtonMode = .whileEditing
         $0.autocorrectionType = .no
         
-        $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_USER_GRAY, errorColor: .red)
+        $0.setCornerRadius(20.0)
+        $0.addLeftPadding(value: 23.0)
         $0.tag = 0
     }
     
-    var emailTextField = TextField().then {
+    var emailTextField = UITextField().then {
         $0.placeholder = "이메일 (ex: abcd@abcd.com)"
-        $0.font = UIFont.preferredFont(forTextStyle: .callout)
-        $0.adjustsFontForContentSizeCategory = true
-        $0.tintColor = .mainColor
-        $0.backgroundColor = .white
-        $0.autocapitalizationType = .none
-        $0.clearButtonMode = .whileEditing
-        $0.autocorrectionType = .no
-        $0.textContentType = .emailAddress
+        $0.font = .defaultFont(size: 14.0)
+        $0.backgroundColor = .w2
         
-        $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_AT_GRAY, errorColor: .red)
+        $0.textContentType = .emailAddress
+        $0.autocapitalizationType = .none
+        $0.autocorrectionType = .no
+        
+        $0.setCornerRadius(20.0)
+        $0.addLeftPadding(value: 23.0)
         $0.tag = 1
     }
+    var emailConfirmLabel = UILabel().then {
+        $0.font = .defaultFont(size: 9.0)
+        $0.textColor = .w5
+        $0.text = ""
+    }
     
-    var birthdayTextField = TextField().then {
+    var birthdayTextField = UITextField().then {
         $0.placeholder = "생년월일을 입력하세요"
-        $0.setupTextField(selectedColor: .gray, normalColor: .gray, iconImage: .ICON_BIRTHDAY_GRAY, errorColor: .gray)
+        $0.font = .defaultFont(size: 14.0)
+        $0.backgroundColor = .w2
+        
+        $0.autocapitalizationType = .none
+        $0.autocorrectionType = .no
+        
+        $0.setCornerRadius(20.0)
+        $0.addLeftPadding(value: 23.0)
     }
     
     var nextButton = UIButton().then {
-        $0.backgroundColor = .lightGray
+        $0.backgroundColor = .g1
         $0.isUserInteractionEnabled = false
         $0.setTitle("다음", for: .normal)
-        $0.setTitleColor(.white, for: .normal)
+        $0.setTitleColor(.w1, for: .normal)
+        $0.titleLabel?.font = .defaultFont(size: 16.0)
+        
+        $0.setCornerRadius(15.0)
     }
     
-    var textFieldStack = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 18
-        $0.distribution = .fill
+    var backButton = UIButton().then {
+        $0.setImage(.LEFTARROW, for: .normal)
+        $0.setTitle(nil, for: .normal)
+        $0.tintColor = .g4
+        $0.imageView?.contentMode = .scaleAspectFit
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
-        self.addSubview(textFieldStack)
+        self.addSubview(nameTextField)
+        self.addSubview(emailTextField)
+        self.addSubview(emailConfirmLabel)
+        self.addSubview(birthdayTextField)
         self.addSubview(nextButton)
-        textFieldStack.addArrangedSubview(nameTextField)
-        textFieldStack.addArrangedSubview(emailTextField)
-        textFieldStack.addArrangedSubview(birthdayTextField)
+        self.addSubview(backButton)
     }
     
     required init?(coder: NSCoder) {
@@ -71,17 +87,40 @@ class PrivacyInfoView: UIView {
     }
     
     func makeView() {
-        nextButton.snp.makeConstraints {
-            $0.bottom.equalTo(self.snp.centerY)
-            $0.width.equalToSuperview().dividedBy(1.25)
+        nameTextField.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(40.0)
+            $0.top.equalToSuperview().inset(174.adjustedHeight)
             $0.centerX.equalToSuperview()
-            $0.height.equalTo(UIScreen.main.bounds.size.height / 10.0)
+        }
+        emailTextField.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(40.0)
+            $0.top.equalTo(nameTextField.snp.bottom).offset(32.0)
+            $0.centerX.equalToSuperview()
+        }
+        emailConfirmLabel.snp.makeConstraints {
+            $0.top.equalTo(emailTextField.snp.bottom).offset(2.0)
+            $0.left.equalTo(emailTextField).offset(12.0)
+        }
+        birthdayTextField.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(40.0)
+            $0.top.equalTo(emailTextField.snp.bottom).offset(32.0)
+            $0.centerX.equalToSuperview()
         }
         
-        textFieldStack.snp.makeConstraints {
-            $0.width.equalToSuperview().dividedBy(1.25)
-            $0.bottom.equalTo(nextButton.snp.top).offset(-30)
+        nextButton.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(30.0)
+            $0.top.equalTo(self.birthdayTextField.snp.bottom).offset(38.adjustedHeight)
             $0.centerX.equalToSuperview()
+        }
+        backButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(64.0)
+            $0.left.equalToSuperview().inset(47.0)
+            $0.width.equalTo(25.0)
+            $0.height.equalTo(22.0)
         }
     }
 }

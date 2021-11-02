@@ -57,41 +57,31 @@ class PrivacyInfoViewController: UIViewController {
         // bind results
         viewModel.isNameConfirmed
             .drive(onNext: {
-                if $0 {
-                    self.privacyView.nameTextField.setTextFieldVerified()
-                } else {
-                    self.privacyView.nameTextField.setTextFieldFail(errorMessage: Constants.NAME_ERROR_MESSAGE)
-                    SharedSignUpModel.model.information.name = ""
-                }
+                print($0)
             })
             .disposed(by: disposeBag)
-        
+
         viewModel.isEmailConfirmed
             .drive(onNext: {
                 if $0 {
-                    self.privacyView.emailTextField.setTextFieldVerified()
+                    self.privacyView.emailConfirmLabel.text = "사용가능한 이메일 주소입니다."
                 } else {
-                    self.privacyView.emailTextField.setTextFieldFail(errorMessage: Constants.EMAIL_ERROR_MESSAGE)
+                    self.privacyView.emailConfirmLabel.text = "이미 사용중인 이메일 주소입니다."
                     SharedSignUpModel.model.information.email = ""
                 }
             })
             .disposed(by: disposeBag)
-        
+
         viewModel.isBirthdayConfirmed
             .drive(onNext: {
-                if $0 {
-                    self.privacyView.birthdayTextField.setTextFieldVerified()
-                } else {
-                    self.privacyView.birthdayTextField.setTextFieldFail(errorMessage: Constants.BIRTH_ERROR_MESSAGE)
-                    SharedSignUpModel.model.information.birth = ""
-                }
+                print($0)
             })
             .disposed(by: disposeBag)
         
         viewModel.isNextEnabled
             .drive(onNext: {
                 self.privacyView.nextButton.isUserInteractionEnabled = $0
-                self.privacyView.nextButton.backgroundColor = $0 ? .mainColor : .lightGray
+                self.privacyView.nextButton.backgroundColor = $0 ? .g4 : .g1
             })
             .disposed(by: disposeBag)
         
@@ -155,7 +145,7 @@ extension PrivacyInfoViewController: UITextFieldDelegate {
 extension PrivacyInfoViewController {
     func setDatePicker(textField: UITextField) {
         let screenWidth = Constants.SCREEN_SIZE.width
-        birthdayPicker = UIDatePicker(frame: CGRect(x: 0, y: 0, width: screenWidth, height: Constants.SCREEN_SIZE.height / 3.3))
+        birthdayPicker = UIDatePicker(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 300.0))
         birthdayPicker!.datePickerMode = .date
         if #available(iOS 13.4, *) {
             birthdayPicker!.preferredDatePickerStyle = .wheels
@@ -166,21 +156,13 @@ extension PrivacyInfoViewController {
         birthdayPicker!.setDate("2002-01-01".toDate()!, animated: false)
         textField.inputView = birthdayPicker
         
-        let toolBar = UIToolbar(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: 44.0))
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: nil, action: #selector(onCancelButton))
-        let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(onDoneButton))
-        toolBar.setItems([cancelButton, flexibleSpace, doneButton], animated: false)
-        textField.inputAccessoryView = toolBar
-    }
-    
-    @objc func onCancelButton() {
-        privacyView.birthdayTextField.resignFirstResponder()
-    }
-    
-    @objc func onDoneButton() {
-        let birthdayString = birthdayPicker?.date.toString()
-        privacyView.birthdayTextField.text = birthdayString
-        privacyView.birthdayTextField.resignFirstResponder()
+        birthdayPicker!.topRoundCorner(radius: 40.0)
+        
+        birthdayPicker!.rx.date
+            .map { $0.toString() }
+            .bind {
+                self.privacyView.birthdayTextField.text = $0
+            }
+            .disposed(by: disposeBag)
     }
 }
