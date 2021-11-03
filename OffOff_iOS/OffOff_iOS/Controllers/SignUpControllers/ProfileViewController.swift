@@ -40,16 +40,16 @@ class ProfileViewController: UIViewController {
         // bind results
         viewModel.isNickNameConfirmed
             .drive(onNext: {
-                self.profileView.nickNameTextField.selectedLineColor
-                    = $0 ? .mainColor : .red
-                self.profileView.nickNameTextField.selectedTitleColor
-                    = $0 ? .mainColor : .red
-                self.profileView.nickNameTextField.title
-                    = $0 ?
-                    "\(self.profileView.nickNameTextField.text!)은(는) 사용가능한 닉네임입니다."
-                    : "\(self.profileView.nickNameTextField.text!)은(는) 사용할 수 없습니다."
+//                self.profileView.nickNameTextField.selectedLineColor
+//                    = $0 ? .mainColor : .red
+//                self.profileView.nickNameTextField.selectedTitleColor
+//                    = $0 ? .mainColor : .red
+//                self.profileView.nickNameTextField.title
+//                    = $0 ?
+//                    "\(self.profileView.nickNameTextField.text!)은(는) 사용가능한 닉네임입니다."
+//                    : "\(self.profileView.nickNameTextField.text!)은(는) 사용할 수 없습니다."
                 self.profileView.signUpButton.isUserInteractionEnabled = $0
-                self.profileView.signUpButton.backgroundColor = $0 ? .mainColor : .lightGray
+                self.profileView.signUpButton.backgroundColor = $0 ? .g4 : .g1
             })
             .disposed(by: disposeBag)
         
@@ -65,6 +65,12 @@ class ProfileViewController: UIViewController {
                     self.present(alert, animated: true, completion: nil)
                 }
             })
+            .disposed(by: disposeBag)
+        
+        self.profileView.backButton.rx.tap
+            .bind {
+                self.navigationController?.popViewController(animated: true)
+            }
             .disposed(by: disposeBag)
     }
 }

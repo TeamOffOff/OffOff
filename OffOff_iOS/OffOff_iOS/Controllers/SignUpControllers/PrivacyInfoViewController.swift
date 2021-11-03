@@ -93,6 +93,11 @@ class PrivacyInfoViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     
+        self.privacyView.backButton.rx.tap
+            .bind {
+                self.navigationController?.popViewController(animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -296,6 +296,7 @@ extension UIImage {
     static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
     
     static let LEFTARROW = UIImage(named: "LeftArrow")!
+    static let CAMERA = UIImage(named: "CameraImage")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)

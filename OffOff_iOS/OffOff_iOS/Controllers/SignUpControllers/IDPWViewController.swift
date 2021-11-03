@@ -105,6 +105,12 @@ class IDPWViewController: UIViewController {
                 }
             })
             .disposed(by: disposeBag)
+        
+        self.idpwView.backButton.rx.tap
+            .bind {
+                self.dismiss(animated: true, completion: nil)
+            }
+            .disposed(by: disposeBag)
         // }
         
     }
