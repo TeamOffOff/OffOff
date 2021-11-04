@@ -1,11 +1,9 @@
 package com.yuuuzzzin.offoff_android.views.ui.member
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep1Binding
@@ -126,13 +124,13 @@ class SignupStep1Fragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.appbar.apply {
-            setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-            setNavigationIconTint(ContextCompat.getColor(mContext, R.color.white))
-            setNavigationOnClickListener {
-                val intent = Intent(mContext, LoginActivity::class.java)
-                startActivity(intent)
-            }
-        }
+//        binding.appbar.apply {
+//            setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+//            setNavigationIconTint(ContextCompat.getColor(mContext, R.color.white))
+//            setNavigationOnClickListener {
+//                val intent = Intent(mContext, LoginActivity::class.java)
+//                startActivity(intent)
+//            }
+//        }
     }
 }

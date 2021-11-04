@@ -14,6 +14,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:datePickerStyle">@style/MyDatePicker</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
+
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
@@ -55,12 +58,27 @@
         <item name="cornerSize">50%</item>
     </style>
 
-<!--    <style name="CustomBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">-->
-<!--        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>-->
-<!--    </style>-->
+    <!--    <style name="CustomBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">-->
+    <!--        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>-->
+    <!--    </style>-->
 
-<!--    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">-->
-<!--        <item name="android:background">@android:color/transparent</item>-->
-<!--    </style>-->
+    <!--    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">-->
+    <!--        <item name="android:background">@android:color/transparent</item>-->
+    <!--    </style>-->
+
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <style name="RobotoButtonStyle" parent="android:Widget.Button">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="button_signup" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/layout_edit_text</item>
+        <item name="android:paddingLeft">30dp</item>
+        <item name="android:paddingRight">30dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
 
 </resources>
