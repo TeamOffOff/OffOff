@@ -21,18 +21,6 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
     protected val binding get() = mBinding!!
     protected val signupViewModel: SignupViewModel by activityViewModels()
     lateinit var mContext: Context
-//    lateinit var idIcon: FontDrawable
-//    lateinit var idIconFocus: FontDrawable
-//    lateinit var pwIcon: FontDrawable
-//    lateinit var pwIconFocus: FontDrawable
-//    lateinit var nameIcon: FontDrawable
-//    lateinit var nameIconFocus: FontDrawable
-//    lateinit var emailIcon: FontDrawable
-//    lateinit var emailIconFocus: FontDrawable
-//    lateinit var birthIcon: FontDrawable
-//    lateinit var birthIconFocus: FontDrawable
-//    lateinit var verifiedIcon: FontDrawable
-//    lateinit var errorIcon: FontDrawable
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,8 +38,8 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
     ): View? {
         mBinding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        //initIcon()
         initView()
+        initViewModel()
 
         return binding.root
     }
@@ -62,6 +50,7 @@ abstract class BaseSignupFragment<T : ViewDataBinding>(
     }
 
     open fun initView() {}
+    open fun initViewModel() {}
 
 //    fun initIcon() {
 //        // id 아이콘
