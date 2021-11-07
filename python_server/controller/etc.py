@@ -7,31 +7,31 @@ from controller.filter import check_jwt
 mongodb = mongo.MongoHelper()
 
 
-# 순서 고정 함수
-def fix_index(target, key):
-    real = {}
-    for i in key:
-        real[i] = target[i]
+# # 순서 고정 함수
+# def fix_index(target, key):
+#     real = {}
+#     for i in key:
+#         real[i] = target[i]
 
-    return real
+#     return real
 
-"""
-fix_index : ver2
-def fix_index(target, *args):
-    real = {}
-    if not args:
-        args = target.keys()
-    print(args)
-    for i in args:
-        if type(target[i]) is dict:
-            temp = {}
-            for j in target[i]:
-                temp[j] = target[i][j]
-            real[i] = temp
-        else:
-            real[i] = target[i]
-    return real
-"""
+# """
+# fix_index : ver2
+# def fix_index(target, *args):
+#     real = {}
+#     if not args:
+#         args = target.keys()
+#     print(args)
+#     for i in args:
+#         if type(target[i]) is dict:
+#             temp = {}
+#             for j in target[i]:
+#                 temp[j] = target[i][j]
+#             real[i] = temp
+#         else:
+#             real[i] = target[i]
+#     return real
+# """
 
 
 # 변수 추출

@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 
 from controller.image import save_image, get_image
 from controller.filter import check_duplicate, check_jwt
-from controller.etc import fix_index
 
 import mongo as mongo
 
@@ -147,27 +146,21 @@ class AuthRegister(Resource):
         try:
             print("비밀번호 암호화 후 : ", user_info)
 
-            # 순서 고정
-            information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
-            sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
-            activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
+            # 순서 고정 : dict 형식은 순서개념이 없다
+            # information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
+            # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
+            # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
+            if user_info["subInformation"]["profileImage"]:
+                user_info["subInformation"]["profileImage"] = save_image(user_info["subInformaiton"]["profileImage"], "user")
+            # if sub_information["profileImage"]:
+                
+            user_info["calendar"] = ""
+            user_info["message"] = {
+                "send": [],
+                "receive":[]
+            }
 
-            if sub_information["profileImage"]:
-                sub_information["profileImage"] = save_image(sub_information["profileImage"], "user")
-
-            real_user_info = {"_id": user_info["_id"],
-                              "password": user_info["password"],
-                              "information": information,
-                              "subInformation": sub_information,
-                              "activity": activity,
-                              "calendar": "",
-                              "message": {
-                                  "send": [],
-                                  "receive": []
-                                }
-                              }
-
-            mongodb.insert_one(data=real_user_info, collection_name="user")  # 데이터베이스에 저장
+            mongodb.insert_one(data=user_info, collection_name="user")  # 데이터베이스에 저장
 
             response_result = make_response({"queryStatus": 'success'}, 200)
 
@@ -329,22 +322,16 @@ class AuthLogin(Resource):
             user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
             # 순서 고정
-            information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
-            sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
-            activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
+            # information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
+            # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
+            # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
-            sub_information["profileImage"] = get_image(sub_information["profileImage"], "user")
-
-            real_user_info = {"_id": user_info["_id"],
-                                "password": user_info["password"],
-                                "information": information,
-                                "subInformation": sub_information,
-                                "activity": activity}
+            user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user")
 
             response_result = make_response({
                        "accessToken": access_token,
                        "refreshToken": refresh_token,
-                       "user": real_user_info
+                       "user": user_info
                    }, 200)
 
         return response_result
@@ -363,20 +350,20 @@ class AuthLogin(Resource):
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
         # 순서 고정
-        information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
-        sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
-        activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
+        # information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
+        # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
+        # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
-        sub_information["profileImage"] = get_image(sub_information["profileImage"], "user")
+        user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user")
 
-        real_user_info = {"_id": user_info["_id"],
-                          "password": user_info["password"],
-                          "information": information,
-                          "subInformation": sub_information,
-                          "activity": activity,
-                          "calendar": user_info["calendar"]}
+        # real_user_info = {"_id": user_info["_id"],
+        #                   "password": user_info["password"],
+        #                   "information": information,
+        #                   "subInformation": sub_information,
+        #                   "activity": activity,
+        #                   "calendar": user_info["calendar"]}
 
-        response_result = make_response({"user": real_user_info}, 200)
+        response_result = make_response({"user": user_info}, 200)
         
         return response_result
 
@@ -390,9 +377,18 @@ class AuthLogin(Resource):
         if not user_id:
             response_result = make_response({"queryStatus": "wrong Token"}, 403)
             return response_result
+        
 
         request_info = request.get_json()
+
+        print(user_id, request_info["_id"])
+
+        if (user_id != request_info["_id"]):  # 자기 아이디가 아닌 경우
+            response_result = make_response({"queryStatus": "Wrong User"}, 403)
+            return response_result
+
         del (request_info["activity"])
+        del (request_info["_id"]) # 혹시나 _id가 다르면 에러남 (_id는 변화시킬 수 있는 값이 아니므로)
 
         result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": request_info})
 
