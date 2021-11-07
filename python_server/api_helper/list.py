@@ -113,7 +113,7 @@ class UserListControl(Resource):
             for i in result:
                 i["createdAt"] = str(i["createdAt"])
         
-        response_result = make_response(result, 200)
+        response_result = make_response({"userList":result}, 200)
 
         return response_result
 
@@ -175,7 +175,7 @@ class PostListControl(Resource):
 
                 print("인기게시판에 들어간 각 게시글의 정보:", hot_post_list)
 
-                response_reuslt = make_response({
+                response_result = make_response({
                     "lastPostId": last_post_id,
                     "postList": hot_post_list
                 }, 200)
@@ -220,22 +220,38 @@ class TotalSearchControl(Resource):
         standard_id = request.args.get("standardId", default="")
         # standard_time = datetime.now()
 
+
         board_list = ["free", "job"]
         
+        print(standard_id)
         total_list = []
         for board in board_list:
             board_type = board + "_board"
-            part_list = list(mongodb.find(collection_name=board_type,query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}).sort([("_id", -1)]).limit(volume))
+            print(board_type)
+            query = {
+                "$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]
+                }
+            
+            if standard_id:
+                standard_id = ObjectId(standard_id)  ## 이거 안 하면 안 나옴..ㅠㅠㅠ
+                query["_id"] = {"$lt": standard_id}
+            part_list = list(mongodb.find(collection_name=board_type,query=query).sort([("_id", -1)]).limit(volume))
+            print("{} part_list: {}". format(board_type, part_list))
             total_list.extend(part_list)
+            print(total_list)
 
         total_list.sort(key=lambda x: x["_id"], reverse=True)  #_id의 처음 4부분은 시간 정보를 담고 있다.
-        
-        if total_list:  # 불러올 게시글이 남아있는 경우
+
+        # last_post_id = None # UnboundLocalError: local variable 'last_post_id' referenced before assignment
+        if total_list:  # 불러올 게시글이 있는 경우
             for post in total_list:
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
 
             last_post_id = total_list[-1]["_id"]
+        else:
+            total_list = None
+            last_post_id = None
 
         response_result = make_response({
             "lastPostId": last_post_id,
