@@ -184,7 +184,7 @@ class AuthRegister(Resource):
 
         new_password = (request.get_json())["password"]
         new_encrypted_password = bcrypt.hashpw(str(new_password).encode("utf-8"), bcrypt.gensalt())
-        final_new_password = new_encrypted_password.decode('utf-8')  # db 저장시에는 디코드
+        final_new_password = new_encrypted_password.decode('utf-8')  # db 저장시에는 디코드 --> 이렇게 해야 salt 에러 안 뜸
 
         result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"password": final_new_password}})
 
@@ -389,6 +389,7 @@ class AuthLogin(Resource):
 
         del (request_info["activity"])
         del (request_info["_id"]) # 혹시나 _id가 다르면 에러남 (_id는 변화시킬 수 있는 값이 아니므로)
+        del (request_info["password"])  # 이거 안 하고 회원정보 수정하면 비밀번호 쪽이 이상해짐
 
         result = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": request_info})
 
