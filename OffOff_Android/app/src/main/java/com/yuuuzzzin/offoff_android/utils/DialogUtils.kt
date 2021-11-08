@@ -32,6 +32,14 @@ object DialogUtils {
         }
     }
 
+    fun showCustomOneTextDialog(context: Context, message: String, buttonText: String) {
+        AlertDialog.Builder(context).apply {
+            setMessage(message)
+            setNegativeButton(buttonText, null)
+            show()
+        }
+    }
+
     fun showAutoCloseDialog(context: Context, message: String) {
         AlertDialog.Builder(context).create().apply {
             setMessage(message)

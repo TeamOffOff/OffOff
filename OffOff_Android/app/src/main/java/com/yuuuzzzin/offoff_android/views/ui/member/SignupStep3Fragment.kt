@@ -1,9 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.ui.member
 
 import android.app.AlertDialog
-import android.os.Bundle
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep3Binding
@@ -17,46 +14,37 @@ class SignupStep3Fragment :
     BaseSignupFragment<FragmentSignupStep3Binding>(R.layout.fragment_signup_step3) {
 
     override fun initView() {
-        binding.viewModel = signupViewModel
 
-        // 기본 에러 아이콘 제거
-        binding.tfNickname.setErrorIconDrawable(0)
+        // step3 -> step2 이동
+        binding.btBack.setOnClickListener {
+            findNavController().navigate(R.id.action_signupStep3Fragment_to_signupStep2Fragment)
+        }
 
-        binding.btProfile.setOnClickListener {
+        binding.btCamera.setOnClickListener {
             showProfileDialog()
         }
+    }
 
-        binding.etNickname.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
-            if (hasFocus) {
-                if (!binding.tfNickname.isError()) {
-                    binding.tfNickname.setTextFieldFocus()
-                    binding.tfNickname.setStartIconDrawable(0)
-                }
-            }
-        }
+    override fun initViewModel() {
+        binding.viewModel = signupViewModel
 
         signupViewModel.nickname.observe(viewLifecycleOwner, {
-            if (!it.isNullOrEmpty()) {
+            if (!it.isNullOrBlank()) {
                 signupViewModel.validateNickname()
             } else {
-                binding.tfNickname.setTextFieldDefault()
-                binding.tfNickname.helperText = null
+                binding.tvNickname.text = null
             }
         })
 
         signupViewModel.isNicknameVerified.observe(viewLifecycleOwner, {
-            binding.tfNickname.helperText = it
-            binding.tfNickname.setTextFieldVerified()
-            binding.tfNickname.setStartIconDrawable(0)
+            binding.tvNickname.text = it
         })
 
         signupViewModel.isNicknameError.observe(viewLifecycleOwner, {
             if (it.isNullOrEmpty()) {
-                binding.tfNickname.setTextFieldDefault()
-                binding.tfNickname.helperText = null
+                binding.tvNickname.text = null
             } else {
-                binding.tfNickname.setTextFieldError(it)
-                binding.tfNickname.setStartIconDrawable(0)
+                binding.tvNickname.text = it
             }
         })
 
@@ -64,17 +52,7 @@ class SignupStep3Fragment :
         binding.btSignup.setOnClickListener {
             signupViewModel.signup()
             requireActivity().finish()
-            requireContext().toast("가입 완료")
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.appbar.apply {
-            setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-            setNavigationIconTint(ContextCompat.getColor(mContext, R.color.white))
-            setNavigationOnClickListener {
-                findNavController().navigate(R.id.action_signupStep3Fragment_to_signupStep2Fragment)
-            }
+            requireContext().toast("가입이 완료되었습니다.")
         }
     }
 
