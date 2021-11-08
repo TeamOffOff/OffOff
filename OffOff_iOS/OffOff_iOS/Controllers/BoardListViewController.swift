@@ -17,6 +17,7 @@ class BoardListViewController: UIViewController {
     override func loadView() {
         self.view = customView
         self.customView.boardCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
+        self.customView.nicknameLabel.text = "\(Constants.loginUser!.subInformation.nickname) 님"
     }
     
     override func viewDidLoad() {
