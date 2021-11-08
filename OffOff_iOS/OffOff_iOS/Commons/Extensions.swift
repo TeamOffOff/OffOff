@@ -184,6 +184,12 @@ extension UIView {
         self.layer.cornerRadius = radius
         self.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner] // Top right corner, Top left corner respectively
     }
+    
+    func bottomRoundCorner(radius: CGFloat) {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = radius
+        self.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+    }
 }
 
 extension UIColor {
@@ -262,6 +268,15 @@ extension UIColor {
 }
 
 extension UIImage {
+    func resize(to size: CGSize) -> UIImage {
+        let render = UIGraphicsImageRenderer(size: size)
+        let renderImage = render.image { context in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
+        
+        return renderImage
+    }
+    
     static var DEFAULT_PROFILE = UIImage(named: "default profile")
     
     static var personFill: UIImage {
@@ -297,6 +312,9 @@ extension UIImage {
     
     static let LEFTARROW = UIImage(named: "LeftArrow")!
     static let CAMERA = UIImage(named: "CameraImage")!
+    static let MOREICON = UIImage(named: "MoreIcon")!
+    static let SEARCHIMAGE = UIImage(named: "SearchImage")!
+    static let HOMEICON = UIImage(named: "HomeIcon")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)
@@ -479,7 +497,7 @@ extension UIViewController {
 
 extension Double {
     var adjustedWidth: Double {
-        return (Double(UIScreen.main.bounds.size.height) * self) / 390.0
+        return (Double(UIScreen.main.bounds.size.width) * self) / 390.0
     }
     
     var adjustedHeight: Double {
@@ -492,5 +510,23 @@ extension UITextField {
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: value, height: self.frame.height))
         self.leftView = paddingView
         self.leftViewMode = ViewMode.always
+    }
+    
+    func addLeftImage(image: UIImage, size: Double) {
+        let paddingView = UIImageView(frame: CGRect(x: 0, y: 0, width: size, height: self.frame.height))
+        paddingView.image = image
+        self.leftView = paddingView
+        self.leftViewMode = ViewMode.always
+    }
+    
+    func leftImage(_ image: UIImage?, imageWidth: CGFloat, padding: CGFloat) {
+        let imageView = UIImageView(image: image)
+        imageView.frame = CGRect(x: padding, y: 0, width: imageWidth, height: frame.height)
+        imageView.contentMode = .center
+        
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: imageWidth + 2 * padding, height: frame.height))
+        containerView.addSubview(imageView)
+        leftView = containerView
+        leftViewMode = .always
     }
 }

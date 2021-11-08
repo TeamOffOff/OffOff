@@ -21,7 +21,7 @@ class TabBarController: UITabBarController {
         let navController = UINavigationController(navigationBarClass: CustomNavigationBar.self, toolbarClass: nil)
         navController.viewControllers = [rootViewController]
         navController.tabBarItem.title = title
-        navController.tabBarItem.image = image
+        navController.tabBarItem.image = image.resize(to: CGSize(width: 26.adjustedWidth, height: 26.adjustedWidth))
         
         navController.navigationBar.barTintColor = .mainColor
         navController.navigationBar.prefersLargeTitles = false
@@ -33,11 +33,17 @@ class TabBarController: UITabBarController {
         return navController
     }
     
+    fileprivate func createViewController(for vc: UIViewController, title: String?, image: UIImage) -> UIViewController {
+        vc.tabBarItem.title = title
+        vc.tabBarItem.image = image.resize(to: CGSize(width: 26.adjustedWidth, height: 26.adjustedWidth))
+        
+        return vc
+    }
+    
     func setupVCs() {
         viewControllers = [
             // TODO: 첫 번째 tab의 navigation bar가 작아지는 문제
-            createNavController(for: BoardListViewController(), title: NSLocalizedString("커뮤니티", comment: ""), image: UIImage(systemName: "house")!),
-//            createNavController(for: PostListViewController(), title: NSLocalizedString("Community", comment: ""), image: UIImage(systemName: "text.justify")!),
+            createViewController(for: BoardListViewController(), title: nil, image: .HOMEICON),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
             createNavController(for: ScheduleViewController(), title: NSLocalizedString("스케쥴", comment: ""), image: UIImage(systemName: "person")!),
             createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),

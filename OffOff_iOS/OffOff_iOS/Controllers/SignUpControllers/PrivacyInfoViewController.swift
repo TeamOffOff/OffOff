@@ -164,6 +164,7 @@ extension PrivacyInfoViewController {
         birthdayPicker!.topRoundCorner(radius: 40.0)
         
         birthdayPicker!.rx.date
+            .skip(1)
             .map { $0.toString() }
             .bind {
                 self.privacyView.birthdayTextField.text = $0
