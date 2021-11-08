@@ -82,7 +82,7 @@ constructor(
     }
 
     companion object {
-        const val NOT_EXIST = 403
         const val WRONG_INFO = 401
+        const val NOT_EXIST = 403
     }
 }
