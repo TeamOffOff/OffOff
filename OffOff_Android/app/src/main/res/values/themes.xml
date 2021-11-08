@@ -81,4 +81,16 @@
         <item name="android:paddingBottom">5dp</item>
     </style>
 
+    <style name="FindInfoTabTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColorPrimary">@color/black</item>       <!-- 탭바 선택된 텍스트 -->
+        <item name="android:textColorSecondary">@color/white3</item>           <!-- 탭바 텍스트 -->
+        <item name="colorAccent">@color/green</item>            <!-- 하단 움직이는 바 색-->
+    </style>
+
+    <style name="FindInfoTabText" parent="TextAppearance.Design.Tab">
+        //텍스트사이즈
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
 </resources>

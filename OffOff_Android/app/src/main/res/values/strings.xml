@@ -39,7 +39,24 @@
     <string name="signup_step2">개인 정보</string>
     <string name="signup_step3">프로필</string>
     <string name="edit">편집</string>
-    <!--    <string name=""></string>-->
+
+    <!-- 아이디/비밀번호 찾기 -->
+    <string name="find_id">아이디 찾기</string>
+    <string name="find_pw">비밀번호 찾기</string>
+    <string name="member_email">가입된 이메일</string>
+    <string name="member_id">가입된 아이디</string>
+    <string name="advice_find_id">·	가입된 아이디가 있을 경우, 입력하신 이메일로 아이디를 안내해 드립니다.\n· 만약 이메일이 오지 않는다면, 스팸 편지함으로 이동하지 않았는지 확인해주세요.\n· 이메일 서비스 제공자 사정에 의해 즉시 도착하지 않을 수 있으니, 최대 30분 정도 기다리신후 다시 시도해주세요.</string>
+    <string name="advice_find_pw">·	가입된 아이디가 있을 경우, 입력하신 이메일로 아이디를 안내해 드립니다.
+        · 만약 이메일이 오지 않는다면, 스팸 편지함으로 이동하지 않았는지 확인해주세요.
+        · 이메일 서비스 제공자 사정에 의해 즉시 도착하지 않을 수 있으니, 최대 30분 정도 기다리신후 다시 시도해주세요.</string>
+
+    <!-- 비밀번호 변경 -->
+    <string name="advice_change_pw">8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.</string>
+    <string name="change_pw">비밀번호 변경</string>
+    <string name="new_pw">새 비밀번호</string>
+    <string name="check_new_pw">새 비밀번호 확인</string>
+
+
     <!--    <string name=""></string>-->
 
     <!-- 요일 -->

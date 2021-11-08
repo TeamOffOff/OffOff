@@ -30,21 +30,11 @@ abstract class BaseFragment<VB : ViewDataBinding>(
     ): View? {
         mBinding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        //initView()
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onDestroyView() {
         mBinding = null
         super.onDestroyView()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 }
