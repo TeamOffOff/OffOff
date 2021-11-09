@@ -24,19 +24,24 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     var replies = BehaviorSubject<[Reply]?>(value: nil)
     
     var profileImageView = UIImageView().then {
-        $0.backgroundColor = .lightGray
+        $0.image = .DefaultReplyProfileImage
+        $0.contentMode = .scaleAspectFit
     }
     
     var nicknameLabel = UILabel().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = .clear
+        $0.font = .defaultFont(size: 12, bold: true)
     }
     
     var dateLabel = UILabel().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = .clear
+        $0.textColor = .w5
+        $0.font = .defaultFont(size: 8)
     }
     
     var contentTextView = UITextView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = .clear
+        $0.font = .defaultFont(size: 10)
         $0.isScrollEnabled = false
         $0.sizeToFit()
         $0.isUserInteractionEnabled = false
@@ -58,14 +63,27 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         $0.setTitleColor(.black, for: .normal)
     }
     
+    var subImage = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+        $0.image = .SubReplyArrow
+    }
+    
+    lazy var containerView = UIView().then {
+        $0.backgroundColor = .w2
+        $0.setCornerRadius(20.adjustedHeight)
+        
+        $0.addSubview(profileImageView)
+        $0.addSubview(nicknameLabel)
+        $0.addSubview(dateLabel)
+        $0.addSubview(contentTextView)
+        $0.addSubview(likeButton)
+        $0.addSubview(menubutton)
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.addSubview(profileImageView)
-        self.contentView.addSubview(nicknameLabel)
-        self.contentView.addSubview(dateLabel)
-        self.contentView.addSubview(contentTextView)
-        self.contentView.addSubview(likeButton)
-        self.contentView.addSubview(menubutton)
+        self.contentView.addSubview(subImage)
+        self.contentView.addSubview(containerView)
         bindData()
         makeView()
     }
@@ -85,28 +103,39 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     }
 
     private func makeView() {
+        subImage.snp.makeConstraints {
+            $0.left.equalToSuperview().inset(23.adjustedWidth)
+            $0.top.equalToSuperview().inset(37.5.adjustedHeight)
+            $0.width.equalTo(19.adjustedWidth)
+            $0.height.equalTo(16.52.adjustedHeight)
+        }
+        containerView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview().inset(3.5.adjustedWidth)
+            $0.left.equalTo(subImage.snp.right).offset(7.adjustedWidth)
+            $0.right.equalToSuperview().inset(20.adjustedWidth)
+        }
         profileImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(8.0)
-            $0.left.equalToSuperview().inset(30)
-            $0.width.height.equalTo(20.0)
+            $0.top.equalToSuperview().inset(11.adjustedHeight)
+            $0.left.equalToSuperview().inset(14.adjustedWidth)
+            $0.width.height.equalTo(20.0.adjustedWidth)
         }
         nicknameLabel.snp.makeConstraints {
-            $0.left.equalTo(profileImageView.snp.right).offset(8.0)
+            $0.left.equalTo(profileImageView.snp.right).offset(5.adjustedWidth)
             $0.centerY.equalTo(profileImageView)
         }
-        dateLabel.snp.makeConstraints {
-            $0.top.equalTo(profileImageView.snp.bottom).offset(8.0)
-            $0.left.equalTo(profileImageView)
-            $0.right.equalToSuperview()
-        }
         contentTextView.snp.makeConstraints {
-            $0.top.equalTo(dateLabel.snp.bottom).offset(8.0)
-            $0.left.equalTo(dateLabel)
-            $0.right.equalToSuperview().inset(8.0)
+            $0.top.equalTo(profileImageView.snp.bottom).offset(5.adjustedWidth)
+            $0.left.right.equalToSuperview().inset(13.adjustedWidth)
         }
+        
+        dateLabel.snp.makeConstraints {
+            $0.top.equalTo(contentTextView.snp.bottom).offset(7.adjustedHeight)
+            $0.left.equalTo(profileImageView)
+        }
+        
         likeButton.snp.makeConstraints {
-            $0.top.equalTo(contentTextView.snp.bottom).offset(8.0)
-            $0.left.equalTo(contentTextView)
+            $0.top.equalTo(dateLabel)
+            $0.left.equalTo(dateLabel.snp.right).offset(8.adjustedWidth)
             //            $0.right.equalToSuperview()
             $0.bottom.equalToSuperview()
         }

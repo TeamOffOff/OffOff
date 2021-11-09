@@ -8,20 +8,28 @@
 import UIKit
 
 class PostView: UIScrollView {
+    var backgroundView = UIView().then {
+        $0.backgroundColor = .g4
+//        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 30.adjustedHeight
+        $0.layer.maskedCorners = [.layerMaxXMaxYCorner]
+    }
     var titleLabel = UILabel().then {
-        $0.font = UIFont.preferredFont(forTextStyle: .title2).bold()
+        $0.font = .defaultFont(size: 18, bold: true)
         $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.text = "타이틀"
+        $0.textColor = .white
     }
     var profileImageView = UIImageView(image: .DEFAULT_PROFILE).then {
-        $0.makeBorder(color: UIColor.clear.cgColor, cornerRadius: 10)
+        $0.contentMode = .scaleAspectFit
     }
     var authorLabel = UILabel().then {
         $0.font = UIFont.preferredFont(forTextStyle: .body).bold()
         $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.text = "작성자"
+        $0.textColor = .white
     }
     var dateLabel = UILabel().then {
         $0.font = UIFont.preferredFont(forTextStyle: .caption1)
@@ -29,29 +37,30 @@ class PostView: UIScrollView {
         $0.textAlignment = .left
         $0.textColor = .gray
         $0.text = "2021년 11월 11일"
+        $0.textColor = .white
     }
     var likeButton = UIButton().then {
-        $0.setTitleColor(.black, for: .normal)
-        $0.setTitle("0", for: .normal)
-        $0.titleLabel?.textAlignment = .right
-        $0.setImage(.ICON_LIKES_RED, for: .normal)
+        $0.setTitleColor(.g4, for: .normal)
+        $0.setTitle("ㅇ 공감", for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
-        $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
-        $0.titleLabel?.adjustsFontForContentSizeCategory = true
+        $0.titleLabel?.font = .defaultFont(size: 9, bold: true)
+        $0.backgroundColor = .g1
+        $0.setCornerRadius(8.adjustedHeight)
     }
     var scrapButton = UIButton().then {
-        $0.setImage(.ICON_SCRAP_YELLOW, for: .normal)
+        $0.setTitleColor(.g4, for: .normal)
+        $0.setTitle("ㅇ 스크랩", for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
-        $0.setTitleColor(.black, for: .normal)
-        $0.setTitle("스크랩", for: .normal)
-        $0.titleLabel?.textAlignment = .right
-        $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
-        $0.titleLabel?.contentMode = .scaleToFill
-        $0.titleLabel?.adjustsFontForContentSizeCategory = true
+        $0.titleLabel?.font = .defaultFont(size: 9, bold: true)
+        $0.backgroundColor = .g1
+        $0.setCornerRadius(8.adjustedHeight)
     }
     var contentTextView = UITextView().then {
+        $0.textContainerInset = .zero
+        $0.textContainer.lineFragmentPadding = 0;
+
         $0.isUserInteractionEnabled = false
-        $0.font = .preferredFont(forTextStyle: .body)
+        $0.font = .defaultFont(size: 14)
         $0.adjustsFontForContentSizeCategory = true
         $0.translatesAutoresizingMaskIntoConstraints = true
         $0.sizeToFit()
@@ -61,6 +70,8 @@ class PostView: UIScrollView {
             """
             Lorem Ipsum is simply dummy text of the printing and typesetting <image1> industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
             """
+        $0.textColor = .white
+        $0.backgroundColor = .g4
     }
     var informationStackView = UIStackView().then {
         $0.axis = .vertical
@@ -68,18 +79,22 @@ class PostView: UIScrollView {
         $0.distribution = .fillEqually
     }
     var scrollView = UIScrollView()
-    var textContainerView = UIView()
+    var textContainerView = UIView().then {
+        $0.backgroundColor = .yellow
+    }
     
     var repliesTableView = ContentSizedTableView().then {
-        $0.backgroundColor = .white
         $0.register(RepliesTableViewCell.self, forCellReuseIdentifier: RepliesTableViewCell.identifier)
         $0.register(ChildrenRepliesTableViewCell.self, forCellReuseIdentifier: ChildrenRepliesTableViewCell.identifier)
         $0.isScrollEnabled = false
         $0.allowsSelection = false
+        $0.rowHeight = 82.adjustedHeight
+        $0.separatorStyle = .none
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.addSubview(backgroundView)
         self.addSubview(textContainerView)
         self.textContainerView.addSubview(contentTextView)
         self.addSubview(informationStackView)
@@ -90,7 +105,7 @@ class PostView: UIScrollView {
         self.addSubview(likeButton)
         self.addSubview(scrapButton)
         self.addSubview(repliesTableView)
-        
+        self.makeView()
     }   
     
     required init?(coder: NSCoder) {
@@ -98,45 +113,56 @@ class PostView: UIScrollView {
     }
     
     func makeView() {
-        repliesTableView.snp.makeConstraints {
-            $0.top.equalTo(likeButton.snp.bottom).offset(8.0)
-            $0.left.right.bottom.equalToSuperview()
+        backgroundView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.width.equalToSuperview()
+            $0.bottom.equalTo(likeButton.snp.bottom).offset(31.adjustedHeight)
         }
         textContainerView.snp.makeConstraints {
-            $0.left.right.equalToSuperview()
-            $0.width.equalToSuperview()
-            $0.top.equalTo(profileImageView.snp.bottom)
+            $0.left.equalTo(profileImageView)
+            $0.right.equalToSuperview().inset(32.adjustedWidth)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(16.adjustedHeight)
         }
-        titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(20)
-            $0.left.equalToSuperview().inset(12)
-            $0.right.equalToSuperview().offset(12)
+        contentTextView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+//            $0.height.equalToSuperview()
         }
         profileImageView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
-            $0.left.equalToSuperview().inset(12)
-            $0.width.height.equalTo(Constants.SCREEN_SIZE.width / 8.0)
+            $0.top.equalToSuperview().inset(20.adjustedHeight)
+            $0.left.equalToSuperview().inset(32.adjustedWidth)
+            $0.width.height.equalTo(33.14.adjustedWidth)
         }
         informationStackView.snp.makeConstraints {
             $0.top.bottom.equalTo(profileImageView)
-            $0.left.equalTo(profileImageView.snp.right).offset(12)
+            $0.left.equalTo(profileImageView.snp.right).offset(8.9.adjustedWidth)
             $0.right.equalToSuperview().inset(12)
         }
-        contentTextView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview()
-            $0.height.equalToSuperview()
-            $0.left.equalToSuperview().offset(12)
-            $0.right.equalToSuperview().inset(12)
+        titleLabel.snp.makeConstraints {
+            $0.top.equalTo(profileImageView.snp.bottom).offset(20.adjustedHeight)
+            $0.left.equalTo(profileImageView)
+            $0.right.equalToSuperview().inset(30.adjustedWidth)
         }
+        
+        
+    
         likeButton.snp.makeConstraints {
             $0.top.equalTo(contentTextView.snp.bottom).offset(8)
-            $0.right.equalTo(scrapButton.snp.left)
-            $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
+            $0.left.equalTo(profileImageView)
+            $0.width.equalTo(43.adjustedWidth)
+            $0.height.equalTo(20.adjustedHeight)
         }
         scrapButton.snp.makeConstraints {
             $0.top.equalTo(likeButton)
-            $0.right.equalToSuperview().inset(12)
-            $0.width.equalTo(Constants.SCREEN_SIZE.width / 6.0)
+            $0.left.equalTo(likeButton.snp.right).offset(6.adjustedWidth)
+            $0.width.equalTo(51.adjustedWidth)
+            $0.height.equalTo(20.adjustedHeight)
+        }
+        
+        repliesTableView.snp.makeConstraints {
+            $0.top.equalTo(backgroundView.snp.bottom).offset(14.adjustedHeight)
+            $0.bottom.equalToSuperview()
+            $0.width.equalToSuperview()
+            $0.centerX.equalToSuperview()
         }
     }
     

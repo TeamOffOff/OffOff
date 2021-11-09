@@ -24,9 +24,7 @@ class PostListViewController: UIViewController {
     
     override func loadView() {
         self.view = customView
-//        self.tableView = .init()
-//        self.tableView.delegate = nil
-//        self.tableView.dataSource = nil
+        self.navigationItem.backButtonTitle = ""
         self.title = boardName ?? ""
         
         self.navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.font: UIFont.defaultFont(size: 20)]
@@ -34,24 +32,15 @@ class PostListViewController: UIViewController {
         self.navigationItem.rightBarButtonItems = [menuButton, searchButton]
         
         self.customView.postListTableView.rowHeight = 81.adjustedHeight
-//        self.customView.postListTableView.estimatedRowHeight = 200
-//        self.tableView.rx.setDelegate(self).disposed(by: disposeBag)
-//        tableView.register(PostPreviewCell.classForCoder(), forCellReuseIdentifier: PostPreviewCell.identifier)
         self.customView.postListTableView.separatorStyle = .none
-//        tableView.separatorColor = .mainColor
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        print(#fileID, #function, #line, self.navigationItem)
-//        print(#fileID, #function, #line, self.navigationController?.navigationBar.topItem)
-//
-//        // view model
+        // view model
         viewModel = PostListViewModel(boardType: boardType ?? "")
-//
-        
-//
+
         // tableview refresh control
         let refreshControl = UIRefreshControl()
         self.customView.postListTableView.refreshControl = refreshControl
@@ -84,18 +73,20 @@ class PostListViewController: UIViewController {
             .disposed(by: disposeBag)
 
 //        // select row
-//        self.tableView.rx
-//            .itemSelected
-//            .bind {
-//                if let cell = self.tableView.cellForRow(at: $0) as? PostPreviewCell {
-//                    let vc = PostViewController()
-//                    vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
-//                    vc.postCell = cell
-//                    self.navigationController?.pushViewController(vc, animated: true)
-//                }
-//            }
-//            .disposed(by: disposeBag)
-//
+        self.customView.postListTableView.rx
+            .itemSelected
+            .bind {
+                if let cell = self.customView.postListTableView.cellForRow(at: $0) as? PostPreviewCell {
+                    let vc = PostViewController()
+                    vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
+                    vc.title = self.boardName
+                    vc.postCell = cell
+                    self.customView.postListTableView.deselectRow(at: $0, animated: false)
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+            .disposed(by: disposeBag)
+
 //        // inputs
         self.navigationItem.leftBarButtonItem?
             .rx.tap

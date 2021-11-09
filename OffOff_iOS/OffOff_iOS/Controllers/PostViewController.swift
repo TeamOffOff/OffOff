@@ -12,7 +12,7 @@ import RxKeyboard
 import RxGesture
 
 class PostViewController: UIViewController {
-    var postView = PostView(frame: .zero)
+    let postView = PostView()
     var postInfo: (id: String, type: String)?
     
     var viewModel: PostViewModel!
@@ -49,8 +49,8 @@ class PostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        view.addSubview(postView)
-        view.addSubview(replyContainer)
+        self.view.addSubview(postView)
+        self.view.addSubview(replyContainer)
         replyContainer.addSubview(replyTextView)
         replyContainer.addSubview(replyButton)
         self.makeView()
@@ -84,8 +84,8 @@ class PostViewController: UIViewController {
                 self.postView.authorLabel.text = $0!.author.nickname
                 self.postView.contentTextView.text = $0!.content
                 self.postView.dateLabel.text = $0!.date
-                self.postView.profileImageView.image = UIImage(systemName: "person.fil")
-                self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
+                self.postView.profileImageView.image = .DefaultPostProfileImage
+//                self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
                 if $0?.author._id == Constants.loginUser?._id {
                     self.setRightButtons(set: true)
                 } else {
@@ -181,7 +181,7 @@ class PostViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        self.postView.makeView()
+//        self.postView.makeView()
         
         // MARK: 댓글 입력 시 키보드 높이에 맞춰 댓글 입력 뷰 높이 조정
         RxKeyboard.instance.visibleHeight
@@ -233,8 +233,10 @@ class PostViewController: UIViewController {
     
     // MARK: - Private Funcs
     private func makeView() {
+//        postView.makeView()
         postView.snp.makeConstraints {
-            $0.left.right.top.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.left.right.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(Constants.SCREEN_SIZE.height / 12.5)
         }
         replyContainer.snp.makeConstraints {
@@ -251,27 +253,51 @@ class PostViewController: UIViewController {
             $0.bottom.equalToSuperview().inset(8)
             $0.height.equalTo(replyTextView)
         }
-        postView.makeView()
     }
     
     private func setRightButtons(set: Bool) {
+        self.navigationItem.rightBarButtonItem = .menuButton()
+        let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
+        
+        
         if set {
-            self.navigationItem.setRightBarButtonItems(items, animated: false)
-            deleteButton.rx.tap.bind {
+            let delete = UIAlertAction(title: "삭제", style: .default) { _ in
                 self.deletingConfirmAlert()
-            }.disposed(by: rightButtonsDisposeBag)
-            editButton.rx.tap.asObservable().withLatestFrom(viewModel.post)
-                .bind {
-                    let vc = NewPostViewController()
-                    vc.postToModify = $0
-                    let naviVC = UINavigationController(rootViewController: vc)
-                    naviVC.modalPresentationStyle = .fullScreen
-                    self.present(naviVC, animated: true, completion: nil)
-                }.disposed(by: rightButtonsDisposeBag)
-        } else {
-            self.navigationItem.setRightBarButtonItems([], animated: false)
-            rightButtonsDisposeBag = DisposeBag()
+            }
+            let modify = UIAlertAction(title: "수정", style: .default) { _ in
+                let vc = NewPostViewController()
+                try? vc.postToModify = self.viewModel.post.value()
+                let naviVC = UINavigationController(rootViewController: vc)
+                naviVC.modalPresentationStyle = .fullScreen
+                self.present(naviVC, animated: true, completion: nil)
+            }
+            alert.addAction(delete)
+            alert.addAction(modify)
+    
+//            self.navigationItem.setRightBarButtonItems(items, animated: false)
+//            deleteButton.rx.tap.bind {
+//                self.deletingConfirmAlert()
+//            }.disposed(by: rightButtonsDisposeBag)
+//            editButton.rx.tap.asObservable().withLatestFrom(viewModel.post)
+//                .bind {
+//                    let vc = NewPostViewController()
+//                    vc.postToModify = $0
+//                    let naviVC = UINavigationController(rootViewController: vc)
+//                    naviVC.modalPresentationStyle = .fullScreen
+//                    self.present(naviVC, animated: true, completion: nil)
+//                }.disposed(by: rightButtonsDisposeBag)
         }
+        
+        let report = UIAlertAction(title: "신고", style: .default)
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        alert.addAction(report)
+        alert.addAction(cancel)
+        
+        self.navigationItem.rightBarButtonItem!
+            .rx.tap
+            .bind {
+                self.present(alert, animated: true, completion: nil)
+            }.disposed(by: self.disposeBag)
     }
     
     private func deletingConfirmAlert() {

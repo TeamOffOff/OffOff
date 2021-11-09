@@ -315,6 +315,9 @@ extension UIImage {
     static let MOREICON = UIImage(named: "MoreIcon")!
     static let SEARCHIMAGE = UIImage(named: "SearchImage")!
     static let HOMEICON = UIImage(named: "HomeIcon")!
+    static let DefaultPostProfileImage = UIImage(named: "DefaultPostProfileImage")!
+    static let DefaultReplyProfileImage = UIImage(named: "DefaultReplyProfileImage")!
+    static let SubReplyArrow = UIImage(named: "SubReplyArrow")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)
@@ -454,8 +457,7 @@ extension UINavigationBar {
         appearance.backgroundColor = backgroundColor
         appearance.titleTextAttributes = [.foregroundColor: titleColor]
         appearance.shadowColor = .g4
-        //        appearance.backgroundImage = UIImage()
-//        appearance.shadowImage = UIImage()
+        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)))
         self.isTranslucent = false
         self.tintColor = titleColor
         self.standardAppearance = appearance
@@ -533,5 +535,14 @@ extension UITextField {
         containerView.addSubview(imageView)
         leftView = containerView
         leftViewMode = .always
+    }
+}
+
+extension UIBarButtonItem {
+    static func searchButton() -> UIBarButtonItem {
+        UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    }
+    static func menuButton() -> UIBarButtonItem {
+        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
     }
 }
