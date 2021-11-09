@@ -44,4 +44,10 @@ interface MemberService {
         @Header("Authorization") auth: String
     ): Response<UserInfo>
 
+    /* 비밀번호 변경 */
+    @PUT("user/register")
+    suspend fun changePw(
+        @Header("Authorization") auth: String,
+        @Body password: String
+    ): Response<ResultResponse>
 }

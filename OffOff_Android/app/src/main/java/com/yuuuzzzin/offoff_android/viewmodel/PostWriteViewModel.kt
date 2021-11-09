@@ -21,14 +21,6 @@ constructor(
     private val repository: BoardRepository,
 ) : ViewModel() {
 
-//    val title: MutableLiveData<String> by lazy {
-//        MutableLiveData<String>()
-//    }
-//
-//    val content: MutableLiveData<String> by lazy {
-//        MutableLiveData<String>()
-//    }
-
     val title = MutableLiveData("")
     val content = MutableLiveData("")
 

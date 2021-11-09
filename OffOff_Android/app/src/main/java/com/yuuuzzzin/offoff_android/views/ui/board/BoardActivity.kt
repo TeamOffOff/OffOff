@@ -1,15 +1,15 @@
 package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
@@ -44,7 +44,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
         processIntent()
         initViewModel()
-        initToolbar()
+        // initToolbar()
         initRV()
     }
 
@@ -76,26 +76,27 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     }
 
-    private fun initToolbar() {
-        setSupportActionBar(binding.appbarBoard)
-        supportActionBar?.apply {
-            binding.tvToolbarTitle.text = boardName
-            setDisplayShowTitleEnabled(false)
-            setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
-            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
-            setDisplayShowHomeEnabled(true)
-        }
-    }
+//    private fun initToolbar() {
+//        setSupportActionBar(binding.appbarBoard)
+//        supportActionBar?.apply {
+//            binding.tvToolbarTitle.text = boardName
+//            setDisplayShowTitleEnabled(false)
+//            setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
+//            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
+//            setDisplayShowHomeEnabled(true)
+//        }
+//    }
 
     private fun initRV() {
         boardAdapter = BoardAdapter()
         boardAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
+        val spaceDecoration = VerticalSpaceItemDecoration(7)
         binding.rvPostPreview.apply {
             adapter = boardAdapter
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(DividerItemDecoration(context, VERTICAL))
+            addItemDecoration(spaceDecoration)
         }
 
         boardAdapter.setOnPostClickListener(object :
@@ -180,6 +181,17 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 )
 
             }
+        }
+    }
+
+    inner class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) :
+        RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(
+            outRect: Rect, view: View, parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            outRect.bottom = verticalSpaceHeight
         }
     }
 }

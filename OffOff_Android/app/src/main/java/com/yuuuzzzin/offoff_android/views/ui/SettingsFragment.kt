@@ -16,7 +16,6 @@ class SettingsFragment : Fragment() {
     private var mBinding : FragmentSettingsBinding? = null
     private val binding get() = mBinding!!
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
