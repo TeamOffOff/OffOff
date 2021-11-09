@@ -39,6 +39,8 @@
 		EA602193272FBABB00092917 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA602192272FBABB00092917 /* Roboto-Regular.ttf */; };
 		EA602195272FBAC200092917 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA602194272FBAC200092917 /* Roboto-Bold.ttf */; };
 		EA6021B32739249300092917 /* BoardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6021B22739249300092917 /* BoardListView.swift */; };
+		EA6021B527397BA500092917 /* PostListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6021B427397BA500092917 /* PostListView.swift */; };
+		EA6021B727397D5D00092917 /* PostListNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6021B627397D5D00092917 /* PostListNavigationBar.swift */; };
 		EA72D75B2698276C00EB07DA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75A2698276C00EB07DA /* PostView.swift */; };
 		EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */; };
 		EA72D76026987D5300EB07DA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA72D75F26987D5300EB07DA /* Extensions.swift */; };
@@ -168,6 +170,8 @@
 		EA602192272FBABB00092917 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		EA602194272FBAC200092917 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		EA6021B22739249300092917 /* BoardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardListView.swift; sourceTree = "<group>"; };
+		EA6021B427397BA500092917 /* PostListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListView.swift; sourceTree = "<group>"; };
+		EA6021B627397D5D00092917 /* PostListNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListNavigationBar.swift; sourceTree = "<group>"; };
 		EA72D75A2698276C00EB07DA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		EA72D75F26987D5300EB07DA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -379,6 +383,7 @@
 				EACC257726A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf */,
 				EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */,
 				EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */,
+				EA6021B627397D5D00092917 /* PostListNavigationBar.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -400,6 +405,7 @@
 				EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */,
 				EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */,
 				EA6021B22739249300092917 /* BoardListView.swift */,
+				EA6021B427397BA500092917 /* PostListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -711,6 +717,7 @@
 				EAF2127E268FEC6C00E47942 /* Box.swift in Sources */,
 				EAF212862690158100E47942 /* TabBarController.swift in Sources */,
 				EAE652612694182D00D8F7BB /* PostViewController.swift in Sources */,
+				EA6021B727397D5D00092917 /* PostListNavigationBar.swift in Sources */,
 				EA83564926D38C4900D60C46 /* ScheduleCalendarCell.swift in Sources */,
 				EAF212842690133500E47942 /* HomeView.swift in Sources */,
 				EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */,
@@ -721,6 +728,7 @@
 				EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */,
 				EA6021B32739249300092917 /* BoardListView.swift in Sources */,
 				EA0624DF26DD1D58004FF91A /* UserRoutineManager.swift in Sources */,
+				EA6021B527397BA500092917 /* PostListView.swift in Sources */,
 				EACF1B3D26B7E42300C153D3 /* BoardListViewModel.swift in Sources */,
 				EA2C4DF226DFCB4A0056A93C /* EditScheduleView.swift in Sources */,
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,

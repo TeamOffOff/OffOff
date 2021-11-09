@@ -18,18 +18,13 @@ class TabBarController: UITabBarController {
     }
     
     fileprivate func createNavController(for rootViewController: UIViewController, title: String, image: UIImage) -> UIViewController {
-        let navController = UINavigationController(navigationBarClass: CustomNavigationBar.self, toolbarClass: nil)
+        let navController = UINavigationController()
         navController.viewControllers = [rootViewController]
         navController.tabBarItem.title = title
         navController.tabBarItem.image = image.resize(to: CGSize(width: 26.adjustedWidth, height: 26.adjustedWidth))
         
         navController.navigationBar.barTintColor = .mainColor
         navController.navigationBar.prefersLargeTitles = false
-        
-        if let navigationBar = navController.navigationBar as? CustomNavigationBar {
-            navigationBar.titleLabel.text = title
-            navigationBar.setAppearance()
-        }
         return navController
     }
     

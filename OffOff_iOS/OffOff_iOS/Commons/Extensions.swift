@@ -453,9 +453,14 @@ extension UINavigationBar {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = backgroundColor
         appearance.titleTextAttributes = [.foregroundColor: titleColor]
+        appearance.shadowColor = .g4
+        //        appearance.backgroundImage = UIImage()
+//        appearance.shadowImage = UIImage()
+        self.isTranslucent = false
         self.tintColor = titleColor
         self.standardAppearance = appearance
         self.scrollEdgeAppearance = appearance
+        self.layoutIfNeeded()
     }
 }
 
