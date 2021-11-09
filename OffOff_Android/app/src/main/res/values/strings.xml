@@ -3,6 +3,7 @@
     <string name="app_name">오프오프</string>
     <string name="app_icon">앱 아이콘</string>
     <string name="green">#18573A</string>
+    <string name="button_back">button_back</string>
 
     <!-- 앱바에 띄울 프래그먼트 이름 -->
     <string name="appbar_home">ㅇㅍㅇㅍ</string>
@@ -38,7 +39,10 @@
     <string name="signup_step1">아이디 및 비밀번호</string>
     <string name="signup_step2">개인 정보</string>
     <string name="signup_step3">프로필</string>
+    <string name="photo">사진</string>
+    <string name="button_camera">button_camera</string>
     <string name="edit">편집</string>
+    <string name="done">완료</string>
 
     <!-- 아이디/비밀번호 찾기 -->
     <string name="find_id">아이디 찾기</string>
@@ -54,7 +58,8 @@
     <string name="advice_change_pw">8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.</string>
     <string name="change_pw">비밀번호 변경</string>
     <string name="new_pw">새 비밀번호</string>
-    <string name="check_new_pw">새 비밀번호 확인</string>
+    <string name="new_pw_confirm">새 비밀번호 확인</string>
+    <string name="layout_background_bottom_round">layout_background_bottom_round</string>
 
 
     <!--    <string name=""></string>-->

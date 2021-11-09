@@ -21,7 +21,7 @@
             android:background="@drawable/layout_edit_text"
             android:hint="@string/member_id"
             android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
+            android:inputType="text"
             android:paddingHorizontal="23dp"
             android:textColorHint="@color/white4"
             android:textSize="13sp"
