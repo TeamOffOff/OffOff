@@ -9,7 +9,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
+from api_helper.utils import GMAIL_PW
 
+from controller.email import Gmail_sender
 from controller.image import save_image, get_image
 from controller.filter import check_duplicate, check_jwt
 
@@ -153,15 +155,26 @@ class AuthRegister(Resource):
             if user_info["subInformation"]["profileImage"]:
                 user_info["subInformation"]["profileImage"] = save_image(user_info["subInformaiton"]["profileImage"], "user")
             # if sub_information["profileImage"]:
-                
-            user_info["calendar"] = ""
-            user_info["message"] = {
+            
+            # db에 포함시킬 field 추가
+            user_info["calendar"] = ""  # 캘린더
+            user_info["message"] = {  # 메시지
                 "send": [],
                 "receive":[]
             }
+            user_info["verifyEmail"] = False  # 이메일 인증여부
+
+            r_email = user_info["information"]["email"]
 
             mongodb.insert_one(data=user_info, collection_name="user")  # 데이터베이스에 저장
 
+            # 메일 보내기
+            test_email = Gmail_sender("ssoo.dat.y@gmail.com", r_email, GMAIL_PW)
+            test_email.msg_set("www.naver.com")
+            test_email.smtp_connect_send()
+            test_email.smtp_disconnect()
+
+            # response
             response_result = make_response({"queryStatus": 'success'}, 200)
 
             return response_result
@@ -307,9 +320,14 @@ class AuthLogin(Resource):
                        "queryStatus": "wrong password"
                    }, 401)
         
+        elif not user_info["verifyEmail"]:
+            # 이메일 인증을 하지 않은 경우
+            response_result = make_response({
+                "queryStatus": "not verify email"
+            }, 400)
 
         else:
-            # 비밀번호 일치한 경우
+            # 위의 조건을 다 통과한 경우
             access_token = create_access_token(identity=request_info["_id"], expires_delta=False)
             refresh_token = create_refresh_token(identity=request_info["_id"], expires_delta=False)
 
