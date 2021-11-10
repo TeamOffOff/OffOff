@@ -9,9 +9,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
-from api_helper.utils import GMAIL_PW
 
-from controller.email import Gmail_sender
+from controller.email import send_email
 from controller.image import save_image, get_image
 from controller.filter import check_duplicate, check_jwt
 
@@ -21,11 +20,28 @@ mongodb = mongo.MongoHelper()
 
 User = Namespace(name="user", description="유저 관련 API")
 Token = Namespace(name="token", description="access토큰 재발급 API")
+Verify = Namespace(name="verify", description="이메일 확인을 위한 API")
 
 Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
-# db 초기화했는데, 그 전에 만들어뒀던 token으로 활동가능한 문제
 
+@Verify.route('')
+class VerifyControl(Resource):
+    def get(self):
+        verify_email = request.args.get("email")
+        result = mongodb.update_one(query={"information.email": verify_email}, collection_name="user", modify={"$set": {"verifyEmail": True}})
+        if result.raw_result["n"] == 1:  # 잘 변경됨
+            print("잘 변경 됨")
+            # 메일 보내기
+            send_email(verify_email, "", "변경 완료")
+
+        else:
+            print('변경 안 됨')
+            # 메일 보내기
+            send_email(verify_email, "", "변경 실패")
+            
+
+# db 초기화했는데, 그 전에 만들어뒀던 token으로 활동가능한 문제
 @Token.route('')
 class TokenControl(Resource):
     @jwt_required(refresh=True)
@@ -169,10 +185,7 @@ class AuthRegister(Resource):
             mongodb.insert_one(data=user_info, collection_name="user")  # 데이터베이스에 저장
 
             # 메일 보내기
-            test_email = Gmail_sender("ssoo.dat.y@gmail.com", r_email, GMAIL_PW)
-            test_email.msg_set("www.naver.com")
-            test_email.smtp_connect_send()
-            test_email.smtp_disconnect()
+            send_email(r_email, "http://152.67.210.16:5000/verify?email="+r_email, "감사합니다")
 
             # response
             response_result = make_response({"queryStatus": 'success'}, 200)
