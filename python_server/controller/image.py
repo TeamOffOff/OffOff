@@ -9,6 +9,7 @@ s3 = boto3.resource("s3",
                     region_name=AWS_DEFAULT_REGION)
 
 bucket = s3.Bucket("offoffbucket")
+resize_bucket = s3.Bucket("offoffbucket-resize")
 
 
 def save_image(img_list: list, directory: str):
@@ -31,14 +32,19 @@ def save_image(img_list: list, directory: str):
     return key_list
 
 
-def get_image(img_key_list: list, directory: str):
+def get_image(img_key_list: list, directory: str, img_size: str = "origin"):
     img_list = list()
 
     if not img_key_list:
         return None
 
     for img_key in img_key_list:
-        img_obj = s3.Object(bucket.name, directory + "/" + img_key)
+        if img_size == "origin":
+            print("Get original Image from {}".format(directory + "/" + img_key))
+            img_obj = s3.Object(bucket.name, directory + "/" + img_key)
+        else:
+            print("Get resized Image from {}".format(directory + "/" + img_size + "/" + img_key))
+            img_obj = s3.Object(resize_bucket.name, directory + "/" + img_size + "/" + img_key)
         img = img_obj.get()["Body"].read()
         img_body = str(base64.b64encode(img), 'utf-8')
 

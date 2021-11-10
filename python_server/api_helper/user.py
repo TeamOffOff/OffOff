@@ -153,7 +153,7 @@ class AuthRegister(Resource):
             # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
             # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
             if user_info["subInformation"]["profileImage"]:
-                user_info["subInformation"]["profileImage"] = save_image(user_info["subInformaiton"]["profileImage"], "user")
+                user_info["subInformation"]["profileImage"] = save_image(user_info["subInformation"]["profileImage"], "user")
             # if sub_information["profileImage"]:
             
             # db에 포함시킬 field 추가
@@ -344,7 +344,7 @@ class AuthLogin(Resource):
             # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
             # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
-            user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user")
+            user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user", "200")
 
             response_result = make_response({
                        "accessToken": access_token,
@@ -372,7 +372,7 @@ class AuthLogin(Resource):
         # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
         # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
 
-        user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user")
+        user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user", "origin")
 
         # real_user_info = {"_id": user_info["_id"],
         #                   "password": user_info["password"],

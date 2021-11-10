@@ -51,7 +51,7 @@ class PostControl(Resource):
             print(response_result.status_code)
             return response_result
 
-        post["image"] = get_image(post["image"], "post")
+        post["image"] = get_image(post["image"], "post", "400")
 
         if update_status.raw_result["n"] == 0:
             response_result = make_response({"queryStatus": "views update fail"}, 500)
