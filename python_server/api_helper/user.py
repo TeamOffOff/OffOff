@@ -1,6 +1,6 @@
 import re
 from warnings import resetwarnings
-from flask import request
+from flask import request, render_template
 from flask.helpers import make_response
 from werkzeug.wrappers import Response, ResponseStreamMixin
 from flask_jwt_extended.utils import get_jwt
@@ -39,7 +39,9 @@ class VerifyControl(Resource):
             print('변경 안 됨')
             # 메일 보내기
             send_email(verify_email, "", "변경 실패")
-            
+        
+        return make_response(render_template('email.html'))
+        
 
 # db 초기화했는데, 그 전에 만들어뒀던 token으로 활동가능한 문제
 @Token.route('')
@@ -117,6 +119,9 @@ class AuthRegister(Resource):
         check_id = request.args.get("id")
         check_email = request.args.get("email")
         check_nickname = request.args.get("nickname")
+        
+        # UnboundLocalError: local variable 'response_result' referenced before assignment
+        response_result = "" 
 
         if check_id:
             result = check_duplicate(key="_id", target=check_id)

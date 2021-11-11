@@ -15,7 +15,7 @@ def send_email(r_email, verify, message):
 
     msg = MIMEText(html_msg, 'html')
     data.attach(msg)
-    print(data)
+    # print(data)
 
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
     server.set_debuglevel(1)
@@ -27,6 +27,7 @@ def send_email(r_email, verify, message):
     receiver = data["To"]
 
     server.sendmail(sender, receiver, data.as_string())
+    # 잘못된 주소로 보내라고 하면 에러 메시지 보낼 것
     server.quit()
 
 
