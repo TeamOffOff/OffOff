@@ -25,9 +25,6 @@ constructor(
     private val _lastPostId = MutableLiveData<String>()
     val lastPostId: LiveData<String> get() = _lastPostId
 
-    private val _nextPostList = MutableLiveData<List<Post>>()
-    val nextPostList: LiveData<List<Post>> get() = _nextPostList
-
     private val _newPostList = MutableLiveData<List<Post>>()
     val newPostList: LiveData<List<Post>> get() = _newPostList
 
@@ -48,20 +45,21 @@ constructor(
         }
     }
 
-    fun getNextPosts(boardType: String, lastPostId: String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.getNextPosts(boardType, lastPostId).let { response ->
-            if (response.isSuccessful) {
-                Log.d("tag_success", "gegetNextPoststPosts: ${response.body()}")
-                if (!response.body()!!.postList.isNullOrEmpty()) {
-                    _postList.postValue(response.body()!!.postList)
-                    _lastPostId.postValue(response.body()!!.lastPostId)
-                    count = response.body()!!.postList.size
+    fun getNextPosts(boardType: String, lastPostId: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getNextPosts(boardType, lastPostId).let { response ->
+                if (response.isSuccessful) {
+                    Log.d("tag_success", "gegetNextPoststPosts: ${response.body()}")
+                    if (!response.body()!!.postList.isNullOrEmpty()) {
+                        _postList.postValue(response.body()!!.postList)
+                        _lastPostId.postValue(response.body()!!.lastPostId)
+                        count = response.body()!!.postList.size
+                    }
+                } else {
+                    Log.d("tag_fail", "getNextPosts Error: ${response.code()}")
                 }
-            } else {
-                Log.d("tag_fail", "getNextPosts Error: ${response.code()}")
             }
         }
-    }
 
     fun updatePost(postList: Array<Post>) {
         _newPostList.postValue(postList.toList())

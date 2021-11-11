@@ -1,13 +1,14 @@
 package com.yuuuzzzin.offoff_android.views.ui.board
 
+import android.app.Activity
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.utils.Constants.convertDPtoPX
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
+import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
@@ -35,8 +37,24 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private lateinit var lastPostId: String
     private var clickedPosition: Int? = 0
     private var isFirst: Boolean = TRUE
-    private var totalScrolled:Int = 0
+    //private var totalScrolled: Int = 0
     //private val density = resources.displayMetrics.density
+
+    // 게시물 액티비티 요청 및 결과 처리
+    private val requestPost = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        val resultCode = activityResult.resultCode // 결과 코드
+        val data = activityResult.data // 인텐트 데이터
+
+        if (resultCode == Activity.RESULT_OK) {
+            Log.d("tag_post_item_update", "post 변경사항 발생으로 postList item 업데이트 필요")
+            boardAdapter.updateItem(
+                data!!.getSerializableExtra("post") as Post,
+                clickedPosition!!
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +106,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             binding.refreshLayout.isRefreshing = false
             currentPostList = it.toTypedArray()
         })
-
     }
 
     private fun initToolbar() {
@@ -105,10 +122,11 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private fun initRV() {
         boardAdapter = BoardAdapter()
 
-        val spaceDecoration = VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
+        val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
         binding.rvPostPreview.apply {
             adapter = boardAdapter
-            boardAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY // 리사이클러뷰의 스크롤된 position 유지
+            boardAdapter.stateRestorationPolicy =
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY // 리사이클러뷰의 스크롤된 position 유지
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecoration)
         }
@@ -117,13 +135,15 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             BoardAdapter.OnPostClickListener {
             override fun onClickPost(item: Post, position: Int) {
                 clickedPosition = position
-                val intent = Intent(this@BoardActivity, PostActivity::class.java)
-                intent.putExtra("id", item.id)
-                intent.putExtra("position", position)
-                intent.putExtra("boardName", boardName)
-                intent.putExtra("boardType", item.boardType)
-                intent.putExtra("postList", currentPostList as Serializable)
-                startActivityForResult(intent, 1)
+                val intent = Intent(this@BoardActivity, PostActivity::class.java).apply {
+                    putExtra("id", item.id)
+                    putExtra("position", position)
+                    putExtra("boardName", boardName)
+                    putExtra("boardType", item.boardType)
+                    putExtra("postList", currentPostList as Serializable)
+                }
+
+                requestPost.launch(intent)
             }
         })
 
@@ -136,28 +156,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-//                totalScrolled += convertPXtoDP(baseContext, dy)
-//                Log.d("tag_totalScrolled", totalScrolled.toString())
-//                Log.d("tag_dy", dy.toString())
-//                Log.d("tag_height", convertPXtoDP(baseContext, binding.ivBackground.height).toString())
-//
-//                if(totalScrolled <= 75 && convertPXtoDP(baseContext, binding.ivBackground.height) >= 195) {
-//
-//                    val layoutParams = binding.ivBackground.layoutParams
-//                    if(dy>0) {
-//                        layoutParams.height = convertDPtoPX(baseContext, (convertPXtoDP(baseContext, binding.ivBackground.height) - totalScrolled))
-//                    } else {
-//                        Log.d("tag_y음수", dy.toString())
-//                        layoutParams.height = convertDPtoPX(baseContext, (convertPXtoDP(baseContext, binding.ivBackground.height) + totalScrolled))
-//                    }
-//                    binding.ivBackground.layoutParams = layoutParams
-//                    Log.d("tag_b1", convertPXtoDP(baseContext, binding.ivBackground.height).toString())
-//                    //binding.ivBackground.layoutParams.height = convertDPtoPX(baseContext, (convertPXtoDP(baseContext, binding.ivBackground.height) - totalScrolled))
-//                    //Log.d("tag_b2", (convertPXtoDP(baseContext, binding.ivBackground.height) - totalScrolled).toString())
-//                }
-
-
-
                 val lastPosition =
                     (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
                 val totalCount = recyclerView.adapter!!.itemCount - 1
@@ -169,10 +167,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 }
             }
         })
-
-//        binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
-//            binding.refreshLayout.isEnabled = (binding.scrollView.scrollY == 0)
-//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -185,17 +179,14 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                binding.layoutSearch.visibility = View.VISIBLE
-                binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 230)
+                // 검색 버튼 누를 시
+                binding.layoutSearch.visibility = View.VISIBLE // 가시화
+                binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 230) // 최소 높이 조정
                 true
             }
-            R.id.action_write -> {
-                //글쓰기 버튼 누를 시
-                val intent = Intent(applicationContext, PostWriteActivity::class.java)
-                intent.putExtra("boardType", boardType)
-                intent.putExtra("boardName", boardName)
-                intent.putExtra("postWriteType", PostWriteType.WRITE)
-                startActivity(intent)
+            R.id.action_more_option -> {
+                // 더보기 옵션 누를 시
+
                 true
             }
             android.R.id.home -> {
@@ -206,29 +197,18 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
-            Log.d("tag_like", "requestCode")
-            if (resultCode == RESULT_OK) {
-                Log.d("tag_like", "저아요하고 뒤로가기함")
-                boardAdapter.updateItem(
-                    data!!.getSerializableExtra("post") as Post,
-                    clickedPosition!!
-                )
-
-            }
-        }
-    }
-
-    inner class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) :
-        RecyclerView.ItemDecoration() {
-
-        override fun getItemOffsets(
-            outRect: Rect, view: View, parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            outRect.bottom = verticalSpaceHeight
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == 1) {
+//            Log.d("tag_like", "requestCode")
+//            if (resultCode == RESULT_OK) {
+//                Log.d("tag_like", "저아요하고 뒤로가기함")
+//                boardAdapter.updateItem(
+//                    data!!.getSerializableExtra("post") as Post,
+//                    clickedPosition!!
+//                )
+//
+//            }
+//        }
+//    }
 }
