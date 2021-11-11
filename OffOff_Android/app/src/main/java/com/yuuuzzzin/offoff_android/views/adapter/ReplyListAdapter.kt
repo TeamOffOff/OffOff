@@ -51,7 +51,7 @@ class ReplyListAdapter
 
         fun bind(item: Reply, position: Int) {
             binding.setVariable(BR.item, item)
-            binding.btCommentOption.setOnClickListener {
+            binding.btReplyOption.setOnClickListener {
                 replyClickListener.onClickOption(item, position)
             }
             binding.btLikes.setOnClickListener {
@@ -59,7 +59,6 @@ class ReplyListAdapter
             }
             binding.executePendingBindings()
         }
-
     }
 
     fun addReplyList(replyList: List<Reply>) {

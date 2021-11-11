@@ -4,6 +4,7 @@
     <string name="app_icon">앱 아이콘</string>
     <string name="green">#18573A</string>
     <string name="button_back">button_back</string>
+    <string name="layout_background_bottom_round">layout_background_bottom_round</string>
 
     <!-- 앱바에 띄울 프래그먼트 이름 -->
     <string name="appbar_home">ㅇㅍㅇㅍ</string>
@@ -59,7 +60,21 @@
     <string name="change_pw">비밀번호 변경</string>
     <string name="new_pw">새 비밀번호</string>
     <string name="new_pw_confirm">새 비밀번호 확인</string>
-    <string name="layout_background_bottom_round">layout_background_bottom_round</string>
+
+    <!-- 게시판 -->
+    <string name="board_free">자유게시판</string>
+    <string name="background_board">background_board</string>
+    <string name="button_close">button_close</string>
+    <string name="button_write_post">button_write_post</string>
+    <string name="image_avatar">image_avatar</string>
+    <string name="icon_more_option">icon_more_option</string>
+    <string name="icon_arrow_reply">icon_arrow_reply</string>
+    <string name="background_post">background_post</string>
+    <string name="button_like">￮ 공감</string>
+    <string name="button_scrap">￮ 스크랩</string>
+    <string name="contents">내용</string>
+    <string name="title">제목</string>
+    <string name="write_post">글 쓰기</string>
 
 
     <!--    <string name=""></string>-->

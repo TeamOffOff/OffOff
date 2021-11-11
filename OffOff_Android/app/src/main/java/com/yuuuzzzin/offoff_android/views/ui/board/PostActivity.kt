@@ -158,7 +158,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun initToolbar() {
-        val toolbar: MaterialToolbar = binding.appbar
+        val toolbar: MaterialToolbar = binding.toolbar
+        toolbar.overflowIcon = getDrawable(R.drawable.ic_more_option)
 
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
@@ -208,9 +209,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private fun initRV() {
         commentListAdapter = CommentListAdapter(viewModel)
 
+        val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
         binding.rvComment.apply {
             adapter = commentListAdapter
             layoutManager = LinearLayoutManager(context)
+            addItemDecoration(spaceDecoration)
             isNestedScrollingEnabled = false
         }
 
@@ -301,12 +304,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             intent.getIntExtra("postWriteType", -1) == PostWriteType.EDIT -> {
                 val intent = Intent()
                 intent.putExtra("post", this.post as Serializable)
-                setResult(RESULT_OK, intent)
+                setResult(Activity.RESULT_OK, intent)
             }
             requestUpdate == true -> {
                 val intent = Intent()
                 intent.putExtra("post", this.post as Serializable)
-                setResult(RESULT_OK, intent)
+                setResult(Activity.RESULT_OK, intent)
             }
         }
         finish()
