@@ -93,13 +93,13 @@ class PostListViewController: UIViewController {
             .bind { self.dismiss(animated: true, completion: nil) }
             .disposed(by: disposeBag)
 
-//        self.navigationItem.rightBarButtonItem?
-//            .rx.tap
-//            .bind {
-//                let vc = NewPostViewController()
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }
-//            .disposed(by: disposeBag)
+        self.customView.newPostButton
+            .rx.tap
+            .bind {
+                let vc = NewPostViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
 }
 

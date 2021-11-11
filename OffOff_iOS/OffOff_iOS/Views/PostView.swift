@@ -57,7 +57,7 @@ class PostView: UIScrollView {
     }
     var contentTextView = UITextView().then {
         $0.textContainerInset = .zero
-        $0.textContainer.lineFragmentPadding = 0;
+        $0.textContainer.lineFragmentPadding = 0
 
         $0.isUserInteractionEnabled = false
         $0.font = .defaultFont(size: 14)
@@ -119,13 +119,13 @@ class PostView: UIScrollView {
             $0.bottom.equalTo(likeButton.snp.bottom).offset(31.adjustedHeight)
         }
         textContainerView.snp.makeConstraints {
+            $0.width.equalTo(327.adjustedWidth)
             $0.left.equalTo(profileImageView)
-            $0.right.equalToSuperview().inset(32.adjustedWidth)
             $0.top.equalTo(titleLabel.snp.bottom).offset(16.adjustedHeight)
         }
         contentTextView.snp.makeConstraints {
             $0.edges.equalToSuperview()
-//            $0.height.equalToSuperview()
+            $0.height.equalToSuperview()
         }
         profileImageView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20.adjustedHeight)
@@ -142,9 +142,6 @@ class PostView: UIScrollView {
             $0.left.equalTo(profileImageView)
             $0.right.equalToSuperview().inset(30.adjustedWidth)
         }
-        
-        
-    
         likeButton.snp.makeConstraints {
             $0.top.equalTo(contentTextView.snp.bottom).offset(8)
             $0.left.equalTo(profileImageView)

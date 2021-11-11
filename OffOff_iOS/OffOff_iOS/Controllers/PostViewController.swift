@@ -233,7 +233,7 @@ class PostViewController: UIViewController {
     
     // MARK: - Private Funcs
     private func makeView() {
-//        postView.makeView()
+        
         postView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.left.right.equalToSuperview()

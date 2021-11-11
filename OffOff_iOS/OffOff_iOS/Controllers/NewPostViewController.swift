@@ -16,18 +16,31 @@ class NewPostViewController: UIViewController {
     var postToModify: PostModel? = nil
     
     override func loadView() {
-        self.view = .init()
+        self.view = newPostView
         self.view.backgroundColor = .white
-        view.addSubview(newPostView)
-        newPostView.snp.makeConstraints {
-            $0.edges.equalTo(self.view.safeAreaLayoutGuide.snp.edges).inset(8)
-        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "글 쓰기"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: nil, action: nil)
+        
+        let saveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 47.adjustedWidth, height: 27.adjustedHeight)).then {
+            $0.backgroundColor = .g1
+            $0.setTitle("완료", for: .normal)
+            $0.titleLabel?.font = .defaultFont(size: 14, bold: true)
+            $0.titleLabel?.textColor = .g4
+            $0.setCornerRadius(8.04.adjustedHeight)
+        }
+        
+        let rrr = UILabel(frame: CGRect(x: 0, y: 0, width: 47.adjustedWidth, height: 27.adjustedHeight)).then {
+            $0.backgroundColor = .g1
+            $0.text = "완료"
+            $0.font = .defaultFont(size: 14, bold: true)
+            $0.textColor = .g4
+            $0.textAlignment = .center
+            $0.setCornerRadius(8.04.adjustedHeight)
+        }
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rrr)
         
         var alert = UIAlertController(title: "제목을 입력해주세요.", message: nil, preferredStyle: .alert)
         
@@ -51,6 +64,33 @@ class NewPostViewController: UIViewController {
                 post: Observable.just(postToModify)
             )
         )
+        
+        // 텍스트 뷰 크기 제한
+        self.newPostView.contentTextView
+            .rx.text
+            .bind { _ in
+                let needToScrolling = self.newPostView.contentTextView.frame.height > Constants.SCREEN_SIZE.height / 3
+                
+//                if needToScrolling {
+//                    self.newPostView.contentTextView.snp.remakeConstraints {
+//                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+//                        $0.left.right.equalToSuperview().inset(33.adjustedWidth)
+//                        $0.height.equalTo(self.newPostView.contentTextView.frame.height)
+//                    }
+//                } else {
+//                    self.newPostView.contentTextView.snp.removeConstraints()
+//                    self.newPostView.contentTextView.snp.remakeConstraints {
+//                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+//                        $0.left.right.equalToSuperview().inset(33.adjustedWidth)
+//                    }
+//                    self.newPostView.contentTextView.sizeToFit()
+//                }
+                
+                self.newPostView.contentTextView.isScrollEnabled = needToScrolling
+            
+                print(self.newPostView.contentTextView.frame.height)
+            }
+            .disposed(by: disposeBag)
         
         // bind results
         viewModel.isTitleConfirmed
@@ -114,29 +154,5 @@ class NewPostViewController: UIViewController {
             self.navigationItem.leftBarButtonItem!.rx.tap
                 .bind { self.dismiss(animated: true, completion: nil) }.disposed(by: disposeBag)
         }
-    }
-}
-
-class NewPostView: UIStackView {
-    var titleTextField = UITextField().then {
-        $0.placeholder = "제목"
-        $0.font = UIFont.systemFont(ofSize: 20.0, weight: .bold)
-    }
-    var contentTextView = UITextView().then {
-        $0.font = UIFont.systemFont(ofSize: 18.0)
-        $0.backgroundColor = .lightGray
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.axis = .vertical
-        self.distribution = .fill
-        self.spacing = 8
-        self.addArrangedSubview(titleTextField)
-        self.addArrangedSubview(contentTextView)
-    }
-    
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

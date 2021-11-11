@@ -88,6 +88,9 @@ public class UserServices {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
+                print($0)
+                print($0.response)
+                print(try $0.mapJSON())
                 return $0.statusCode == 200
             }
             .catchAndReturn(false)
@@ -99,8 +102,8 @@ public class UserServices {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
                 if $0.statusCode == 200 {
+                    let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
                     UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
                     UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
                     Constants.loginUser = response.user
@@ -129,6 +132,7 @@ public class UserServices {
 
 enum LoginResult: Int {
     case Success = 200
-    case NotExist = 404
-    case PasswordNotCorrect = 500
+    case NotExist = 403
+    case PasswordNotCorrect = 401
+    case NoAuthorization = 400
 }

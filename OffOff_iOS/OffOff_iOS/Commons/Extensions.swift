@@ -311,13 +311,14 @@ extension UIImage {
     static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
     
     static let LEFTARROW = UIImage(named: "LeftArrow")!
-    static let CAMERA = UIImage(named: "CameraImage")!
+    static let CAMERA = UIImage(named: "CameraImage")!.withRenderingMode(.alwaysTemplate)
     static let MOREICON = UIImage(named: "MoreIcon")!
     static let SEARCHIMAGE = UIImage(named: "SearchImage")!
     static let HOMEICON = UIImage(named: "HomeIcon")!
     static let DefaultPostProfileImage = UIImage(named: "DefaultPostProfileImage")!
     static let DefaultReplyProfileImage = UIImage(named: "DefaultReplyProfileImage")!
     static let SubReplyArrow = UIImage(named: "SubReplyArrow")!
+    static let NewPostIcon = UIImage(named: "NewPostIcon")!.resize(to: CGSize(width: 26.61.adjustedWidth, height: 26.71.adjustedHeight))
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)

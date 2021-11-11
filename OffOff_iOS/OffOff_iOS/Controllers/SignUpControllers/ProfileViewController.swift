@@ -57,7 +57,7 @@ class ProfileViewController: UIViewController {
             .drive(onNext: { signedUp in
                 print(signedUp)
                 if signedUp {
-                    let alert = UIAlertController(title: "회원가입 완료", message: nil, preferredStyle: .alert)
+                    let alert = UIAlertController(title: "회원가입을 완료했습니다.\n인증을 위해서 기입한 이메일을 확인해주세요", message: nil, preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default) { action in
                         self.dismiss(animated: true, completion: nil)
                     }

@@ -108,6 +108,7 @@
 		EAD6FEDB2716C45100563005 /* ContentSizedTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */; };
 		EAD6FEE6271F147B00563005 /* ChildrenRepliesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
+		EAD849BB273CD79C0010DE1B /* NewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849BA273CD79C0010DE1B /* NewPostView.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
@@ -221,6 +222,7 @@
 		EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentSizedTableView.swift; sourceTree = "<group>"; };
 		EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildrenRepliesTableViewCell.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
+		EAD849BA273CD79C0010DE1B /* NewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostView.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 				EAF7073426E731CE00B7B6D1 /* AddShiftView.swift */,
 				EA6021B22739249300092917 /* BoardListView.swift */,
 				EA6021B427397BA500092917 /* PostListView.swift */,
+				EAD849BA273CD79C0010DE1B /* NewPostView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -745,6 +748,7 @@
 				EA88BD502725854B004D8415 /* SubReplyServices.swift in Sources */,
 				EA83564726D37BBE00D60C46 /* ScheduleViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
+				EAD849BB273CD79C0010DE1B /* NewPostView.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
 				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
 				EA8A333F26D4CC720014D97C /* RoutineCell.swift in Sources */,

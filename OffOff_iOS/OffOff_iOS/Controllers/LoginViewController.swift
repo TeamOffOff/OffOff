@@ -77,12 +77,17 @@ class LoginViewController: UIViewController {
                     controller.modalPresentationStyle = .fullScreen
                     self.present(controller, animated: true, completion: nil)
                 case .NotExist:
-                    let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "로그인 오류", message: "존재하지 않는 회원입니다.", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default, handler: nil)
                     alert.addAction(action)
                     self.present(alert, animated: true, completion: nil)
                 case .PasswordNotCorrect:
                     let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "확인", style: .default, handler: nil)
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                case .NoAuthorization:
+                    let alert = UIAlertController(title: "로그인 오류", message: "이메일 인증이 완료되지 않았습니다.\n이메일을 확인해주세요.", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default, handler: nil)
                     alert.addAction(action)
                     self.present(alert, animated: true, completion: nil)
