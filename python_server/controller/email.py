@@ -15,10 +15,12 @@ def send_email(r_email, verify, message):
 
     msg = MIMEText(html_msg, 'html')
     data.attach(msg)
-    # print(data)
 
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.set_debuglevel(1)
+
+    # debug 내용이 output.txt에 기록되지 않고 terminal에 출력됨 -> 문제발생 
+    # server.set_debuglevel(1)
+
     server.ehlo()
     server.login(GMAIL_ID, GMAIL_PW)
     server.ehlo()
@@ -28,6 +30,8 @@ def send_email(r_email, verify, message):
 
     server.sendmail(sender, receiver, data.as_string())
     # 잘못된 주소로 보내라고 하면 에러 메시지 보낼 것
+    # 시간 지나고 난 다음에는 해당 링크가 안 먹히도록 할 것
+    
     server.quit()
 
 
