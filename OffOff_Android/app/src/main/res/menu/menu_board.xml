@@ -4,14 +4,14 @@
 
     <item
         android:id="@+id/action_search"
-        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_search"
         android:title="검색"
-        android:icon="@drawable/ic_search"/>
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_write"
-        app:showAsAction="ifRoom"
-        android:title="글 쓰기"
-        android:icon="@drawable/ic_more_option"/>
+        android:id="@+id/action_more_option"
+        android:icon="@drawable/ic_more_option"
+        android:title="더보기"
+        app:showAsAction="ifRoom" />
 
 </menu>

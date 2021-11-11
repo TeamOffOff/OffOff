@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/layout_appbar"
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="230dp"
             app:elevation="0dp">
@@ -36,7 +36,7 @@
                     app:layout_collapseMode="pin">
 
                     <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/toolbar"
+                        android:id="@+id/appbar_board"
                         style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -76,21 +76,19 @@
                         android:drawableTint="@color/green"
                         android:importantForAutofill="no"
                         android:inputType="text"
-                        android:paddingStart="12dp"
+                        android:paddingLeft="12dp"
                         android:singleLine="true"
                         android:textSize="14sp"
-                        tools:ignore="LabelFor,RtlSymmetry"
-                        tools:targetApi="m" />
+                        tools:ignore="LabelFor" />
 
                     <ImageButton
                         android:id="@+id/bt_close"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/ic_button_x"
-                        android:contentDescription="@string/button_close" />
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/ic_button_x" />
                 </RelativeLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -107,7 +105,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="@string/background_board"
                 android:src="@drawable/layout_background_radius_bottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -122,11 +119,12 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_post_preview"
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="20dp"
                     android:orientation="vertical"
-                    android:scrollbars="none"
+                    android:scrollbars="vertical"
                     tools:listitem="@layout/rv_item_post_preview" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -141,12 +139,10 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="38dp"
             android:background="@drawable/layout_button_pen"
-            android:contentDescription="@string/button_write_post"
             android:foregroundGravity="center"
             android:paddingVertical="11dp"
             android:paddingEnd="2dp"
-            android:src="@drawable/ic_pen"
-            tools:ignore="RtlHardcoded,RtlSymmetry" />
+            android:src="@drawable/ic_pen" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

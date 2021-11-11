@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="84dp"
         android:background="@drawable/layout_rv_post_preview"
+        android:paddingHorizontal="25dp"
         android:paddingTop="11dp"
-        android:paddingBottom="15dp"
-        android:paddingHorizontal="25dp">
+        android:paddingBottom="15dp">
 
         <TextView
             android:id="@+id/tv_title"
@@ -54,9 +54,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
             android:text="@{item.date}"
             android:textColor="@color/white5"
-            android:layout_marginTop="2dp"
             android:textSize="10.5sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_content_preview" />
@@ -65,12 +65,12 @@
             android:id="@+id/view"
             android:layout_width="0.5dp"
             android:layout_height="0dp"
-            android:layout_marginTop="2dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
             android:background="@color/white5"
             app:layout_constraintBottom_toBottomOf="@id/tv_date"
             app:layout_constraintStart_toEndOf="@id/tv_date"
-            app:layout_constraintTop_toBottomOf="@+id/tv_content_preview"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_preview" />
 
         <TextView
             android:id="@+id/tv_author"
@@ -82,14 +82,14 @@
             android:textColor="@color/white5"
             android:textSize="10.5sp"
             app:layout_constraintStart_toEndOf="@id/view"
-            app:layout_constraintTop_toBottomOf="@id/tv_content_preview"/>
+            app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
 
         <TextView
             android:id="@+id/iv_likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
             android:layout_marginTop="2dp"
+            android:layout_marginEnd="4dp"
             android:text="♡"
             android:textColor="@color/white5"
             android:textSize="10.5sp"
@@ -125,8 +125,8 @@
         <TextView
             android:id="@+id/tv_reply_count"
             android:layout_width="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="16dp"
             android:text="@{Integer.toString(item.replyCount)}"
             android:textColor="@color/white5"

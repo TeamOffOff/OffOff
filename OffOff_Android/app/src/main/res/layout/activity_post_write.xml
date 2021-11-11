@@ -4,91 +4,192 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.yuuuzzzin.offoff_android.viewmodel.PostWriteViewModel" />
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clickable="false"
         tools:context=".views.ui.board.PostWriteActivity">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="119dp"
             android:backgroundTint="@color/green"
+            android:clickable="false"
+            app:elevation="0dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="34dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/appbar"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                app:menu="@menu/menu_post_write">
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="60dp">
 
-                <TextView
-                    android:id="@+id/tv_toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            </com.google.android.material.appbar.MaterialToolbar>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/bt_like"
+                        android:layout_width="47dp"
+                        android:layout_height="27dp"
+                        android:background="@drawable/layout_button_post_write"
+                        android:includeFontPadding="false"
+                        android:text="@string/done"
+                        android:textColor="@color/green"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- AppBarLayout 아래에 스크롤 뷰 배치 -->
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/write_post"
+            android:textColor="@color/white"
+            android:layout_marginTop="60dp"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/layout_appbar"
+            app:layout_constraintEnd_toEndOf="@id/layout_appbar"
+            app:layout_constraintStart_toStartOf="@id/layout_appbar"
+            app:layout_constraintTop_toTopOf="@id/layout_appbar"/>
+
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            android:layout_height="0dp"
+            android:clickable="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_appbar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_post_and_comments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp">
+                android:clickable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <EditText
-                    android:id="@+id/et_title"
+                <ImageView
+                    android:id="@+id/iv_background"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#FFF"
-                    android:hint="제목"
-                    android:text="@={viewModel.title}"
-                    android:padding="8dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
+                    android:layout_height="450dp"
+                    android:layout_marginBottom="-31dp"
+                    android:clickable="false"
+                    android:contentDescription="@string/background_post"
+                    android:src="@drawable/layout_background_radius_bottom_right"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_post"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/et_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="500dp"
-                    android:layout_marginTop="4dp"
-                    android:background="#FFF"
-                    android:gravity="top"
-                    android:text="@={viewModel.content}"
-                    android:hint="내용"
+                <ImageButton
+                    android:id="@+id/bt_camera"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="31dp"
+                    android:layout_marginBottom="22dp"
+                    android:background="@drawable/layout_photo_button"
+                    android:backgroundTint="@color/white3"
+                    android:clickable="false"
+                    android:contentDescription="@string/button_camera"
                     android:padding="8dp"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
+                    android:src="@drawable/ic_camera_green"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_background"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="32dp"
+                    android:layout_marginTop="29dp"
+                    android:layout_marginBottom="31dp"
+                    android:clickable="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_title" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <EditText
+                        android:id="@+id/et_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:clickable="false"
+                        android:elevation="0dp"
+                        android:hint="@string/title"
+                        android:importantForAutofill="no"
+                        android:inputType="text"
+                        android:text="@={viewModel.title}"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/green2"
+                        android:clickable="false"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/et_title" />
+
+                    <EditText
+                        android:id="@+id/et_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="37dp"
+                        android:autofillHints="no"
+                        android:background="@android:color/transparent"
+                        android:clickable="false"
+                        android:gravity="top"
+                        android:hint="@string/contents"
+                        android:inputType="text"
+                        android:maxHeight="150dp"
+                        android:scrollbars="vertical"
+                        android:text="@={viewModel.content}"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/et_title" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

@@ -4,13 +4,10 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import com.google.android.material.appbar.MaterialToolbar
+import androidx.appcompat.widget.Toolbar
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostWriteBinding
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
@@ -47,20 +44,29 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     }
 
     private fun initToolbar() {
-        val toolbar: MaterialToolbar = binding.appbar // 상단 툴바
+        val toolbar: Toolbar = binding.toolbar // 상단 툴바
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            binding.tvToolbarTitle.text = "글 쓰기"
-
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
-            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white)
             setDisplayShowHomeEnabled(true)
         }
     }
 
     private fun initViewModel() {
         binding.viewModel = viewModel
+
+        binding.btLike.setOnClickListener {
+            Log.d("tag_doneClick", "완료 클릭")
+            when (postWriteType) {
+                PostWriteType.WRITE -> viewModel.writePost(boardType)
+                PostWriteType.EDIT -> {
+                    Log.d("tag_postId", intent.getStringExtra("postId").toString())
+                    viewModel.editPost(boardType, intent.getStringExtra("postId").toString())
+                }
+            }
+        }
 
         viewModel.alertMsg.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
@@ -97,35 +103,8 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         dialog.show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
-        menuInflater.inflate(R.menu.menu_post_write, menu)
-        val menuItem = menu!!.getItem(0)
-        val spanString = SpannableString(menu.getItem(0).title.toString())
-        spanString.setSpan(
-            ForegroundColorSpan(resources.getColor(R.color.white)),
-            0,
-            spanString.length,
-            0
-        )
-        menuItem.title = (spanString)
-
-        return true
-
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_done -> {
-                when (postWriteType) {
-                    PostWriteType.WRITE -> viewModel.writePost(boardType)
-                    PostWriteType.EDIT -> {
-                        Log.d("tag_postId", intent.getStringExtra("postId").toString())
-                        viewModel.editPost(boardType, intent.getStringExtra("postId").toString())
-                    }
-                }
-                true
-            }
             android.R.id.home -> {
                 finish()
                 true
