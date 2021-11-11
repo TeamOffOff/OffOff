@@ -9,18 +9,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.service.models.Post
+import com.yuuuzzzin.offoff_android.utils.Constants.convertDPtoPX
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import info.androidhive.fontawesome.FontDrawable
 import java.io.Serializable
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
@@ -32,25 +31,41 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private lateinit var boardAdapter: BoardAdapter
     private lateinit var boardName: String
     private lateinit var boardType: String
-    private lateinit var searchIcon: FontDrawable
-    private lateinit var writeIcon: FontDrawable
     private lateinit var currentPostList: Array<Post>
     private lateinit var lastPostId: String
     private var clickedPosition: Int? = 0
     private var isFirst: Boolean = TRUE
+    private var totalScrolled:Int = 0
+    //private val density = resources.displayMetrics.density
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         processIntent()
+        initView()
         initViewModel()
-        // initToolbar()
+        initToolbar()
         initRV()
     }
 
     private fun processIntent() {
         boardName = intent.getStringExtra("boardName").toString()
         boardType = intent.getStringExtra("boardType").toString()
+    }
+
+    private fun initView() {
+        binding.btClose.setOnClickListener {
+            binding.layoutSearch.visibility = View.GONE
+            binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 152)
+        }
+
+        binding.btWritePost.setOnClickListener {
+            val intent = Intent(applicationContext, PostWriteActivity::class.java)
+            intent.putExtra("boardType", boardType)
+            intent.putExtra("boardName", boardName)
+            intent.putExtra("postWriteType", PostWriteType.WRITE)
+            startActivity(intent)
+        }
     }
 
     private fun initViewModel() {
@@ -76,25 +91,24 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     }
 
-//    private fun initToolbar() {
-//        setSupportActionBar(binding.appbarBoard)
-//        supportActionBar?.apply {
-//            binding.tvToolbarTitle.text = boardName
-//            setDisplayShowTitleEnabled(false)
-//            setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
-//            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
-//            setDisplayShowHomeEnabled(true)
-//        }
-//    }
+    private fun initToolbar() {
+        setSupportActionBar(binding.appbarBoard)
+        supportActionBar?.apply {
+            binding.tvToolbarTitle.text = boardName
+            setDisplayShowTitleEnabled(false)
+            setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white)
+            setDisplayShowHomeEnabled(true)
+        }
+    }
 
     private fun initRV() {
         boardAdapter = BoardAdapter()
-        boardAdapter.stateRestorationPolicy =
-            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
-        val spaceDecoration = VerticalSpaceItemDecoration(7)
+        val spaceDecoration = VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
         binding.rvPostPreview.apply {
             adapter = boardAdapter
+            boardAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY // 리사이클러뷰의 스크롤된 position 유지
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecoration)
         }
@@ -122,6 +136,28 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
+//                totalScrolled += convertPXtoDP(baseContext, dy)
+//                Log.d("tag_totalScrolled", totalScrolled.toString())
+//                Log.d("tag_dy", dy.toString())
+//                Log.d("tag_height", convertPXtoDP(baseContext, binding.ivBackground.height).toString())
+//
+//                if(totalScrolled <= 75 && convertPXtoDP(baseContext, binding.ivBackground.height) >= 195) {
+//
+//                    val layoutParams = binding.ivBackground.layoutParams
+//                    if(dy>0) {
+//                        layoutParams.height = convertDPtoPX(baseContext, (convertPXtoDP(baseContext, binding.ivBackground.height) - totalScrolled))
+//                    } else {
+//                        Log.d("tag_y음수", dy.toString())
+//                        layoutParams.height = convertDPtoPX(baseContext, (convertPXtoDP(baseContext, binding.ivBackground.height) + totalScrolled))
+//                    }
+//                    binding.ivBackground.layoutParams = layoutParams
+//                    Log.d("tag_b1", convertPXtoDP(baseContext, binding.ivBackground.height).toString())
+//                    //binding.ivBackground.layoutParams.height = convertDPtoPX(baseContext, (convertPXtoDP(baseContext, binding.ivBackground.height) - totalScrolled))
+//                    //Log.d("tag_b2", (convertPXtoDP(baseContext, binding.ivBackground.height) - totalScrolled).toString())
+//                }
+
+
+
                 val lastPosition =
                     (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
                 val totalCount = recyclerView.adapter!!.itemCount - 1
@@ -133,23 +169,24 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 }
             }
         })
+
+//        binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
+//            binding.refreshLayout.isEnabled = (binding.scrollView.scrollY == 0)
+//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_board, menu)
-        searchIcon = FontDrawable(this, R.string.fa_search_solid, true, false)
-        searchIcon.setTextColor(ContextCompat.getColor(this, R.color.white))
-        writeIcon = FontDrawable(this, R.string.fa_pen_solid, true, false)
-        writeIcon.setTextColor(ContextCompat.getColor(this, R.color.white))
-        menu!!.getItem(0).icon = searchIcon
-        menu.getItem(1).icon = writeIcon
+        //menu!!.getItem(0).icon = getDrawable(R.drawable.ic_search)
+        //menu.getItem(1).icon = getDrawable(R.drawable.ic_more_option)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                //검색 버튼 누를 시
+                binding.layoutSearch.visibility = View.VISIBLE
+                binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 230)
                 true
             }
             R.id.action_write -> {

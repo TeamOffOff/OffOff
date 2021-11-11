@@ -5,11 +5,13 @@
     <item
         android:id="@+id/action_search"
         app:showAsAction="ifRoom"
-        android:title="검색" />
+        android:title="검색"
+        android:icon="@drawable/ic_search"/>
 
     <item
         android:id="@+id/action_write"
         app:showAsAction="ifRoom"
-        android:title="글 쓰기"/>
+        android:title="글 쓰기"
+        android:icon="@drawable/ic_more_option"/>
 
 </menu>

@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import kotlin.math.roundToInt
 
 object Constants {
 
@@ -39,9 +40,19 @@ object Constants {
     fun Context.toast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
+    fun convertDPtoPX(context: Context, dp: Int): Int {
+        val density: Float = context.resources.displayMetrics.density
+        return (dp.toFloat() * density).roundToInt()
+    }
+
+    fun convertPXtoDP(context: Context, px: Int): Int {
+        val density: Float = context.resources.displayMetrics.density
+        return (px.toFloat() / density).roundToInt()
+    }
 }
 
 object PostWriteType {
-    const val WRITE = 0 // post 작성
+    const val WRITE = 2 // post 작성
     const val EDIT = 1 // post 수정
 }

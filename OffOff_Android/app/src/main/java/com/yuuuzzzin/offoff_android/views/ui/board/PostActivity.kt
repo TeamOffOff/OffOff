@@ -166,7 +166,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
-            setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white)
             setDisplayShowHomeEnabled(true)
         }
     }
@@ -290,21 +290,24 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     override fun onBackPressed() {
-        if (intent.getIntExtra("postWriteType", PostWriteType.WRITE) == PostWriteType.WRITE) {
-            val intent = Intent(applicationContext, BoardActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            intent.putExtra("boardType", boardType)
-            intent.putExtra("boardName", boardName)
-            startActivity(intent)
-        } else if (intent.getIntExtra("postWriteType", PostWriteType.WRITE) == PostWriteType.EDIT) {
-            val intent = Intent()
-            intent.putExtra("post", this.post as Serializable)
-            setResult(RESULT_OK, intent)
-        } else if (requestUpdate == true) {
-            Log.d("tag_onBackPressed", "뒤로가기")
-            val intent = Intent()
-            intent.putExtra("post", this.post as Serializable)
-            setResult(RESULT_OK, intent)
+        when {
+            intent.getIntExtra("postWriteType", -1) == PostWriteType.WRITE -> {
+                val intent = Intent(applicationContext, BoardActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.putExtra("boardType", boardType)
+                intent.putExtra("boardName", boardName)
+                startActivity(intent)
+            }
+            intent.getIntExtra("postWriteType", -1) == PostWriteType.EDIT -> {
+                val intent = Intent()
+                intent.putExtra("post", this.post as Serializable)
+                setResult(RESULT_OK, intent)
+            }
+            requestUpdate == true -> {
+                val intent = Intent()
+                intent.putExtra("post", this.post as Serializable)
+                setResult(RESULT_OK, intent)
+            }
         }
         finish()
     }
