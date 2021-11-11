@@ -1,8 +1,7 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restx import Api
 from controller.logger import get_logger
-import os
-
+import logging
 
 from flask_jwt_extended import JWTManager
 
@@ -17,7 +16,6 @@ from api_helper.calendar import Calendar, Shift, SavedShift
 
 
 import mongo as mongo
-import logging
 
 app = Flask(__name__)
 
@@ -60,49 +58,19 @@ api.add_namespace(Shift, '/shift')
 api.add_namespace(SavedShift, '/savedshift')
 
 
-import datetime
-import time
-
-from flask import g, request
-
-
-@app.before_request
-def start_timer():
-    g.start = time.time()
-
-
-# @app.after_request
-# def log_request(response):
-
-#     now = time.time()
-#     duration = round(now - g.start, 6)  # to the microsecond
-#     ip_address = request.headers.get("X-Forwarded-For", request.remote_addr)
-#     host = request.host.split(":", 1)[0]
-#     params = dict(request.args)
-
-#     request_id = request.headers.get("X-Request-ID", "")
-
-#     log_params = {
-#         "method": request.method,
-#         "path": request.path,
-#         "status": response.status_code,
-#         "duration": duration,
-#         "ip": ip_address,
-#         "host": host,
-#         "params": params,
-#         "request_id": request_id,
-#     }
-#     app.log.info("request", **log_params)
-
-#     return response
-# current_dir = os.path.dirname(os.path.realpath(__file__))
-# log_dir = '{}/logs' .format(current_dir)
-# if not os.path.exists(log_dir):
-#         os.makedirs(log_dir)
-# logging.basicConfig(filename = log_dir, level = logging.DEBUG)
-
 @app.after_request
 def log_request(response):
+        # 어떤 파일에서 로깅 됐는지 알기 위해  __name__으로
+        import logging
+        f_handler = logging.FileHandler('train.log')
+        f_handler.setLevel(logging.DEBUG)  # 파일에 저장할 레벨을 별도로 설정할 수 있음
+        f_format = logging.Formatter('%(asctime)s - %(name)s: %(lineno)4d - %(levelname)s - %(message)s')
+        f_handler.setFormatter(f_format)
+
+        # Add handlers to the logger
+        logger = logging.getLogger()
+        logger.addHandler(f_handler)
+
         log_str = """
         ipv4: {},
         url: {},
@@ -111,12 +79,24 @@ def log_request(response):
         status_code: {}
         """. format(request.remote_addr, request.full_path, request.method, request.get_data().decode(), response.status_code)
         
+        logger.info(log_str)
+        # try-except Exception으로 에러 로깅 -> logger.exception('Exception occured')
+        # 내가 if 문, try-except 등을 활용해서 warning, error 등을 로깅하는 거??
+        
         return response
 
 
 
 if __name__ == "__main__":
-    print("__name__ == __main__")
-    mongodb = mongo.MongoHelper()
-    app.run(host="0.0.0.0", port="5000")
+        logger = logging.getLogger(__name__)
+        logging.basicConfig(  # basicConfig는 main에서만 함
+                format = "%(asctime)s - %(name)s - %(levelname)s - [%(lineno)d] : %(message)s",
+                level="INFO"
+        )
+
+        try:
+                mongodb = mongo.MongoHelper()
+                app.run(host="0.0.0.0", port="5000")
+        except Exception:
+                logger.exception("Exception occured")
  
