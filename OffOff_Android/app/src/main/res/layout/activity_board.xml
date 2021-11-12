@@ -30,7 +30,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="23dp"
-                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginHorizontal="28dp"
                     android:layout_marginTop="67dp"
                     android:layout_marginBottom="62dp"
                     app:layout_collapseMode="pin">

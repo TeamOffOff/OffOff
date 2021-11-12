@@ -8,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.yuuuzzzin.offoff_android.MainActivity
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.databinding.FragmentBoardsBinding
-import com.yuuuzzzin.offoff_android.views.adapter.BoardListAdapter
+import com.yuuuzzzin.offoff_android.service.models.Board
 import com.yuuuzzzin.offoff_android.viewmodel.BoardListViewModel
+import com.yuuuzzzin.offoff_android.views.adapter.BoardListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,32 +43,46 @@ class BoardsFragment : Fragment() {
     ): View {
         mBinding = FragmentBoardsBinding.inflate(inflater, container, false)
 
+        initView()
         initViewModel()
         initRV()
+
         return binding.root
+    }
+
+    private fun initView() {
+        binding.tvNickname.text = "${OffoffApplication.user.subInfo.nickname} 님"
     }
 
     private fun initViewModel() {
         binding.viewModel = viewModel
         viewModel.boardList.observe(viewLifecycleOwner, {
-            with(boardListAdapter) { submitList(it.toMutableList()) }
+            with(boardListAdapter) { addBoardList(it.toMutableList()) }
         })
     }
 
     private fun initRV() {
-        boardListAdapter = BoardListAdapter(
-            itemClick = { item ->
+        boardListAdapter = BoardListAdapter()
+
+        boardListAdapter.setOnBoardClickListener(object :
+            BoardListAdapter.OnBoardClickListener {
+
+            override fun onClickBoard(item: Board, position: Int) {
                 val intent = Intent(mContext, BoardActivity::class.java)
                 intent.putExtra("boardType", item.boardType)
                 intent.putExtra("boardName", item.name)
                 startActivity(intent)
             }
-        )
+        })
 
         binding.rvBoards.apply {
+            layoutManager = GridLayoutManager(mContext, 3)
             adapter = boardListAdapter
-            layoutManager = LinearLayoutManager(mContext)
-            addItemDecoration(DividerItemDecoration(mContext, VERTICAL))
+        }
+
+        binding.rvBoardsFavorite.apply {
+            layoutManager = GridLayoutManager(mContext, 3)
+            adapter = boardListAdapter
         }
     }
 
