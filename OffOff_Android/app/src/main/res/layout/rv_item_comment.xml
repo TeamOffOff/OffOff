@@ -74,6 +74,7 @@
                         android:id="@+id/bt_likes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
                         android:text="@string/fa_thumbs_up_solid"
                         android:textColor="@color/white5"
                         android:textSize="10sp" />
@@ -84,8 +85,7 @@
                         android:layout_height="wrap_content"
                         android:text="@{String.valueOf(item.likes.size)}"
                         android:textColor="@color/white5"
-                        android:textSize="10sp"
-                        android:layout_marginEnd="5dp"/>
+                        android:textSize="10sp" />
 
                     <TextView
                         android:layout_width="wrap_content"

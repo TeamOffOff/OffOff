@@ -22,7 +22,6 @@ constructor(
     private val repository: BoardRepository
 ) : ViewModel() {
 
-    //var parentReplyId: String?= null
     val content = MutableLiveData("")
 
     private val _post = MutableLiveData<Post>()
@@ -108,7 +107,6 @@ constructor(
                     if (response.isSuccessful) {
                         when (response.code()) {
                             OK -> {
-                                //_response.postValue(response.body())
                                 _post.postValue(response.body())
                                 _successLike.postValue(Event("좋아요를 눌렀습니다."))
                                 Log.d("tag_success", "likePost: ${response.body()}")
@@ -190,7 +188,6 @@ constructor(
                     Log.d("tag_success", "getComments: ${response.body()}")
                     if (!response.body()!!.commentList.isNullOrEmpty()) {
                         _commentList.postValue(response.body()!!.commentList)
-                        // count = response.body()!!.commentList.size
                     }
                 } else {
                     Log.d("tag_fail", "getComments Error: ${response.code()}")
