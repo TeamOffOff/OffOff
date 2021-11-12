@@ -3,7 +3,7 @@
     <item android:drawable="@color/green" />
     <item>
         <bitmap
-            android:src="@drawable/ic_offoff"
+            android:src="@drawable/layout_splash"
             android:gravity="center"/>
     </item>
 </layer-list>
