@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,7 +50,7 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.getNextPosts(boardType, lastPostId).let { response ->
                 if (response.isSuccessful) {
-                    Log.d("tag_success", "gegetNextPoststPosts: ${response.body()}")
+                    Log.d("tag_success", "getNextPosts: ${response.body()}")
                     if (!response.body()!!.postList.isNullOrEmpty()) {
                         _postList.postValue(response.body()!!.postList)
                         _lastPostId.postValue(response.body()!!.lastPostId)
@@ -57,6 +58,38 @@ constructor(
                     }
                 } else {
                     Log.d("tag_fail", "getNextPosts Error: ${response.code()}")
+                }
+            }
+        }
+
+    fun searchPost(key: String, standardId: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.searchPost(OffoffApplication.pref.token.toString(), key, standardId).let { response ->
+                if (response.isSuccessful) {
+                    Log.d("tag_success", "searchPost: ${response.body()}")
+                    if (!response.body()!!.postList.isNullOrEmpty()) {
+                        _postList.postValue(response.body()!!.postList)
+                        _lastPostId.postValue(response.body()!!.lastPostId)
+                        count = response.body()!!.postList.size
+                    }
+                } else {
+                    Log.d("tag_fail", "searchPost Error: ${response.code()}")
+                }
+            }
+        }
+
+    fun totalSearchPost(key: String, standardId: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.totalSearchPost(OffoffApplication.pref.token.toString(), key, standardId).let { response ->
+                if (response.isSuccessful) {
+                    Log.d("tag_success", "totalSearchPost: ${response.body()}")
+                    if (!response.body()!!.postList.isNullOrEmpty()) {
+                        _postList.postValue(response.body()!!.postList)
+                        _lastPostId.postValue(response.body()!!.lastPostId)
+                        count = response.body()!!.postList.size
+                    }
+                } else {
+                    Log.d("tag_fail", "totalSearchPost Error: ${response.code()}")
                 }
             }
         }

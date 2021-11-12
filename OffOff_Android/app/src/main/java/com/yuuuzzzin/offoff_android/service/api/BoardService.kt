@@ -33,6 +33,22 @@ interface BoardService {
         @Query("boardType") board_type: String
     ): Response<Post>
 
+    /* 특정 게시판 내 게시물 검색 */
+    @GET("search/job")
+    suspend fun searchPost(
+        @Header("Authorization") auth: String,
+        @Query("key") key: String,
+        @Query("standardId") standardId: String
+    ): Response<PostList>
+
+    /* 게시물 통합 검색 */
+    @GET("totalsearch/job")
+    suspend fun totalSearchPost(
+        @Header("Authorization") auth: String,
+        @Query("key") key: String,
+        @Query("standardId") standardId: String
+    ): Response<PostList>
+
     /* 게시물 작성 */
     @POST("post")
     suspend fun writePost(
