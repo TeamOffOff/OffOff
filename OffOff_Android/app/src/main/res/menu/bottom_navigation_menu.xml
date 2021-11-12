@@ -5,23 +5,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_outline_home_24"
+        android:icon="@drawable/ic_bn_home"
         android:title="Home" />
 
     <item android:id="@+id/boardsFragment"
-        android:icon="@drawable/ic_baseline_list_alt_24"
+        android:icon="@drawable/ic_bn_board"
         android:title="게시판" />
 
     <item android:id="@+id/scheduleFragment"
-        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:icon="@drawable/ic_bn_schedule"
         android:title="스케줄" />
 
     <item android:id="@+id/notificationFragment"
-        android:icon="@drawable/ic_outline_notifications_24"
+        android:icon="@drawable/ic_bn_user"
         android:title="알림" />
 
     <item android:id="@+id/settingsFragment"
-        android:icon="@drawable/ic_outline_settings_24"
+        android:icon="@drawable/ic_bn_settings"
         android:title="설정" />
 
 </menu>

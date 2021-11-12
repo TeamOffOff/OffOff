@@ -75,6 +75,13 @@
     <string name="contents">내용</string>
     <string name="title">제목</string>
     <string name="write_post">글 쓰기</string>
+    <string name="message">쪽지</string>
+    <string name="welcome_greetings">안녕하세요!\noffoff 님</string>
+    <string name="board_favorite">즐겨찾는 게시판</string>
+    <string name="scrap">스크랩</string>
+    <string name="hi">안녕하세요!</string>
+    <string name="user_offoff">offoff 님</string>
+    <string name="check">확인</string>
 
 
     <!--    <string name=""></string>-->
