@@ -7,10 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <View
+    <ImageView
+        android:id="@+id/iv_background"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/green"
+        android:layout_height="270dp"
+        android:contentDescription="@string/background_post"
+        android:src="@drawable/layout_background_radius_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
