@@ -120,7 +120,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             with(commentListAdapter) { submitList(it.toMutableList()) }
             currentCommentList = it.toTypedArray()
             if (!isFirst) {
-                post?.replyCount = it.size
+
+                // for문을 돌아 대댓글이 있는지 확인 후 replyCount에 더해주기
+                var replyCount = 0
+
+                for(i in it) {
+                    if(i.childrenReplies != null)
+                        replyCount += i.childrenReplies.size
+                }
+
+                post?.replyCount = it.size + replyCount
+                binding.tvCommentsNum.text = post?.replyCount.toString()
             }
             isFirst = false
             binding.refreshLayout.isRefreshing = false
@@ -134,12 +144,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.reply.observe(binding.lifecycleOwner!!, {
             commentListAdapter.replyListAdapter.updateItem(
                 it,
-                commentPosition!!
+                commentPosition
             )
         })
 
         viewModel.replySuccessEvent.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
+                Log.d("tag_reply", "대댓글작성")
                 parentReplyId = null
             }
         })
@@ -155,6 +166,22 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 showReplyOptionDialog(it, isMine = true)
             }
         })
+
+        binding.btWrite.setOnClickListener {
+            if (!binding.etComment.text.isNullOrBlank()) {
+                if (parentReplyId.isNullOrBlank()) {
+                    viewModel.writeComment(postId, boardType)
+                } else {
+                    viewModel.writeReply(postId, boardType, parentReplyId!!)
+                }
+                binding.etComment.text = null
+                hideKeyboard()
+                binding.nestedScrollView.post {
+                    binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
+                }
+                requestUpdate = true
+            }
+        }
     }
 
     private fun initToolbar() {
@@ -178,24 +205,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         likeIcon = FontDrawable(this, R.string.fa_thumbs_up_solid, true, false)
         likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
-
-        binding.tfComment.endIconDrawable = writeIcon
-
-        binding.tfComment.setEndIconOnClickListener {
-            if (!binding.etComment.text.isNullOrBlank()) {
-                if (parentReplyId.isNullOrBlank()) {
-                    viewModel.writeComment(postId, boardType)
-                } else {
-                    viewModel.writeReply(postId, boardType, parentReplyId!!)
-                }
-                binding.etComment.text = null
-                hideKeyboard()
-                binding.nestedScrollView.post {
-                    binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
-                }
-                requestUpdate = true
-            }
-        }
 
         binding.refreshLayout.isRefreshing = false
 
@@ -443,9 +452,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             if (!rect.contains(x, y)) {
                 hideKeyboard()
                 focusView.clearFocus()
-                parentReplyId = null
+                //parentReplyId = null
             }
         }
+
         return super.dispatchTouchEvent(motionEvent)
     }
 }
