@@ -88,7 +88,7 @@ class PostControl(Resource):
         if board_type == "secret_board":
             post["author"] = None
 
-        post["image"] = get_image(post["image"], "post", "400")
+        post["image"] = get_image(post["image"], "post", "400")  #
 
         if update_status.raw_result["n"] == 0:
             response_result = make_response({"queryStatus": "views update fail"}, 500)
@@ -183,7 +183,10 @@ class PostControl(Resource):
                                     collection_name=board_type)
             post["_id"] = str(post["_id"])
             post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+            if board_type == "secret_board":
+                post["author"] = None
             response_result = make_response(post, 200)
+
         return response_result
 
     @ownership_required
