@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from werkzeug.wrappers import Response
 from flask_jwt_extended import jwt_required
 from controller.filter import check_jwt
+from controller.image import *
 from pymongo import collection, message
 
 import mongo as mongo
@@ -155,6 +156,7 @@ class PostListControl(Resource):
             for post in total_list:
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                post["image"] = get_image(post["image"], "post", "200")
                 if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
                     post["author"] = None
 
