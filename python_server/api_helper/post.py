@@ -15,7 +15,41 @@ import mongo as mongo
 mongodb = mongo.MongoHelper()
 
 Post = Namespace("post", description="게시물 관련 API")
+TestPost = Namespace('testpost', description='post여러개')
 
+@TestPost.route("")
+class TestPostControl(Resource):
+    def post(self):
+        request_info = request.get_json()
+        board_type =  request_info["boardType"]+"_board"
+        posts = request_info["posts"]
+        for post in posts:
+            # user설정
+            user = post["author"]
+             # _id를 지움
+            del post["_id"]
+
+            # date 추가
+            post["date"] = datetime.now()
+
+            # 회원정보 embedded 형태로 return
+            making_reference = MakeReference(board_type=board_type, user=user)
+            author = making_reference.embed_author_information_in_object()
+            post["author"] = author
+
+            # views, likes, reports, bookmarks, replyCount 추가
+            post["views"] = 0
+            post["replyCount"] = 0
+            post["likes"] = []
+            post["reports"] = []
+            post["bookmarks"] = []
+        
+            if post["image"]:
+                post["image"] = save_image(post["image"], "post")
+        
+        insert_manay_post = mongodb.insert_many(collection_name=board_type, data=posts)
+        print(insert_manay_post)
+        return{"queryStatus": "good"}, 200
 """
 게시글 관련 API
 """
