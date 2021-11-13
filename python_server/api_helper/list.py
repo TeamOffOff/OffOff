@@ -157,7 +157,11 @@ class PostListControl(Resource):
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
                 post["image"] = get_image(post["image"], "post", "200")
-                if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
+
+                # 게시글 리스트에서는 프로필 사진이 변환해서 줄 필요 없음
+                
+                # 비밀게시판인 경우에 author 을 None으로 변경
+                if board_type == "secret_board":  
                     post["author"] = None
 
             last_post_id = total_list[-1]["_id"]

@@ -59,8 +59,6 @@ class PostControl(Resource):
     @jwt_required()  # token이 있는지
     def get(self):
         """특정 id의 게시글을 조회합니다."""
-        print(request)
-        print(Resource)
         user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
         print("user_id: ", user_id)
         if not user_id:
@@ -74,6 +72,11 @@ class PostControl(Resource):
         update_status = mongodb.update_one(query={"_id": ObjectId(post_id)},
                                            collection_name=board_type,
                                            modify={"$inc": {"views": 1}})
+        
+        # viewCount가 업데이트되지 않은 경우
+        if update_status.raw_result["n"] == 0:
+            response_result = make_response({"queryStatus": "views update fail"}, 500)
+            return response_result
 
         # 게시글 조회
         post = mongodb.find_one(query={"_id": ObjectId(post_id)},
@@ -85,18 +88,25 @@ class PostControl(Resource):
             print(response_result.status_code)
             return response_result
         
+        # 비밀게시판인 경우에 author 을 None으로 변경
         if board_type == "secret_board":
             post["author"] = None
 
-        post["image"] = get_image(post["image"], "post", "400")  #
+        # 게시글에 있는 image base 64로 인코딩하기
+        post["image"] = get_image(post["image"], "post", "400") 
 
-        if update_status.raw_result["n"] == 0:
-            response_result = make_response({"queryStatus": "views update fail"}, 500)
-            return response_result
+        # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
+        if post["author"]: #secret인 경우 None임
+            if post["author"]["_id"]: #탈퇴한 경우 _id가 None임
+                if post["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
+                    post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
 
+        # string 타입으로 바꿔야 오류 안 남
         post["_id"] = str(post["_id"])
         post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
         response_result = make_response(post, 200)
+
         return response_result
 
 
@@ -121,7 +131,7 @@ class PostControl(Resource):
             response_result = make_response({"queryStatus": "post delete fail"}, 500)
 
         elif activity_result.raw_result["n"] == 0:  # 활동 업데이트 실패
-            reponse_result = make_response({"queryStatus": "delete activity fail"}, 500)
+            response_result = make_response({"queryStatus": "delete activity fail"}, 500)
 
         else :
             response_result = make_response({"queryStatus": "success"}, 200)
@@ -175,16 +185,23 @@ class PostControl(Resource):
         # 회원활동 정보 등록
         result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$addToSet")
 
-        # 등록완료된 게시글 조회
-        if result.raw_result["n"] == 0:
+        
+        if result.raw_result["n"] == 0:  # 회원활동 업데이트 실패
             response_result = make_response({"queryStatus": "update activity fail"}, 500)
-        else:
+    
+        else: # 등록완료된 게시글 조회
             post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                     collection_name=board_type)
             post["_id"] = str(post["_id"])
             post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
             if board_type == "secret_board":
                 post["author"] = None
+
+            # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
+            if post["author"]: #secret인 경우 None임
+                if post["author"]["profileImage"]: #secret도 아니고 profileImage가 있는 경우 (여기에선 탈퇴한 경우 생각할 필요없음)
+                    post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
+
             response_result = make_response(post, 200)
 
         return response_result
@@ -264,8 +281,10 @@ class PostControl(Resource):
             if activity_result.raw_result["n"] == 0:
                 response_result = make_response({"queryStatus": "user activity update fail"}, 500)
                 return response_result
-
-        if result.raw_result["n"] == 0:  # 게시글 정보(string, likes, reports, bookmarks) 업데이트 실패한 경우
+        
+        # string 수정, integer 수정 모두
+        # 게시글 정보(string, likes, reports, bookmarks) 업데이트 실패한 경우
+        if result.raw_result["n"] == 0:  
             response_result = make_response({"queryStatus": "post update fail"}, 500)
             return response_result
         else:
@@ -274,7 +293,15 @@ class PostControl(Resource):
 
             modified_post["_id"] = str(modified_post["_id"])
             modified_post["date"] = (modified_post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+            
+            # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
+            if modified_post["author"]: #secret인 경우 None임
+                if modified_post["author"]["_id"]: #탈퇴한 경우 _id가 None임
+                    if modified_post["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
+                        modified_post["author"]["profileImage"] = get_image(modified_post["author"]["profileImage"], "user", "200")
+
             response_result = make_response(modified_post, 200)
+
             return response_result
 
 
