@@ -5,13 +5,13 @@ from api_helper.utils import GMAIL_ID,GMAIL_PW
 
 def send_email(r_email, verify, message):
     data = MIMEMultipart()
-    data["From"] = "ssoo.dat.y@gmail.com"
+    data["From"] = "TeamOffPublic@gmail.com"
     data["To"] = r_email
     # data["Cc"] = cc
     # data["Bcc"] = bcc
     data["Subject"] = "Test Mail"
 
-    html_msg = "<h1>메일인증</h1>" + "<a href = '" + verify + "'>" + "확인</a>" + message
+    html_msg = "<h1>메일인증</h1>" + "<h2><a href = '" + verify + "'>" + "확인</a></h2>" + message
 
     msg = MIMEText(html_msg, 'html')
     data.attach(msg)

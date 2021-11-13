@@ -22,7 +22,8 @@ app = Flask(__name__)
 app.config.update(
         DEBUG=True,
         SECRET_KEY = APP_SECRET_KEY,
-        JWT_SECRET_KEY = JWT_SECRET_KEY
+        JWT_SECRET_KEY = JWT_SECRET_KEY,
+        
 )
 
 

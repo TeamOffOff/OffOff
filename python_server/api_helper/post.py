@@ -50,10 +50,10 @@ class TestPostControl(Resource):
         insert_manay_post = mongodb.insert_many(collection_name=board_type, data=posts)
         print(insert_manay_post)
         return{"queryStatus": "good"}, 200
+
 """
 게시글 관련 API
 """
-
 @Post.route("")
 class PostControl(Resource):
     @jwt_required()  # token이 있는지
