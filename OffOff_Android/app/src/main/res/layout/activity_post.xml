@@ -167,14 +167,25 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:outlineProvider="bounds"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_content"
+                            tools:listitem="@layout/rv_item_post_image" />
+
                         <LinearLayout
                             android:id="@+id/layout_likes_comments"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="36dp"
+                            android:layout_marginTop="20dp"
                             android:orientation="horizontal"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tv_content">
+                            app:layout_constraintTop_toBottomOf="@id/rv_image">
 
                             <info.androidhive.fontawesome.FontTextView
                                 android:id="@+id/iv_likes"

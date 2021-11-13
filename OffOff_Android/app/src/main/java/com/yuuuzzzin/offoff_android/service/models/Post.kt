@@ -26,7 +26,7 @@ data class Post(
     @SerializedName("content")
     val content: String,
     @SerializedName("image")
-    val image: String? = null,
+    val image: List<Image>? = emptyList(),
     @SerializedName("date")
     val date: String,
     @SerializedName("views")
@@ -34,11 +34,11 @@ data class Post(
     @SerializedName("replyCount")
     var replyCount: Int? = 0,
     @SerializedName("likes")
-    val likes: List<String> = emptyList(),
+    val likes: List<String>? = emptyList(),
     @SerializedName("reports")
-    val reports: List<Any> = emptyList(),
+    val reports: List<Any>? = emptyList(),
     @SerializedName("bookmarks")
-    val bookmarks: List<Any> = emptyList(),
+    val bookmarks: List<Any>? = emptyList(),
 ) : Serializable
 
 /* 보내는 게시물 */
@@ -54,7 +54,7 @@ data class PostSend(
     @SerializedName("content")
     val content: String? = null,
     @SerializedName("image")
-    val image: String? = null
+    val image: List<Image>? = emptyList(),
 )
 
 /* 작성자 */
@@ -63,8 +63,16 @@ data class Author(
     val id: String,
     @SerializedName("nickname")
     val nickname: String? = null,
-    @SerializedName("type")
-    val type: String? = null,
     @SerializedName("profileImage")
-    val profile: String? = null
+    val profileImage: List<Image>? = emptyList(),
+    @SerializedName("type")
+    val type: String? = null
+) : Serializable
+
+/* 이미지 */
+data class Image(
+    @SerializedName("key")
+    val key: String,
+    @SerializedName("body")
+    val body: String
 ) : Serializable

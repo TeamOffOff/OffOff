@@ -19,6 +19,7 @@ import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
+import com.yuuuzzzin.offoff_android.service.models.Image
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.models.Reply
 import com.yuuuzzzin.offoff_android.utils.*
@@ -29,6 +30,7 @@ import com.yuuuzzzin.offoff_android.utils.DialogUtils.showYesNoDialog
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.CommentListAdapter
+import com.yuuuzzzin.offoff_android.views.adapter.PostImageAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import info.androidhive.fontawesome.FontDrawable
 import java.io.Serializable
@@ -40,6 +42,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private lateinit var commentListAdapter: CommentListAdapter
     private lateinit var currentCommentList: Array<Comment>
+
+    private lateinit var postImageListAdapter: PostImageAdapter
 
     lateinit var postId: String
     lateinit var boardType: String
@@ -95,6 +99,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.post.observe(binding.lifecycleOwner!!, {
             binding.post = it
+
+            if (it.image != null) {
+                postImageListAdapter.addPostImageList(it.image.toMutableList())
+            }
+
             this.post = it
             binding.refreshLayout.isRefreshing = false
             if (isFirst) {
@@ -124,14 +133,15 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 // for문을 돌아 대댓글이 있는지 확인 후 replyCount에 더해주기
                 var replyCount = 0
 
-                for(i in it) {
-                    if(i.childrenReplies != null)
+                for (i in it) {
+                    if (i.childrenReplies != null)
                         replyCount += i.childrenReplies.size
                 }
 
                 post?.replyCount = it.size + replyCount
                 binding.tvCommentsNum.text = post?.replyCount.toString()
             }
+
             isFirst = false
             binding.refreshLayout.isRefreshing = false
         })
@@ -170,6 +180,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         binding.btWrite.setOnClickListener {
             if (!binding.etComment.text.isNullOrBlank()) {
                 if (parentReplyId.isNullOrBlank()) {
+                    isFirst = false
                     viewModel.writeComment(postId, boardType)
                 } else {
                     viewModel.writeReply(postId, boardType, parentReplyId!!)
@@ -217,12 +228,21 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private fun initRV() {
         commentListAdapter = CommentListAdapter(viewModel)
+        postImageListAdapter = PostImageAdapter()
 
-        val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
+        val spaceDecorationComment = RecyclerViewUtils.VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
         binding.rvComment.apply {
             adapter = commentListAdapter
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(spaceDecoration)
+            addItemDecoration(spaceDecorationComment)
+            isNestedScrollingEnabled = false
+        }
+
+        val spaceDecorationImage = RecyclerViewUtils.VerticalSpaceItemDecoration(20) // 아이템 사이의 거리
+        binding.rvImage.apply {
+            adapter = postImageListAdapter
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(spaceDecorationImage)
             isNestedScrollingEnabled = false
         }
 
@@ -250,6 +270,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             override fun onLikeReply(position: Int, reply: Reply) {
                 commentPosition = position
                 viewModel.likeReply(reply.id!!, boardType)
+            }
+        })
+
+        postImageListAdapter.setOnPostImageClickListener(object :
+            PostImageAdapter.OnPostImageClickListener {
+            override fun onClickPostImage(item: Image, position: Int) {
+                TODO("Not yet implemented")
             }
         })
     }
