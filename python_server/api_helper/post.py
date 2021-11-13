@@ -84,6 +84,9 @@ class PostControl(Resource):
             response_result = make_response({"queryStatus": "not found"}, 404)
             print(response_result.status_code)
             return response_result
+        
+        if board_type == "secret_board":
+            post["author"] = None
 
         post["image"] = get_image(post["image"], "post", "400")
 

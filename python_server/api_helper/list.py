@@ -155,6 +155,8 @@ class PostListControl(Resource):
             for post in total_list:
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
+                    post["author"] = None
 
             last_post_id = total_list[-1]["_id"]
 
@@ -170,6 +172,9 @@ class PostListControl(Resource):
                     post = mongodb.find_one(query={"_id": post_id}, collection_name=board_type)
                     post["_id"] = str(post["_id"])
                     post["date"] = str(post["date"])
+                    
+                    if board_type == "secret_board":
+                        post["author"] = None
 
                     hot_post_list.append(post)
 
