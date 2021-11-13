@@ -76,6 +76,10 @@ def log_request(response):
         logger = logging.getLogger(__name__)  
         # Add handlers to the logger
         logger.addHandler(f_handler)
+        
+        logging_info = request.get_data().decode()
+        if "image" in logging_info:
+                logging_info = response.body
 
         log_str = """
         status_code: {0}

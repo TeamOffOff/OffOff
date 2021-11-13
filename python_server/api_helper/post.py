@@ -218,9 +218,9 @@ class PostControl(Resource):
 
             activity = request_info["activity"]
 
+            past_user_list = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id": False, activity: True})[activity]
+            print(past_user_list)
             if activity == "likes":
-                past_user_list = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id": False, activity: True})[activity]
-                print(past_user_list)
                 past_likes = len(past_user_list)
                 print(past_likes)
 
@@ -256,7 +256,7 @@ class PostControl(Resource):
 
                         mongodb.insert_one(data=hot_post_info, collection_name="hot_board")
 
-            # 활동 업데이트
+            # user 컬랙션에서 활동 업데이트
             making_reference = MakeReference(board_type=board_type, user=user)
             field = "activity." + activity
 

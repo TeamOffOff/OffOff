@@ -471,16 +471,21 @@ class ActivityControl(Resource):
         else:  # 타켓 activity 가 있는 경우
             post_list = []
             for post in target_activity:
-                board_type = post[0] + "_board"
-                post_id = post[1]
+                board_type = post["boardType"] + "_board"
+                post_id = post["postId"]
 
                 result = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
                 if result:  # 해당 게시글이 있는 경우(삭제되지 않은 경우)
                     result["_id"] = str(result["_id"])
                     result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                    
+                    # 비밀게시판 처리
+                    if board_type == "secret_board":
+                        result["author"] = None
 
                     if result not in post_list:  # 중복 피하기 위함
                         post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
+                    
                 else:  # 삭제된 경우
                     continue
 
