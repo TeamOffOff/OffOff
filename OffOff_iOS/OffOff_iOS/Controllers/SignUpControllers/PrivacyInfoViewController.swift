@@ -44,12 +44,12 @@ class PrivacyInfoViewController: UIViewController {
                     .skip(1)
                     .distinctUntilChanged()
                     .asDriver(onErrorJustReturn: ""),
-                birthdayText: privacyView.birthdayTextField
-                    .rx.text
-                    .orEmpty
+                birthdayText: birthdayPicker!.rx.date
                     .skip(1)
-                    .distinctUntilChanged()
-                    .asDriver(onErrorJustReturn: ""),
+                    .map { $0.toString() }
+                    .do {self.privacyView.birthdayTextField.text = $0}
+                    .asDriver(onErrorJustReturn: "")
+                ,
                 nextButtonTap: privacyView.nextButton.rx.tap.asSignal()
             )
         )
@@ -163,12 +163,6 @@ extension PrivacyInfoViewController {
         
         birthdayPicker!.topRoundCorner(radius: 40.0)
         
-        birthdayPicker!.rx.date
-            .skip(1)
-            .map { $0.toString() }
-            .bind {
-                self.privacyView.birthdayTextField.text = $0
-            }
-            .disposed(by: disposeBag)
+        
     }
 }

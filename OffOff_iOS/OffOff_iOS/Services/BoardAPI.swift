@@ -58,7 +58,10 @@ extension BoardAPI: TargetType {
             return .requestPlain
         case .getBoardList:
             return .requestPlain
-        case .getPostList(_, _):
+        case .getPostList(_, let lastContentID):
+            if lastContentID != nil {
+                return .requestParameters(parameters: ["volume":10, "standardId":lastContentID!], encoding: URLEncoding.default)
+            }
             return .requestPlain
         }
     }

@@ -35,9 +35,9 @@ public class BoardServices {
             .catchAndReturn(nil)
     }
     
-    static func fetchPostList(board_type: String) -> Observable<PostList?> {
+    static func fetchPostList(board_type: String, lastContentID: String? = nil) -> Observable<PostList?> {
         BoardServices.provider
-            .rx.request(.getPostList(board_type, nil))
+            .rx.request(.getPostList(board_type, lastContentID))
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {

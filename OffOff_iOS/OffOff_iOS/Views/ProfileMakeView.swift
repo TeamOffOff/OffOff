@@ -17,6 +17,7 @@ class ProfileMakeView: UIView {
     var imageUploadButton = UIButton().then {
         $0.backgroundColor = .w4
         $0.setCornerRadius(10.64)
+        $0.tintColor = .w5
         $0.setImage(.CAMERA, for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
         $0.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)

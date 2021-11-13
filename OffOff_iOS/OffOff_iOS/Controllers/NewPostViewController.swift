@@ -8,6 +8,7 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import RxGesture
 
 class NewPostViewController: UIViewController {
     let disposeBag = DisposeBag()
@@ -24,15 +25,7 @@ class NewPostViewController: UIViewController {
         super.viewDidLoad()
         self.title = "글 쓰기"
         
-        let saveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 47.adjustedWidth, height: 27.adjustedHeight)).then {
-            $0.backgroundColor = .g1
-            $0.setTitle("완료", for: .normal)
-            $0.titleLabel?.font = .defaultFont(size: 14, bold: true)
-            $0.titleLabel?.textColor = .g4
-            $0.setCornerRadius(8.04.adjustedHeight)
-        }
-        
-        let rrr = UILabel(frame: CGRect(x: 0, y: 0, width: 47.adjustedWidth, height: 27.adjustedHeight)).then {
+        let saveButton = UILabel(frame: CGRect(x: 0, y: 0, width: 47.adjustedWidth, height: 27.adjustedHeight)).then {
             $0.backgroundColor = .g1
             $0.text = "완료"
             $0.font = .defaultFont(size: 14, bold: true)
@@ -40,9 +33,13 @@ class NewPostViewController: UIViewController {
             $0.textAlignment = .center
             $0.setCornerRadius(8.04.adjustedHeight)
         }
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rrr)
-        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: saveButton)
         var alert = UIAlertController(title: "제목을 입력해주세요.", message: nil, preferredStyle: .alert)
+        
+        self.navigationItem.rightBarButtonItem!.rx.tap
+            .bind { _ in
+                print(#fileID, #function, #line, "")
+            }.disposed(by: disposeBag)
         
         // 수정일 때 세팅
         setModifyingMode(postToModify != nil)
@@ -60,7 +57,8 @@ class NewPostViewController: UIViewController {
                     .orEmpty
                     .distinctUntilChanged()
                     .asDriver(onErrorJustReturn: ""),
-                createButtonTap: self.navigationItem.rightBarButtonItem!.rx.tap.asSignal(),
+                createButtonTap: saveButton.rx.tapGesture()
+                    .when(.recognized),
                 post: Observable.just(postToModify)
             )
         )

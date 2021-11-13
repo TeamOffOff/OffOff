@@ -48,6 +48,9 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationController?.navigationBar.setAppearance()
+        
         self.view.backgroundColor = .white
         self.view.addSubview(postView)
         self.view.addSubview(replyContainer)
@@ -79,7 +82,6 @@ class PostViewController: UIViewController {
         viewModel.post
             .filter { $0 != nil }
             .bind {
-                print(#fileID, #function, #line, $0?._id)
                 self.postView.titleLabel.text = $0!.title
                 self.postView.authorLabel.text = $0!.author.nickname
                 self.postView.contentTextView.text = $0!.content

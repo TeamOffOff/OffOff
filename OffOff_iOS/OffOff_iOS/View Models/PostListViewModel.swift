@@ -18,7 +18,9 @@ class PostListViewModel {
     var boardType = ""
     
     let reloadTrigger = PublishSubject<Void>()
-    let refreshing = BehaviorSubject<Bool>(value: false)
+    let refreshing = BehaviorSubject<Void>(value: ())
+    
+    var lastContentId: String? = nil
     
     init(boardType: String) {
         self.boardType = boardType
@@ -26,15 +28,28 @@ class PostListViewModel {
         
         self.reloadTrigger
             .debug()
-            .flatMapLatest { _ in
-                BoardServices.fetchPostList(board_type: boardType)
+            .flatMapLatest { _ -> Observable<PostList?> in
+                self.refreshing.onNext(())
+                return BoardServices.fetchPostList(board_type: boardType, lastContentID: self.lastContentId)
             }
-            .map { $0?.postList ?? [] }
-            .bind(to: self.postList)
+            .filter { $0 != nil }
+            .map { result -> [PostModel] in
+                self.lastContentId = result?.lastPostId
+                return result?.postList ?? []
+            }
+            .bind {
+                var list = self.postList.value
+                list.append(contentsOf: $0)
+                self.postList.accept(list)
+                print(self.postList.value)
+            }
             .disposed(by: disposeBag)
     }
     
     public func fetchPostList(boardType: String) {
-        _ = BoardServices.fetchPostList(board_type: boardType).map { $0?.postList ?? [] }.bind(to: self.postList)
+        _ = BoardServices.fetchPostList(board_type: boardType).map {
+            self.lastContentId = $0?.lastPostId
+            return $0?.postList ?? []
+        }.bind(to: self.postList)
     }
 }

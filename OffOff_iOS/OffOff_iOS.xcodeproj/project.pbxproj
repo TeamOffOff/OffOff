@@ -109,6 +109,12 @@
 		EAD6FEE6271F147B00563005 /* ChildrenRepliesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */; };
 		EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */; };
 		EAD849BB273CD79C0010DE1B /* NewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849BA273CD79C0010DE1B /* NewPostView.swift */; };
+		EAD849BD273E30E10010DE1B /* CustomRefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849BC273E30E10010DE1B /* CustomRefreshControl.swift */; };
+		EAD849BF273ED0260010DE1B /* PostSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849BE273ED0260010DE1B /* PostSearchView.swift */; };
+		EAD849C1273ED26A0010DE1B /* PostSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C0273ED26A0010DE1B /* PostSearchViewController.swift */; };
+		EAD849C3273ED3E50010DE1B /* PostSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */; };
+		EAD849C5273ED4450010DE1B /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C4273ED4450010DE1B /* SearchAPI.swift */; };
+		EAD849C7273ED54F0010DE1B /* SearchServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C6273ED54F0010DE1B /* SearchServices.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
@@ -223,6 +229,12 @@
 		EAD6FEE5271F147A00563005 /* ChildrenRepliesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildrenRepliesTableViewCell.swift; sourceTree = "<group>"; };
 		EAD7E30926A00A5C00E2D311 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		EAD849BA273CD79C0010DE1B /* NewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostView.swift; sourceTree = "<group>"; };
+		EAD849BC273E30E10010DE1B /* CustomRefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRefreshControl.swift; sourceTree = "<group>"; };
+		EAD849BE273ED0260010DE1B /* PostSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSearchView.swift; sourceTree = "<group>"; };
+		EAD849C0273ED26A0010DE1B /* PostSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSearchViewController.swift; sourceTree = "<group>"; };
+		EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSearchViewModel.swift; sourceTree = "<group>"; };
+		EAD849C4273ED4450010DE1B /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
+		EAD849C6273ED54F0010DE1B /* SearchServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServices.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -386,6 +398,7 @@
 				EAF7073826EA059600B7B6D1 /* UnderlineSegmentedControl.swift */,
 				EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */,
 				EA6021B627397D5D00092917 /* PostListNavigationBar.swift */,
+				EAD849BC273E30E10010DE1B /* CustomRefreshControl.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -409,6 +422,7 @@
 				EA6021B22739249300092917 /* BoardListView.swift */,
 				EA6021B427397BA500092917 /* PostListView.swift */,
 				EAD849BA273CD79C0010DE1B /* NewPostView.swift */,
+				EAD849BE273ED0260010DE1B /* PostSearchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -427,6 +441,8 @@
 				EAA89BC2270752A000EB3818 /* ReplyServices.swift */,
 				EA88BD4D2725823D004D8415 /* SubReplyAPI.swift */,
 				EA88BD4F2725854B004D8415 /* SubReplyServices.swift */,
+				EAD849C4273ED4450010DE1B /* SearchAPI.swift */,
+				EAD849C6273ED54F0010DE1B /* SearchServices.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -471,6 +487,7 @@
 				EA8A334826D63F480014D97C /* EditShiftViewModel.swift */,
 				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
 				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
+				EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -493,6 +510,7 @@
 				EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */,
 				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
 				EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */,
+				EAD849C0273ED26A0010DE1B /* PostSearchViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -705,6 +723,7 @@
 			files = (
 				EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
+				EAD849C1273ED26A0010DE1B /* PostSearchViewController.swift in Sources */,
 				EAD6FED92713146B00563005 /* RepliesTableViewCell.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
 				EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */,
@@ -742,6 +761,7 @@
 				EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
 				EA983F0B26C0DDF60070604E /* PostViewModel.swift in Sources */,
+				EAD849C3273ED3E50010DE1B /* PostSearchViewModel.swift in Sources */,
 				EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */,
 				EA983F0D26C0E4980070604E /* NewPostViewModel.swift in Sources */,
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
@@ -750,7 +770,9 @@
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
 				EAD849BB273CD79C0010DE1B /* NewPostView.swift in Sources */,
 				EAE6525F269416B600D8F7BB /* PostPreviewCell.swift in Sources */,
+				EAD849C7273ED54F0010DE1B /* SearchServices.swift in Sources */,
 				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
+				EAD849C5273ED4450010DE1B /* SearchAPI.swift in Sources */,
 				EA8A333F26D4CC720014D97C /* RoutineCell.swift in Sources */,
 				EA83564B26D3A47600D60C46 /* RoutineModel.swift in Sources */,
 				EA83564D26D3A6D500D60C46 /* ScheduleView.swift in Sources */,
@@ -762,11 +784,13 @@
 				EAD6FEDB2716C45100563005 /* ContentSizedTableView.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
 				EA526E1D26CD0A100059A90C /* FirstViewController.swift in Sources */,
+				EAD849BF273ED0260010DE1B /* PostSearchView.swift in Sources */,
 				EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */,
 				EA8A334726D63ADD0014D97C /* EditShiftViewController.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
 				EAD6FEE6271F147B00563005 /* ChildrenRepliesTableViewCell.swift in Sources */,
 				EA929F2126A9D12A009352B9 /* ProfileViewController.swift in Sources */,
+				EAD849BD273E30E10010DE1B /* CustomRefreshControl.swift in Sources */,
 				EAAA211E26BC20E7004FA6F9 /* IDPWViewModel.swift in Sources */,
 				EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */,
 				EAF7073926EA059600B7B6D1 /* UnderlineSegmentedControl.swift in Sources */,

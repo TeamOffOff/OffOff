@@ -18,7 +18,7 @@ class NewPostViewModel {
         input: (
             titleText: Driver<String>,
             contentText: Driver<String>,
-            createButtonTap: Signal<()>,
+            createButtonTap: Observable<UITapGestureRecognizer>,
             post: Observable<PostModel?>
         )
     ) {

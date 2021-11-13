@@ -29,7 +29,7 @@ import Foundation
 //}
 
 class SharedSignUpModel {
-    static var model = UserModel(_id: "", activity: Activity(), information: Information(name: "", email: "", birth: "", type: ""), password: "", subInformation: SubInformation(nickname: "", profileImage: nil))
+    static var model = UserModel(_id: "", activity: Activity(), information: Information(name: "", email: "", birth: "", type: ""), password: "", subInformation: SubInformation(nickname: "", profileImage: []))
 }
 
 struct UserModel: Codable {
@@ -65,12 +65,23 @@ struct Information: Codable {
 }
 struct SubInformation: Codable {
     var nickname: String
-    var profileImage: String?
+    var profileImage: [ImageObject]
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(nickname, forKey: .nickname)
         try container.encode(profileImage, forKey: .profileImage)
+    }
+}
+
+struct ImageObject: Codable {
+    var key: String?
+    var body: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(key, forKey: .key)
+        try container.encode(body, forKey: .body)
     }
 }
 

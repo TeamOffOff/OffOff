@@ -42,37 +42,63 @@ class PostListViewController: UIViewController {
         viewModel = PostListViewModel(boardType: boardType ?? "")
 
         // tableview refresh control
-        let refreshControl = UIRefreshControl()
+        let refreshControl = CustomRefreshControl()
         self.customView.postListTableView.refreshControl = refreshControl
-
+        
         Constants.currentBoard = self.boardType
-
+        
         // bind result
         viewModel!.postList
             .observe(on: MainScheduler.instance)
-            .do(onNext: { _ in refreshControl.endRefreshing() })
             .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
             }
             .disposed(by: disposeBag)
-//
-//
+        
+        viewModel!.refreshing
+            .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .bind {
+                if refreshControl.isAnimating {
+                    refreshControl.endRefreshing()
+                }
+            }
+            .disposed(by: disposeBag)
+
+        // Refresh control
+//        self.customView.postListTableView.rx.didScroll
+//            .bind {
+//                refreshControl.updateProgress(with: self.customView.postListTableView.contentOffset.y)
+//            }
+//            .disposed(by: disposeBag)
+        
         refreshControl.rx.controlEvent(.valueChanged)
-                    .bind(to: viewModel!.reloadTrigger)
-                    .disposed(by: disposeBag)
+            .debug()
+            .bind {
+                self.viewModel!.reloadTrigger.onNext(())
+            }
+            .disposed(by: disposeBag)
         
         // table view scroll 대응
         self.customView.postListTableView.rx.didScroll
             .bind {
-                if self.customView.postListTableView.contentOffset.y <= 75.adjustedHeight {
+                if self.customView.postListTableView.contentOffset.y <= 100.adjustedHeight {
                     self.customView.upperView.snp.updateConstraints {
                         $0.height.equalTo(270.adjustedHeight - self.customView.postListTableView.contentOffset.y)
                     }
                 }
             }
             .disposed(by: disposeBag)
+        
+        self.customView.postListTableView.rx.didEndDragging
+            .bind { _ in
+                if ((self.customView.postListTableView.contentOffset.y + self.customView.postListTableView.frame.size.height) >= self.customView.postListTableView.contentSize.height)
+                {
+                    self.viewModel!.reloadTrigger.onNext(())
+                }
+            }
+            .disposed(by: disposeBag)
 
-//        // select row
+        // select row
         self.customView.postListTableView.rx
             .itemSelected
             .bind {
@@ -87,7 +113,7 @@ class PostListViewController: UIViewController {
             }
             .disposed(by: disposeBag)
 
-//        // inputs
+        // inputs
         self.navigationItem.leftBarButtonItem?
             .rx.tap
             .bind { self.dismiss(animated: true, completion: nil) }
@@ -100,16 +126,14 @@ class PostListViewController: UIViewController {
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
+        
+        // searching
+        self.searchButton.rx.tap
+            .bind { _ in
+                let vc = PostSearchViewController()
+                vc.boardType = self.boardType
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
 }
-
-// MARK: - Table view data source, delegate
-//extension PostListViewController {
-//    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        return 20.0
-//    }
-//
-//    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return UITableView.automaticDimension
-//    }
-//}

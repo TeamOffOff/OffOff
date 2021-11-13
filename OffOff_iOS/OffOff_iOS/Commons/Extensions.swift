@@ -27,6 +27,12 @@ protocol ViewModelType {
 }
 
 extension String {
+    func convertBase64StringToImage() -> UIImage {
+        let imageData = Data.init(base64Encoded: self, options: .init(rawValue: 0))
+        let image = UIImage(data: imageData!)
+        return image!
+    }
+    
     func toDate() -> Date? {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         return dateFormatter.date(from: self)
@@ -268,6 +274,10 @@ extension UIColor {
 }
 
 extension UIImage {
+    func convertImageToBase64String() -> String {
+        return self.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+    }
+    
     func resize(to size: CGSize) -> UIImage {
         let render = UIGraphicsImageRenderer(size: size)
         let renderImage = render.image { context in
@@ -463,6 +473,10 @@ extension UINavigationBar {
         self.tintColor = titleColor
         self.standardAppearance = appearance
         self.scrollEdgeAppearance = appearance
+        self.compactAppearance = appearance
+        if #available(iOS 15.0, *) {
+            self.compactScrollEdgeAppearance = appearance
+        }
         self.layoutIfNeeded()
     }
 }
