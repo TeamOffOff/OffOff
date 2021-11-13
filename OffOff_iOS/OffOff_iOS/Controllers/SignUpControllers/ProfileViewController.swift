@@ -6,12 +6,17 @@
 //
 
 import UIKit
+
 import RxSwift
+import RxCocoa
 
 class ProfileViewController: UIViewController {
     
     let profileView = ProfileMakeView()
     let disposeBag = DisposeBag()
+    var profileImagePicker = UIImagePickerController().then {
+        $0.allowsEditing = true
+    }
     
     override func loadView() {
         self.view = profileView
@@ -22,6 +27,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         profileView.nickNameTextField.delegate = self
+        profileImagePicker.delegate = self
         
         // viewModel
         let viewModel = SignUpViewModel(
@@ -33,7 +39,8 @@ class ProfileViewController: UIViewController {
                     .distinctUntilChanged()
                     .debounce(.milliseconds(5), scheduler: ConcurrentMainScheduler.instance)
                     .asDriver(onErrorJustReturn: ""),
-                signUpButtonTap: profileView.signUpButton.rx.tap.asSignal()
+                signUpButtonTap: profileView.signUpButton.rx.tap.asSignal(),
+                imageUploadButtonTap: profileView.imageUploadButton.rx.tap.asSignal()
             )
         )
         
@@ -67,12 +74,41 @@ class ProfileViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
+        viewModel.isUploadingImage
+            .bind {
+                if $0 {
+                    self.imagePickingAlert()
+                }
+            }
+            .disposed(by: disposeBag)
+        
         self.profileView.backButton.rx.tap
             .bind {
                 self.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }
+    
+    private func imagePickingAlert() {
+        let alert = UIAlertController(title: "선택", message: nil, preferredStyle: .actionSheet)
+        
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let camera = UIAlertAction(title: "카메라", style: .default) { _ in
+            self.profileImagePicker.sourceType = .camera
+            self.present(self.profileImagePicker, animated: true, completion: nil)
+        }
+        let album = UIAlertAction(title: "앨범", style: .default) { _ in
+            self.profileImagePicker.sourceType = .photoLibrary
+            self.present(self.profileImagePicker, animated: true, completion: nil)
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(camera)
+        alert.addAction(album)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 extension ProfileViewController: UITextFieldDelegate {
@@ -85,5 +121,17 @@ extension ProfileViewController: UITextFieldDelegate {
         let updatedText = str.replacingCharacters(in: stringRange, with: string)
         
         return updatedText.count <= max
+    }
+}
+
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let image = info[.editedImage] as? UIImage {
+            self.profileView.profileImageView.image = image
+            SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: image.convertImageToBase64String())]
+        }
+        dismiss(animated: true, completion: nil)
+        
     }
 }

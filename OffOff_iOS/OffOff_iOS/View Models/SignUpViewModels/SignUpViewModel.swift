@@ -14,13 +14,17 @@ class SignUpViewModel {
     // Outputs
     let isNickNameConfirmed: Driver<Bool>
     let signedUp: Driver<Bool>
+    let isUploadingImage: Observable<Bool>
     
     init(
         input: (
             nicknameText: Driver<String>,
-            signUpButtonTap: Signal<()>
+            signUpButtonTap: Signal<()>,
+            imageUploadButtonTap: Signal<()>
         )
     ) {
+        isUploadingImage = input.imageUploadButtonTap.asObservable().map { true }
+        
         isNickNameConfirmed = input.nicknameText
             .flatMapLatest { nickName in
                 return UserServices.nicknameDuplicationCheck(nickname: nickName).asDriver(onErrorJustReturn: false) }
