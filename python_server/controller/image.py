@@ -1,5 +1,6 @@
 import boto3
 import base64
+import uuid
 
 from api_helper.utils import *
 
@@ -19,7 +20,7 @@ def save_image(img_list: list, directory: str):
         return None
 
     for img in img_list:
-        img_key = img["key"]
+        img_key = str(uuid.uuid4()) + ".jpg"
         key_list.append(img_key)
         print("img_key: ", img_key)
 
