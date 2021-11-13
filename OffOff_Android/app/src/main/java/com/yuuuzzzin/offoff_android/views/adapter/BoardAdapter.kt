@@ -60,6 +60,11 @@ class BoardAdapter :
         }
     }
 
+    fun clearPostList() {
+        this.postList.clear()
+        notifyDataSetChanged()
+    }
+
     fun addPostList(postList: List<Post>, isFirst: Boolean) {
         if (isFirst == TRUE) {
             this.postList.clear()

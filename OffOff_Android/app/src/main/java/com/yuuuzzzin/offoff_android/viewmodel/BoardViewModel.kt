@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
+import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +29,9 @@ constructor(
 
     private val _newPostList = MutableLiveData<List<Post>>()
     val newPostList: LiveData<List<Post>> get() = _newPostList
+
+    private val _clearPostList = MutableLiveData<Event<Boolean>>()
+    val clearPostList: LiveData<Event<Boolean>> = _clearPostList
 
     private var count: Int = 0 // 가져온 아이템 개수
 
@@ -62,15 +66,17 @@ constructor(
             }
         }
 
-    fun searchPost(key: String, standardId: String) =
+    fun searchPost(boardType: String, key: String, standardId: String?) =
         viewModelScope.launch(Dispatchers.IO) {
-            repository.searchPost(OffoffApplication.pref.token.toString(), key, standardId).let { response ->
+            repository.searchPost(OffoffApplication.pref.token.toString(), boardType, key, standardId).let { response ->
                 if (response.isSuccessful) {
                     Log.d("tag_success", "searchPost: ${response.body()}")
                     if (!response.body()!!.postList.isNullOrEmpty()) {
                         _postList.postValue(response.body()!!.postList)
                         _lastPostId.postValue(response.body()!!.lastPostId)
                         count = response.body()!!.postList.size
+                    } else {
+                        _clearPostList.postValue(Event(true))
                     }
                 } else {
                     Log.d("tag_fail", "searchPost Error: ${response.code()}")
@@ -78,7 +84,7 @@ constructor(
             }
         }
 
-    fun totalSearchPost(key: String, standardId: String) =
+    fun totalSearchPost(key: String, standardId: String?) =
         viewModelScope.launch(Dispatchers.IO) {
             repository.totalSearchPost(OffoffApplication.pref.token.toString(), key, standardId).let { response ->
                 if (response.isSuccessful) {

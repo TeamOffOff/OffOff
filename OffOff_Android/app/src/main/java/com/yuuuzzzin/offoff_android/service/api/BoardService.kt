@@ -34,11 +34,12 @@ interface BoardService {
     ): Response<Post>
 
     /* 특정 게시판 내 게시물 검색 */
-    @GET("search/job")
+    @GET("search/{boardType}")
     suspend fun searchPost(
         @Header("Authorization") auth: String,
+        @Path("boardType") boardType: String,
         @Query("key") key: String,
-        @Query("standardId") standardId: String
+        @Query("standardId") standardId: String? = null
     ): Response<PostList>
 
     /* 게시물 통합 검색 */
@@ -46,7 +47,7 @@ interface BoardService {
     suspend fun totalSearchPost(
         @Header("Authorization") auth: String,
         @Query("key") key: String,
-        @Query("standardId") standardId: String
+        @Query("standardId") standardId: String? = null
     ): Response<PostList>
 
     /* 게시물 작성 */

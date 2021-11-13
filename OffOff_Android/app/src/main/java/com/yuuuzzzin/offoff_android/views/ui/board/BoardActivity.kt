@@ -7,7 +7,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +37,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private lateinit var lastPostId: String
     private var clickedPosition: Int? = 0
     private var isFirst: Boolean = TRUE
+    private var isSearching: Boolean = FALSE
     //private var totalScrolled: Int = 0
     //private val density = resources.displayMetrics.density
 
@@ -72,9 +73,14 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     }
 
     private fun initView() {
+
         binding.btClose.setOnClickListener {
             binding.layoutSearch.visibility = View.GONE
+            binding.etSearch.text = null
             binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 152)
+            isFirst = TRUE
+            isSearching = FALSE
+            viewModel.getPosts(boardType)
         }
 
         binding.btWritePost.setOnClickListener {
@@ -91,10 +97,17 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         viewModel.getPosts(boardType)
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
+            if (it == null) {
+                boardAdapter.clearPostList()
+            }
             boardAdapter.addPostList(it, isFirst)
             binding.refreshLayout.isRefreshing = false
             isFirst = FALSE
             currentPostList = it.toTypedArray()
+        })
+
+        viewModel.clearPostList.observe(binding.lifecycleOwner!!, {
+            boardAdapter.clearPostList()
         })
 
         viewModel.lastPostId.observe(binding.lifecycleOwner!!, {
@@ -106,10 +119,26 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             binding.refreshLayout.isRefreshing = false
             currentPostList = it.toTypedArray()
         })
+
+        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                isFirst = TRUE
+                isSearching = TRUE
+
+                // 검색 첫 페이지이면
+                if (isFirst) {
+                    viewModel.searchPost(boardType, binding.etSearch.text.toString(), null)
+                } else { // 다음 페이지이면
+                    viewModel.searchPost(boardType, binding.etSearch.text.toString(), lastPostId)
+                }
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
     }
 
     private fun initToolbar() {
-        setSupportActionBar(binding.appbarBoard)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             binding.tvToolbarTitle.text = boardName
             setDisplayShowTitleEnabled(false)
@@ -161,9 +190,19 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 val totalCount = recyclerView.adapter!!.itemCount - 1
 
                 // 스크롤이 끝에 도달하면
-                if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
-                    Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
-                    viewModel.getNextPosts(boardType, lastPostId)
+                if (!isSearching) {
+                    if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
+                        // Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
+                        viewModel.getNextPosts(boardType, lastPostId)
+                    }
+                } else {
+                    if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
+                        viewModel.searchPost(
+                            boardType,
+                            binding.etSearch.text.toString(),
+                            lastPostId
+                        )
+                    }
                 }
             }
         })
@@ -196,19 +235,4 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == 1) {
-//            Log.d("tag_like", "requestCode")
-//            if (resultCode == RESULT_OK) {
-//                Log.d("tag_like", "저아요하고 뒤로가기함")
-//                boardAdapter.updateItem(
-//                    data!!.getSerializableExtra("post") as Post,
-//                    clickedPosition!!
-//                )
-//
-//            }
-//        }
-//    }
 }
