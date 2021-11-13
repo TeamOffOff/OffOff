@@ -1,19 +1,52 @@
 package com.yuuuzzzin.offoff_android.views.ui.member
 
-import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.navigation.fragment.findNavController
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep3Binding
-import com.yuuuzzzin.offoff_android.utils.Constants
 import com.yuuuzzzin.offoff_android.utils.Constants.toast
 import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
 import dagger.hilt.android.AndroidEntryPoint
+
+
 
 @AndroidEntryPoint
 class SignupStep3Fragment :
     BaseSignupFragment<FragmentSignupStep3Binding>(R.layout.fragment_signup_step3) {
 
+    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
+
+    private val cropResultContract by lazy {
+        object : ActivityResultContract<Any?, Uri?>() {
+            override fun createIntent(context: Context, input: Any?): Intent {
+                return CropImage
+                    .activity()
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .getIntent(this@SignupStep3Fragment.requireContext())
+            }
+
+
+            override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+                return CropImage.getActivityResult(intent)?.uri
+            }
+        }
+    }
+
     override fun initView() {
+
+        binding.ivPhoto.clipToOutline = true
+
+        cropActivityResultLauncher = registerForActivityResult(cropResultContract) { uri ->
+            uri?.path?.let {
+                binding.ivPhoto.setImageURI(uri)
+            }
+        }
 
         // step3 -> step2 이동
         binding.btBack.setOnClickListener {
@@ -21,7 +54,7 @@ class SignupStep3Fragment :
         }
 
         binding.btCamera.setOnClickListener {
-            showProfileDialog()
+            cropActivityResultLauncher.launch(null)
         }
     }
 
@@ -56,30 +89,40 @@ class SignupStep3Fragment :
         }
     }
 
-    private fun showProfileDialog() {
-
-        val array = arrayOf(
-            Constants.PROFILE_OPTION1,
-            Constants.PROFILE_OPTION2,
-            Constants.PROFILE_OPTION3,
-            Constants.PROFILE_OPTION4
-        )
-        val builder = AlertDialog.Builder(mContext)
-
-        builder.setItems(array) { _, which ->
-            val selected = array[which]
-
-            try {
-                when (which) {
-
-                }
-
-            } catch (e: IllegalArgumentException) {
-
-            }
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
+//    private fun showProfileDialog() {
+//
+//        val array = arrayOf(
+//            Constants.PROFILE_OPTION1,
+//            Constants.PROFILE_OPTION2,
+//            Constants.PROFILE_OPTION3
+//        )
+//        val builder = AlertDialog.Builder(mContext)
+//
+//        builder.setItems(array) { _, which ->
+//            val selected = array[which]
+//
+//            try {
+//                when (selected) {
+//                    // 사진 찍기
+//                    Constants.PROFILE_OPTION1 -> {
+//                        true
+//                    }
+//                    // 앨범에서 가져오기
+//                    Constants.PROFILE_OPTION2 -> {
+//                        true
+//                    }
+//                    // 취소
+//                    Constants.PROFILE_OPTION3 -> {
+//                        true
+//                    }
+//                }
+//
+//            } catch (e: IllegalArgumentException) {
+//
+//            }
+//        }
+//
+//        val dialog = builder.create()
+//        dialog.show()
+//    }
 }

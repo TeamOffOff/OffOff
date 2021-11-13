@@ -14,10 +14,13 @@ object Constants {
     const val SCHEDULE_DATA_FILENAME = "schedule.json"
 
     // 프로필 사진 설정
-    const val PROFILE_OPTION1 = "기본 이미지로 설정"
-    const val PROFILE_OPTION2 = "사진 찍기"
-    const val PROFILE_OPTION3 = "앨범에서 가져오기"
-    const val PROFILE_OPTION4 = "취소"
+    const val PROFILE_OPTION1 = "사진 찍기"
+    const val PROFILE_OPTION2 = "앨범에서 가져오기"
+    const val PROFILE_OPTION3 = "취소"
+
+    const val FROM_ALBUM = 0
+    const val FROM_CAMERA = 1
+
 
     // 댓글 옵션
     const val DELETE_COMMENT = "삭제"

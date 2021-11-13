@@ -29,17 +29,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <ImageView
             android:id="@+id/iv_photo"
             android:layout_width="102dp"
             android:layout_height="102dp"
             android:layout_marginHorizontal="144dp"
             android:layout_marginTop="162dp"
             android:background="@drawable/layout_photo"
-            android:gravity="center"
-            android:text="@string/photo"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +48,7 @@
             android:layout_marginStart="216dp"
             android:layout_marginTop="239dp"
             android:layout_marginEnd="139dp"
-            android:background="@drawable/layout_photo_button"
+            android:background="@drawable/layout_button_white4_r10"
             android:contentDescription="@string/button_camera"
             android:padding="9dp"
             android:src="@drawable/ic_camera"
