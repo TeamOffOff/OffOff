@@ -155,17 +155,27 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/tv_date" />
 
+                        <View
+                            android:id="@+id/line"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@color/green2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
                         <com.yuuuzzzin.offoff_android.utils.CharacterWrapTextView
                             android:id="@+id/tv_content"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="20dp"
                             android:text="@{post.content}"
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+                            app:layout_constraintTop_toBottomOf="@id/line" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_image"

@@ -47,21 +47,21 @@ data class SubInfo(
     @SerializedName("nickname")
     val nickname: String,
     @SerializedName("profileImage")
-    val profile: String? = null
+    val profile: List<Image>? = emptyList()
 )
 
 /* 사용자 활동 */
 data class Activity(
     @SerializedName("posts")
-    val posts: List<PostItem> ?= emptyList(),
+    val posts: List<PostItem>? = emptyList(),
     @SerializedName("replies")
-    val replies: List<ReplyItem>?= emptyList(),
+    val replies: List<ReplyItem>? = emptyList(),
     @SerializedName("likes")
-    val likes: List<LikeItem>?= emptyList(),
+    val likes: List<LikeItem>? = emptyList(),
     @SerializedName("reports")
-    val reports: List<Report>?= emptyList(),
+    val reports: List<Report>? = emptyList(),
     @SerializedName("bookmarks")
-    val bookmarks: List<Bookmark>?= emptyList()
+    val bookmarks: List<Bookmark>? = emptyList()
 )
 
 /* 로그인 정보 */

@@ -41,7 +41,7 @@
                     android:layout_height="match_parent">
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/bt_like"
+                        android:id="@+id/bt_done"
                         android:layout_width="47dp"
                         android:layout_height="30dp"
                         android:background="@drawable/layout_button_post_write"
@@ -103,6 +103,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="38dp"
+                    android:outlineProvider="bounds"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/bt_camera"
+                    tools:listitem="@layout/rv_item_post_write_image" />
+
                 <ImageButton
                     android:id="@+id/bt_camera"
                     android:layout_width="30dp"
@@ -135,6 +147,7 @@
                         android:background="@android:color/transparent"
                         android:elevation="0dp"
                         android:hint="@string/title"
+                        android:singleLine="false"
                         android:importantForAutofill="no"
                         android:inputType="text"
                         android:text="@={viewModel.title}"

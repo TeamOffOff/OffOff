@@ -19,6 +19,7 @@
             android:id="@+id/iv_background"
             android:layout_width="82dp"
             android:layout_height="82dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/layout_board_item"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

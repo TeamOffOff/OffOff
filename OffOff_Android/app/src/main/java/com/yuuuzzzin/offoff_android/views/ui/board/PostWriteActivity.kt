@@ -2,31 +2,59 @@ package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostWriteBinding
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
+import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostWriteViewModel
+import com.yuuuzzzin.offoff_android.views.adapter.PostWriteImageAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activity_post_write) {
 
     private val viewModel: PostWriteViewModel by viewModels()
+    private lateinit var imageAdapter: PostWriteImageAdapter
     private lateinit var boardType: String
     private lateinit var boardName: String
     private var postWriteType: Int = 0
+    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
+
+    private val cropResultContract by lazy {
+        object : ActivityResultContract<Any?, Uri?>() {
+            override fun createIntent(context: Context, input: Any?): Intent {
+                return CropImage
+                    .activity()
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .getIntent(context)
+            }
+
+            override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+                return CropImage.getActivityResult(intent)?.uri
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initViewModel()
+        initView()
+        initRV()
         processIntent()
         initToolbar()
     }
@@ -40,6 +68,30 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
             val postTitle = intent.getStringExtra("postTitle").toString()
             val postContent = intent.getStringExtra("postContent").toString()
             viewModel.setPostText(postTitle, postContent)
+        }
+    }
+
+    private fun initView() {
+
+        cropActivityResultLauncher = registerForActivityResult(cropResultContract) { uri ->
+            uri?.path?.let {
+                // binding.ivPhoto.setImageURI(uri)
+            }
+        }
+
+        binding.btCamera.setOnClickListener {
+            cropActivityResultLauncher.launch(null)
+        }
+    }
+
+    private fun initRV() {
+        imageAdapter = PostWriteImageAdapter()
+
+        val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(9) // 아이템 사이의 거리
+        binding.rvImage.apply {
+            adapter = imageAdapter
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(spaceDecoration)
         }
     }
 
@@ -57,8 +109,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     private fun initViewModel() {
         binding.viewModel = viewModel
 
-        binding.btLike.setOnClickListener {
-            Log.d("tag_doneClick", "완료 클릭")
+        binding.btDone.setOnClickListener {
             when (postWriteType) {
                 PostWriteType.WRITE -> viewModel.writePost(boardType)
                 PostWriteType.EDIT -> {

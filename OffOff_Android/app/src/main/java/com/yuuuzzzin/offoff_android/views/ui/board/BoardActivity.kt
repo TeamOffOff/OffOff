@@ -154,8 +154,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
         binding.rvPostPreview.apply {
             adapter = boardAdapter
-            boardAdapter.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY // 리사이클러뷰의 스크롤된 position 유지
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecoration)
         }
