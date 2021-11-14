@@ -156,13 +156,12 @@ class PostListControl(Resource):
             for post in total_list:
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-                post["image"] = get_image(post["image"], "post", "200")
+                post["image"] = get_image(post["image"], "post", "200")                
 
-                # 게시글 리스트에서는 프로필 사진이 변환해서 줄 필요 없음
-                
-                # 비밀게시판인 경우에 author 을 None으로 변경
-                if board_type == "secret_board":  
+                if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
                     post["author"] = None
+                else:  # 비밀게시판이 아닌 경우에는 profileImage를 None으로 변경해서 줌(게시글 리스트에서는 profileImage가 필요없음)
+                    post["author"]["profileImage"] = None
 
             last_post_id = total_list[-1]["_id"]
 
