@@ -115,6 +115,7 @@
 		EAD849C3273ED3E50010DE1B /* PostSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */; };
 		EAD849C5273ED4450010DE1B /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C4273ED4450010DE1B /* SearchAPI.swift */; };
 		EAD849C7273ED54F0010DE1B /* SearchServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C6273ED54F0010DE1B /* SearchServices.swift */; };
+		EADA0C57273FC110003858FA /* ZLPhotoBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = EADA0C56273FC110003858FA /* ZLPhotoBrowser */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
@@ -279,6 +280,7 @@
 				EA0747DB2727B3DC004DB13C /* RxMoya in Frameworks */,
 				EA9D0ACD26BA95A700D571EC /* RxSwift in Frameworks */,
 				EA83564226D3727100D60C46 /* FSCalendar in Frameworks */,
+				EADA0C57273FC110003858FA /* ZLPhotoBrowser in Frameworks */,
 				EA0747DE2727B48F004DB13C /* RxKeyboard in Frameworks */,
 				EA9D0AD026BAC93100D571EC /* Then in Frameworks */,
 				EA9D0AD926BAC9DF00D571EC /* FontAwesome in Frameworks */,
@@ -591,6 +593,7 @@
 				EA0624E126DE77A7004FF91A /* RxRealm */,
 				EA0747DA2727B3DC004DB13C /* RxMoya */,
 				EA0747DD2727B48F004DB13C /* RxKeyboard */,
+				EADA0C56273FC110003858FA /* ZLPhotoBrowser */,
 			);
 			productName = OffOff_iOS;
 			productReference = EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */;
@@ -639,6 +642,7 @@
 				EA0624D726DBB1B6004FF91A /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				EA0624E026DE77A7004FF91A /* XCRemoteSwiftPackageReference "RxRealm" */,
 				EA0747DC2727B48F004DB13C /* XCRemoteSwiftPackageReference "RxKeyboard" */,
+				EADA0C55273FC110003858FA /* XCRemoteSwiftPackageReference "ZLPhotoBrowser" */,
 			);
 			productRefGroup = EAE502E02689E3D6002B1C6A /* Products */;
 			projectDirPath = "";
@@ -1212,6 +1216,14 @@
 				minimumVersion = 1.9.1;
 			};
 		};
+		EADA0C55273FC110003858FA /* XCRemoteSwiftPackageReference "ZLPhotoBrowser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/longitachi/ZLPhotoBrowser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1284,6 +1296,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9D0AD726BAC9DF00D571EC /* XCRemoteSwiftPackageReference "FontAwesome" */;
 			productName = FontAwesome;
+		};
+		EADA0C56273FC110003858FA /* ZLPhotoBrowser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EADA0C55273FC110003858FA /* XCRemoteSwiftPackageReference "ZLPhotoBrowser" */;
+			productName = ZLPhotoBrowser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -9,6 +9,7 @@ import UIKit
 
 import RxSwift
 import RxCocoa
+import ZLPhotoBrowser
 
 class ProfileViewController: UIViewController {
     
@@ -77,7 +78,32 @@ class ProfileViewController: UIViewController {
         viewModel.isUploadingImage
             .bind {
                 if $0 {
-                    self.imagePickingAlert()
+//                    self.imagePickingAlert()
+                    let cameraConfig = ZLPhotoConfiguration.default().cameraConfiguration
+                    ZLPhotoConfiguration.default().allowRecordVideo = false
+                    ZLPhotoConfiguration.default().allowSelectGif = false
+                    ZLPhotoConfiguration.default().maxSelectCount = 1
+                    ZLPhotoConfiguration.default().editImageClipRatios = [.wh1x1]
+                    ZLPhotoConfiguration.default().allowEditImage = true
+                    ZLPhotoConfiguration.default().editAfterSelectThumbnailImage = true
+                    ZLPhotoConfiguration.default().editImageTools = [.clip]
+                    ZLPhotoConfiguration.default().allowSelectOriginal = false
+//                    ZLPhotoConfiguration.default().themeColorDeploy = ZLPhotoThemeColorDeploy().
+                    
+                    // All properties of the camera configuration have default value
+                    cameraConfig.sessionPreset = .hd1920x1080
+                    cameraConfig.focusMode = .continuousAutoFocus
+                    cameraConfig.exposureMode = .continuousAutoExposure
+                    cameraConfig.flashMode = .off
+                    cameraConfig.videoExportType = .mov
+                    
+                    let ps = ZLPhotoPreviewSheet()
+                    
+                    ps.selectImageBlock = { [weak self] (images, assets, isOriginal) in
+                        self!.profileView.profileImageView.image = images.first!
+                        SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: images.first!.convertImageToBase64String())]
+                    }
+                    ps.showPhotoLibrary(sender: self)
                 }
             }
             .disposed(by: disposeBag)

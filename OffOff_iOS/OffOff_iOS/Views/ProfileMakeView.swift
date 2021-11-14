@@ -12,6 +12,7 @@ class ProfileMakeView: UIView {
     var profileImageView = UIImageView().then {
         $0.backgroundColor = .w3
         $0.setCornerRadius(26.59)
+        $0.contentMode = .scaleAspectFit
     }
     
     var imageUploadButton = UIButton().then {
