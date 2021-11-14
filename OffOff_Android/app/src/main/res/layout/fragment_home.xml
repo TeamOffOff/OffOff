@@ -1,45 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.ui.home.HomeFragment"
-    android:id="@+id/homeFragment">
-    
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green">
+    xmlns:tools="http://schemas.android.com/tools">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/appbar_home"
-            style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            app:menu="@menu/app_bar_home"
-            app:title="@string/appbar_home"
-            app:titleTextAppearance="@style/TextAppearance.AppCompat.Large" />
+    <data>
 
-    </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- AppBarLayout 아래에 스크롤 뷰 배치 -->
+    </data>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="32dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/boardsFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context=".views.ui.home.HomeFragment">
 
+            <ImageView
+                android:id="@+id/iv_background"
+                android:layout_width="match_parent"
+                android:layout_height="270dp"
+                android:contentDescription="@string/background_post"
+                android:src="@drawable/layout_background_radius_bottom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="32dp">
+
+                <TextView
+                    android:id="@+id/tv_hi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="104dp"
+                    android:padding="0dp"
+                    android:text="@string/hi"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/user_offoff"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_hi"
+                    app:layout_goneMarginTop="10dp" />
+
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_marginTop="90dp"
+                    android:includeFontPadding="false"
+                    android:src="@drawable/ic_avatar_big"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_d_day"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:layout_marginHorizontal="32dp"
+                    android:layout_marginTop="249dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:drawablePadding="12dp"
+                    android:importantForAutofill="no"
+                    android:paddingStart="12dp"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

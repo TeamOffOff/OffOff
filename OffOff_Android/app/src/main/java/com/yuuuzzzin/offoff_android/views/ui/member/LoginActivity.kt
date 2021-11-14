@@ -59,7 +59,9 @@ class LoginActivity : AppCompatActivity() {
                 intent.putExtra("id", it)
                 startActivity(intent)
                 finish()
-                applicationContext.toast("${OffoffApplication.user.info.name}님 환영합니다.")
+
+                // 로그인 환영 메시지 출력
+                applicationContext.toast("${OffoffApplication.user.subInfo.nickname}님 환영합니다.")
             }
         })
     }
