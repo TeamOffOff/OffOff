@@ -26,4 +26,13 @@ struct Board: Codable {
     var name: String
     var icon: String?
     var newPost: Bool
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(name, forKey: .name)
+        try container.encode(icon, forKey: .icon)
+        try container.encode(newPost, forKey: .newPost)
+    }
 }

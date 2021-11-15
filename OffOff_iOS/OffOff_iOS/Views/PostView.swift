@@ -92,6 +92,14 @@ class PostView: UIScrollView {
         $0.separatorStyle = .none
     }
     
+    var imageTableView = ContentSizedTableView().then {
+        $0.register(ImageTableViewCell.self, forCellReuseIdentifier: ImageTableViewCell.identifier)
+        $0.backgroundColor = .clear
+        $0.rowHeight = 344.adjustedHeight
+        $0.separatorStyle = .none
+        $0.isScrollEnabled = false
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(backgroundView)
@@ -105,6 +113,7 @@ class PostView: UIScrollView {
         self.addSubview(likeButton)
         self.addSubview(scrapButton)
         self.addSubview(repliesTableView)
+        self.addSubview(imageTableView)
         self.makeView()
     }   
     
@@ -127,6 +136,11 @@ class PostView: UIScrollView {
             $0.edges.equalToSuperview()
             $0.height.equalToSuperview()
         }
+        imageTableView.snp.makeConstraints {
+            $0.top.equalTo(textContainerView.snp.bottom).offset(20.adjustedHeight)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(324.adjustedWidth)
+        }
         profileImageView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20.adjustedHeight)
             $0.left.equalToSuperview().inset(32.adjustedWidth)
@@ -143,7 +157,7 @@ class PostView: UIScrollView {
             $0.right.equalToSuperview().inset(30.adjustedWidth)
         }
         likeButton.snp.makeConstraints {
-            $0.top.equalTo(contentTextView.snp.bottom).offset(8)
+            $0.top.equalTo(imageTableView.snp.bottom).offset(20.adjustedHeight)
             $0.left.equalTo(profileImageView)
             $0.width.equalTo(43.adjustedWidth)
             $0.height.equalTo(20.adjustedHeight)
@@ -168,5 +182,31 @@ class PostView: UIScrollView {
         authorLabel.text = post.author.nickname
         dateLabel.text = post.date
         contentTextView.text = post.content
+    }
+}
+
+class ImageTableViewCell: UITableViewCell {
+    static let identifier = "ImageTableViewCell"
+    
+    var photoView = UIImageView()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+//        self.contentView.addSubview(photoView)
+//
+//        photoView.snp.makeConstraints {
+//            $0.left.right.equalToSuperview()
+//            $0.top.bottom.equalToSuperview().inset(10.adjustedHeight)
+//        }
+        
+        self.imageView!.setCornerRadius(10.adjustedHeight)
+        self.imageView!.snp.remakeConstraints {
+            $0.left.right.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(10.adjustedHeight)
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

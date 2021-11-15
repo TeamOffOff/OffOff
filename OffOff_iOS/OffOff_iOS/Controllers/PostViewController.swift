@@ -27,6 +27,8 @@ class PostViewController: UIViewController {
     
     var replyCellHeight = 125.0
     
+    var postImages = BehaviorSubject<[ImageObject]>(value: [])
+    
     var replyContainer = UIView().then {
         $0.backgroundColor = .white
         $0.makeBorder(color: UIColor.mainColor.cgColor, cornerRadius: 12)
@@ -88,6 +90,7 @@ class PostViewController: UIViewController {
                 self.postView.dateLabel.text = $0!.date
                 self.postView.profileImageView.image = .DefaultPostProfileImage
 //                self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
+                self.postImages.onNext($0!.image)
                 if $0?.author._id == Constants.loginUser?._id {
                     self.setRightButtons(set: true)
                 } else {
@@ -97,6 +100,13 @@ class PostViewController: UIViewController {
                 // TODO: 이미 좋아요 누른 게시글이면 좋아요 버튼에 표시
             }
             .disposed(by: disposeBag)
+        
+        // 이미지 표시
+        self.postImages
+            .bind(to: self.postView.imageTableView.rx.items(cellIdentifier: ImageTableViewCell.identifier, cellType: ImageTableViewCell.self)) { (row, element, cell) in
+                cell.imageView?.image = element.body.toImage()
+            }
+            .disposed(by: self.disposeBag)
         
         viewModel.postDeleted
             .filter { $0 }

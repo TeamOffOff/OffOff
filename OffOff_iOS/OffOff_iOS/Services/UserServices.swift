@@ -89,8 +89,6 @@ public class UserServices {
             .asObservable()
             .map {
                 print($0)
-                print($0.response)
-                print(try $0.mapJSON())
                 return $0.statusCode == 200
             }
             .catchAndReturn(false)

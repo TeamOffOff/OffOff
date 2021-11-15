@@ -32,7 +32,7 @@ struct PostModel: Codable {
     var date: String
     var title: String
     var content: String
-    var image: String?
+    var image: [ImageObject]
     var likes: [String]
     var views: Int
     var reports: [String]

@@ -27,7 +27,7 @@ protocol ViewModelType {
 }
 
 extension String {
-    func convertBase64StringToImage() -> UIImage {
+    func toImage() -> UIImage {
         let imageData = Data.init(base64Encoded: self, options: .init(rawValue: 0))
         let image = UIImage(data: imageData!)
         return image!
@@ -274,7 +274,7 @@ extension UIColor {
 }
 
 extension UIImage {
-    func convertImageToBase64String() -> String {
+    func toBase64String() -> String {
         return self.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
     }
     

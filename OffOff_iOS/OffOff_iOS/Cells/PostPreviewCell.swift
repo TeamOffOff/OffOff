@@ -47,6 +47,12 @@ class PostPreviewCell: UITableViewCell {
         $0.label.text = "0"
     }
     
+    var imagePreview = UIImageView().then {
+        $0.backgroundColor = .w3
+        $0.contentMode = .scaleAspectFit
+        $0.setCornerRadius(12.adjustedHeight)
+    }
+    
     lazy var containerView = UIView().then {
         $0.backgroundColor = .w2
         $0.setCornerRadius(20.adjustedHeight)
@@ -56,6 +62,8 @@ class PostPreviewCell: UITableViewCell {
         $0.addSubview(dateAuthorLabel)
         $0.addSubview(commentLabel)
         $0.addSubview(likeLabel)
+        
+        $0.addSubview(imagePreview)
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -82,11 +90,12 @@ class PostPreviewCell: UITableViewCell {
         titleLabel.snp.makeConstraints {
             $0.left.equalToSuperview().inset(26.adjustedWidth)
             $0.top.equalToSuperview().inset(11.adjustedHeight)
+            $0.right.equalTo(imagePreview.snp.left).offset(9.adjustedWidth)
         }
         previewTextView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(4.adjustedHeight)
             $0.left.equalToSuperview().inset(26.adjustedWidth)
-            $0.right.equalToSuperview().inset(25.adjustedWidth)
+            $0.right.equalTo(imagePreview.snp.left).offset(9.adjustedWidth)
         }
         dateAuthorLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
@@ -101,7 +110,11 @@ class PostPreviewCell: UITableViewCell {
         commentLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
             $0.height.equalTo(18)
-            $0.right.equalToSuperview().inset(27.adjustedWidth)
+            $0.right.equalTo(imagePreview.snp.left).offset(9.adjustedWidth)
+        }
+        imagePreview.snp.makeConstraints {
+            $0.top.bottom.right.equalToSuperview().inset(9.adjustedHeight)
+            $0.width.equalTo(78.adjustedWidth)
         }
     }
     
@@ -114,6 +127,14 @@ class PostPreviewCell: UITableViewCell {
 //                _ = ReplyServices.fetchReplies(of: post!._id!, in: post!.boardType).bind(to: self.replies)
             })
             .bind { post in
+                if post!.image.isEmpty {
+                    self.imagePreview.snp.updateConstraints {
+                        $0.width.equalTo(0)
+                    }
+                } else {
+                    self.imagePreview.image = post!.image.first!.body.toImage()
+                }
+                
                 self.titleLabel.text = post!.title
                 self.previewTextView.text = post!.content
                 self.dateAuthorLabel.text = "\(post!.date) | \(post!.author.nickname)"

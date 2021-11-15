@@ -101,7 +101,7 @@ class ProfileViewController: UIViewController {
                     
                     ps.selectImageBlock = { [weak self] (images, assets, isOriginal) in
                         self!.profileView.profileImageView.image = images.first!
-                        SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: images.first!.convertImageToBase64String())]
+                        SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: images.first!.toBase64String())]
                     }
                     ps.showPhotoLibrary(sender: self)
                 }
@@ -155,7 +155,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         
         if let image = info[.editedImage] as? UIImage {
             self.profileView.profileImageView.image = image
-            SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: image.convertImageToBase64String())]
+            SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: image.toBase64String())]
         }
         dismiss(animated: true, completion: nil)
         

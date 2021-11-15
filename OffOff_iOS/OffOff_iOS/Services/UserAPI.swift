@@ -108,7 +108,7 @@ extension UserAPI: TargetType {
         case .getUserInfo(let token):
             return ["Authorization": "Bearer \(token)"]
         default:
-            return ["Content-type": "application/json"]
+            return nil
         }
         
     }
