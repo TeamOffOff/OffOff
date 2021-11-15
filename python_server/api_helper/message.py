@@ -1,11 +1,9 @@
 from flask.helpers import make_response
-from pymongo import message
-from controller.reference import MakeReference
 from flask import request
 from flask_restx import Resource, Namespace
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from datetime import datetime
-from controller.filter import check_jwt, ownership_required
+from controller.filter import check_jwt
 from bson.objectid import ObjectId
 
 

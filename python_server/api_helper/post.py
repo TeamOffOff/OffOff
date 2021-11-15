@@ -2,13 +2,12 @@ from datetime import datetime
 from flask import request, make_response
 from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
-from pymongo.message import query
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 from controller.image import *
 from controller.reference import *
 from controller.filter import check_jwt, ownership_required
-from controller.etc import get_variables, get_reply_list
+from controller.etc import get_variables
 
 import mongo as mongo
 

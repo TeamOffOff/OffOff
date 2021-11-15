@@ -4,44 +4,18 @@ from flask_restx import Resource, Namespace
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 
-from werkzeug.wrappers import Response
 from flask_jwt_extended import jwt_required
 from controller.filter import check_jwt
 from controller.image import *
-from pymongo import collection, message
 
 import mongo as mongo
 
-import pprint
-
 mongodb = mongo.MongoHelper()
-TotalSearchList = Namespace(
-    "totalsearch",
-    description="통합검색 관련 API"
-)
 
-SearchList = Namespace(
-    "search", 
-    description="검색 관련 API")
 
 BoardList = Namespace(
     name="boardlist",
     description="게시판목록을 불러오는 API")
-
-PostList = Namespace(
-    name="postlist",
-    description="게시글목록을 불러오는 API")
-
-UserControl = Namespace(
-    name="usercontrol",
-    description="유저관련 기능"
-)
-
-MessageList = Namespace(
-    "messagelist",
-    description="메시지 목록을 불러오는 API"
-)
-
 
 @BoardList.route("")
 # 사용자가 커뮤니티 탭을 클릭하는 경우
@@ -57,7 +31,7 @@ class BoardListControl(Resource):
         # 기준 시점 = 요청 시점 - 3시간
         standard = access_on - timedelta(hours=3)
 
-        # 해당 board의 컬렉션에 date가 3시간 이전인 게시글이 있는지
+        # NewPost : 해당 board의 컬렉션에 date가 3시간 이전인 게시글이 있는지
         for board in total_list:
 
             board_type = board["boardType"] + "_board"
@@ -71,6 +45,7 @@ class BoardListControl(Resource):
         }, 200)
 
         return response_result 
+
 
     def delete(self):  # 게시판 목록 삭제
         """특정 게시판 정보를 삭제합니다."""
@@ -98,36 +73,10 @@ class BoardListControl(Resource):
         return response_result
 
 
-@UserControl.route("")
-class UserListControl(Resource):
 
-    def get(self):
-        """
-        유저 리스트 불러오는 api
-        """
-        func = request.args.get("func")
-        if func == "userlist":
-            result = list(mongodb.find(collection_name="user"))
-
-        elif func == "blocklist":
-            result = list(mongodb.find(collection_name="block_list"))
-            for i in result:
-                i["createdAt"] = str(i["createdAt"])
-        
-        response_result = make_response({"userList":result}, 200)
-
-        return response_result
-
-    def post(self):
-        """
-        token block 설정 위한 block_list 컬렉션 설정
-        """
-        result = mongodb.create_index(standard="createdAt", collection_name="block_list", expire_time=10)
-        response_result = make_response({
-            "queryStatus": result
-        }, 200)
-        return response_result 
-
+PostList = Namespace(
+    name="postlist",
+    description="게시글목록을 불러오는 API")
 
 @PostList.route("/<string:board_type>")
 # 사용자가 특정 게시판을 클릭하는 경우
@@ -143,14 +92,13 @@ class PostListControl(Resource):
         standard_id = request.args.get("standardId", default="")
 
         if not standard_id:  # 게시판에 처음 들어간 경우, 새로 고침한 경우
-
             total_list = list(mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(volume))
 
         elif standard_id:  # 과거 게시글 불러올 때
-
             standard_id = ObjectId(standard_id)
-            total_list = list(mongodb.find(query={'_id': {'$lt': standard_id}}, collection_name=board_type).sort(
-                [("_id", -1)]).limit(volume))
+            total_list = list(mongodb.find(
+                query={'_id': {'$lt': standard_id}}, 
+                collection_name=board_type).sort([("_id", -1)]).limit(volume))
 
         if total_list:  # 불러올 게시글이 남아있는 경우
             for post in total_list:
@@ -161,7 +109,7 @@ class PostListControl(Resource):
                 if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
                     post["author"] = None
                 else:  # 비밀게시판이 아닌 경우에는 profileImage를 None으로 변경해서 줌(게시글 리스트에서는 profileImage가 필요없음)
-                    post["author"]["profileImage"] = None
+                    post["author"]["profileImage"] = []
 
             last_post_id = total_list[-1]["_id"]
 
@@ -177,6 +125,7 @@ class PostListControl(Resource):
                     post = mongodb.find_one(query={"_id": post_id}, collection_name=board_type)
                     post["_id"] = str(post["_id"])
                     post["date"] = str(post["date"])
+                    post["image"] = get_image(post["image"], "post", "200")  
                     
                     if board_type == "secret_board":
                         post["author"] = None
@@ -204,6 +153,7 @@ class PostListControl(Resource):
         
         return response_result
 
+
     def delete(self, board_type):  # 컬렉션 자체를 삭제
 
         result = mongodb.drop(collection_name=board_type)
@@ -211,9 +161,13 @@ class PostListControl(Resource):
 
         return response_result
 
-"""
-검색 관련 API
-"""
+
+
+TotalSearchList = Namespace(
+    "totalsearch",
+    description="통합검색 관련 API"
+)
+
 @TotalSearchList.route("")
 class TotalSearchControl(Resource):
     @jwt_required()
@@ -225,13 +179,10 @@ class TotalSearchControl(Resource):
             return response_result
 
         keyword = request.args.get("key")
-        print(keyword)
-        volume = int(request.args.get("volume", default=5)) # 각 게시판에서 10개씩만 긁어옴
+        volume = int(request.args.get("volume", default=5)) # 각 게시판에서 5개씩만 긁어옴
         standard_id = request.args.get("standardId", default="")
-        # standard_time = datetime.now()
 
-
-        board_list = ["free", "job"]
+        board_list = ["free", "job", "secret"]
         
         print(standard_id)
         total_list = []
@@ -243,8 +194,9 @@ class TotalSearchControl(Resource):
                 }
             
             if standard_id:
-                standard_id = ObjectId(standard_id)  ## 이거 안 하면 안 나옴..ㅠㅠㅠ
+                standard_id = ObjectId(standard_id)  ## 이거 안 하면 안 나옴..
                 query["_id"] = {"$lt": standard_id}
+
             part_list = list(mongodb.find(collection_name=board_type,query=query).sort([("_id", -1)]).limit(volume))
             print("{} part_list: {}". format(board_type, part_list))
             total_list.extend(part_list)
@@ -252,13 +204,14 @@ class TotalSearchControl(Resource):
 
         total_list.sort(key=lambda x: x["_id"], reverse=True)  #_id의 처음 4부분은 시간 정보를 담고 있다.
 
-        # last_post_id = None # UnboundLocalError: local variable 'last_post_id' referenced before assignment
         if total_list:  # 불러올 게시글이 있는 경우
             for post in total_list:
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                post["image"] = get_image(post["image"], "post", "200")  
 
             last_post_id = total_list[-1]["_id"]
+
         else:
             total_list = None
             last_post_id = None
@@ -271,7 +224,9 @@ class TotalSearchControl(Resource):
         return response_result
 
 
-
+SearchList = Namespace(
+    "search", 
+    description="검색 관련 API")
 
 @SearchList.route("/<string:board_type>")
 class SearchControl(Resource):
@@ -284,24 +239,30 @@ class SearchControl(Resource):
             return response_result
 
         keyword = request.args.get("key")
-        print(keyword)
         board_type = board_type + "_board"
         volume = int(request.args.get("volume", default=20))
         standard_id = request.args.get("standardId", default="")
         print(board_type)
 
         if not standard_id:  # 검색한 즉시
-            total_list = list(mongodb.find(collection_name=board_type,query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}).sort([("_id", -1)]).limit(volume))
+            total_list = list(mongodb.find(
+                collection_name=board_type,
+                query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}
+                ).sort([("_id", -1)]).limit(volume))
 
         elif standard_id:  # 과거 게시글 불러올 때
             standard_id = ObjectId(standard_id)
-            total_list = list(mongodb.find(collection_name=board_type,query={'_id': {'$lt': standard_id}, "$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}).sort(
-                [("_id", -1)]).limit(volume))
+            total_list = list(mongodb.find(
+                collection_name=board_type,
+                query={'_id': {'$lt': standard_id}, "$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}
+                ).sort([("_id", -1)]).limit(volume))
+
 
         if total_list:  # 불러올 게시글이 남아있는 경우
             for post in total_list:
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                post["image"] = get_image(post["image"], "post", "200") 
 
             last_post_id = total_list[-1]["_id"]
 
@@ -318,6 +279,11 @@ class SearchControl(Resource):
 
         return response_result
 
+
+MessageList = Namespace(
+    "messagelist",
+    description="메시지 목록을 불러오는 API"
+)
 
 @MessageList.route("/<string:message_type>")  # send, receive
 class MassageListControl(Resource):
@@ -362,3 +328,38 @@ class MassageListControl(Resource):
 
         return response_result
 
+
+UserControl = Namespace(
+    name="usercontrol",
+    description="유저관련 기능"
+)
+
+@UserControl.route("")
+class UserListControl(Resource):
+
+    def get(self):
+        """
+        유저 리스트 불러오는 api
+        """
+        func = request.args.get("func")
+        if func == "userlist":
+            result = list(mongodb.find(collection_name="user"))
+
+        elif func == "blocklist":
+            result = list(mongodb.find(collection_name="block_list"))
+            for i in result:
+                i["createdAt"] = str(i["createdAt"])
+        
+        response_result = make_response({"userList":result}, 200)
+
+        return response_result
+
+    def post(self):
+        """
+        token block 설정 위한 block_list 컬렉션 설정
+        """
+        result = mongodb.create_index(standard="createdAt", collection_name="block_list", expire_time=10)
+        response_result = make_response({
+            "queryStatus": result
+        }, 200)
+        return response_result 

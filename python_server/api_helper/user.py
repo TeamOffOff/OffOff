@@ -1,8 +1,5 @@
-import re
-from warnings import resetwarnings
 from flask import request, render_template
 from flask.helpers import make_response
-from werkzeug.wrappers import Response, ResponseStreamMixin
 from flask_jwt_extended.utils import get_jwt
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
@@ -29,7 +26,11 @@ Activity = Namespace(name="activity", description="유저 활동 관련 API")
 class VerifyControl(Resource):
     def get(self):
         verify_email = request.args.get("email")
-        result = mongodb.update_one(query={"information.email": verify_email}, collection_name="user", modify={"$set": {"verifyEmail": True}})
+        result = mongodb.update_one(
+            query={"information.email": verify_email}, 
+            collection_name="user", 
+            modify={"$set": {"verifyEmail": True}})
+
         if result.raw_result["n"] == 1:  # 잘 변경됨
             print("잘 변경 됨")
             # 메일 보내기
@@ -49,7 +50,9 @@ class TokenControl(Resource):
     @jwt_required(refresh=True)
     def get(self):  # refresh 로 access 발급
         user_id = get_jwt_identity()
-        refresh_token = (mongodb.find_one(query={"_id": user_id}, collection_name="user"))["refreshToken"]
+        refresh_token = (mongodb.find_one(
+            query={"_id": user_id}, 
+            collection_name="user"))["refreshToken"]
         
         if not refresh_token:  # refresh token이 탈취되어서 db에서 삭제한 경우
             response_result = make_response({
@@ -85,10 +88,15 @@ class TokenControl(Resource):
             "createdAt": datetime.utcnow()
         }
 
-        result1 = mongodb.insert_one(data=data, collection_name="block_list")  # result1은 _id
+        result1 = mongodb.insert_one(
+            data=data, 
+            collection_name="block_list")  # result1은 _id
         print(result1)
 
-        result2 = mongodb.update_one(query={"_id": user_id}, collection_name="user", modify={"$set": {"refreshToken": ""}})  # unset으로 아예 삭제할 수도 있음
+        result2 = mongodb.update_one(
+            query={"_id": user_id}, 
+            collection_name="user", 
+            modify={"$set": {"refreshToken": ""}})  # unset으로 아예 삭제할 수도 있음
 
         if not result1:
             response_result = make_response({
@@ -169,13 +177,8 @@ class AuthRegister(Resource):
         try:
             print("비밀번호 암호화 후 : ", user_info)
 
-            # 순서 고정 : dict 형식은 순서개념이 없다
-            # information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
-            # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
-            # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
-            if user_info["subInformation"]["profileImage"]:
+            if user_info["subInformation"]["profileImage"]:  # profile이미지 설정 시
                 user_info["subInformation"]["profileImage"] = save_image(user_info["subInformation"]["profileImage"], "user")
-            # if sub_information["profileImage"]:
             
             # db에 포함시킬 field 추가
             user_info["calendar"] = ""  # 캘린더
@@ -185,9 +188,11 @@ class AuthRegister(Resource):
             }
             user_info["verifyEmail"] = False  # 이메일 인증여부
 
+            # 인증 이메일 보낼 주소
             r_email = user_info["information"]["email"]
 
-            mongodb.insert_one(data=user_info, collection_name="user")  # 데이터베이스에 저장
+            # 데이터베이스에 저장
+            mongodb.insert_one(data=user_info, collection_name="user")  
 
             # 메일 보내기
             send_email(r_email, "http://152.67.210.16:5000/verify?email="+r_email, "감사합니다")
@@ -256,14 +261,14 @@ class AuthRegister(Resource):
                 post_id = post["postId"]
                 print(board_type, post_id)
                 alert_delete = {
-                    "author": {
-                        "_id": None,
-                        "nickname": None,
-                        "type": None,
-                        "profileImage": None
-                    }
+                    "author": None
                 }
-                post_change_result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={"$set": alert_delete})
+
+                # author = null로 변경
+                post_change_result = mongodb.update_one(
+                    query={"_id": ObjectId(post_id)}, 
+                    collection_name=board_type, 
+                    modify={"$set": alert_delete})
 
                 if post_change_result.raw_result["n"] == 0:
                     response_result = make_response({"queryStatus": "author information change fail"}, 500)
@@ -277,14 +282,14 @@ class AuthRegister(Resource):
                 reply_id = reply["replyId"]
                 print(board_type, reply_id)
                 alert_delete = {
-                    "author": {
-                        "_id": None,
-                        "nickname": None,
-                        "type": None,
-                        "profileImage": None
-                    }
+                    "author": None
                 }
-                reply_change_result = mongodb.update_one(query={"_id": ObjectId(reply_id)}, collection_name=board_type, modify={"$set": alert_delete})
+
+                # author = null로 변경
+                reply_change_result = mongodb.update_one(
+                    query={"_id": ObjectId(reply_id)}, 
+                    collection_name=board_type, 
+                    modify={"$set": alert_delete})
 
                 if reply_change_result.raw_result["n"] == 0:
                     response_result = make_response({"queryStatus": "author information change fail"}, 500)
@@ -294,6 +299,7 @@ class AuthRegister(Resource):
         calendar_id = user_info["calendar"]
         if calendar_id:  # 캘린더 아이디 있는 경우에만 (캘린더 안 만들고 탈퇴하는 경우 발생하는 오류 방지)
             result = mongodb.delete_one(query={"_id":calendar_id}, collection_name="calendar")
+
             if result.raw_result["n"] == 0:
                 response_result = make_response({"queryStatus": "calendar delete fail"}, 500)
                 return response_result
@@ -356,11 +362,7 @@ class AuthLogin(Resource):
 
             # 회원정보 조회
             user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
-
-            # 순서 고정
-            # information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
-            # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
-            # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
+            print(user_info["subInformation"]["profileImage"])
 
             user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user", "200")
 
@@ -385,19 +387,7 @@ class AuthLogin(Resource):
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
-        # 순서 고정
-        # information = fix_index(target=user_info["information"], key=["name", "email", "birth", "type"])
-        # sub_information = fix_index(target=user_info["subInformation"], key=["nickname", "profileImage"])
-        # activity = fix_index(target=user_info["activity"], key=["posts", "replies", "likes", "reports", "bookmarks"])
-
         user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user", "origin")
-
-        # real_user_info = {"_id": user_info["_id"],
-        #                   "password": user_info["password"],
-        #                   "information": information,
-        #                   "subInformation": sub_information,
-        #                   "activity": activity,
-        #                   "calendar": user_info["calendar"]}
 
         response_result = make_response({"user": user_info}, 200)
         
@@ -463,7 +453,6 @@ class ActivityControl(Resource):
         target_activity = user_info["activity"][activity_type]
 
         if not target_activity:  # 타겟 activity 가 없는 경우
-            # 리스트로 이루어진 리스트  "likes" : [["board_type", "content_id"], ["board_type", "content_id"]
             response_result = make_response({
                        "{}List".format(activity_type): None
                    }, 200)

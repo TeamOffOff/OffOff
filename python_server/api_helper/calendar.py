@@ -1,9 +1,8 @@
-from logging import disable, shutdown
 from flask import request
 from flask.helpers import make_response
 from pymongo import collection
 from flask_restx import Resource, Namespace
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from bson.objectid import ObjectId
 
 from controller.calendar import calendar_post_or_delete, calendar_update
