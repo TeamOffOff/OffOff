@@ -33,7 +33,7 @@ def save_image(img_list: list, directory: str):
     return key_list
 
 
-def get_image(img_key_list: list, directory: str, img_size: str = "origin"):
+def get_image(img_key_list: list, directory: str, img_size: str = "origin"): # "post","user" / "200","600"
     img_list = list()
 
     if not img_key_list:
