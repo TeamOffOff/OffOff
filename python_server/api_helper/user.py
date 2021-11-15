@@ -284,7 +284,7 @@ class AuthRegister(Resource):
                 alert_delete = {
                     "author": None
                 }
-
+                # childrenReply를 어떻게 할 것인가!!!!
                 # author = null로 변경
                 reply_change_result = mongodb.update_one(
                     query={"_id": ObjectId(reply_id)}, 

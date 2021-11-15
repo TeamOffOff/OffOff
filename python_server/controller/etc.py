@@ -3,35 +3,11 @@ from flask_jwt_extended import jwt_required
 
 import mongo as mongo
 from controller.filter import check_jwt
+from controller.image import *
+
 
 mongodb = mongo.MongoHelper()
 
-
-# # 순서 고정 함수
-# def fix_index(target, key):
-#     real = {}
-#     for i in key:
-#         real[i] = target[i]
-
-#     return real
-
-# """
-# fix_index : ver2
-# def fix_index(target, *args):
-#     real = {}
-#     if not args:
-#         args = target.keys()
-#     print(args)
-#     for i in args:
-#         if type(target[i]) is dict:
-#             temp = {}
-#             for j in target[i]:
-#                 temp[j] = target[i][j]
-#             real[i] = temp
-#         else:
-#             real[i] = target[i]
-#     return real
-# """
 
 
 # 변수 추출
@@ -70,5 +46,28 @@ def get_reply_list(post_id=None, board_type=None):
         reply["_id"] = str(reply["_id"])
         if reply["date"]:
             reply["date"] = (reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
+        # 비밀게시판인 경우에 댓글 author 을 None으로 변경
+        if board_type == "secret_board_reply":
+            reply["author"] = None
+
+        # 댓글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
+        if reply["author"]: #secret인 경우 None임
+            if reply["author"]["_id"]: #탈퇴한 경우 _id가 None임
+                if reply["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
+                    reply["author"]["profileImage"] = get_image(reply["author"]["profileImage"], "user", "200")
+
+        if reply["childrenReplies"]:  # 대댓글이 있으면
+            for children_reply in reply["childrenReplies"]: # 대댓글 하나씩 돌면서 author profileImage 인코딩
+                
+                # 비밀게시판인 경우에 대댓글 author 을 None으로 변경
+                if board_type == "secret_board_reply":
+                    children_reply["author"] = None
+
+                # 대댓글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
+                if children_reply["author"]: #secret인 경우 None임
+                    if children_reply["author"]["_id"]: #탈퇴한 경우 _id가 None임
+                        if children_reply["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
+                            children_reply["author"]["profileImage"] = get_image(children_reply["author"]["profileImage"], "user", "200")
 
     return total_list

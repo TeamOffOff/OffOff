@@ -262,6 +262,9 @@ class PostControl(Resource):
             modified_post["_id"] = str(modified_post["_id"])
             modified_post["date"] = (modified_post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
             
+            # 게시글에 있는 image base 64로 인코딩하기
+            modified_post["image"] = get_image(modified_post["image"], "post", "600") 
+
             # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
             if modified_post["author"]: #secret인 경우 None임
                 if modified_post["author"]["_id"]: #탈퇴한 경우 _id가 None임

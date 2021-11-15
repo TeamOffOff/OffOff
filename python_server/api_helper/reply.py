@@ -131,6 +131,17 @@ class ReplyControl(Resource):
             modified_reply = mongodb.find_one(query={"_id":ObjectId(reply_id)}, collection_name=board_type)
             modified_reply["_id"] = str(modified_reply["_id"])
             modified_reply["date"] = (modified_reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
+            # 비밀게시판인 경우에 댓글 author 을 None으로 변경
+            if board_type == "secret_board_reply":
+                modified_reply["author"] = None
+
+            # 댓글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
+            if modified_reply["author"]: #secret인 경우 None임
+                if modified_reply["author"]["_id"]: #탈퇴한 경우 _id가 None임
+                    if modified_reply["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
+                        modified_reply["author"]["profileImage"] = get_image(reply["author"]["profileImage"], "user", "200")
+            
             response_result = make_response(modified_reply, 200)
         
         return response_result
@@ -157,7 +168,7 @@ class ReplyControl(Resource):
                                         collection_name=reply_board_type)
         else:  # 대댓글이 있는 경우
             alert_delete = {
-                "author": {"_id": None, "nickname": None, "type": None, "profileImage": None},
+                "author": None,  # 대댓글이 있는데 삭제된 경우 그냥 author = null이 될 수 있게
                 "content": None,
                 "date": None,
                 "likes": None
