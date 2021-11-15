@@ -37,9 +37,6 @@ def get_image(img_key_list: list, directory: str, img_size: str = "origin"):
     img_list = list()
 
     if not img_key_list:
-        if directory == "user":
-            return None
-        elif directory == "post":
             return []
 
     for img_key in img_key_list:
