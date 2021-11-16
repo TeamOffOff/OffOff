@@ -2,7 +2,11 @@ package com.yuuuzzzin.offoff_android.views.ui.member
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.navigation.fragment.findNavController
@@ -11,9 +15,9 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep3Binding
 import com.yuuuzzzin.offoff_android.utils.Constants.toast
+import com.yuuuzzzin.offoff_android.utils.ImageUtils.bitmapToString
 import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
 import dagger.hilt.android.AndroidEntryPoint
-
 
 
 @AndroidEntryPoint
@@ -21,6 +25,8 @@ class SignupStep3Fragment :
     BaseSignupFragment<FragmentSignupStep3Binding>(R.layout.fragment_signup_step3) {
 
     private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
+    private var bitmap: Bitmap? = null
+    private var profileImageSet: Boolean = false
 
     private val cropResultContract by lazy {
         object : ActivityResultContract<Any?, Uri?>() {
@@ -45,6 +51,13 @@ class SignupStep3Fragment :
         cropActivityResultLauncher = registerForActivityResult(cropResultContract) { uri ->
             uri?.path?.let {
                 binding.ivPhoto.setImageURI(uri)
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().contentResolver, uri))
+                } else {
+                    bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
+                }
+                // profileImageSet = true
             }
         }
 
@@ -83,7 +96,10 @@ class SignupStep3Fragment :
 
         // signup 액티비티 종료
         binding.btSignup.setOnClickListener {
-            signupViewModel.signup()
+            if (bitmap != null)
+                signupViewModel.signup(bitmapToString(bitmap!!))
+            else
+                signupViewModel.signup(null)
             requireActivity().finish()
             requireContext().toast("가입이 완료되었습니다.")
         }
