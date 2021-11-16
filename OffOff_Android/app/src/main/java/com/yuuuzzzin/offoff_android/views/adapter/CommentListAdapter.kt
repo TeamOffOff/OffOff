@@ -13,6 +13,7 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemCommentBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
 import com.yuuuzzzin.offoff_android.service.models.Reply
+import com.yuuuzzzin.offoff_android.utils.ImageUtils
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 
 class CommentListAdapter(private val viewModel: PostViewModel) :
@@ -68,6 +69,12 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
 
         fun bind(item: Comment, position: Int, viewModel: PostViewModel) {
             binding.setVariable(BR.item, item)
+            if(!item.author.profileImage.isNullOrEmpty()) {
+                binding.ivAvatar.apply {
+                    setImageBitmap(ImageUtils.stringToBitmap(item.author.profileImage[0].body.toString()))
+                    clipToOutline = true
+                }
+            }
             binding.executePendingBindings()
             binding.btLikes.setOnClickListener {
                 commentClickListener.onLikeComment(position, item)

@@ -37,7 +37,6 @@ class SignupStep3Fragment :
                     .getIntent(this@SignupStep3Fragment.requireContext())
             }
 
-
             override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
                 return CropImage.getActivityResult(intent)?.uri
             }

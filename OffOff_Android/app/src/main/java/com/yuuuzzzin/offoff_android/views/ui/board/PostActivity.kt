@@ -105,6 +105,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 Log.d("tag_imageLIst", it.image.toMutableList().toString())
             }
 
+            if(!it.author.profileImage.isNullOrEmpty()) {
+                binding.ivAvatar.apply {
+                    setImageBitmap(ImageUtils.stringToBitmap(it.author.profileImage[0].body.toString()))
+                    clipToOutline = true
+                }
+            }
+
             this.post = it
             binding.refreshLayout.isRefreshing = false
             if (isFirst) {
