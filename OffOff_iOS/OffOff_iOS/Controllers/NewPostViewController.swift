@@ -21,6 +21,10 @@ class NewPostViewController: UIViewController {
     
     var postToModify: PostModel? = nil
     
+    var textViewMaxHeight = Constants.SCREEN_SIZE.height / 3.5
+    
+    var textViewNeedToScroll = BehaviorSubject<Bool>(value: false)
+    
     override func loadView() {
         self.view = newPostView
         self.view.backgroundColor = .white
@@ -73,32 +77,36 @@ class NewPostViewController: UIViewController {
         
         // 텍스트 뷰 크기 제한
         self.newPostView.contentTextView
-            .rx.text
+            .rx.didChange
             .bind { _ in
-                let needToScrolling = self.newPostView.contentTextView.frame.height > Constants.SCREEN_SIZE.height / 3
+                let needToScrolling = self.newPostView.contentTextView.contentSize.height > self.textViewMaxHeight
                 
-//                if needToScrolling {
-//                    self.newPostView.contentTextView.snp.remakeConstraints {
-//                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
-//                        $0.left.right.equalToSuperview().inset(33.adjustedWidth)
-//                        $0.height.equalTo(self.newPostView.contentTextView.frame.height)
-//                    }
-//                } else {
-//                    self.newPostView.contentTextView.snp.removeConstraints()
-//                    self.newPostView.contentTextView.snp.remakeConstraints {
-//                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
-//                        $0.left.right.equalToSuperview().inset(33.adjustedWidth)
-//                    }
-//                    self.newPostView.contentTextView.sizeToFit()
-//                }
-                
-                self.newPostView.contentTextView.isScrollEnabled = needToScrolling
-            
-                print(self.newPostView.contentTextView.frame.height)
+                self.textViewNeedToScroll.onNext(needToScrolling)
             }
             .disposed(by: disposeBag)
     
         // bind results
+        self.textViewNeedToScroll
+            .skip(1)
+            .bind { needToScrolling in
+                if needToScrolling {
+                    self.newPostView.contentTextView.snp.remakeConstraints {
+                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+                        $0.left.right.equalToSuperview().inset(33.adjustedWidth)
+                        $0.height.equalTo(self.textViewMaxHeight)
+                    }
+                } else {
+                    self.newPostView.contentTextView.snp.remakeConstraints {
+                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+                        $0.left.right.equalToSuperview().inset(33.adjustedWidth)
+                    }
+                }
+                
+                self.newPostView.contentTextView.isScrollEnabled = needToScrolling
+                self.newPostView.contentTextView.text = self.newPostView.contentTextView.text
+            }
+            .disposed(by: disposeBag)
+        
         self.viewModel.uploadingImages
             .do {
                 if $0.isEmpty {
@@ -206,7 +214,7 @@ class NewPostViewController: UIViewController {
             self.title = "글 수정"
             self.newPostView.titleTextField.text = postToModify!.title
             self.newPostView.contentTextView.text = postToModify!.content
-            
+            self.viewModel.uploadingImages.accept(postToModify!.image.map { $0.body.toImage() })
             self.navigationController?.navigationBar.setAppearance()
             self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
             self.navigationItem.leftBarButtonItem!.rx.tap
