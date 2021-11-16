@@ -18,6 +18,7 @@ class ReplyServices {
             .rx.request(.getReplies(postId, boardType))
             .asObservable()
             .map {
+                print(#fileID, #function, #line, $0)
                 if $0.statusCode == 200 {
                     do {
                         let replyList = try JSONDecoder().decode(ReplyList.self, from: $0.data)
@@ -37,6 +38,7 @@ class ReplyServices {
             .rx.request(.writeReply(reply: reply))
             .asObservable()
             .map {
+                print(#fileID, #function, #line, $0)
                 if $0.statusCode == 200 {
                     do {
                         let replyList = try JSONDecoder().decode(ReplyList.self, from: $0.data)
@@ -55,9 +57,6 @@ class ReplyServices {
             .rx.request(.likeReply(reply: reply))
             .asObservable()
             .map {
-                print(reply)
-                print($0)
-                print($0.request)
                 if $0.statusCode == 200 {
                     let reply = try JSONDecoder().decode(Reply.self, from: $0.data)
                     return reply

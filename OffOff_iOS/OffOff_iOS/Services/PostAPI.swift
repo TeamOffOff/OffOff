@@ -73,7 +73,7 @@ extension PostAPI: TargetType {
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json", "Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+        return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
     }
     
     

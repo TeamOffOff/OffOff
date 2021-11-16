@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class NewPostView: UIView {
     var backgroundView = UIView().then {
@@ -51,6 +52,17 @@ class NewPostView: UIView {
         $0.setCornerRadius(10.64.adjustedHeight)
     }
     
+    let collectionViewLayout = UICollectionViewFlowLayout().then {
+        $0.minimumLineSpacing = 0.0
+        $0.minimumInteritemSpacing = 0.0
+        $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    lazy var addingImagesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout).then {
+        $0.backgroundColor = .g4
+        $0.isScrollEnabled = true
+        $0.register(AddingImagesCollectionViewCell.self, forCellWithReuseIdentifier: AddingImagesCollectionViewCell.identifier)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -59,6 +71,7 @@ class NewPostView: UIView {
         self.addSubview(lineView)
         self.addSubview(contentTextView)
         self.addSubview(addPictureButton)
+        self.addSubview(addingImagesCollectionView)
         makeView()
     }
     
@@ -80,8 +93,14 @@ class NewPostView: UIView {
             $0.top.equalTo(lineView.snp.bottom).offset(21.adjustedHeight)
             $0.left.right.equalToSuperview().inset(33.adjustedWidth)
         }
+        addingImagesCollectionView.snp.makeConstraints {
+            $0.top.equalTo(contentTextView.snp.bottom).offset(16.adjustedHeight)
+            $0.left.equalToSuperview().inset(30.adjustedWidth)
+            $0.right.equalToSuperview()
+            $0.height.equalTo(68.adjustedHeight)
+        }
         addPictureButton.snp.makeConstraints {
-            $0.top.equalTo(contentTextView.snp.bottom).offset(21.adjustedHeight)
+            $0.top.equalTo(addingImagesCollectionView.snp.bottom).offset(38.adjustedHeight)
             $0.left.equalToSuperview().inset(31.adjustedWidth)
             $0.width.height.equalTo(30.adjustedWidth)
         }
@@ -90,5 +109,62 @@ class NewPostView: UIView {
             $0.top.left.right.equalToSuperview()
             $0.bottom.equalTo(addPictureButton).offset(22.adjustedHeight)
         }
+    }
+}
+
+class AddingImagesCollectionViewCell: UICollectionViewCell {
+    static let identifier = "AddingImagesCollectionViewCell"
+    
+    var row: Int!
+    var deletingAction: ((Int) -> Void)!
+    var disposeBag = DisposeBag()
+    
+    var imageView = UIImageView().then {
+        $0.setCornerRadius(10.adjustedHeight)
+        $0.backgroundColor = .w3
+        $0.contentMode = .scaleAspectFill
+    }
+    var removeButton = UIButton().then {
+        $0.setImage(UIImage(named: "X")!.resize(to: CGSize(width: 7.25.adjustedWidth, height: 8.2.adjustedHeight)), for: .normal)
+        $0.backgroundColor = .white
+        $0.setCornerRadius(8.adjustedHeight)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.contentView.addSubview(imageView)
+        self.contentView.addSubview(removeButton)
+        
+        imageView.snp.makeConstraints {
+            $0.left.bottom.equalToSuperview()
+            $0.width.height.equalTo(60.adjustedWidth)
+        }
+        
+        removeButton.snp.makeConstraints {
+            $0.centerY.equalTo(imageView.snp.top)
+            $0.centerX.equalTo(imageView.snp.right)
+            $0.width.height.equalTo(16.adjustedWidth)
+        }
+        
+        bindButton()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        bindButton()
+    }
+    
+    func bindButton() {
+        disposeBag = DisposeBag()
+        self.removeButton.rx.tap
+            .bind {
+                self.deletingAction(self.row)
+            }
+            .disposed(by: disposeBag)
     }
 }

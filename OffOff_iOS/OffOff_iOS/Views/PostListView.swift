@@ -14,6 +14,19 @@ class PostListView: UIView {
         $0.bottomRoundCorner(radius: 30.adjustedHeight)
     }
     
+    var refreshingImageView = UIImageView().then {
+        $0.image = UIImage(named: "LodingIndicator")!
+        
+        var images: [UIImage] = []
+        for idx in 0...3 {
+            images.append(UIImage(named: "LoadingProgress_0\(idx)")!)
+        }
+        
+        $0.animationImages = images
+        $0.animationDuration = 0.5
+        $0.contentMode = .scaleAspectFit
+    }
+    
     var postListTableView = UITableView().then {
         $0.backgroundColor = .clear
         $0.register(PostPreviewCell.self, forCellReuseIdentifier: PostPreviewCell.identifier)
@@ -29,6 +42,7 @@ class PostListView: UIView {
         super.init(frame: frame)
         self.backgroundColor = .white
         self.addSubview(upperView)
+        self.addSubview(refreshingImageView)
         self.addSubview(postListTableView)
         self.addSubview(newPostButton)
         makeView()
@@ -41,7 +55,11 @@ class PostListView: UIView {
     private func makeView() {
         upperView.snp.makeConstraints {
             $0.top.left.right.equalToSuperview()
-            $0.height.equalTo(270.adjustedHeight)
+            $0.height.equalTo(150.adjustedHeight)
+        }
+        refreshingImageView.snp.remakeConstraints {
+            $0.center.equalTo(upperView)
+            $0.width.height.equalTo(30.adjustedWidth)
         }
         postListTableView.snp.makeConstraints {
             $0.centerX.equalToSuperview()

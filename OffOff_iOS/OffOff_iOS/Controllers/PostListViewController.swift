@@ -33,6 +33,8 @@ class PostListViewController: UIViewController {
         
         self.customView.postListTableView.rowHeight = 81.adjustedHeight
         self.customView.postListTableView.separatorStyle = .none
+        
+        rotateRefreshIndicator(true)
     }
     
     override func viewDidLoad() {
@@ -42,14 +44,21 @@ class PostListViewController: UIViewController {
         viewModel = PostListViewModel(boardType: boardType ?? "")
 
         // tableview refresh control
-        let refreshControl = CustomRefreshControl()
+        let refreshControl = UIRefreshControl()
         self.customView.postListTableView.refreshControl = refreshControl
+        refreshControl.tintColor = .clear
         
         Constants.currentBoard = self.boardType
         
         // bind result
         viewModel!.postList
+            .skip(1)
             .observe(on: MainScheduler.instance)
+            .do { _ in
+                if !refreshControl.isRefreshing {
+                    self.rotateRefreshIndicator(false)
+                }
+            }
             .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
             }
@@ -58,22 +67,23 @@ class PostListViewController: UIViewController {
         viewModel!.refreshing
             .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
             .bind {
-                if refreshControl.isAnimating {
-                    refreshControl.endRefreshing()
-                }
+                refreshControl.endRefreshing()
+                self.rotateRefreshIndicator(false)
             }
             .disposed(by: disposeBag)
 
         // Refresh control
 //        self.customView.postListTableView.rx.didScroll
 //            .bind {
-//                refreshControl.updateProgress(with: self.customView.postListTableView.contentOffset.y)
+////                self.scrollViewDidScroll(scrollView: self.customView.postListTableView)
+//                self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
 //            }
 //            .disposed(by: disposeBag)
         
         refreshControl.rx.controlEvent(.valueChanged)
             .debug()
             .bind {
+                self.rotateRefreshIndicator(true)
                 self.viewModel!.reloadTrigger.onNext(())
             }
             .disposed(by: disposeBag)
@@ -83,7 +93,7 @@ class PostListViewController: UIViewController {
             .bind {
                 if self.customView.postListTableView.contentOffset.y <= 100.adjustedHeight {
                     self.customView.upperView.snp.updateConstraints {
-                        $0.height.equalTo(270.adjustedHeight - self.customView.postListTableView.contentOffset.y)
+                        $0.height.equalTo(150.adjustedHeight - self.customView.postListTableView.contentOffset.y)
                     }
                 }
             }
@@ -136,4 +146,48 @@ class PostListViewController: UIViewController {
             }
             .disposed(by: disposeBag)
     }
+    
+    // MARK: - Private Funcs
+    private func rotateRefreshIndicator(_ on: Bool) {
+        self.customView.refreshingImageView.isHidden = !on
+        
+        if on {
+            self.customView.refreshingImageView.rotate(duration: 2.5)
+        } else {
+            self.customView.refreshingImageView.stopRotating()
+        }
+    }
+    
+    private func updateProgress(with offsetY: CGFloat) {
+        let maxPullDistance = 105.adjustedHeight
+        
+        guard !self.customView.refreshingImageView.isRotating() else { return }
+        let progress = min(abs(offsetY / maxPullDistance), 1) * 10
+        
+        if progress >= 0 && progress < 2.5 {
+            self.customView.refreshingImageView.image = nil
+        } else if progress >= 2.5 && progress < 5.0 {
+            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![0]
+        } else if progress >= 5.0 && progress < 7.5 {
+            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![1]
+        } else {
+            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![2]
+        }
+    }
+    
+    // variable to save the last position visited, default to zero
+    private var lastContentOffset: CGFloat = 0
+
+    func scrollViewDidScroll(scrollView: UIScrollView!) {
+        if (self.lastContentOffset > scrollView.contentOffset.y) {
+            self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
+        }
+        else if (self.lastContentOffset < scrollView.contentOffset.y) {
+           // move down
+        }
+
+        // update the new position acquired
+        self.lastContentOffset = scrollView.contentOffset.y
+    }
+
 }

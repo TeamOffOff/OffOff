@@ -13,17 +13,22 @@ class NewPostViewModel {
     let isTitleConfirmed = BehaviorSubject<Bool>(value: false)
     let isContentConfiremd = BehaviorSubject<Bool>(value: false)
     var postCreated = Observable<PostModel?>.just(nil)
+    var isUploadingImage = Observable<Bool>.just(false)
+    
+    var uploadingImages = BehaviorRelay<[UIImage]>(value: [])
+    var disposeBag = DisposeBag()
     
     init(
         input: (
             titleText: Driver<String>,
             contentText: Driver<String>,
             createButtonTap: Observable<UITapGestureRecognizer>,
+            imageUploadButtonTapped: ControlEvent<()>,
             post: Observable<PostModel?>
         )
     ) {
         // outputs
-        let titleAndContent = Driver.combineLatest(input.titleText, input.contentText, input.post.asDriver(onErrorJustReturn: nil)) { (title: $0, content: $1, post: $2) }
+        let titleAndContent = Driver.combineLatest(input.titleText, input.contentText, input.post.asDriver(onErrorJustReturn: nil), uploadingImages.asDriver()) { (title: $0, content: $1, post: $2, images: $3) }
         
         postCreated = input.createButtonTap.withLatestFrom(titleAndContent)
             .asObservable()
@@ -39,7 +44,8 @@ class NewPostViewModel {
                 
                 if Constants.currentBoard != nil && Constants.loginUser != nil {
                     var post = WritingPost(boardType: Constants.currentBoard!, author: Constants.loginUser!._id, title: val.title, content: val.content)
-                    
+                    post.image = val.images.map { ImageObject(body: $0.toBase64String()) }
+                    print(#fileID, #function, #line, post.image.count)
                     if val.post != nil {
                         post._id = val.post!._id
                         post.author = val.post!.author._id!
@@ -50,6 +56,8 @@ class NewPostViewModel {
                 }
                 return Observable.just(nil)
             }
+        
+        isUploadingImage = input.imageUploadButtonTapped.asObservable().map { true }
     }
 }
 
@@ -59,7 +67,7 @@ struct WritingPost: Codable {
     var author: String
     var title: String
     var content: String
-    var image: String? = nil
+    var image: [ImageObject] = []
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

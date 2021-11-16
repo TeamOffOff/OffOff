@@ -21,6 +21,9 @@ class PostView: UIScrollView {
         $0.text = "타이틀"
         $0.textColor = .white
     }
+    var lineView = UIView().then {
+        $0.backgroundColor = .g2
+    }
     var profileImageView = UIImageView(image: .DEFAULT_PROFILE).then {
         $0.contentMode = .scaleAspectFit
     }
@@ -109,6 +112,7 @@ class PostView: UIScrollView {
         informationStackView.addArrangedSubview(authorLabel)
         informationStackView.addArrangedSubview(dateLabel)
         self.addSubview(titleLabel)
+        self.addSubview(lineView)
         self.addSubview(profileImageView)
         self.addSubview(likeButton)
         self.addSubview(scrapButton)
@@ -121,8 +125,7 @@ class PostView: UIScrollView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func makeView() {
-        backgroundView.snp.makeConstraints {
+    func makeView() {        backgroundView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.width.equalToSuperview()
             $0.bottom.equalTo(likeButton.snp.bottom).offset(31.adjustedHeight)
@@ -130,7 +133,7 @@ class PostView: UIScrollView {
         textContainerView.snp.makeConstraints {
             $0.width.equalTo(327.adjustedWidth)
             $0.left.equalTo(profileImageView)
-            $0.top.equalTo(titleLabel.snp.bottom).offset(16.adjustedHeight)
+            $0.top.equalTo(lineView.snp.bottom).offset(20.adjustedHeight)
         }
         contentTextView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -155,6 +158,12 @@ class PostView: UIScrollView {
             $0.top.equalTo(profileImageView.snp.bottom).offset(20.adjustedHeight)
             $0.left.equalTo(profileImageView)
             $0.right.equalToSuperview().inset(30.adjustedWidth)
+        }
+        lineView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(1)
+            $0.width.equalTo(324.adjustedWidth)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(15.adjustedHeight)
         }
         likeButton.snp.makeConstraints {
             $0.top.equalTo(imageTableView.snp.bottom).offset(20.adjustedHeight)
@@ -198,8 +207,10 @@ class ImageTableViewCell: UITableViewCell {
 //            $0.left.right.equalToSuperview()
 //            $0.top.bottom.equalToSuperview().inset(10.adjustedHeight)
 //        }
-        
+        self.backgroundColor = .g4
         self.imageView!.setCornerRadius(10.adjustedHeight)
+        self.imageView!.backgroundColor = .g4
+        self.imageView!.contentMode = .scaleAspectFit
         self.imageView!.snp.remakeConstraints {
             $0.left.right.equalToSuperview()
             $0.top.bottom.equalToSuperview().inset(10.adjustedHeight)

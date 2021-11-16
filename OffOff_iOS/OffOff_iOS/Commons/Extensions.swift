@@ -33,8 +33,8 @@ extension String {
         return image!
     }
     
-    func toDate() -> Date? {
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+    func toDate(format: String = "yyyy년 MM월 dd일 HH시 mm분") -> Date? {
+        dateFormatter.dateFormat = format
         return dateFormatter.date(from: self)
     }
     
@@ -45,6 +45,16 @@ extension String {
 }
 
 extension Date {
+    func toFormedString() -> String {
+        if self.isToday {
+            return self.toString("HH:mm")
+        } else if self.isThisYear {
+            return self.toString("MM/dd HH:mm")
+        } else {
+            return self.toString("yy/MM/dd HH:mm")
+        }
+    }
+    
     var startOfMonth: Date {
         
         let calendar = Calendar(identifier: .gregorian)
@@ -58,6 +68,14 @@ extension Date {
         components.month = 1
         components.second = -1
         return Calendar(identifier: .gregorian).date(byAdding: components, to: startOfMonth)!
+    }
+    
+    var isToday: Bool {
+        return Calendar.current.isDateInToday(self)
+    }
+    
+    var isThisYear: Bool {
+        return self.isSame(with: Date(), component: .year)
     }
     
     var isEndOfMonth: Bool {
@@ -329,6 +347,10 @@ extension UIImage {
     static let DefaultReplyProfileImage = UIImage(named: "DefaultReplyProfileImage")!
     static let SubReplyArrow = UIImage(named: "SubReplyArrow")!
     static let NewPostIcon = UIImage(named: "NewPostIcon")!.resize(to: CGSize(width: 26.61.adjustedWidth, height: 26.71.adjustedHeight))
+    static let LIKEICON = UIImage(named: "LikeIcon")!.withRenderingMode(.alwaysTemplate)
+    static let REPLYICON = UIImage(named: "ReplyIcon")!.withRenderingMode(.alwaysTemplate)
+    static let PICTUREICON = UIImage(named: "PictureIcon")!.withRenderingMode(.alwaysTemplate)
+    static let SCRAPICOn = UIImage(named: "ScrapIcon")!.withRenderingMode(.alwaysTemplate)
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)
@@ -559,5 +581,36 @@ extension UIBarButtonItem {
     }
     static func menuButton() -> UIBarButtonItem {
         UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    }
+}
+
+extension UIView {
+    private static let kRotationAnimationKey = "rotationanimationkey"
+
+    func rotate(duration: Double = 1) {
+        if layer.animation(forKey: UIView.kRotationAnimationKey) == nil {
+            let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation")
+            
+            rotationAnimation.fromValue = 0.0
+            rotationAnimation.toValue = Float.pi * 2.0
+            rotationAnimation.duration = duration
+            rotationAnimation.repeatCount = Float.infinity
+
+            layer.add(rotationAnimation, forKey: UIView.kRotationAnimationKey)
+        }
+    }
+    
+    func rotateWithoutAnimation(degree: Double) {
+        self.transform = CGAffineTransform(rotationAngle: CGFloat(degree))
+    }
+
+    func stopRotating() {
+        if layer.animation(forKey: UIView.kRotationAnimationKey) != nil {
+            layer.removeAnimation(forKey: UIView.kRotationAnimationKey)
+        }
+    }
+    
+    func isRotating() -> Bool {
+        return layer.animation(forKey: UIView.kRotationAnimationKey) != nil
     }
 }

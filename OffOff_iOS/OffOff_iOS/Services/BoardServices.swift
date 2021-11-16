@@ -41,7 +41,7 @@ public class BoardServices {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                print(try $0.mapJSON())
+                print(board_type, lastContentID)
                 if $0.statusCode == 200 {
                     do {
                         let postList = try JSONDecoder().decode(PostList.self, from: $0.data)

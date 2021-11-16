@@ -10,7 +10,7 @@ import UIKit
 class TextWithIconView: UIView {
     var iconImageView = UIImageView().then {
         $0.image = .ICON_LIKES_RED
-        $0.contentMode = .scaleToFill
+        $0.contentMode = .scaleAspectFill
     }
     
     var label = UILabel().then {
@@ -30,7 +30,7 @@ class TextWithIconView: UIView {
         iconImageView.snp.makeConstraints {
             $0.right.equalTo(label.snp.left).inset(-2.5)
             $0.centerY.equalTo(label)
-            $0.width.height.equalTo(label.snp.height)
+            $0.width.height.equalTo(10.0)
         }
     }
     

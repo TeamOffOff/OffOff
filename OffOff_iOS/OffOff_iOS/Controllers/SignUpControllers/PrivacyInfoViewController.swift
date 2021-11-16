@@ -157,8 +157,8 @@ extension PrivacyInfoViewController {
         }
         birthdayPicker!.locale = Locale(identifier: "ko_kr")
         birthdayPicker!.maximumDate = Date()
-        birthdayPicker!.minimumDate = "1940-01-01".toDate()
-        birthdayPicker!.setDate("2002-01-01".toDate()!, animated: false)
+        birthdayPicker!.minimumDate = "1940-01-01".toDate(format: "yyyy-MM-dd")
+        birthdayPicker!.setDate("2002-01-01".toDate(format: "yyyy-MM-dd")!, animated: false)
         textField.inputView = birthdayPicker
         
         birthdayPicker!.topRoundCorner(radius: 40.0)

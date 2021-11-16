@@ -6,13 +6,18 @@
 //
 
 import UIKit
+
 import RxCocoa
 import RxSwift
 import RxGesture
 
+import ZLPhotoBrowser
+
 class NewPostViewController: UIViewController {
     let disposeBag = DisposeBag()
     let newPostView = NewPostView()
+    
+    var viewModel: NewPostViewModel!
     
     var postToModify: PostModel? = nil
     
@@ -24,6 +29,8 @@ class NewPostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "글 쓰기"
+        
+        self.newPostView.addingImagesCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
         
         let saveButton = UILabel(frame: CGRect(x: 0, y: 0, width: 47.adjustedWidth, height: 27.adjustedHeight)).then {
             $0.backgroundColor = .g1
@@ -45,7 +52,7 @@ class NewPostViewController: UIViewController {
         setModifyingMode(postToModify != nil)
         
         // view model
-        let viewModel = NewPostViewModel(
+        viewModel = NewPostViewModel(
             input: (
                 titleText: newPostView.titleTextField
                     .rx.text
@@ -59,6 +66,7 @@ class NewPostViewController: UIViewController {
                     .asDriver(onErrorJustReturn: ""),
                 createButtonTap: saveButton.rx.tapGesture()
                     .when(.recognized),
+                imageUploadButtonTapped: newPostView.addPictureButton.rx.tap,
                 post: Observable.just(postToModify)
             )
         )
@@ -89,8 +97,60 @@ class NewPostViewController: UIViewController {
                 print(self.newPostView.contentTextView.frame.height)
             }
             .disposed(by: disposeBag)
-        
+    
         // bind results
+        self.viewModel.uploadingImages
+            .do {
+                if $0.isEmpty {
+                    self.newPostView.addingImagesCollectionView.snp.updateConstraints {
+                        $0.height.equalTo(0)
+                    }
+                } else {
+                    self.newPostView.addingImagesCollectionView.snp.updateConstraints {
+                        $0.height.equalTo(68.adjustedHeight)
+                    }
+                }
+            }
+            .bind(to: self.newPostView.addingImagesCollectionView.rx.items(cellIdentifier: AddingImagesCollectionViewCell.identifier, cellType: AddingImagesCollectionViewCell.self)) { (row, element, cell) in
+                cell.row = row
+                cell.imageView.image = element
+                cell.deletingAction = self.deleteUploadingImage
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.isUploadingImage
+            .bind {
+                if $0 {
+//                    self.imagePickingAlert()
+                    let cameraConfig = ZLPhotoConfiguration.default().cameraConfiguration
+                    ZLPhotoConfiguration.default().allowRecordVideo = false
+                    ZLPhotoConfiguration.default().allowSelectGif = false
+                    ZLPhotoConfiguration.default().maxSelectCount = 5
+                    ZLPhotoConfiguration.default().editImageClipRatios = [.wh1x1]
+                    ZLPhotoConfiguration.default().allowEditImage = true
+                    ZLPhotoConfiguration.default().editAfterSelectThumbnailImage = true
+                    ZLPhotoConfiguration.default().editImageTools = [.clip]
+                    ZLPhotoConfiguration.default().allowSelectOriginal = false
+//                    ZLPhotoConfiguration.default().themeColorDeploy = ZLPhotoThemeColorDeploy().
+                    
+                    // All properties of the camera configuration have default value
+                    cameraConfig.sessionPreset = .hd1920x1080
+                    cameraConfig.focusMode = .continuousAutoFocus
+                    cameraConfig.exposureMode = .continuousAutoExposure
+                    cameraConfig.flashMode = .off
+                    cameraConfig.videoExportType = .mov
+                    
+                    let ps = ZLPhotoPreviewSheet()
+                    
+                    ps.selectImageBlock = { [weak self] (images, assets, isOriginal) in
+                        let images = self!.viewModel.uploadingImages.value + images
+                        self!.viewModel.uploadingImages.accept(images)
+                    }
+                    ps.showPhotoLibrary(sender: self)
+                }
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.isTitleConfirmed
             .skip(1)
             .filter { $0 == false }
@@ -152,5 +212,17 @@ class NewPostViewController: UIViewController {
             self.navigationItem.leftBarButtonItem!.rx.tap
                 .bind { self.dismiss(animated: true, completion: nil) }.disposed(by: disposeBag)
         }
+    }
+    
+    func deleteUploadingImage(_ at: Int) {
+        var images = self.viewModel.uploadingImages.value
+        images.remove(at: at)
+        self.viewModel.uploadingImages.accept(images)
+    }
+}
+
+extension NewPostViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: 70.adjustedWidth, height: 68.adjustedHeight)
     }
 }

@@ -30,11 +30,12 @@ class PostViewController: UIViewController {
     var postImages = BehaviorSubject<[ImageObject]>(value: [])
     
     var replyContainer = UIView().then {
-        $0.backgroundColor = .white
-        $0.makeBorder(color: UIColor.mainColor.cgColor, cornerRadius: 12)
+        $0.backgroundColor = .w2
+        $0.topRoundCorner(radius: 10.adjustedHeight)
     }
     var replyTextView = UITextView().then {
-        $0.font = .preferredFont(forTextStyle: .body)
+        $0.backgroundColor = .w2
+        $0.font = .defaultFont(size: 12)
         $0.adjustsFontForContentSizeCategory = true
         $0.translatesAutoresizingMaskIntoConstraints = true
         $0.sizeToFit()
@@ -44,13 +45,26 @@ class PostViewController: UIViewController {
         $0.textContentType = .none
     }
     var replyButton = UIButton().then {
-        $0.setImage(.getIcon(name: .pen, color: .mainColor, size: Constants.BUTTON_ICON_SIZE), for: .normal)
-        $0.imageView?.contentMode = .scaleAspectFit
+        $0.backgroundColor = .g1
+        $0.setTitle("확인", for: .normal)
+        $0.titleLabel?.font = .defaultFont(size: 12, bold: true)
+        $0.titleLabel?.textColor = .white
+        $0.setCornerRadius(10.adjustedHeight)
+    }
+    
+    var loadingImageView = UIImageView().then {
+        $0.backgroundColor = .g4
+        $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 30.adjustedWidth, height: 30.adjustedHeight))
+        $0.contentMode = .top
+    }
+    
+    var loadingView = UIView().then {
+        $0.backgroundColor = .g4
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        loadingImageView.rotate(duration: 2.5)
         self.navigationController?.navigationBar.setAppearance()
         
         self.view.backgroundColor = .white
@@ -58,6 +72,8 @@ class PostViewController: UIViewController {
         self.view.addSubview(replyContainer)
         replyContainer.addSubview(replyTextView)
         replyContainer.addSubview(replyButton)
+        self.view.addSubview(loadingView)
+        self.view.addSubview(loadingImageView)
         self.makeView()
         
         replyTextView.delegate = self
@@ -87,17 +103,29 @@ class PostViewController: UIViewController {
                 self.postView.titleLabel.text = $0!.title
                 self.postView.authorLabel.text = $0!.author.nickname
                 self.postView.contentTextView.text = $0!.content
-                self.postView.dateLabel.text = $0!.date
+                self.postView.dateLabel.text = $0!.date.toDate()!.toFormedString()
                 self.postView.profileImageView.image = .DefaultPostProfileImage
 //                self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
                 self.postImages.onNext($0!.image)
+                if $0!.author.profileImage.count != 0 {
+                    self.postView.profileImageView.image = $0!.author.profileImage.first!.body.toImage()
+                }
                 if $0?.author._id == Constants.loginUser?._id {
                     self.setRightButtons(set: true)
                 } else {
                     self.setRightButtons(set: false)
                 }
                 
-                // TODO: 이미 좋아요 누른 게시글이면 좋아요 버튼에 표시
+                // 이미 좋아요 누른 게시글이면 좋아요 버튼에 표시
+//                for like in Constants.loginUser!.activity.likes {
+//                    if like.postId == $0!._id {
+//                        self.postView.likeButton.backgroundColor = .g3
+//                        break
+//                    }
+//                }
+                
+                self.loadingView.isHidden = true
+                self.rotateRefreshIndicator(false)
             }
             .disposed(by: disposeBag)
         
@@ -198,7 +226,6 @@ class PostViewController: UIViewController {
         // MARK: 댓글 입력 시 키보드 높이에 맞춰 댓글 입력 뷰 높이 조정
         RxKeyboard.instance.visibleHeight
             .skip(1)
-            .debug()
             .drive(onNext: { keyboardVisibleHeight in
                 let window = UIApplication.shared.windows.first
                 
@@ -206,8 +233,9 @@ class PostViewController: UIViewController {
                     self.postView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardVisibleHeight, right: 0)
                     UIView.animate(withDuration: 0) {
                         self.replyContainer.snp.remakeConstraints {
-                            $0.right.left.equalToSuperview().inset(12)
-                            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(keyboardVisibleHeight - window!.safeAreaInsets.bottom)
+                            $0.right.left.equalToSuperview()
+//                            $0.bottom.equalToSuperview().inset(keyboardVisibleHeight - window!.safeAreaInsets.bottom)
+                            $0.bottom.equalToSuperview().inset(keyboardVisibleHeight)
                         }
                         self.view.layoutIfNeeded()
                     }
@@ -215,8 +243,8 @@ class PostViewController: UIViewController {
                     self.postView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
                     UIView.animate(withDuration: 0) {
                         self.replyContainer.snp.remakeConstraints {
-                            $0.right.left.equalToSuperview().inset(12)
-                            $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
+                            $0.right.left.equalToSuperview()
+                            $0.bottom.equalToSuperview()
                         }
                         self.view.layoutIfNeeded()
                     }
@@ -245,25 +273,35 @@ class PostViewController: UIViewController {
     
     // MARK: - Private Funcs
     private func makeView() {
-        
+        loadingView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        loadingImageView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(30.adjustedWidth)
+        }
         postView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.left.right.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(Constants.SCREEN_SIZE.height / 12.5)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(50.adjustedHeight)
         }
         replyContainer.snp.makeConstraints {
-            $0.right.left.equalToSuperview().inset(12)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(8)
+            $0.right.left.equalToSuperview()
+            $0.bottom.equalToSuperview()
         }
+        let window = UIApplication.shared.windows.first
         replyTextView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(8)
+            $0.top.equalToSuperview().inset(14.adjustedHeight)
+            $0.bottom.equalToSuperview().inset(14.adjustedHeight + Double(window!.safeAreaInsets.bottom))
             $0.left.equalToSuperview().offset(12)
-            $0.right.equalToSuperview().inset(Constants.SCREEN_SIZE.width / 7.5)
+            $0.right.equalTo(replyButton.snp.left)
         }
         replyButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(8)
-            $0.bottom.equalToSuperview().inset(8)
-            $0.height.equalTo(replyTextView)
+            $0.right.equalToSuperview().inset(11.adjustedWidth)
+            $0.top.equalToSuperview().inset(11.adjustedHeight)
+            $0.height.equalTo(24.adjustedHeight)
+            $0.width.equalTo(47.adjustedWidth)
         }
     }
     
@@ -335,6 +373,16 @@ class PostViewController: UIViewController {
     private func presentMenuAlert(alert: UIAlertController) {
         menuAlert = alert
         self.present(menuAlert, animated: true, completion: nil)
+    }
+    
+    private func rotateRefreshIndicator(_ on: Bool) {
+        self.loadingImageView.isHidden = !on
+        
+        if on {
+            self.loadingImageView.rotate(duration: 2.5)
+        } else {
+            self.loadingImageView.stopRotating()
+        }
     }
 }
 

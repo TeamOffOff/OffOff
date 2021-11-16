@@ -6,15 +6,21 @@
 //
 
 struct PostList: Codable {
-    var lastPostId: String
+    var lastPostId: String?
     var postList: [PostModel]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(lastPostId, forKey: .lastPostId)
+        try container.encode(lastPostId, forKey: .postList)
+    }
 }
 
 struct Author: Codable {
     var _id: String?
     var nickname: String
     var type: String?
-    var profileImage: String?
+    var profileImage: [ImageObject]
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

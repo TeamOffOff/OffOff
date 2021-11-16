@@ -34,7 +34,6 @@ public class PostServices {
             .map {
                 if $0.statusCode == 200 {
                     let post = try JSONDecoder().decode(PostModel.self, from: $0.data)
-                    print(post)
                     return post
                 }
                 return nil

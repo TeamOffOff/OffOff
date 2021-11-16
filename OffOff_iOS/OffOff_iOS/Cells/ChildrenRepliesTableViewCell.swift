@@ -159,6 +159,10 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
                 self.dateLabel.text = $0.date
                 self.contentTextView.text = $0.content
                 self.likeButton.setTitle("\($0.likes.count)", for: .normal)
+                
+                if $0.author.profileImage.count != 0 {
+                    self.profileImageView.image = $0.author.profileImage.first!.body.toImage()
+                }
             }
             .disposed(by: disposeBag)
         

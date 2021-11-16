@@ -38,10 +38,8 @@ class PostListViewModel {
                 return result?.postList ?? []
             }
             .bind {
-                var list = self.postList.value
-                list.append(contentsOf: $0)
+                let list = self.postList.value + $0
                 self.postList.accept(list)
-                print(self.postList.value)
             }
             .disposed(by: disposeBag)
     }

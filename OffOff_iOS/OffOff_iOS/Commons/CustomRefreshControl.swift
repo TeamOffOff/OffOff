@@ -9,12 +9,14 @@ import UIKit
 
 class CustomRefreshControl: UIRefreshControl {
     let animationView = UIImageView()
+    let progressView = UIImageView()
     var isAnimating = false
     
     fileprivate let maxPullDistance: CGFloat = 105
     
     override init() {
         super.init(frame: .zero)
+        self.animationView.image = UIImage(named: "LodingIndicator")!
         setImage()
         setupView()
         self.endRefreshing()
@@ -43,12 +45,15 @@ class CustomRefreshControl: UIRefreshControl {
     override func beginRefreshing() {
         super.beginRefreshing()
         isAnimating = true
-        animationView.startAnimating()
+//        animationView.startAnimating()
+        animationView.rotate(duration: 2.0)
     }
     
     override func endRefreshing() {
         super.endRefreshing()
-        animationView.stopAnimating()
+//        animationView.stopAnimating()
+        print(#fileID, #function, #line, "")
+        animationView.stopRotating()
         isAnimating = false
     }
     
@@ -56,7 +61,7 @@ class CustomRefreshControl: UIRefreshControl {
     private func setImage() {
         var images: [UIImage] = []
         for idx in 0...3 {
-            images.append(UIImage(named: "Indicator_0\(idx)")!)
+            images.append(UIImage(named: "LoadingProgress_0\(idx)")!)
         }
         
         animationView.animationImages = images
@@ -70,8 +75,8 @@ class CustomRefreshControl: UIRefreshControl {
         
         animationView.snp.makeConstraints {
             $0.center.equalToSuperview()
-            $0.width.equalTo(64.adjustedWidth)
-            $0.height.equalTo(24.adjustedHeight)
+            $0.width.equalTo(30.adjustedWidth)
+            $0.height.equalTo(30.adjustedHeight)
         }
         
         addTarget(self, action: #selector(beginRefreshing), for: .valueChanged)
