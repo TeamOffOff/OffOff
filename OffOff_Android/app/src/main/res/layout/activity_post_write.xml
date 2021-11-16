@@ -21,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="119dp"
             android:backgroundTint="@color/green"
-            app:elevation="0dp"
             android:paddingStart="28dp"
             android:paddingEnd="34dp"
+            app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -66,14 +66,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="60dp"
             android:text="@string/write_post"
             android:textColor="@color/white"
-            android:layout_marginTop="60dp"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@id/layout_appbar"
             app:layout_constraintEnd_toEndOf="@id/layout_appbar"
             app:layout_constraintStart_toStartOf="@id/layout_appbar"
-            app:layout_constraintTop_toTopOf="@id/layout_appbar"/>
+            app:layout_constraintTop_toTopOf="@id/layout_appbar" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
@@ -102,18 +102,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="38dp"
-                    android:outlineProvider="bounds"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/bt_camera"
-                    tools:listitem="@layout/rv_item_post_write_image" />
 
                 <ImageButton
                     android:id="@+id/bt_camera"
@@ -147,9 +135,9 @@
                         android:background="@android:color/transparent"
                         android:elevation="0dp"
                         android:hint="@string/title"
-                        android:singleLine="false"
                         android:importantForAutofill="no"
                         android:inputType="text"
+                        android:singleLine="true"
                         android:text="@={viewModel.title}"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
@@ -177,7 +165,7 @@
                         android:background="@android:color/transparent"
                         android:gravity="top"
                         android:hint="@string/contents"
-                        android:inputType="text"
+                        android:inputType="textMultiLine"
                         android:maxHeight="150dp"
                         android:scrollbars="vertical"
                         android:text="@={viewModel.content}"
@@ -187,6 +175,21 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/et_title" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="38dp"
+                        android:orientation="horizontal"
+                        android:outlineProvider="bounds"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/et_content"
+                        tools:listitem="@layout/rv_item_post_write_image" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

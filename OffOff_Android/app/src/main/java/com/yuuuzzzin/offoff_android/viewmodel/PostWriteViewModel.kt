@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.OffoffApplication
+import com.yuuuzzzin.offoff_android.service.models.Image
 import com.yuuuzzzin.offoff_android.service.models.PostSend
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
 import com.yuuuzzzin.offoff_android.utils.Event
@@ -50,7 +51,7 @@ constructor(
         return checkValue
     }
 
-    fun writePost(boardType: String) {
+    fun writePost(boardType: String, imageList: List<Image>? = emptyList()) {
         if (!check()) return
 
         val post = PostSend(
@@ -58,6 +59,7 @@ constructor(
             author = OffoffApplication.user.id,
             title = title.value!!,
             content = content.value!!,
+            image = imageList
         )
 
         viewModelScope.launch(Dispatchers.IO) {

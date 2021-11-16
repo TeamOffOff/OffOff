@@ -1,10 +1,10 @@
 package com.yuuuzzzin.offoff_android.views.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.yuuuzzzin.offoff_android.BR
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemPostWriteImageBinding
 import com.yuuuzzzin.offoff_android.service.models.Image
@@ -12,17 +12,18 @@ import com.yuuuzzzin.offoff_android.service.models.Image
 class PostWriteImageAdapter :
     RecyclerView.Adapter<PostWriteImageAdapter.PostWriteImageViewHolder>() {
 
-    private var imageList = ArrayList<Image>()
+    private var imageList = ArrayList<Uri>()
+    private var images = ArrayList<Image>()
 
     override fun getItemCount(): Int = imageList.size
 
     interface OnPostWriteImageClickListener {
-        fun onClickPostWriteImage(item: Image, position: Int)
+        fun onClickBtDelete(position: Int)
     }
 
-    private lateinit var postWriteImageClickListener: PostWriteImageAdapter.OnPostWriteImageClickListener
+    private lateinit var postWriteImageClickListener: OnPostWriteImageClickListener
 
-    fun setOnPostWriteImageClickListener(listener: PostWriteImageAdapter.OnPostWriteImageClickListener) {
+    fun setOnPostWriteImageClickListener(listener: OnPostWriteImageClickListener) {
         this.postWriteImageClickListener = listener
     }
 
@@ -51,29 +52,47 @@ class PostWriteImageAdapter :
         private val binding: RvItemPostWriteImageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Image, position: Int) {
-            binding.setVariable(BR.item, item)
+        fun bind(uri: Uri, position: Int) {
+            //binding.setVariable(BR.item, uri))
+            //images.add()
+            binding.ivImage.apply {
+                setImageURI(uri)
+                clipToOutline = true
+            }
             binding.executePendingBindings()
-            binding.ivImage.clipToOutline = true
-            binding.root.setOnClickListener {
-                postWriteImageClickListener.onClickPostWriteImage(item, position)
+            binding.btDelete.setOnClickListener {
+                postWriteImageClickListener.onClickBtDelete(position)
             }
         }
     }
 
-    fun clearPostWriteImageList() {
+    fun clearItems() {
         this.imageList.clear()
         notifyDataSetChanged()
     }
 
-    fun addImage(image: Image) {
+    fun addItem(uri: Uri) {
         // this.imageList.clear()
-        this.imageList.add(image)
+        this.imageList.add(uri)
         notifyDataSetChanged()
     }
 
-    fun updateItem(image: Image, position: Int) {
-        imageList[position] = image
+    fun removeItem(position: Int) {
+        imageList.removeAt(position)
+        notifyDataSetChanged()
+    }
+
+    fun addItems(items: List<Uri>) {
+        this.imageList.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    fun getItems(): List<Uri> {
+        return this.imageList
+    }
+
+    fun updateItem(uri: Uri, position: Int) {
+        imageList[position] = uri
         notifyItemChanged(position)
     }
 
