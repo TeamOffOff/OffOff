@@ -8,6 +8,7 @@ import com.yuuuzzzin.offoff_android.BR
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemPostPreviewBinding
 import com.yuuuzzzin.offoff_android.service.models.Post
+import com.yuuuzzzin.offoff_android.utils.ImageUtils
 import java.lang.Boolean.TRUE
 
 /*
@@ -53,6 +54,8 @@ class BoardAdapter :
 
         fun bind(item: Post, position: Int) {
             binding.setVariable(BR.item, item)
+            if(!item.image.isNullOrEmpty())
+                binding.ivPhoto.setImageBitmap(ImageUtils.stringToBitmap(item.image[0].body.toString()))
             binding.executePendingBindings()
             binding.root.setOnClickListener {
                 postClickListener.onClickPost(item, position)

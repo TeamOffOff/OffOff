@@ -72,7 +72,7 @@ data class Author(
 /* 이미지 */
 data class Image(
     @SerializedName("key")
-    val key: String,
+    val key: String?,
     @SerializedName("body")
-    val body: String
+    val body: String?
 ) : Serializable

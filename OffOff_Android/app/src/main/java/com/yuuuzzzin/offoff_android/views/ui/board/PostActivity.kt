@@ -100,8 +100,9 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         viewModel.post.observe(binding.lifecycleOwner!!, {
             binding.post = it
 
-            if (it.image != null) {
+            if (!it.image.isNullOrEmpty()) {
                 postImageListAdapter.addPostImageList(it.image.toMutableList())
+                Log.d("tag_imageLIst", it.image.toMutableList().toString())
             }
 
             this.post = it
@@ -238,7 +239,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             isNestedScrollingEnabled = false
         }
 
-        val spaceDecorationImage = RecyclerViewUtils.VerticalSpaceItemDecoration(20) // 아이템 사이의 거리
+        val spaceDecorationImage = RecyclerViewUtils.VerticalSpaceItemDecoration(10) // 아이템 사이의 거리
         binding.rvImage.apply {
             adapter = postImageListAdapter
             layoutManager = LinearLayoutManager(context)
