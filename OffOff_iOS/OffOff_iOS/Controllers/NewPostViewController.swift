@@ -52,9 +52,6 @@ class NewPostViewController: UIViewController {
                 print(#fileID, #function, #line, "")
             }.disposed(by: disposeBag)
         
-        // 수정일 때 세팅
-        setModifyingMode(postToModify != nil)
-        
         // view model
         viewModel = NewPostViewModel(
             input: (
@@ -74,6 +71,9 @@ class NewPostViewController: UIViewController {
                 post: Observable.just(postToModify)
             )
         )
+        
+        // 수정일 때 세팅
+        setModifyingMode(postToModify != nil)
         
         // 텍스트 뷰 크기 제한
         self.newPostView.contentTextView
