@@ -193,6 +193,10 @@ class PostControl(Resource):
             # author는 데코레이터에서 역할이 끝났으므로 삭제
             del request_info["author"]
 
+            # 사진 수정하는 방법
+            if request_info["image"]:
+                request_info["image"] = save_image(request_info["image"], "post")
+
             # 게시글 정보 업데이트
             result = mongodb.update_one(query={"_id": ObjectId(post_id)},
                                         collection_name=board_type,
@@ -263,7 +267,9 @@ class PostControl(Resource):
             modified_post["date"] = (modified_post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
             
             # 게시글에 있는 image base 64로 인코딩하기
-            modified_post["image"] = get_image(modified_post["image"], "post", "600") 
+            if modified_post["image"]:
+                time.sleep(5) # 이미지 업로드하는데 걸리는 시간 고려
+                modified_post["image"] = get_image(modified_post["image"], "post", "600") 
 
             # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
             if modified_post["author"]: #secret인 경우 None임
