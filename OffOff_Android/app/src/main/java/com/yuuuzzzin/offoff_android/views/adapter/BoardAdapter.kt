@@ -54,8 +54,12 @@ class BoardAdapter :
 
         fun bind(item: Post, position: Int) {
             binding.setVariable(BR.item, item)
-            if(!item.image.isNullOrEmpty())
-                binding.ivPhoto.setImageBitmap(ImageUtils.stringToBitmap(item.image[0].body.toString()))
+            if(!item.image.isNullOrEmpty()) {
+                binding.ivPhoto.apply {
+                    setImageBitmap(ImageUtils.stringToBitmap(item.image[0].body.toString()))
+                    clipToOutline = true
+                }
+            }
             binding.executePendingBindings()
             binding.root.setOnClickListener {
                 postClickListener.onClickPost(item, position)

@@ -239,12 +239,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             isNestedScrollingEnabled = false
         }
 
-        val spaceDecorationImage = RecyclerViewUtils.VerticalSpaceItemDecoration(10) // 아이템 사이의 거리
+        val spaceDecorationImage = RecyclerViewUtils.VerticalSpaceItemDecoration(20) // 아이템 사이의 거리
         binding.rvImage.apply {
             adapter = postImageListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecorationImage)
-            isNestedScrollingEnabled = false
+            // isNestedScrollingEnabled = false
         }
 
         commentListAdapter.setOnCommentClickListener(object :

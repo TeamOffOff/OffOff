@@ -11,16 +11,17 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:layout_height="wrap_content"
             android:background="@drawable/layout_background_post_image"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
