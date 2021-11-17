@@ -142,6 +142,19 @@ class ReplyControl(Resource):
                     if modified_reply["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
                         modified_reply["author"]["profileImage"] = get_image(reply["author"]["profileImage"], "user", "200")
             
+            if modified_reply["childrenReplies"]:  # 대댓글이 있으면
+                for children_reply in modified_reply["childrenReplies"]: # 대댓글 하나씩 돌면서 author profileImage 인코딩
+                    
+                    # 비밀게시판인 경우에 대댓글 author 을 None으로 변경
+                    if board_type == "secret_board_reply":
+                        children_reply["author"] = None
+
+                    # 대댓글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
+                    if children_reply["author"]: #secret인 경우 None임
+                        if children_reply["author"]["_id"]: #탈퇴한 경우 _id가 None임
+                            if children_reply["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
+                                children_reply["author"]["profileImage"] = get_image(children_reply["author"]["profileImage"], "user", "200")
+                                
             response_result = make_response(modified_reply, 200)
         
         return response_result
@@ -264,6 +277,7 @@ class SubReplyControl(Resource):
         
         return response_result
 
+
     @ownership_required
     def delete(self):  # 대댓글 삭제
         """대댓글 삭제"""
@@ -311,6 +325,7 @@ class SubReplyControl(Resource):
     
         return response_result
     
+
     @jwt_required()
     def put(self):
         """좋아요를 저장합니다"""
@@ -360,6 +375,14 @@ class SubReplyControl(Resource):
         # 해당 subreply만 찾아서 보내기
         for subreply in children_replies:
             if subreply["_id"] == subreply_id:
+                if board_type == "secret_board_reply":
+                    subreply["author"] = None
+                
+                if subreply["author"]: # secret board가 아님
+                    if subreply["author"]["_id"]:
+                        if subreply["author"]["profileImage"]:
+                            subreply["author"]["profileImage"] = get_image(subreply["author"]["profileImage"], "user", "200")
+            
                 response_result = make_response(subreply, 200)
                 return response_result
 

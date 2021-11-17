@@ -88,34 +88,37 @@ class PostListControl(Resource):
         """
 
         board_type = board_type + "_board"
-        volume = int(request.args.get("volume", default=20))
-        standard_id = request.args.get("standardId", default="")
 
-        if not standard_id:  # 게시판에 처음 들어간 경우, 새로 고침한 경우
+        volume = int(request.args.get("volume", default=20))
+        last_post_id = request.args.get("lastPostId", default="")
+        first_post_id = request.args.get("firstPostId", default="")
+
+        if (not last_post_id) and (not first_post_id):  # 게시판에 처음 들어간 경우, 새로 고침한 경우
             total_list = list(mongodb.find(collection_name=board_type).sort([("_id", -1)]).limit(volume))
 
-        elif standard_id:  # 과거 게시글 불러올 때
-            standard_id = ObjectId(standard_id)
+        elif last_post_id:  # 과거 게시글 불러올 때
+            last_post_id = ObjectId(last_post_id)
             total_list = list(mongodb.find(
-                query={'_id': {'$lt': standard_id}}, 
+                query={'_id': {'$lt': last_post_id}}, 
                 collection_name=board_type).sort([("_id", -1)]).limit(volume))
+        
+        elif first_post_id:  # 업데이트된 게글 불러올 때
+            first_post_id = ObjectId(first_post_id)
+            total_list = list(mongodb.find(
+                query={'_id': {'$gt': first_post_id}}, 
+                collection_name=board_type).sort([("_id", -1)]).limit(volume))
+        
 
+        # 위에서 total_list가 정해짐 
         if total_list:  # 불러올 게시글이 남아있는 경우
-            for post in total_list:
-                post["_id"] = str(post["_id"])
-                post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-                post["image"] = get_image(post["image"], "post", "200")                
-
-                if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
-                    post["author"] = None
-                else:  # 비밀게시판이 아닌 경우에는 profileImage를 None으로 변경해서 줌(게시글 리스트에서는 profileImage가 필요없음)
-                    post["author"]["profileImage"] = []
-
-            last_post_id = total_list[-1]["_id"]
-
-            if board_type == "hot_board":  # 인기게시판인 경우
-                print("여기는 인기게시판")
-                print("인기게시판db에 있는 정보", total_list)
+            if board_type == "hot_board":  # 인기게시판인 경우 
+                """
+                {
+                    "_id"
+                    "boardType"
+                    "date"
+                }
+                """
 
                 hot_post_list = []
                 for temp_post in total_list:
@@ -130,25 +133,49 @@ class PostListControl(Resource):
                     if board_type == "secret_board":
                         post["author"] = None
 
+                    else:
+                        post["author"]["profileImage"] = []
+
                     hot_post_list.append(post)
+                
+                if first_post_id:
+                    return_last_post_id = None
+                else: 
+                    return_last_post_id = total_list[-1]["_id"]
 
                 print("인기게시판에 들어간 각 게시글의 정보:", hot_post_list)
 
                 response_result = make_response({
-                    "lastPostId": last_post_id,
+                    "lastPostId": return_last_post_id,
                     "postList": hot_post_list
                 }, 200)
 
-            else:
+            else:  # 인기게시판 이외의 게시판
+                for post in total_list:
+                    post["_id"] = str(post["_id"])
+                    post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                    post["image"] = get_image(post["image"], "post", "200")                
+
+                    if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
+                        post["author"] = None
+
+                    else:  # 비밀게시판이 아닌 경우에는 profileImage를 None으로 변경해서 줌(게시글 리스트에서는 profileImage가 필요없음)
+                        post["author"]["profileImage"] = []
+
+                if first_post_id:
+                    return_last_post_id = None
+                else: 
+                    return_last_post_id = total_list[-1]["_id"]
+
                 response_result = make_response({
-                    "lastPostId": last_post_id,
+                    "lastPostId": return_last_post_id,
                     "postList": total_list
                 }, 200)
 
-        else:
+        else:  # 불러올 게시글이 없는 경우
             response_result = make_response({
-                "lastPostId": None,
-                "postList": None
+                "lastPostId": None, 
+                "postList": []
             }, 200)
         
         return response_result
@@ -213,7 +240,7 @@ class TotalSearchControl(Resource):
             last_post_id = total_list[-1]["_id"]
 
         else:
-            total_list = None
+            total_list = []
             last_post_id = None
 
         response_result = make_response({
@@ -274,7 +301,7 @@ class SearchControl(Resource):
         else: # 불러올 게시글이 없는 경우
             response_result = make_response({
                 "lastPostId": None,
-                "postList": None
+                "postList": []
             }, 200)
 
         return response_result
