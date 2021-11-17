@@ -81,6 +81,7 @@ class ReplyControl(Resource):
 
         return response_result
 
+
     @jwt_required()
     def get(self):  # 댓글 조회
         """댓글을 조회합니다."""
@@ -97,6 +98,7 @@ class ReplyControl(Resource):
         response_result = make_response({"replyList": reply_list}, 200)
 
         return response_result
+
 
     @jwt_required()
     def put(self):  # 좋아요

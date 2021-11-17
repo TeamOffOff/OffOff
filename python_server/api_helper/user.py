@@ -454,7 +454,7 @@ class ActivityControl(Resource):
 
         if not target_activity:  # 타겟 activity 가 없는 경우
             response_result = make_response({
-                       "{}List".format(activity_type): None
+                       "{}List".format(activity_type): []  # 빈문자열로 변경
                    }, 200)
 
         else:  # 타켓 activity 가 있는 경우
@@ -465,16 +465,21 @@ class ActivityControl(Resource):
 
                 result = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
                 if result:  # 해당 게시글이 있는 경우(삭제되지 않은 경우)
-                    result["_id"] = str(result["_id"])
-                    result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-                    
-                    # 비밀게시판 처리
-                    if board_type == "secret_board":
-                        result["author"] = None
-
                     if result not in post_list:  # 중복 피하기 위함
+                        result["_id"] = str(result["_id"])
+                        result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                        result["image"] = get_image(result["image"], "post", "200")                
+                        
+                        # 비밀게시판 처리
+                        if board_type == "secret_board":
+                            result["author"] = None
+                        else:
+                            result["author"]["profileImage"] = []
                         post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
-                    
+
+                    else: # 중복된 경우
+                        continue
+
                 else:  # 삭제된 경우
                     continue
 
