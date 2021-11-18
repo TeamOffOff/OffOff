@@ -3,11 +3,8 @@ package com.yuuuzzzin.offoff_android.views.ui.board
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,8 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostWriteBinding
 import com.yuuuzzzin.offoff_android.service.models.Image
+import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.utils.DialogUtils
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.bitmapToString
+import com.yuuuzzzin.offoff_android.utils.ImageUtils.stringToBitmap
+import com.yuuuzzzin.offoff_android.utils.ImageUtils.uriToBitmap
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
@@ -34,6 +34,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     private lateinit var imageAdapter: PostWriteImageAdapter
     private lateinit var boardType: String
     private lateinit var boardName: String
+    private var postId: String? = null
     private var postWriteType: Int = 0
 
     private val requestActivity =
@@ -53,9 +54,9 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                                 "확인"
                             )
                         } else {
-                            val list = mutableListOf<Uri>()
+                            val list = mutableListOf<Bitmap>()
                             for (i in 0 until count) {
-                                list.add(it.data!!.clipData!!.getItemAt(i).uri)
+                                list.add(uriToBitmap(it.data!!.clipData!!.getItemAt(i).uri, this))
                             }
                             imageAdapter.addItems(list)
                         }
@@ -63,7 +64,8 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
                     // 이미지 단일 선택시
                     else if (it.data?.data != null) {
-                        imageAdapter.addItem(it.data?.data!!)
+
+                        imageAdapter.addItem(uriToBitmap(it.data?.data!!, this))
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -87,9 +89,16 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         postWriteType = intent.getIntExtra("postWriteType", PostWriteType.WRITE)
 
         if (postWriteType == 1) {
-            val postTitle = intent.getStringExtra("postTitle").toString()
-            val postContent = intent.getStringExtra("postContent").toString()
-            viewModel.setPostText(postTitle, postContent)
+            val post: Post = intent.getSerializableExtra("post") as Post
+            viewModel.setPostText(post.title, post.content)
+            if (!post.image.isNullOrEmpty()) {
+                Log.d("tag_이미지", post.image.toString())
+                val list = mutableListOf<Bitmap>()
+                for (i in post.image)
+                    list.add(stringToBitmap(i.body!!))
+                imageAdapter.addItems(list)
+            }
+            postId = post.id
         }
     }
 
@@ -147,36 +156,16 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                 PostWriteType.WRITE -> {
                     if (imageAdapter.itemCount > 0) {
                         val imageList = ArrayList<Image>()
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            for (uri in imageAdapter.getItems()) {
-                                val bitmap = ImageDecoder.decodeBitmap(
-                                    ImageDecoder.createSource(
-                                        this.contentResolver,
-                                        uri
-                                    )
-                                )
-                                imageList.add(Image(null, bitmapToString(bitmap)))
-                            }
-
-                            viewModel.writePost(boardType, imageList)
-
-                        } else {
-                            for (uri in imageAdapter.getItems()) {
-                                val bitmap =
-                                    MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                                imageList.add(Image(null, bitmapToString(bitmap)))
-                            }
-
-                            viewModel.writePost(boardType, imageList)
+                        for (bitmap in imageAdapter.getItems()) {
+                            imageList.add(Image(null, bitmapToString(bitmap)))
                         }
+                        viewModel.writePost(boardType, imageList)
                     } else {
                         viewModel.writePost(boardType)
                     }
                 }
                 PostWriteType.EDIT -> {
-                    Log.d("tag_postId", intent.getStringExtra("postId").toString())
-                    viewModel.editPost(boardType, intent.getStringExtra("postId").toString())
+                    viewModel.editPost(boardType, postId!!)
                 }
             }
         }

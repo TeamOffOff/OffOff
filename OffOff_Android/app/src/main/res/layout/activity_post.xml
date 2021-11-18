@@ -134,7 +134,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="0.8dp"
-                            app:dateFormatText="@{post.date}"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="@id/iv_avatar"

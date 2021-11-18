@@ -1,6 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.adapter
 
-import android.net.Uri
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -12,7 +12,7 @@ import com.yuuuzzzin.offoff_android.service.models.Image
 class PostWriteImageAdapter :
     RecyclerView.Adapter<PostWriteImageAdapter.PostWriteImageViewHolder>() {
 
-    private var imageList = ArrayList<Uri>()
+    private var imageList = ArrayList<Bitmap>()
     private var images = ArrayList<Image>()
 
     override fun getItemCount(): Int = imageList.size
@@ -52,11 +52,11 @@ class PostWriteImageAdapter :
         private val binding: RvItemPostWriteImageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(uri: Uri, position: Int) {
+        fun bind(bitmap: Bitmap, position: Int) {
             //binding.setVariable(BR.item, uri))
             //images.add()
             binding.ivImage.apply {
-                setImageURI(uri)
+                setImageBitmap(bitmap)
                 clipToOutline = true
             }
             binding.executePendingBindings()
@@ -71,9 +71,9 @@ class PostWriteImageAdapter :
         notifyDataSetChanged()
     }
 
-    fun addItem(uri: Uri) {
+    fun addItem(bitmap: Bitmap) {
         // this.imageList.clear()
-        this.imageList.add(uri)
+        this.imageList.add(bitmap)
         notifyDataSetChanged()
     }
 
@@ -82,17 +82,17 @@ class PostWriteImageAdapter :
         notifyDataSetChanged()
     }
 
-    fun addItems(items: List<Uri>) {
+    fun addItems(items: List<Bitmap>) {
         this.imageList.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun getItems(): List<Uri> {
+    fun getItems(): List<Bitmap> {
         return this.imageList
     }
 
-    fun updateItem(uri: Uri, position: Int) {
-        imageList[position] = uri
+    fun updateItem(bitmap: Bitmap, position: Int) {
+        imageList[position] = bitmap
         notifyItemChanged(position)
     }
 

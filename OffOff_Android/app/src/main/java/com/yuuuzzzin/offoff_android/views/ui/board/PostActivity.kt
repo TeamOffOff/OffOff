@@ -24,7 +24,6 @@ import com.yuuuzzzin.offoff_android.service.models.Reply
 import com.yuuuzzzin.offoff_android.utils.*
 import com.yuuuzzzin.offoff_android.utils.Constants.DELETE_COMMENT
 import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
-import com.yuuuzzzin.offoff_android.utils.DateUtils.calculateLocalDate
 import com.yuuuzzzin.offoff_android.utils.DateUtils.convertStringToLocalDate
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showAutoCloseDialog
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showYesNoDialog
@@ -96,8 +95,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.post.observe(binding.lifecycleOwner!!, {
             binding.post = it
-
-            Log.d("tag_date", calculateLocalDate(convertStringToLocalDate(it.date)).toString())
+            binding.tvDate.text = DateUtils.dateFormatter.format(convertStringToLocalDate(it.date))
 
             if (!it.image.isNullOrEmpty()) {
                 postImageListAdapter.addPostImageList(it.image.toMutableList())
@@ -379,9 +377,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                     putExtra("boardType", boardType)
                     putExtra("boardName", boardName)
                     putExtra("postWriteType", PostWriteType.EDIT)
-                    putExtra("postId", postId)
-                    putExtra("postTitle", binding.post!!.title)
-                    putExtra("postContent", binding.post!!.content)
+                    putExtra("post", post as Serializable)
                 }
 
                 requestEditPost.launch(intent)

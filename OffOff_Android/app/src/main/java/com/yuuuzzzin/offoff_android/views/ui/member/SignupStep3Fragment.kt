@@ -3,10 +3,7 @@ package com.yuuuzzzin.offoff_android.views.ui.member
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.navigation.fragment.findNavController
@@ -16,6 +13,7 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep3Binding
 import com.yuuuzzzin.offoff_android.utils.Constants.toast
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.bitmapToString
+import com.yuuuzzzin.offoff_android.utils.ImageUtils.uriToBitmap
 import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,12 +48,7 @@ class SignupStep3Fragment :
         cropActivityResultLauncher = registerForActivityResult(cropResultContract) { uri ->
             uri?.path?.let {
                 binding.ivPhoto.setImageURI(uri)
-
-                bitmap = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().contentResolver, uri))
-                } else {
-                    MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
-                }
+                bitmap = uriToBitmap(uri, requireActivity())
                 // profileImageSet = true
             }
         }

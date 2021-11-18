@@ -1,4 +1,4 @@
-package com.yuuuzzzin.offoff_android.views.adapter
+package com.yuuuzzzin.offoff_android.utils.base
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
