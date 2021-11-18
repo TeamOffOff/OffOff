@@ -387,6 +387,13 @@ class AuthLogin(Resource):
 
         user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
 
+        del user_info["activity"]
+        del user_info["password"]
+        del user_info["calendar"]
+        del user_info["message"]
+        del user_info["verifyEmail"]
+        del user_info["refreshToken"]
+
         user_info["subInformation"]["profileImage"] = get_image(user_info["subInformation"]["profileImage"], "user", "origin")
 
         response_result = make_response({"user": user_info}, 200)
