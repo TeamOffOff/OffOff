@@ -104,24 +104,20 @@ public class UserServices {
                     let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
                     UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
                     UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
-                    Constants.loginUser = response.user
                 }
                 return LoginResult(rawValue: $0.statusCode)!
             }
             .catchAndReturn(.NotExist)
     }
     
-    struct UserInfo: Codable {
-        var user: UserModel
-    }
-    
-    static func getUserInfo(token: String) -> Observable<UserModel?> {
+    static func getUserInfo() -> Observable<UserInfo?> {
         return UserServices.provider
-            .rx.request(.getUserInfo(token))
+            .rx.request(.getUserInfo)
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                let response = try JSONDecoder().decode(UserInfo.self, from: $0.data)
+                let response = try JSONDecoder().decode(UserInfoResult.self, from: $0.data)
+                Constants.loginUser = response.user
                 return response.user
             }
             .catchAndReturn(nil)

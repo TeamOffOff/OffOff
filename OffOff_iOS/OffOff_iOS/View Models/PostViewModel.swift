@@ -14,7 +14,7 @@ class PostViewModel {
     var postDeleted = Observable<Bool>.just(false)
     var replies = BehaviorSubject<[Reply]?>(value: nil)
     
-    var deleteButtonTapped = BehaviorSubject<UserModel?>(value: nil)
+    var deleteButtonTapped = BehaviorSubject<UserInfo?>(value: nil)
     var liked = BehaviorSubject<Bool>(value: false)
     var replyAdded = BehaviorSubject<Bool>(value: false)
     
@@ -47,7 +47,6 @@ class PostViewModel {
             .filter { $0.1 != nil && $0.0 != nil }
             .flatMap { val -> Observable<Bool> in
                 if val.0!.author._id == val.1!._id {
-                    // TODO: delete 안됨
                     return PostServices.deletePost(post: DeletingPost(_id: val.0!._id!, boardType: val.0!.boardType, author: val.0!.author._id!))
                 } else {
                     return Observable.just(false)

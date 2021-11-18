@@ -106,3 +106,21 @@ struct IDPWModel {
     var id: String?
     var password: String?
 }
+
+struct UserInfo: Codable {
+    var _id: String
+    var information: Information
+    var subInformation: SubInformation
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(_id, forKey: ._id)
+        try container.encode(information, forKey: .information)
+        try container.encode(subInformation, forKey: .subInformation)
+    }
+}
+
+struct UserInfoResult: Codable {
+    var user: UserInfo
+}

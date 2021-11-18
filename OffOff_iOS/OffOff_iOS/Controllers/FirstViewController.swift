@@ -46,7 +46,7 @@ class FirstViewController: UIViewController {
     private func loginCheck() {
         if let token = UserDefaults.standard.string(forKey: "accessToken") {
             print("Auto logined... token:", token)
-            UserServices.getUserInfo(token: token)
+            UserServices.getUserInfo()
                 .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
                 .observe(on: MainScheduler.instance)
                 .bind {

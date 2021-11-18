@@ -292,6 +292,11 @@ extension UIColor {
 }
 
 extension UIImage {
+    var imageRatio: CGFloat {
+        let imageRatio = CGFloat(self.size.width / self.size.height)
+        return imageRatio
+    }
+    
     func toBase64String() -> String {
         return self.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
     }

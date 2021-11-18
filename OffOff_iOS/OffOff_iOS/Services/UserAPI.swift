@@ -18,7 +18,7 @@ enum UserAPI {
     case passwordChange(_ password: String)
     case resign
     case login(_ id: String, _ password: String)
-    case getUserInfo(_ token: String)
+    case getUserInfo
     case modifyMemberInfo(_ signUpModel: UserModel)
     
 }
@@ -42,7 +42,7 @@ extension UserAPI: TargetType {
             return "/register"
         case .login(_, _):
             return "/login"
-        case .getUserInfo(_):
+        case .getUserInfo:
             return "/login"
         case .resign:
             return "/TODO"
@@ -65,7 +65,7 @@ extension UserAPI: TargetType {
             return .put
         case .login(_, _):
             return .post
-        case .getUserInfo(_):
+        case .getUserInfo:
             return .get
         case .resign:
             return .get
@@ -92,7 +92,7 @@ extension UserAPI: TargetType {
             return .requestParameters(parameters: ["password": password], encoding: JSONEncoding.default)
         case .login(let id, let password):
             return .requestParameters(parameters: ["_id": id, "password": password], encoding: JSONEncoding.default)
-        case .getUserInfo(_):
+        case .getUserInfo:
             return .requestPlain
         case .resign:
             return .requestPlain
@@ -105,8 +105,8 @@ extension UserAPI: TargetType {
         switch self {
         case .passwordChange(_), .resign, .modifyMemberInfo(_):
             return ["Authorization": "token_encoded"]
-        case .getUserInfo(let token):
-            return ["Authorization": "Bearer \(token)"]
+        case .getUserInfo:
+            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
         default:
             return nil
         }

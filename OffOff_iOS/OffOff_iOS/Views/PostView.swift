@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class PostView: UIScrollView {
     var backgroundView = UIView().then {
@@ -98,7 +99,7 @@ class PostView: UIScrollView {
     var imageTableView = ContentSizedTableView().then {
         $0.register(ImageTableViewCell.self, forCellReuseIdentifier: ImageTableViewCell.identifier)
         $0.backgroundColor = .clear
-        $0.rowHeight = 344.adjustedHeight
+//        $0.rowHeight = UITableView().estimatedRowHeight
         $0.separatorStyle = .none
         $0.isScrollEnabled = false
     }
@@ -199,6 +200,9 @@ class ImageTableViewCell: UITableViewCell {
     
     var photoView = UIImageView()
     
+    var image = BehaviorSubject<UIImage?>(value: nil)
+    var disposeBag = DisposeBag()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 //        self.contentView.addSubview(photoView)
@@ -210,14 +214,32 @@ class ImageTableViewCell: UITableViewCell {
         self.backgroundColor = .g4
         self.imageView!.setCornerRadius(10.adjustedHeight)
         self.imageView!.backgroundColor = .g4
-        self.imageView!.contentMode = .scaleAspectFit
+        self.imageView!.contentMode = .scaleAspectFill
         self.imageView!.snp.remakeConstraints {
             $0.left.right.equalToSuperview()
             $0.top.bottom.equalToSuperview().inset(10.adjustedHeight)
         }
+        setData()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        setData()
+    }
+    
+    private func setData() {
+        disposeBag = DisposeBag()
+        
+        self.image
+            .bind { image in
+                if image != nil {
+                    self.imageView?.image = image!
+                }
+            }
+            .disposed(by: disposeBag)
     }
 }

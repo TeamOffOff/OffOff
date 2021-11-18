@@ -73,9 +73,10 @@ class LoginViewController: UIViewController {
             .drive(onNext: { result in
                 switch result {
                 case .Success:
-                    let controller = TabBarController()
-                    controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true, completion: nil)
+                    print(#fileID, #function, #line, "")
+//                    let controller = TabBarController()
+//                    controller.modalPresentationStyle = .fullScreen
+//                    self.present(controller, animated: true, completion: nil)
                 case .NotExist:
                     let alert = UIAlertController(title: "로그인 오류", message: "존재하지 않는 회원입니다.", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default, handler: nil)
@@ -93,6 +94,17 @@ class LoginViewController: UIViewController {
                     self.present(alert, animated: true, completion: nil)
                 }
             })
+            .disposed(by: disposeBag)
+        
+        viewModel.isEntering
+            .observe(on: MainScheduler.asyncInstance)
+            .bind {
+                if $0 {
+                    let controller = TabBarController()
+                    controller.modalPresentationStyle = .fullScreen
+                    self.present(controller, animated: true, completion: nil)
+                }
+            }
             .disposed(by: disposeBag)
     }
 }

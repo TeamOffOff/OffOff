@@ -10,6 +10,7 @@ import UIKit
 import RxSwift
 import RxKeyboard
 import RxGesture
+import RxRelay
 
 class PostViewController: UIViewController {
     let postView = PostView()
@@ -27,7 +28,7 @@ class PostViewController: UIViewController {
     
     var replyCellHeight = 125.0
     
-    var postImages = BehaviorSubject<[ImageObject]>(value: [])
+    var postImages = BehaviorRelay<[ImageObject]>(value: [])
     
     var replyContainer = UIView().then {
         $0.backgroundColor = .w2
@@ -78,7 +79,7 @@ class PostViewController: UIViewController {
         
         replyTextView.delegate = self
         
-        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
+//        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
         self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
         self.postView.repliesTableView.estimatedRowHeight = 400
         
@@ -106,7 +107,7 @@ class PostViewController: UIViewController {
                 self.postView.dateLabel.text = $0!.date.toDate()!.toFormedString()
                 self.postView.profileImageView.image = .DefaultPostProfileImage
 //                self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
-                self.postImages.onNext($0!.image)
+                self.postImages.accept($0!.image)
                 if $0!.author.profileImage.count != 0 {
                     self.postView.profileImageView.image = $0!.author.profileImage.first!.body.toImage()
                 }
@@ -116,25 +117,24 @@ class PostViewController: UIViewController {
                     self.setRightButtons(set: false)
                 }
                 
-                // 이미 좋아요 누른 게시글이면 좋아요 버튼에 표시
-//                for like in Constants.loginUser!.activity.likes {
-//                    if like.postId == $0!._id {
-//                        self.postView.likeButton.backgroundColor = .g3
-//                        break
-//                    }
-//                }
-                
                 self.loadingView.isHidden = true
                 self.rotateRefreshIndicator(false)
             }
             .disposed(by: disposeBag)
         
         // 이미지 표시
+        self.postView.imageTableView.rx.setDelegate(self).disposed(by: disposeBag)
         self.postImages
-            .bind(to: self.postView.imageTableView.rx.items(cellIdentifier: ImageTableViewCell.identifier, cellType: ImageTableViewCell.self)) { (row, element, cell) in
-                cell.imageView?.image = element.body.toImage()
+            .skip(1)
+            .filter { $0.count > 0 }
+            .do { print(#fileID, #function, #line, "num: \($0.count)")}
+            .bind(to: self.postView.imageTableView.rx.items) { (tv, row, item) in
+                let cell = tv.dequeueReusableCell(withIdentifier: ImageTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! ImageTableViewCell
+                cell.image.onNext(item.body.toImage())
+                return cell
             }
             .disposed(by: self.disposeBag)
+        
         
         viewModel.postDeleted
             .filter { $0 }
@@ -412,5 +412,13 @@ extension PostViewController: UITextViewDelegate {
         }
         
         return true
+    }
+}
+
+extension PostViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let image = postImages.value[indexPath.row].body.toImage()
+        
+        return tableView.frame.width / image.imageRatio
     }
 }
