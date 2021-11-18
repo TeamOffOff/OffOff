@@ -2,7 +2,6 @@ package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -11,16 +10,14 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostWriteBinding
 import com.yuuuzzzin.offoff_android.service.models.Image
+import com.yuuuzzzin.offoff_android.utils.DialogUtils
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.bitmapToString
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
@@ -28,6 +25,7 @@ import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostWriteViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.PostWriteImageAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.IOException
 
 @AndroidEntryPoint
 class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activity_post_write) {
@@ -37,22 +35,41 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     private lateinit var boardType: String
     private lateinit var boardName: String
     private var postWriteType: Int = 0
-    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
 
-    private val cropResultContract by lazy {
-        object : ActivityResultContract<Any?, Uri?>() {
-            override fun createIntent(context: Context, input: Any?): Intent {
-                return CropImage
-                    .activity()
-                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-                    .getIntent(context)
-            }
+    private val requestActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                try {
 
-            override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-                return CropImage.getActivityResult(intent)?.uri
+                    // 이미지 다중 선택시
+                    if (it.data?.clipData != null) {
+
+                        val count = it.data!!.clipData!!.itemCount
+
+                        if (count > 3 || (imageAdapter.itemCount + count) > 3) {
+                            DialogUtils.showCustomOneTextDialog(
+                                this,
+                                "선택 가능 사진 최대 개수는 10장입니다.",
+                                "확인"
+                            )
+                        } else {
+                            val list = mutableListOf<Uri>()
+                            for (i in 0 until count) {
+                                list.add(it.data!!.clipData!!.getItemAt(i).uri)
+                            }
+                            imageAdapter.addItems(list)
+                        }
+                    }
+
+                    // 이미지 단일 선택시
+                    else if (it.data?.data != null) {
+                        imageAdapter.addItem(it.data?.data!!)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,22 +95,17 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
     private fun initView() {
 
-        cropActivityResultLauncher = registerForActivityResult(cropResultContract) { uri ->
-            uri?.path?.let {
-
-                val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.contentResolver, uri))
-                } else {
-                    MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                }
-
-                // 이미지 리사이클러뷰에 이미지 아이템 추가
-                imageAdapter.addItem(uri)
-            }
-        }
-
         binding.btCamera.setOnClickListener {
-            cropActivityResultLauncher.launch(null)
+
+            if (imageAdapter.itemCount >= 3) {
+                DialogUtils.showCustomOneTextDialog(this, "선택 가능 사진 최대 개수는 10장입니다.", "확인")
+            } else {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.action = Intent.ACTION_GET_CONTENT
+                requestActivity.launch(intent)
+            }
         }
     }
 

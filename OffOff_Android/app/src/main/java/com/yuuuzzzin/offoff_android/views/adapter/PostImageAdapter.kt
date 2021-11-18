@@ -1,6 +1,5 @@
 package com.yuuuzzzin.offoff_android.views.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -52,7 +51,6 @@ class PostImageAdapter :
 
         fun bind(item: Image, position: Int) {
             binding.setVariable(BR.item, item)
-            Log.d("tag_imageLIst하는중", item.body.toString())
             binding.ivImage.apply {
                 setImageBitmap(stringToBitmap(item.body.toString()))
                 clipToOutline = true
@@ -65,7 +63,7 @@ class PostImageAdapter :
     }
 
     fun addPostImageList(imageList: List<Image>) {
-        //this.imageList.clear()
+        this.imageList.clear()
         this.imageList.addAll(imageList)
         notifyDataSetChanged()
     }
