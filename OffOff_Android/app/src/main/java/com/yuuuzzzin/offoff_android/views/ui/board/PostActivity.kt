@@ -24,6 +24,8 @@ import com.yuuuzzzin.offoff_android.service.models.Reply
 import com.yuuuzzzin.offoff_android.utils.*
 import com.yuuuzzzin.offoff_android.utils.Constants.DELETE_COMMENT
 import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
+import com.yuuuzzzin.offoff_android.utils.DateUtils.calculateLocalDate
+import com.yuuuzzzin.offoff_android.utils.DateUtils.convertStringToLocalDate
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showAutoCloseDialog
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showYesNoDialog
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
@@ -94,6 +96,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.post.observe(binding.lifecycleOwner!!, {
             binding.post = it
+
+            Log.d("tag_date", calculateLocalDate(convertStringToLocalDate(it.date)).toString())
 
             if (!it.image.isNullOrEmpty()) {
                 postImageListAdapter.addPostImageList(it.image.toMutableList())

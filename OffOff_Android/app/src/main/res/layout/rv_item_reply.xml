@@ -132,9 +132,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="7dp"
-                    android:text="@{item.date}"
                     android:textColor="@color/white5"
                     android:textSize="8sp"
+                    app:dateFormatTextWithoutYear="@{item.date}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_content" />
