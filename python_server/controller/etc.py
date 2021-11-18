@@ -47,27 +47,24 @@ def get_reply_list(post_id=None, board_type=None):
         if reply["date"]:
             reply["date"] = (reply["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
 
-        # 비밀게시판인 경우에 댓글 author 을 None으로 변경
-        if board_type == "secret_board_reply":
-            reply["author"] = None
+        if board_type == "secret_board_reply":  # 비밀 게시판
+            reply["author"]["nickname"] = "익명"
+            reply["author"]["profileImage"] = []
+        
+        else:  # 비밀게시판이 아닌데,
+            if reply["author"]:  # author가 살아있음(탈퇴하지 않음)
+                reply["author"]["profileImage"] = get_image(reply["author"]["profileImage"], "user", "200")
 
-        # 댓글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
-        if reply["author"]: #secret인 경우 None임
-            if reply["author"]["_id"]: #탈퇴한 경우 _id가 None임
-                if reply["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
-                    reply["author"]["profileImage"] = get_image(reply["author"]["profileImage"], "user", "200")
 
         if reply["childrenReplies"]:  # 대댓글이 있으면
             for children_reply in reply["childrenReplies"]: # 대댓글 하나씩 돌면서 author profileImage 인코딩
                 
-                # 비밀게시판인 경우에 대댓글 author 을 None으로 변경
-                if board_type == "secret_board_reply":
-                    children_reply["author"] = None
-
-                # 대댓글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
-                if children_reply["author"]: #secret인 경우 None임
-                    if children_reply["author"]["_id"]: #탈퇴한 경우 _id가 None임
-                        if children_reply["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
-                            children_reply["author"]["profileImage"] = get_image(children_reply["author"]["profileImage"], "user", "200")
+                if board_type == "secret_board_reply":  # 비밀 게시판
+                    children_reply["author"]["nickname"] = "익명"
+                    children_reply["author"]["profileImage"] = []
+                
+                else: # 비밀게시판이 아닌데,
+                    if children_reply["author"]:  # author가 살아있음(탈퇴하지 않음)
+                        children_reply["author"]["profileImage"] = get_image(children_reply["author"]["profileImage"], "user", "200")
 
     return total_list

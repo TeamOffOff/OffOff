@@ -157,10 +157,10 @@ class PostListControl(Resource):
                     post["image"] = get_image(post["image"], "post", "200")                
 
                     if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
-                        post["author"] = None
-
-                    else:  # 비밀게시판이 아닌 경우에는 profileImage를 None으로 변경해서 줌(게시글 리스트에서는 profileImage가 필요없음)
-                        post["author"]["profileImage"] = []
+                        post["author"]["nickname"] = "익명"
+                    
+                    post["author"]["profileImage"] = []  # 비밀 게시판이거나 아니거나 게시글 리스트는 profileImage [ ]
+        
 
                 if first_post_id:
                     return_last_post_id = None
