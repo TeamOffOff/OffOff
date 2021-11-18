@@ -51,10 +51,10 @@ class SignupStep3Fragment :
             uri?.path?.let {
                 binding.ivPhoto.setImageURI(uri)
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().contentResolver, uri))
+                bitmap = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().contentResolver, uri))
                 } else {
-                    bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
+                    MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
                 }
                 // profileImageSet = true
             }

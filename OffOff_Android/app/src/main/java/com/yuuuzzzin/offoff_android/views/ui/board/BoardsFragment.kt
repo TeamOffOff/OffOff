@@ -13,6 +13,7 @@ import com.yuuuzzzin.offoff_android.MainActivity
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.databinding.FragmentBoardsBinding
 import com.yuuuzzzin.offoff_android.service.models.Board
+import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.viewmodel.BoardListViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.BoardListAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,8 +76,10 @@ class BoardsFragment : Fragment() {
             }
         })
 
+        val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(4) // 아이템 사이의 거리
         binding.rvBoards.apply {
             layoutManager = GridLayoutManager(mContext, 3)
+            addItemDecoration(spaceDecoration)
             adapter = boardListAdapter
         }
 

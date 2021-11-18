@@ -56,8 +56,12 @@ class HomeFragment : Fragment() {
 
     private fun initView() {
         binding.tvNickname.text = "${OffoffApplication.user.subInfo.nickname} 님"
-        if (!OffoffApplication.user.subInfo.profile.isNullOrEmpty())
-            binding.ivAvatar.setImageBitmap(ImageUtils.stringToBitmap(OffoffApplication.user.subInfo.profile!![0].body.toString()))
+        if (!OffoffApplication.user.subInfo.profile.isNullOrEmpty()) {
+            binding.ivAvatar.apply {
+                setImageBitmap(ImageUtils.stringToBitmap(OffoffApplication.user.subInfo.profile!![0].body.toString()))
+                clipToOutline = true
+            }
+        }
     }
 
     override fun onDestroyView() {

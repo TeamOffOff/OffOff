@@ -8,6 +8,7 @@ import com.yuuuzzzin.offoff_android.BR
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.RvItemReplyBinding
 import com.yuuuzzzin.offoff_android.service.models.Reply
+import com.yuuuzzzin.offoff_android.utils.ImageUtils
 
 class ReplyListAdapter
     : RecyclerView.Adapter<ReplyListAdapter.ReplyViewHolder>() {
@@ -51,6 +52,12 @@ class ReplyListAdapter
 
         fun bind(item: Reply, position: Int) {
             binding.setVariable(BR.item, item)
+            if(!item.author!!.profileImage.isNullOrEmpty()) {
+                binding.ivAvatar.apply {
+                    setImageBitmap(ImageUtils.stringToBitmap(item.author.profileImage!![0].body.toString()))
+                    clipToOutline = true
+                }
+            }
             binding.btReplyOption.setOnClickListener {
                 replyClickListener.onClickOption(item, position)
             }

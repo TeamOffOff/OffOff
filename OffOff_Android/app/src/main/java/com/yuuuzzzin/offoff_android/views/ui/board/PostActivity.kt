@@ -12,7 +12,6 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.OffoffApplication
@@ -32,7 +31,6 @@ import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.CommentListAdapter
 import com.yuuuzzzin.offoff_android.views.adapter.PostImageAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import info.androidhive.fontawesome.FontDrawable
 import java.io.Serializable
 
 @AndroidEntryPoint
@@ -55,9 +53,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private var requestUpdate: Boolean? = false
     private var isFirst: Boolean = true
-
-    private lateinit var writeIcon: FontDrawable
-    private lateinit var likeIcon: FontDrawable
 
     // 게시물 수정 액티비티 요청 및 결과 처리
     private val requestEditPost = registerForActivityResult(
@@ -105,7 +100,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 Log.d("tag_imageLIst", it.image.toMutableList().toString())
             }
 
-            if(!it.author.profileImage.isNullOrEmpty()) {
+            if (!it.author.profileImage.isNullOrEmpty()) {
                 binding.ivAvatar.apply {
                     setImageBitmap(ImageUtils.stringToBitmap(it.author.profileImage[0].body.toString()))
                     clipToOutline = true
@@ -186,6 +181,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         })
 
         binding.btWrite.setOnClickListener {
+
             if (!binding.etComment.text.isNullOrBlank()) {
                 if (parentReplyId.isNullOrBlank()) {
                     isFirst = false
@@ -193,11 +189,14 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 } else {
                     viewModel.writeReply(postId, boardType, parentReplyId!!)
                 }
+
                 binding.etComment.text = null
                 hideKeyboard()
+
                 binding.nestedScrollView.post {
                     binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
                 }
+
                 requestUpdate = true
             }
         }
@@ -219,12 +218,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun initView() {
-        writeIcon = FontDrawable(this, R.string.fa_pen_solid, true, false)
-        writeIcon.setTextColor(ContextCompat.getColor(this, R.color.green))
-
-        likeIcon = FontDrawable(this, R.string.fa_thumbs_up_solid, true, false)
-        likeIcon.setTextColor(ContextCompat.getColor(this, R.color.red))
-
         binding.refreshLayout.isRefreshing = false
 
         binding.refreshLayout.setOnRefreshListener {
@@ -251,7 +244,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             adapter = postImageListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecorationImage)
-            // isNestedScrollingEnabled = false
+            isNestedScrollingEnabled = false
         }
 
         commentListAdapter.setOnCommentClickListener(object :

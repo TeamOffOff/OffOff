@@ -87,14 +87,16 @@
                 app:layout_constraintStart_toEndOf="@id/view"
                 app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/iv_images"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:src="@drawable/ic_photo"
                 android:layout_marginEnd="4dp"
-                android:visibility="@{item.image.empty ? View.GONE : View.VISIBLE}"
+                android:text="□"
+                android:textColor="@color/white5"
+                android:textSize="12sp"
+                android:visibility="@{item.image.empty ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@id/tv_images"
                 app:layout_constraintEnd_toStartOf="@id/tv_images"
                 app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
@@ -108,17 +110,19 @@
                 android:text="@{String.valueOf(item.image.size)}"
                 android:textColor="@color/white5"
                 android:textSize="12sp"
-                android:visibility="@{item.image.empty ? View.GONE : View.VISIBLE}"
+                android:visibility="@{item.image.empty ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toStartOf="@id/iv_likes"
                 app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/iv_likes"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="4dp"
-                android:src="@drawable/ic_like"
+                android:text="♡"
+                android:textColor="@color/white5"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_likes"
                 app:layout_constraintEnd_toStartOf="@id/tv_likes"
                 app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
@@ -135,13 +139,15 @@
                 app:layout_constraintEnd_toStartOf="@id/iv_reply_count"
                 app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/iv_reply_count"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="4dp"
-                android:src="@drawable/ic_comment"
+                android:text="○"
+                android:textColor="@color/white5"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_reply_count"
                 app:layout_constraintEnd_toStartOf="@id/tv_reply_count"
                 app:layout_constraintTop_toBottomOf="@id/tv_content_preview" />
@@ -166,8 +172,7 @@
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="@{item.image.empty ? View.GONE : View.VISIBLE}">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/iv_photo"

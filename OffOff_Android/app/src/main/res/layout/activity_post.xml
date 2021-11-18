@@ -26,7 +26,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/layout_appbar"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="122dp"
             android:backgroundTint="@color/green"
             app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +102,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="32dp"
-                        android:layout_marginTop="12dp"
                         android:layout_marginBottom="31dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -110,10 +109,10 @@
 
                         <ImageView
                             android:id="@+id/iv_avatar"
-                            android:layout_width="33.14dp"
-                            android:layout_height="33.14dp"
+                            android:layout_width="33dp"
+                            android:layout_height="33dp"
+                            android:background="@drawable/ic_avatar"
                             android:contentDescription="@string/image_avatar"
-                            android:src="@drawable/ic_avatar"
                             app:layout_constraintBottom_toBottomOf="@id/tv_date"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -137,7 +136,7 @@
                             android:layout_marginTop="0.8dp"
                             android:text="@{post.date}"
                             android:textColor="@color/white"
-                            android:textSize="10sp"
+                            android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
                             app:layout_constraintStart_toStartOf="@id/tv_author"
                             app:layout_constraintTop_toBottomOf="@id/tv_author" />
@@ -179,10 +178,11 @@
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_image"
-                            android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
+                            android:orientation="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/tv_content"
@@ -197,14 +197,13 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/rv_image">
 
-                            <info.androidhive.fontawesome.FontTextView
+                            <ImageView
                                 android:id="@+id/iv_likes"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
                                 android:layout_marginEnd="6dp"
-                                android:text="@string/fa_thumbs_up_solid"
-                                android:textColor="@color/white"
-                                android:textSize="11sp" />
+                                android:background="@drawable/ic_like"
+                                android:backgroundTint="@color/white" />
 
                             <TextView
                                 android:id="@+id/tv_likes_num"
@@ -215,14 +214,13 @@
                                 android:textColor="@color/white"
                                 android:textSize="11sp" />
 
-                            <info.androidhive.fontawesome.FontTextView
+                            <ImageView
                                 android:id="@+id/iv_comments"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
                                 android:layout_marginEnd="6dp"
-                                android:text="@string/fa_comment_alt_solid"
-                                android:textColor="@color/white"
-                                android:textSize="11sp" />
+                                android:background="@drawable/ic_comment"
+                                android:backgroundTint="@color/white" />
 
                             <TextView
                                 android:id="@+id/tv_comments_num"

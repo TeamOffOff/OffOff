@@ -83,14 +83,12 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/iv_avatar">
 
-                    <info.androidhive.fontawesome.FontTextView
+                    <ImageView
                         android:id="@+id/bt_likes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
                         android:layout_marginEnd="5dp"
-                        android:text="@string/fa_thumbs_up_solid"
-                        android:textColor="@color/white5"
-                        android:textSize="10sp" />
+                        android:src="@drawable/ic_like" />
 
                     <TextView
                         android:id="@+id/tv_likes"
