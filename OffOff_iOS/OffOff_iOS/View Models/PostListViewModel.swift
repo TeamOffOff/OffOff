@@ -17,10 +17,10 @@ class PostListViewModel {
     
     var boardType = ""
     
-    let reloadTrigger = PublishSubject<Void>()
+    let reloadTrigger = PublishSubject<PostListReloadingType>()
     let refreshing = BehaviorSubject<Void>(value: ())
     
-    var lastContentId: String? = nil
+    var lastPostId: String? = nil
     
     init(boardType: String) {
         self.boardType = boardType
@@ -28,17 +28,27 @@ class PostListViewModel {
         
         self.reloadTrigger
             .debug()
-            .flatMapLatest { _ -> Observable<PostList?> in
-                self.refreshing.onNext(())
-                return BoardServices.fetchPostList(board_type: boardType, lastContentID: self.lastContentId)
+            .flatMapLatest { type -> Observable<PostList?> in
+                switch type {
+                case .newer:
+                    self.refreshing.onNext(())
+                    return BoardServices.fetchPostList(board_type: boardType, firstPostId: self.postList.value.first!._id)
+                case .older:
+                    self.refreshing.onNext(())
+                    return BoardServices.fetchPostList(board_type: boardType, lastPostId: self.lastPostId)
+                }
             }
             .filter { $0 != nil }
-            .map { result -> [PostModel] in
-                self.lastContentId = result?.lastPostId
-                return result?.postList ?? []
-            }
             .bind {
-                let list = self.postList.value + $0
+                var list: [PostModel] = []
+                
+                if $0?.lastPostId != nil {
+                    self.lastPostId = $0?.lastPostId
+                    list = self.postList.value + ($0?.postList ?? [])
+                } else {
+                    list = ($0?.postList ?? []) + self.postList.value
+                }
+                
                 self.postList.accept(list)
             }
             .disposed(by: disposeBag)
@@ -46,8 +56,13 @@ class PostListViewModel {
     
     public func fetchPostList(boardType: String) {
         _ = BoardServices.fetchPostList(board_type: boardType).map {
-            self.lastContentId = $0?.lastPostId
+            self.lastPostId = $0?.lastPostId
             return $0?.postList ?? []
         }.bind(to: self.postList)
     }
+}
+
+enum PostListReloadingType {
+    case newer
+    case older
 }

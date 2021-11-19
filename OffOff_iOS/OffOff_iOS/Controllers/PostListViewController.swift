@@ -85,7 +85,7 @@ class PostListViewController: UIViewController {
             .debug()
             .bind {
                 self.rotateRefreshIndicator(true)
-                self.viewModel!.reloadTrigger.onNext(())
+                self.viewModel!.reloadTrigger.onNext(.newer)
             }
             .disposed(by: disposeBag)
         
@@ -104,7 +104,7 @@ class PostListViewController: UIViewController {
             .bind { _ in
                 if ((self.customView.postListTableView.contentOffset.y + self.customView.postListTableView.frame.size.height) >= self.customView.postListTableView.contentSize.height)
                 {
-                    self.viewModel!.reloadTrigger.onNext(())
+                    self.viewModel!.reloadTrigger.onNext(.older)
                 }
             }
             .disposed(by: disposeBag)
