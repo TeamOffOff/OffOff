@@ -104,6 +104,34 @@ class PostView: UIScrollView {
         $0.isScrollEnabled = false
     }
     
+    var likeLabel = TextWithIconView().then {
+        $0.label.textColor = .white
+        $0.label.font = .defaultFont(size: 12)
+        $0.iconImageView.image = .LIKEICON
+        $0.iconImageView.tintColor = .white
+        $0.label.text = "0"
+    }
+    var replyLabel = TextWithIconView().then {
+        $0.label.textColor = .white
+        $0.label.font = .defaultFont(size: 12)
+        $0.iconImageView.image = .REPLYICON
+        $0.iconImageView.tintColor = .white
+        $0.label.text = "0"
+    }
+    var scrapLabel = TextWithIconView().then {
+        $0.label.textColor = .white
+        $0.label.font = .defaultFont(size: 12)
+        $0.iconImageView.image = .SCRAPICOn
+        $0.iconImageView.tintColor = .white
+        $0.label.text = "0"
+    }
+    
+    lazy var activityStack = UIStackView(arrangedSubviews: [likeLabel, replyLabel, scrapLabel]).then {
+        $0.spacing = 10.0.adjustedWidth
+        $0.axis = .horizontal
+        $0.backgroundColor = .g4
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(backgroundView)
@@ -115,6 +143,7 @@ class PostView: UIScrollView {
         self.addSubview(titleLabel)
         self.addSubview(lineView)
         self.addSubview(profileImageView)
+        self.addSubview(activityStack)
         self.addSubview(likeButton)
         self.addSubview(scrapButton)
         self.addSubview(repliesTableView)
@@ -166,8 +195,12 @@ class PostView: UIScrollView {
             $0.width.equalTo(324.adjustedWidth)
             $0.top.equalTo(titleLabel.snp.bottom).offset(15.adjustedHeight)
         }
-        likeButton.snp.makeConstraints {
+        activityStack.snp.makeConstraints {
             $0.top.equalTo(imageTableView.snp.bottom).offset(20.adjustedHeight)
+            $0.left.equalTo(profileImageView)
+        }
+        likeButton.snp.makeConstraints {
+            $0.top.equalTo(activityStack.snp.bottom).offset(8.adjustedHeight)
             $0.left.equalTo(profileImageView)
             $0.width.equalTo(43.adjustedWidth)
             $0.height.equalTo(20.adjustedHeight)

@@ -23,14 +23,24 @@ class TextWithIconView: UIView {
         super.init(frame: frame)
         self.addSubview(iconImageView)
         self.addSubview(label)
-        label.snp.makeConstraints {
-            $0.right.equalToSuperview()
-            $0.top.bottom.equalToSuperview()
-        }
+//        label.snp.makeConstraints {
+//            $0.right.equalToSuperview()
+//            $0.top.bottom.equalToSuperview()
+//        }
+//        iconImageView.snp.makeConstraints {
+//            $0.right.equalTo(label.snp.left).inset(-2.5)
+//            $0.centerY.equalTo(label)
+//            $0.width.height.equalTo(10.0)
+//        }
         iconImageView.snp.makeConstraints {
-            $0.right.equalTo(label.snp.left).inset(-2.5)
+            $0.left.equalToSuperview()
             $0.centerY.equalTo(label)
             $0.width.height.equalTo(10.0)
+        }
+        label.snp.makeConstraints {
+            $0.left.equalTo(iconImageView.snp.right).offset(2.5)
+            $0.right.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
         }
     }
     

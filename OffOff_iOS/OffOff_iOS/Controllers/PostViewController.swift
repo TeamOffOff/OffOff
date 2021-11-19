@@ -101,13 +101,16 @@ class PostViewController: UIViewController {
         viewModel.post
             .filter { $0 != nil }
             .bind {
-                print(#fileID, #function, #line, "!@#$!@$!@$!@$@!")
                 self.postView.titleLabel.text = $0!.title
                 self.postView.authorLabel.text = $0!.author.nickname
                 self.postView.contentTextView.text = $0!.content
                 self.postView.dateLabel.text = $0!.date.toDate()!.toFormedString()
                 self.postView.profileImageView.image = .DefaultPostProfileImage
-//                self.postView.likeButton.setTitle("\($0!.likes.count)", for: .normal)
+                
+                // activities
+                self.postView.likeLabel.label.text = "\($0!.likes.count)"
+                self.postView.scrapLabel.label.text = "\($0!.bookmarks.count)"
+                
                 self.postImages.accept($0!.image)
                 if $0!.author.profileImage.count != 0 {
                     self.postView.profileImageView.image = $0!.author.profileImage.first!.body.toImage()
@@ -165,7 +168,10 @@ class PostViewController: UIViewController {
         
         viewModel.replies
             .filter { $0 != nil }
-            .do { self.postCell?.commentLabel.label.text = "\($0!.count)"}
+            .do {
+                self.postCell?.commentLabel.label.text = "\($0!.count)"
+                self.postView.replyLabel.label.text = "\($0!.count)"
+            }
             .map { $0! }
             .bind(to: self.postView.repliesTableView.rx.items) { (tv, row, item) -> UITableViewCell in
                 if item.parentReplyId != nil {
