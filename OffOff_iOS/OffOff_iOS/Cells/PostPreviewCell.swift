@@ -142,7 +142,6 @@ class PostPreviewCell: UITableViewCell {
         postModel
             .filter { $0 != nil }
             .bind { post in
-                print(#fileID, #function, #line, post!.image.isEmpty)
                 if post!.image.isEmpty {
                     self.imagePreview.snp.updateConstraints {
                         $0.width.equalTo(0)

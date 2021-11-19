@@ -9,6 +9,10 @@ import UIKit
 import RxSwift
 
 class PostView: UIScrollView {
+    var backgroundForIndicator = UIView().then {
+        $0.backgroundColor = .g4
+    }
+    
     var backgroundView = UIView().then {
         $0.backgroundColor = .g4
 //        $0.clipsToBounds = true
@@ -134,6 +138,7 @@ class PostView: UIScrollView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.addSubview(backgroundForIndicator)
         self.addSubview(backgroundView)
         self.addSubview(textContainerView)
         self.textContainerView.addSubview(contentTextView)
@@ -155,7 +160,14 @@ class PostView: UIScrollView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func makeView() {        backgroundView.snp.makeConstraints {
+    func makeView() {
+        backgroundForIndicator.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.width.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(backgroundView.snp.centerY)
+        }
+        backgroundView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.width.equalToSuperview()
             $0.bottom.equalTo(likeButton.snp.bottom).offset(31.adjustedHeight)

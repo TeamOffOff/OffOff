@@ -61,7 +61,6 @@ class PostListViewController: UIViewController {
             }
             .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
-                print(#fileID, #function, #line, "row: \(row)")
             }
             .disposed(by: disposeBag)
         

@@ -23,6 +23,8 @@ class PostViewModel {
     var disposeBag = DisposeBag()
     var activityDisposeBag = DisposeBag()
     
+    let refreshing = BehaviorSubject<Void>(value: ())
+    
     init(contentId: String, boardType: String, likeButtonTapped: Observable<PostLikeModel?>, replyButtonTapped: Observable<WritingReply>) {
         ReplyServices.fetchReplies(of: contentId, in: boardType)
             .bind {
@@ -125,6 +127,21 @@ class PostViewModel {
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
             .bind {
                 self.post.onNext($0)
+                self.refreshing.onNext(())
+            }.disposed(by: disposeBag)
+    }
+    
+    func reloadReplies(contentId: String, boardType: String) {
+        ReplyServices.fetchReplies(of: contentId, in: boardType)
+            .bind {
+                var replies = [Reply]()
+                $0.forEach {
+                    replies.append($0)
+                    if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
+                        replies.append(contentsOf: $0.childrenReplies!)
+                    }
+                }
+                self.replies.onNext(replies)
             }.disposed(by: disposeBag)
     }
 }

@@ -96,8 +96,40 @@ class PostViewController: UIViewController {
                 return reply
             }
         )
-
+        
+        // Refresh Control 세팅
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .clear
+        refreshControl.backgroundColor = .g4
+        
+        self.postView.refreshControl = refreshControl
+        
+        self.postView.refreshControl!.rx.controlEvent(.valueChanged)
+            .bind {
+                self.rotateRefreshIndicator(true)
+                self.viewModel.reloadPost(contentId: self.postInfo!.id, boardType: self.postInfo!.type)
+            }
+            .disposed(by: disposeBag)
+        
         // bind result
+        viewModel.refreshing
+            .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .bind {
+                refreshControl.endRefreshing()
+                self.rotateRefreshIndicator(false)
+            }
+            .disposed(by: disposeBag)
+        
+        self.postView.rx.didEndDragging
+            .bind { _ in
+                if ((self.postView.contentOffset.y + self.postView.frame.size.height) >= self.postView.contentSize.height)
+                {
+                    print(#fileID, #function, #line, "")
+                    self.viewModel.reloadReplies(contentId: self.postInfo!.id, boardType: self.postInfo!.type)
+                }
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.post
             .filter { $0 != nil }
             .bind {
@@ -121,8 +153,11 @@ class PostViewController: UIViewController {
                     self.setRightButtons(set: false)
                 }
                 
+                if !self.loadingView.isHidden {
+                    self.rotateRefreshIndicator(false)
+                }
                 self.loadingView.isHidden = true
-                self.rotateRefreshIndicator(false)
+                
             }
             .disposed(by: disposeBag)
         
