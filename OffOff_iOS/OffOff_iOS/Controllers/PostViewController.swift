@@ -101,6 +101,7 @@ class PostViewController: UIViewController {
         viewModel.post
             .filter { $0 != nil }
             .bind {
+                print(#fileID, #function, #line, "!@#$!@$!@$!@$@!")
                 self.postView.titleLabel.text = $0!.title
                 self.postView.authorLabel.text = $0!.author.nickname
                 self.postView.contentTextView.text = $0!.content

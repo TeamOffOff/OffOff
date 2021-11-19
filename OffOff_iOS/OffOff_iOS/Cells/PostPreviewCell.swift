@@ -141,16 +141,17 @@ class PostPreviewCell: UITableViewCell {
         
         postModel
             .filter { $0 != nil }
-            .do(onNext: { post in
-//                _ = ReplyServices.fetchReplies(of: post!._id!, in: post!.boardType).bind(to: self.replies)
-            })
             .bind { post in
+                print(#fileID, #function, #line, post!.image.isEmpty)
                 if post!.image.isEmpty {
                     self.imagePreview.snp.updateConstraints {
                         $0.width.equalTo(0)
                     }
                     self.pictureLabel.isHidden = true
                 } else {
+                    self.imagePreview.snp.updateConstraints {
+                        $0.width.equalTo(78.adjustedWidth)
+                    }
                     self.imagePreview.image = post!.image.first!.body.toImage()
                     self.pictureLabel.isHidden = false
                     self.pictureLabel.label.text = "\(post!.image.count)"
