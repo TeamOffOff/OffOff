@@ -68,6 +68,8 @@
                     android:layout_height="90dp"
                     android:layout_marginTop="90dp"
                     android:includeFontPadding="false"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/layout_bg_profile_big"
                     android:src="@drawable/ic_avatar_big"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

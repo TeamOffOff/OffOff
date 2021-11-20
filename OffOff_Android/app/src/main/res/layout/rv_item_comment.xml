@@ -41,9 +41,11 @@
                 <ImageView
                     android:id="@+id/iv_avatar"
                     android:layout_width="20dp"
+                    android:scaleType="centerCrop"
                     android:layout_height="20dp"
+                    android:background="@drawable/layout_bg_profile_comment"
                     android:contentDescription="@string/image_avatar"
-                    android:src="@drawable/ic_avatar"
+                    android:src="@drawable/ic_avatar_comment"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,6 +53,7 @@
                     android:id="@+id/tv_author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="@{item.author.nickname}"
                     android:textColor="@color/black"
                     android:textSize="12sp"
@@ -63,7 +66,6 @@
                     android:id="@+id/layout_option"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="13dp"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
@@ -71,47 +73,25 @@
                     app:layout_constraintTop_toTopOf="@id/iv_avatar">
 
                     <ImageView
-                        android:id="@+id/bt_likes"
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/ic_like" />
-
-                    <TextView
-                        android:id="@+id/tv_likes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{String.valueOf(item.likes.size)}"
-                        android:textColor="@color/white5"
-                        android:textSize="10sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" / "
-                        android:textColor="@color/white5"
-                        android:textSize="10sp" />
+                        android:id="@+id/bt_reply"
+                        android:layout_width="22dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bt_comment_comment" />
 
                     <ImageView
-                        android:id="@+id/bt_reply"
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="@drawable/ic_comment" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" /"
-                        android:textColor="@color/white5"
-                        android:textSize="10sp" />
+                        android:id="@+id/bt_likes"
+                        android:layout_width="22dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bt_like_comment" />
 
                     <ImageView
                         android:id="@+id/bt_comment_option"
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:backgroundTint="@android:color/transparent"
+                        android:layout_width="22dp"
+                        android:layout_height="16dp"
                         android:contentDescription="@string/icon_more_option"
-                        android:src="@drawable/ic_baseline_more_vert_24" />
+                        android:src="@drawable/bt_more_option_comment" />
 
                 </LinearLayout>
 
@@ -122,22 +102,46 @@
                     android:layout_marginTop="8dp"
                     android:text="@{item.content}"
                     android:textColor="@color/black"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_avatar" />
 
-                <TextView
-                    android:id="@+id/tv_date"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:textColor="@color/white5"
-                    android:textSize="8sp"
-                    app:dateFormatTextWithoutYear="@{item.date}"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_content" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_content">
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white5"
+                        android:textSize="12sp"
+                        app:dateFormatTextWithoutYear="@{item.date}" />
+
+                    <ImageView
+                        android:id="@+id/iv_likes"
+                        android:layout_width="11dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="12dp"
+                        android:background="@drawable/ic_like_comment" />
+
+                    <TextView
+                        android:id="@+id/tv_likes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@{String.valueOf(item.likes.size)}"
+                        android:textColor="@color/green2"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -151,4 +155,5 @@
             tools:listitem="@layout/rv_item_reply" />
 
     </RelativeLayout>
+
 </layout>

@@ -89,8 +89,8 @@
 
             <ImageView
                 android:id="@+id/iv_images"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="8.5dp"
+                android:layout_height="8.5dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_photo"
@@ -114,8 +114,8 @@
 
             <ImageView
                 android:id="@+id/iv_likes"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="10dp"
+                android:layout_height="9dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_like"
@@ -137,8 +137,8 @@
 
             <ImageView
                 android:id="@+id/iv_reply_count"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_comment"
