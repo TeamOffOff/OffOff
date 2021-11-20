@@ -24,6 +24,7 @@ import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostWriteViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.PostWriteImageAdapter
+import com.yuuuzzzin.offoff_android.views.ui.LoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
@@ -32,6 +33,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
     private val viewModel: PostWriteViewModel by viewModels()
     private lateinit var imageAdapter: PostWriteImageAdapter
+    private lateinit var loadingDialog: LoadingDialog
     private lateinit var boardType: String
     private lateinit var boardName: String
     private var postId: String? = null
@@ -47,7 +49,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
                         val count = it.data!!.clipData!!.itemCount
 
-                        if (count > 3 || (imageAdapter.itemCount + count) > 3) {
+                        if (count > 10 || (imageAdapter.itemCount + count) > 10) {
                             DialogUtils.showCustomOneTextDialog(
                                 this,
                                 "선택 가능 사진 최대 개수는 10장입니다.",
@@ -104,9 +106,11 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
 
     private fun initView() {
 
+        loadingDialog = LoadingDialog(this@PostWriteActivity)
+
         binding.btCamera.setOnClickListener {
 
-            if (imageAdapter.itemCount >= 3) {
+            if (imageAdapter.itemCount >= 10) {
                 DialogUtils.showCustomOneTextDialog(this, "선택 가능 사진 최대 개수는 10장입니다.", "확인")
             } else {
                 val intent = Intent()
@@ -160,6 +164,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                             imageList.add(Image(null, bitmapToString(bitmap)))
                         }
                         viewModel.writePost(boardType, imageList)
+
                     } else {
                         viewModel.writePost(boardType)
                     }
@@ -176,6 +181,10 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
             }
         })
 
+        viewModel.loading.observe(binding.lifecycleOwner!!, {
+            loadingDialog.show()
+        })
+
         viewModel.successEvent.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
                 if (postWriteType == PostWriteType.WRITE) {
@@ -186,10 +195,12 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                     intent.putExtra("boardName", boardName)
                     intent.putExtra("postWriteType", postWriteType)
                     startActivity(intent)
+                    loadingDialog.dismiss()
                 } else {
                     val intent = Intent()
                     intent.putExtra("postWriteType", postWriteType)
                     setResult(Activity.RESULT_OK, intent)
+                    loadingDialog.dismiss()
                 }
 
                 finish()

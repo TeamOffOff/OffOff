@@ -28,6 +28,9 @@ constructor(
     private val _alertMsg = MutableLiveData<Event<String>>()
     val alertMsg: LiveData<Event<String>> = _alertMsg
 
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
+
     private val _successEvent = MutableLiveData<Event<String>>()
     val successEvent: LiveData<Event<String>> = _successEvent
 
@@ -54,6 +57,8 @@ constructor(
     fun writePost(boardType: String, imageList: List<Image>? = emptyList()) {
         if (!check()) return
 
+        _loading.postValue(Event(true))
+
         val post = PostSend(
             boardType = boardType,
             author = OffoffApplication.user.id,
@@ -76,6 +81,8 @@ constructor(
 
     fun editPost(boardType: String, postId: String) {
         if (!check()) return
+
+        _loading.postValue(Event(true))
 
         val post = PostSend(
             id = postId,
