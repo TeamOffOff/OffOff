@@ -86,6 +86,16 @@ class NewPostViewController: UIViewController {
             .disposed(by: disposeBag)
     
         // bind results
+        self.viewModel.isCreating
+            .bind {
+                if $0 {
+                    LoadingHUD.show()
+                } else {
+                    LoadingHUD.hide()
+                }
+            }
+            .disposed(by: disposeBag)
+        
         self.textViewNeedToScroll
             .skip(1)
             .bind { needToScrolling in
@@ -186,6 +196,7 @@ class NewPostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.postCreated
+            .do { _ in self.viewModel.isCreating.onNext(false) }
             .filter { $0 != nil }
             .map { $0! }
             .subscribe(onNext: {

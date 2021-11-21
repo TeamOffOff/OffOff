@@ -88,7 +88,6 @@ public class UserServices {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                print($0)
                 return $0.statusCode == 200
             }
             .catchAndReturn(false)

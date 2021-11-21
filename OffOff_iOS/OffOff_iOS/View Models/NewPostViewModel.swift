@@ -15,6 +15,8 @@ class NewPostViewModel {
     var postCreated = Observable<PostModel?>.just(nil)
     var isUploadingImage = Observable<Bool>.just(false)
     
+    var isCreating = BehaviorSubject<Bool>(value: false)
+    
     var uploadingImages = BehaviorRelay<[UIImage]>(value: [])
     var disposeBag = DisposeBag()
     
@@ -32,6 +34,9 @@ class NewPostViewModel {
         
         postCreated = input.createButtonTap.withLatestFrom(titleAndContent)
             .asObservable()
+            .do { _ in
+                self.isCreating.onNext(true)
+            }
             .flatMap { val -> Observable<PostModel?> in
                 if val.title == "" {
                     self.isTitleConfirmed.onNext(false)

@@ -30,6 +30,7 @@
 		EA2FDF4A26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4B26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
 		EA2FDF4C26A7D88800AEC951 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2FDF4926A7D88800AEC951 /* UserServices.swift */; };
+		EA3083E4274803BA0060F8B2 /* LoadingHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3083E3274803BA0060F8B2 /* LoadingHUD.swift */; };
 		EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */; };
 		EA406A8E26A475CE00737F90 /* IDPWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8D26A475CE00737F90 /* IDPWViewController.swift */; };
 		EA406A9026A4769300737F90 /* IDPWView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA406A8F26A4769300737F90 /* IDPWView.swift */; };
@@ -166,6 +167,7 @@
 		EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTableViewCell.swift; sourceTree = "<group>"; };
 		EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		EA2FDF4926A7D88800AEC951 /* UserServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServices.swift; sourceTree = "<group>"; };
+		EA3083E3274803BA0060F8B2 /* LoadingHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingHUD.swift; sourceTree = "<group>"; };
 		EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftViewController.swift; sourceTree = "<group>"; };
 		EA3DA4BB26A58B510075819B /* OffOff_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OffOff_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA406A8D26A475CE00737F90 /* IDPWViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDPWViewController.swift; sourceTree = "<group>"; };
@@ -401,6 +403,7 @@
 				EAD6FEDA2716C45100563005 /* ContentSizedTableView.swift */,
 				EA6021B627397D5D00092917 /* PostListNavigationBar.swift */,
 				EAD849BC273E30E10010DE1B /* CustomRefreshControl.swift */,
+				EA3083E3274803BA0060F8B2 /* LoadingHUD.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -729,6 +732,7 @@
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EAD849C1273ED26A0010DE1B /* PostSearchViewController.swift in Sources */,
 				EAD6FED92713146B00563005 /* RepliesTableViewCell.swift in Sources */,
+				EA3083E4274803BA0060F8B2 /* LoadingHUD.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
 				EA83564426D3729100D60C46 /* ScheduleViewController.swift in Sources */,
 				EAA89BC3270752A000EB3818 /* ReplyServices.swift in Sources */,

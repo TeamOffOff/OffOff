@@ -35,7 +35,6 @@ class SignUpViewModel {
             .flatMapLatest { pair in
                 if pair.confirmed {
                     SharedSignUpModel.model.subInformation.nickname = pair.nickname
-                    print(SharedSignUpModel.model)
                     return UserServices.signUp(with: SharedSignUpModel.model).asDriver(onErrorJustReturn: false)
                 } else {
                     return Driver.just(false)
