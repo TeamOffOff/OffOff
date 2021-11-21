@@ -31,12 +31,17 @@ class PostViewController: UIViewController {
     var postImages = BehaviorRelay<[ImageObject]>(value: [])
     
     var replyContainer = UIView().then {
+        $0.backgroundColor = .white
+        $0.topRoundCorner(radius: 20.adjustedHeight)
+        $0.addShadow(location: .top, color: .lightGray, opacity: 0.75, radius: 2.5)
+    }
+    var replyBackgroundView = UIView().then {
         $0.backgroundColor = .w2
-        $0.topRoundCorner(radius: 10.adjustedHeight)
+        $0.setCornerRadius(15.adjustedHeight)
     }
     var replyTextView = UITextView().then {
-        $0.backgroundColor = .w2
-        $0.font = .defaultFont(size: 12)
+        $0.backgroundColor = .clear
+        $0.font = .defaultFont(size: 12, bold: true)
         $0.adjustsFontForContentSizeCategory = true
         $0.translatesAutoresizingMaskIntoConstraints = true
         $0.sizeToFit()
@@ -44,12 +49,17 @@ class PostViewController: UIViewController {
         $0.tintColor = .mainColor
         $0.autocorrectionType = .no
         $0.textContentType = .none
+        $0.textContainerInset = .zero
+        $0.text = "댓글을 입력하세요."
+        $0.textColor = .w4
     }
     var replyButton = UIButton().then {
-        $0.backgroundColor = .g1
+        $0.backgroundColor = .w2
         $0.setTitle("확인", for: .normal)
+        $0.tintColor = .g1
         $0.titleLabel?.font = .defaultFont(size: 12, bold: true)
-        $0.titleLabel?.textColor = .white
+        $0.setTitleColor(.g1, for: .normal)
+        $0.makeBorder(color: UIColor.g1.cgColor, width: 2.adjustedWidth)
         $0.setCornerRadius(10.adjustedHeight)
     }
     
@@ -71,15 +81,17 @@ class PostViewController: UIViewController {
         self.view.backgroundColor = .white
         self.view.addSubview(postView)
         self.view.addSubview(replyContainer)
-        replyContainer.addSubview(replyTextView)
+        replyContainer.addSubview(replyBackgroundView)
+        replyBackgroundView.addSubview(replyTextView)
         replyContainer.addSubview(replyButton)
         self.view.addSubview(loadingView)
         self.view.addSubview(loadingImageView)
         self.makeView()
         
         replyTextView.delegate = self
+        replyTextViewSetUp()
         
-//        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
+        //        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
         self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
         self.postView.repliesTableView.estimatedRowHeight = 400
         
@@ -263,7 +275,7 @@ class PostViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-//        self.postView.makeView()
+        //        self.postView.makeView()
         
         // MARK: 댓글 입력 시 키보드 높이에 맞춰 댓글 입력 뷰 높이 조정
         RxKeyboard.instance.visibleHeight
@@ -276,8 +288,8 @@ class PostViewController: UIViewController {
                     UIView.animate(withDuration: 0) {
                         self.replyContainer.snp.remakeConstraints {
                             $0.right.left.equalToSuperview()
-//                            $0.bottom.equalToSuperview().inset(keyboardVisibleHeight - window!.safeAreaInsets.bottom)
-                            $0.bottom.equalToSuperview().inset(keyboardVisibleHeight)
+                            $0.bottom.equalToSuperview().inset(keyboardVisibleHeight - window!.safeAreaInsets.bottom)
+                            //                            $0.bottom.equalToSuperview().inset(keyboardVisibleHeight)
                         }
                         self.view.layoutIfNeeded()
                     }
@@ -333,15 +345,23 @@ class PostViewController: UIViewController {
             $0.bottom.equalToSuperview()
         }
         let window = UIApplication.shared.windows.first
+        replyBackgroundView.snp.makeConstraints {
+            $0.left.right.equalToSuperview().inset(20.adjustedWidth)
+            $0.top.equalToSuperview().inset(12.adjustedWidth)
+            $0.bottom.equalToSuperview().inset(14.adjustedHeight + Double(window!.safeAreaInsets.bottom))
+            //            $0.top.equalTo(replyTextView).offset(-12.adjustedHeight)
+            //            $0.bottom.equalTo(replyTextView).offset(12.adjustedHeight)
+        }
+        
         replyTextView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(14.adjustedHeight)
-            $0.bottom.equalToSuperview().inset(14.adjustedHeight + Double(window!.safeAreaInsets.bottom))
-            $0.left.equalToSuperview().offset(12)
-            $0.right.equalTo(replyButton.snp.left)
+            $0.bottom.equalToSuperview().inset(14.adjustedHeight)
+            $0.left.equalTo(replyBackgroundView).inset(14.adjustedWidth)
+            $0.right.equalTo(replyButton.snp.left).inset(-10)
         }
         replyButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(11.adjustedWidth)
-            $0.top.equalToSuperview().inset(11.adjustedHeight)
+            $0.right.equalTo(replyBackgroundView).inset(14.adjustedWidth)
+            $0.bottom.equalTo(replyBackgroundView).inset(8.adjustedHeight)
             $0.height.equalTo(24.adjustedHeight)
             $0.width.equalTo(47.adjustedWidth)
         }
@@ -365,19 +385,19 @@ class PostViewController: UIViewController {
             }
             alert.addAction(delete)
             alert.addAction(modify)
-    
-//            self.navigationItem.setRightBarButtonItems(items, animated: false)
-//            deleteButton.rx.tap.bind {
-//                self.deletingConfirmAlert()
-//            }.disposed(by: rightButtonsDisposeBag)
-//            editButton.rx.tap.asObservable().withLatestFrom(viewModel.post)
-//                .bind {
-//                    let vc = NewPostViewController()
-//                    vc.postToModify = $0
-//                    let naviVC = UINavigationController(rootViewController: vc)
-//                    naviVC.modalPresentationStyle = .fullScreen
-//                    self.present(naviVC, animated: true, completion: nil)
-//                }.disposed(by: rightButtonsDisposeBag)
+            
+            //            self.navigationItem.setRightBarButtonItems(items, animated: false)
+            //            deleteButton.rx.tap.bind {
+            //                self.deletingConfirmAlert()
+            //            }.disposed(by: rightButtonsDisposeBag)
+            //            editButton.rx.tap.asObservable().withLatestFrom(viewModel.post)
+            //                .bind {
+            //                    let vc = NewPostViewController()
+            //                    vc.postToModify = $0
+            //                    let naviVC = UINavigationController(rootViewController: vc)
+            //                    naviVC.modalPresentationStyle = .fullScreen
+            //                    self.present(naviVC, animated: true, completion: nil)
+            //                }.disposed(by: rightButtonsDisposeBag)
         }
         
         let report = UIAlertAction(title: "신고", style: .default)
@@ -425,6 +445,38 @@ class PostViewController: UIViewController {
         } else {
             self.loadingImageView.stopRotating()
         }
+    }
+    
+    private func replyTextViewSetUp() {
+        self.replyTextView.rx.didBeginEditing
+            .subscribe(onNext: { [self] in
+                if(self.replyTextView.text == "댓글을 입력하세요." ){
+                    self.replyTextView.text = nil
+                    self.replyTextView.textColor = .w5          //글자 색도 진한 색으로 바꿔줘야한다!
+                    
+                }}).disposed(by: disposeBag)
+        
+        self.replyTextView.rx.didEndEditing
+            .subscribe(onNext: { [self] in
+                if(self.replyTextView.text == nil || self.replyTextView.text == ""){
+                    self.replyTextView.text = "댓글을 입력하세요."
+                    self.replyTextView.textColor = .w4        //다시 placeholder 글자색으로(연한색)
+                    
+                }}).disposed(by: disposeBag)
+        
+        self.replyTextView.rx.text
+            .bind {
+                if $0! != "댓글을 입력하세요." && !$0!.isEmpty {
+                    self.replyButton.isUserInteractionEnabled = true
+                    self.replyButton.backgroundColor = .g1
+                    self.replyButton.setTitleColor(.white, for: .normal)
+                } else {
+                    self.replyButton.isUserInteractionEnabled = false
+                    self.replyButton.backgroundColor = .w2
+                    self.replyButton.setTitleColor(.g1, for: .normal)
+                }
+            }
+            .disposed(by: disposeBag)
     }
 }
 

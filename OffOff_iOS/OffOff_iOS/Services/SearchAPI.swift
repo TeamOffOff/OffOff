@@ -38,13 +38,13 @@ extension SearchAPI: TargetType {
             if standardId == nil {
                 return .requestParameters(parameters: ["key":key], encoding: URLEncoding.default)
             } else {
-                return .requestParameters(parameters: ["key":key, "standardId":standardId!], encoding: URLEncoding.default)
+                return .requestParameters(parameters: ["standardId":standardId!, "key":key], encoding: URLEncoding.default)
             }
         }
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json", "Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+        return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
     }
 }
 

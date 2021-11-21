@@ -57,6 +57,14 @@ class LoginViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // bind to results
+        viewModel.isLoading
+            .bind {
+                if $0 {
+                    LoadingHUD.show()
+                }
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.loginButtonAvailable
             .drive(onNext: {
                 if $0 {
@@ -70,13 +78,11 @@ class LoginViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isSignedIn
+            .do { _ in LoadingHUD.hide() }
             .drive(onNext: { result in
                 switch result {
                 case .Success:
                     print(#fileID, #function, #line, "")
-//                    let controller = TabBarController()
-//                    controller.modalPresentationStyle = .fullScreen
-//                    self.present(controller, animated: true, completion: nil)
                 case .NotExist:
                     let alert = UIAlertController(title: "로그인 오류", message: "존재하지 않는 회원입니다.", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default, handler: nil)
@@ -98,6 +104,7 @@ class LoginViewController: UIViewController {
         
         viewModel.isEntering
             .observe(on: MainScheduler.asyncInstance)
+            .do { _ in LoadingHUD.hide() }
             .bind {
                 if $0 {
                     let controller = TabBarController()

@@ -15,6 +15,7 @@ class LoginViewModel {
     let loginButtonAvailable: Driver<Bool>
     let isSignedIn: Driver<LoginResult>
     let isEntering: Observable<Bool>
+    let isLoading: Observable<Bool>
     
     init(
         input: (
@@ -27,6 +28,8 @@ class LoginViewModel {
             .map { $0 != "" && $1 != ""}
         
         let idAndPassword = Driver.combineLatest(input.idText, input.passwordText)
+        
+        isLoading = input.loginButtonTap.map { true }.asObservable()
         
         isSignedIn = input.loginButtonTap.withLatestFrom(idAndPassword)
             .flatMapLatest {
