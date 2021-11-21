@@ -27,6 +27,8 @@ import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
 import com.yuuuzzzin.offoff_android.utils.DateUtils.convertStringToLocalDate
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showAutoCloseDialog
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showYesNoDialog
+import com.yuuuzzzin.offoff_android.utils.KeyboardUtils.hideKeyboard
+import com.yuuuzzzin.offoff_android.utils.KeyboardUtils.requestFocusAndShowKeyboard
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.CommentListAdapter
@@ -38,6 +40,7 @@ import java.io.Serializable
 class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private val viewModel: PostViewModel by viewModels()
+    private lateinit var keyboardVisibilityUtils: KeyboardUtils.KeyboardVisibilityUtils
 
     private lateinit var commentListAdapter: CommentListAdapter
     private lateinit var currentCommentList: Array<Comment>
@@ -131,7 +134,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         //viewModel.getComments(postId, boardType)
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
-            with(commentListAdapter) { submitList(it.toMutableList()) }
+            with(commentListAdapter) { addCommentList(it.toMutableList()) }
             currentCommentList = it.toTypedArray()
             if (!isFirst) {
 
@@ -227,6 +230,16 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             viewModel.getComments(postId, boardType)
             isFirst = true
         }
+
+        keyboardVisibilityUtils = KeyboardUtils.KeyboardVisibilityUtils(window,
+            onHideKeyboard = {
+                binding.layout.run {
+                    //키보드 내려갔을때 원하는 동작
+                    commentListAdapter.notifyDataSetChanged()
+                }
+            }
+        )
+
     }
 
     private fun initRV() {
@@ -261,6 +274,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
             override fun onLikeComment(position: Int, comment: Comment) {
                 commentPosition = position
+
                 viewModel.likeComment(comment.id, boardType)
             }
 
@@ -480,7 +494,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             if (!rect.contains(x, y)) {
                 hideKeyboard()
                 focusView.clearFocus()
-                //parentReplyId = null
             }
         }
 

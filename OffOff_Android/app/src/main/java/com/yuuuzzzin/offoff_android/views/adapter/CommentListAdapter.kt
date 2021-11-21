@@ -3,9 +3,7 @@ package com.yuuuzzzin.offoff_android.views.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.BR
 import com.yuuuzzzin.offoff_android.OffoffApplication
@@ -14,24 +12,11 @@ import com.yuuuzzzin.offoff_android.databinding.RvItemCommentBinding
 import com.yuuuzzzin.offoff_android.service.models.Comment
 import com.yuuuzzzin.offoff_android.service.models.Reply
 import com.yuuuzzzin.offoff_android.utils.ImageUtils
+import com.yuuuzzzin.offoff_android.utils.ResUtils.getDrawable
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 
 class CommentListAdapter(private val viewModel: PostViewModel) :
-    ListAdapter<Comment, CommentListAdapter.CommentViewHolder>(diffCallback) {
-
-    companion object {
-        private val diffCallback = object : DiffUtil.ItemCallback<Comment>() {
-            // 두 아이템이 동일한 아이템인가? (identifier 기준 비교)
-            override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            // 두 아이템이 동일한 내용을 가지는가?
-            override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-                return oldItem == newItem
-            }
-        }
-    }
+    RecyclerView.Adapter<CommentListAdapter.CommentViewHolder>() {
 
     lateinit var replyListAdapter: ReplyListAdapter
 
@@ -48,6 +33,10 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
         this.commentClickListener = listener
     }
 
+    var commentList = ArrayList<Comment>()
+
+    override fun getItemCount(): Int = commentList.size
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding: RvItemCommentBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
@@ -59,8 +48,8 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
         return CommentViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.bind(getItem(position), position, viewModel)
+    override fun onBindViewHolder(holder: CommentListAdapter.CommentViewHolder, position: Int) {
+        holder.bind(commentList[position], position, viewModel)
     }
 
     inner class CommentViewHolder(
@@ -75,6 +64,7 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
                     clipToOutline = true
                 }
             }
+            binding.layoutComment.background = getDrawable(R.drawable.layout_comment)
             binding.executePendingBindings()
             binding.btLikes.setOnClickListener {
                 commentClickListener.onLikeComment(position, item)
@@ -110,8 +100,25 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
             }
 
             binding.btReply.setOnClickListener {
+                binding.layoutComment.background = getDrawable(R.drawable.layout_comment_selected)
                 commentClickListener.onWriteReply(item)
             }
         }
+    }
+
+    fun clearItems() {
+        this.commentList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun updateItem(comment: Comment, position: Int) {
+        commentList[position] = comment
+        notifyItemChanged(position)
+    }
+
+    fun addCommentList(commentList: List<Comment>) {
+        this.commentList.clear()
+        this.commentList.addAll(commentList)
+        notifyDataSetChanged()
     }
 }

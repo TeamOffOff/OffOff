@@ -87,13 +87,6 @@
                     app:layout_constraintTop_toTopOf="@id/iv_avatar">
 
                     <ImageView
-                        android:id="@+id/bt_reply"
-                        android:layout_width="22dp"
-                        android:layout_height="16dp"
-                        android:layout_marginEnd="4dp"
-                        android:background="@drawable/bt_comment_comment" />
-
-                    <ImageView
                         android:id="@+id/bt_likes"
                         android:layout_width="22dp"
                         android:layout_height="16dp"
