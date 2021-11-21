@@ -130,11 +130,10 @@ class PostListControl(Resource):
                     post["date"] = str(post["date"])
                     post["image"] = get_image(post["image"], "post", "200")  
                     
-                    if board_type == "secret_board":
-                        post["author"] = None
-
-                    else:
-                        post["author"]["profileImage"] = []
+                    if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
+                        post["author"]["nickname"] = "익명"
+                        
+                    post["author"]["profileImage"] = []
 
                     hot_post_list.append(post)
                 

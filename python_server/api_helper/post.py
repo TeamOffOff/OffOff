@@ -51,18 +51,17 @@ class PostControl(Resource):
             print(response_result.status_code)
             return response_result
         
-        # 비밀게시판인 경우에 author 을 None으로 변경
-        if board_type == "secret_board":
-            post["author"] = None
+        
+        if board_type == "secret_board": # 비밀게시판인 경우에 author 변경
+            post["author"]["nickname"] = "익명"
+            post["author"]["profileImage"] = []
+        else:  # 비밀게시판 이외의 게시판
+            if post["author"]:  # 탈퇴하면 author = null임 -> 비밀게시판도 아니면서 탈퇴도 안 한 경우
+                post["author"]["profileImage"]= get_image(post["author"]["profileImage"], "user", "200")
+
 
         # 게시글에 있는 image base 64로 인코딩하기
         post["image"] = get_image(post["image"], "post", "600") 
-
-        # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
-        if post["author"]: #secret인 경우 None임
-            if post["author"]["_id"]: #탈퇴한 경우 _id가 None임
-                if post["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
-                    post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
 
         # string 타입으로 바꿔야 오류 안 남
         post["_id"] = str(post["_id"])
