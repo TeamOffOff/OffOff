@@ -15,10 +15,10 @@ class LoadingDialog(context: Context) : Dialog(context){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_loading)
 
-        val imageView : ImageView = findViewById(R.id.iv_loading)
-
-        val animation: AnimationDrawable = imageView.background as AnimationDrawable
-        animation.start()
+//        val imageView : ImageView = findViewById(R.id.iv_loading)
+//
+//        val animation: AnimationDrawable = imageView.background as AnimationDrawable
+//        animation.start()
 
         setCancelable(false)
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

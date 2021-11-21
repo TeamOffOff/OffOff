@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <ProgressBar
         android:id="@+id/iv_loading"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:background="@drawable/animation_loading"
+        android:indeterminateDrawable="@drawable/animation_loading"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

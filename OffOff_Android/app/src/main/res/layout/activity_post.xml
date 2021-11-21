@@ -331,6 +331,7 @@
 
                 <Button
                     android:id="@+id/bt_write"
+                    style="@style/button_write_comment"
                     android:layout_width="48dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"

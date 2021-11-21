@@ -44,6 +44,7 @@
                     android:layout_height="20dp"
                     android:layout_marginTop="66dp"
                     android:background="@drawable/ic_more_option"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -126,7 +127,6 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_favorite_boards"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="19dp"
@@ -135,6 +135,7 @@
                     android:paddingTop="20dp"
                     android:paddingEnd="22dp"
                     android:paddingBottom="22dp"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/et_search">
 
                     <TextView
@@ -163,15 +164,15 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_boards"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="3"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginVertical="12dp"
                     android:layout_marginStart="22dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/layout_favorite_boards"
                     app:layout_constraintTop_toBottomOf="@id/layout_favorite_boards"
+                    app:spanCount="3"
                     tools:listitem="@layout/rv_item_board" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

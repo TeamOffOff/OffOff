@@ -1,25 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
-    android:oneshot="false">
+<animated-rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/loading"
+    android:oneshot="false"
+    android:pivotX="50%"
+    android:pivotY="50%">
 
-    <item
-        android:drawable="@android:color/transparent"
-        android:duration="300" />
-
-    <item
-        android:drawable="@drawable/loading1"
-        android:duration="300" />
-
-    <item
-        android:drawable="@drawable/loading2"
-        android:duration="300" />
-
-    <item
-        android:drawable="@drawable/loading3"
-        android:duration="300" />
-
-    <item
-        android:drawable="@drawable/loading4"
-        android:duration="300" />
-
-</animation-list>
+</animated-rotate>
