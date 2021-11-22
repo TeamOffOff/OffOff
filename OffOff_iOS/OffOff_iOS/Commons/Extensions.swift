@@ -347,7 +347,7 @@ extension UIImage {
     static let CAMERA = UIImage(named: "CameraImage")!.withRenderingMode(.alwaysTemplate)
     static let MOREICON = UIImage(named: "MoreIcon")!.withRenderingMode(.alwaysTemplate)
     static let SEARCHIMAGE = UIImage(named: "SearchImage")!
-    static let HOMEICON = UIImage(named: "HomeIcon")!
+
     static let DefaultPostProfileImage = UIImage(named: "DefaultPostProfileImage")!
     static let DefaultReplyProfileImage = UIImage(named: "DefaultReplyProfileImage")!
     static let SubReplyArrow = UIImage(named: "SubReplyArrow")!
@@ -357,6 +357,12 @@ extension UIImage {
     static let PICTUREICON = UIImage(named: "PictureIcon")!.withRenderingMode(.alwaysTemplate)
     static let SCRAPICOn = UIImage(named: "ScrapIcon")!.withRenderingMode(.alwaysTemplate)
     static let LikeIconFill = UIImage(named: "LikeIconFill")!.withRenderingMode(.alwaysTemplate)
+    
+    static let HOMEICON = UIImage(named: "HomeIcon")!
+    static let SETTINGICON = UIImage(named: "SettingIcon")!
+    static let CALENDARICON = UIImage(named: "CalendarIcon")!
+    static let BOARDICON = UIImage(named: "BoardIcon")!
+    static let PERSONICON = UIImage(named: "PersonIcon")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)

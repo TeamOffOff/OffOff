@@ -97,7 +97,7 @@ class ProfileMakeView: UIView {
         }
         
         backButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(64.0)
+            $0.top.equalToSuperview().inset(87.adjustedHeight)
             $0.left.equalToSuperview().inset(47.0)
             $0.width.equalTo(25.0)
             $0.height.equalTo(22.0)

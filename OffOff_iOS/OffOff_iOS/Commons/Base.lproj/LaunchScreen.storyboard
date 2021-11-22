@@ -7,11 +7,6 @@
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Roboto-Regular.ttf">
-            <string>Roboto-Regular</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="qMA-d4-PJc">
@@ -28,20 +23,12 @@
                                     <constraint firstAttribute="height" constant="130" id="eMI-PI-aIy"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오프오프" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rfz-9i-6dw">
-                                <rect key="frame" x="172" y="513" width="70" height="24"/>
-                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="20"/>
-                                <color key="textColor" red="0.99308806657791138" green="0.99320679903030396" blue="0.99304777383804321" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="tHk-OS-T7u"/>
                         <color key="backgroundColor" red="0.094117647058823528" green="0.3411764705882353" blue="0.22745098039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="mOn-1g-Hh9" firstAttribute="centerY" secondItem="VmG-eW-0je" secondAttribute="centerY" id="8oE-3p-0d9"/>
                             <constraint firstItem="mOn-1g-Hh9" firstAttribute="centerX" secondItem="VmG-eW-0je" secondAttribute="centerX" id="c24-jG-qie"/>
-                            <constraint firstItem="Rfz-9i-6dw" firstAttribute="top" secondItem="mOn-1g-Hh9" secondAttribute="bottom" id="dqB-TK-GOH"/>
-                            <constraint firstItem="Rfz-9i-6dw" firstAttribute="centerX" secondItem="tHk-OS-T7u" secondAttribute="centerX" id="r33-ZS-eHa"/>
                         </constraints>
                     </view>
                 </viewController>

@@ -14,13 +14,15 @@ class TabBarController: UITabBarController {
         view.backgroundColor = .systemBackground
         self.tabBar.shadowImage = UIImage()
         tabBar.tintColor = Constants.mainColor
+        tabBar.backgroundColor = .w2
         setupVCs()
     }
     
-    fileprivate func createNavController(for rootViewController: UIViewController, title: String, image: UIImage) -> UIViewController {
+    fileprivate func createNavController(for rootViewController: UIViewController, title: String?, image: UIImage) -> UIViewController {
         let navController = UINavigationController()
         navController.viewControllers = [rootViewController]
         navController.tabBarItem.title = title
+        navController.tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: -27.adjustedHeight, right: 0)
         navController.tabBarItem.image = image.resize(to: CGSize(width: 26.adjustedWidth, height: 26.adjustedWidth))
         
         navController.navigationBar.barTintColor = .mainColor
@@ -30,6 +32,7 @@ class TabBarController: UITabBarController {
     
     fileprivate func createViewController(for vc: UIViewController, title: String?, image: UIImage) -> UIViewController {
         vc.tabBarItem.title = title
+        vc.tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: -27.adjustedHeight, right: 0)
         vc.tabBarItem.image = image.resize(to: CGSize(width: 26.adjustedWidth, height: 26.adjustedWidth))
         
         return vc
@@ -39,10 +42,10 @@ class TabBarController: UITabBarController {
         viewControllers = [
             // TODO: 첫 번째 tab의 navigation bar가 작아지는 문제
             createViewController(for: BoardListViewController(), title: nil, image: .HOMEICON),
-            createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
-            createNavController(for: ScheduleViewController(), title: NSLocalizedString("스케쥴", comment: ""), image: UIImage(systemName: "person")!),
-            createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
-            createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!)
+            createNavController(for: UIViewController(), title: nil, image: .BOARDICON),
+            createNavController(for: ScheduleViewController(), title: nil, image: .CALENDARICON),
+            createNavController(for: UIViewController(), title: nil, image: .PERSONICON),
+            createNavController(for: UIViewController(), title: nil, image: .SETTINGICON)
         ]
     }
     
