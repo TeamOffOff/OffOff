@@ -38,7 +38,7 @@ class RepliesTableViewCell: UITableViewCell {
     var dateLabel = UILabel().then {
         $0.backgroundColor = .clear
         $0.textColor = .w5
-        $0.font = .defaultFont(size: 8)
+        $0.font = .defaultFont(size: 12)
     }
     
     var contentTextView = UITextView().then {
@@ -49,25 +49,40 @@ class RepliesTableViewCell: UITableViewCell {
         $0.isUserInteractionEnabled = false
     }
     
+    var addSubReplyButton = UIButton().then {
+        $0.setImage(.REPLYICON.resize(to: CGSize(width: 10.89.adjustedWidth, height: 10.71.adjustedHeight)), for: .normal)
+        $0.tintColor = .w5
+        $0.backgroundColor = .w3
+        $0.setCornerRadius(5.95.adjustedHeight)
+    }
+    
     var likeButton = UIButton().then {
-        $0.setTitleColor(.black, for: .normal)
-        $0.setTitle("0", for: .normal)
-        $0.titleLabel?.textAlignment = .right
-        $0.setImage(.ICON_LIKES_RED, for: .normal)
-        $0.imageView?.contentMode = .scaleAspectFit
-        $0.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption1)
-        $0.titleLabel?.adjustsFontForContentSizeCategory = true
-        $0.contentHorizontalAlignment = .left
+        $0.setImage(.LIKEICON.resize(to: CGSize(width: 11.39.adjustedWidth, height: 10.19.adjustedHeight)), for: .normal)
+        $0.tintColor = .w5
+        $0.backgroundColor = .w3
+        $0.setCornerRadius(5.95.adjustedHeight)
     }
     
     var menubutton = UIButton().then {
-        $0.setTitle("...", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
+        $0.setImage(.MOREICON.resize(to: CGSize(width: 1.96.adjustedWidth, height: 9.8.adjustedHeight)), for: .normal)
+        $0.tintColor = .w5
+        $0.backgroundColor = .w3
+        $0.setCornerRadius(5.95.adjustedHeight)
     }
     
-    var addSubReplyButton = UIButton().then {
-        $0.setTitle("+", for: .normal)
-        $0.setTitleColor(.red, for: .normal)
+    lazy var buttonStackView = UIStackView(arrangedSubviews: [addSubReplyButton, likeButton, menubutton]).then {
+        $0.backgroundColor = .clear
+        $0.axis = .horizontal
+        $0.spacing = 3.57.adjustedWidth
+        $0.distribution = .fillEqually
+    }
+    
+    var likeLabel = TextWithIconView().then {
+        $0.iconImageView.image = .LikeIconFill
+        $0.iconImageView.tintColor = .g2
+        $0.label.text = "0"
+        $0.label.font = .defaultFont(size: 12)
+        $0.label.textColor = .g2
     }
     
     lazy var containerView = UIView().then {
@@ -77,10 +92,9 @@ class RepliesTableViewCell: UITableViewCell {
         $0.addSubview(profileImageView)
         $0.addSubview(nicknameLabel)
         $0.addSubview(dateLabel)
+        $0.addSubview(likeLabel)
         $0.addSubview(contentTextView)
-        $0.addSubview(likeButton)
-        $0.addSubview(addSubReplyButton)
-        $0.addSubview(menubutton)
+        $0.addSubview(buttonStackView)
     }
     
     required init?(coder: NSCoder) {
@@ -112,7 +126,7 @@ class RepliesTableViewCell: UITableViewCell {
             $0.left.right.equalToSuperview().inset(20.adjustedWidth)
         }
         profileImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(11.adjustedHeight)
+            $0.top.equalToSuperview().inset(10.adjustedHeight)
             $0.left.equalToSuperview().inset(14.adjustedWidth)
             $0.width.height.equalTo(20.0.adjustedWidth)
         }
@@ -128,23 +142,18 @@ class RepliesTableViewCell: UITableViewCell {
         dateLabel.snp.makeConstraints {
             $0.top.equalTo(contentTextView.snp.bottom).offset(7.adjustedHeight)
             $0.left.equalTo(profileImageView)
+            $0.bottom.equalToSuperview().inset(7.adjustedHeight)
         }
         
-        likeButton.snp.makeConstraints {
-            $0.top.equalTo(dateLabel)
-            $0.left.equalTo(dateLabel.snp.right).offset(8.adjustedWidth)
-            //            $0.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
+        likeLabel.snp.makeConstraints {
+            $0.left.equalTo(dateLabel.snp.right).offset(12.adjustedWidth)
+            $0.centerY.equalTo(dateLabel)
         }
-        addSubReplyButton.snp.makeConstraints {
-            $0.centerY.equalTo(likeButton)
-            $0.right.equalToSuperview().inset(8.0)
-        }
-        menubutton.snp.makeConstraints {
-            $0.centerY.equalTo(nicknameLabel)
-            $0.width.equalTo(20)
-            $0.right.equalToSuperview().inset(8.0)
-            $0.left.equalTo(nicknameLabel.snp.right)
+        buttonStackView.snp.makeConstraints {
+            $0.top.equalTo(profileImageView)
+            $0.right.equalToSuperview().inset(26.adjustedWidth)
+            $0.width.equalTo(75.adjustedWidth)
+            $0.height.equalTo(16.67.adjustedHeight)
         }
     }
     
@@ -158,7 +167,7 @@ class RepliesTableViewCell: UITableViewCell {
                 self.nicknameLabel.text = $0!.author.nickname
                 self.dateLabel.text = $0!.date
                 self.contentTextView.text = $0!.content
-                self.likeButton.setTitle("\($0!.likes.count)", for: .normal)
+                self.likeLabel.label.text = "\($0!.likes.count)"
                 
                 if $0!.author.profileImage.count != 0 {
                     self.profileImageView.image = $0!.author.profileImage.first!.body.toImage()
@@ -199,9 +208,9 @@ class RepliesTableViewCell: UITableViewCell {
             }
             .bind {
                 if $0 {
-                    self.contentView.makeBorder(color: UIColor.lightGray.cgColor, width: 1.0, cornerRadius: 0)
+                    self.containerView.backgroundColor = .w3
                 } else {
-                    self.contentView.removeBorder()
+                    self.containerView.backgroundColor = .w2
                 }
             }
             .disposed(by: disposeBag)

@@ -57,7 +57,6 @@ class SubReplyServices {
                 if $0.statusCode == 200 {
                     do {
                         let reply = try JSONDecoder().decode(Reply.self, from: $0.data)
-                        print(reply)
                         return reply
                     } catch {
                         return nil

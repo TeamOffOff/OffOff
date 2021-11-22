@@ -38,7 +38,7 @@ class TextWithIconView: UIView {
             $0.width.height.equalTo(10.0)
         }
         label.snp.makeConstraints {
-            $0.left.equalTo(iconImageView.snp.right).offset(2.5)
+            $0.left.equalTo(iconImageView.snp.right).offset(4.adjustedWidth)
             $0.right.equalToSuperview()
             $0.top.bottom.equalToSuperview()
         }

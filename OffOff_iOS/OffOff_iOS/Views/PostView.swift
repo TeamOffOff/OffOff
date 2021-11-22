@@ -226,7 +226,7 @@ class PostView: UIScrollView {
         
         repliesTableView.snp.makeConstraints {
             $0.top.equalTo(backgroundView.snp.bottom).offset(14.adjustedHeight)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(50.adjustedHeight)
             $0.width.equalToSuperview()
             $0.centerX.equalToSuperview()
         }
