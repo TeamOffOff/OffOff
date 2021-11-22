@@ -9,6 +9,7 @@ import Foundation
 import Moya
 import RxMoya
 import RxSwift
+import CloudKit
 
 public class UserServices {
     static let provider = MoyaProvider<UserAPI>()
@@ -101,8 +102,10 @@ public class UserServices {
             .map {
                 if $0.statusCode == 200 {
                     let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
-                    UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
-                    UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
+                    KeyChainController.shared.create(Constants.ServiceString, account: "AccessToken", value: response.accessToken)
+                    KeyChainController.shared.create(Constants.ServiceString, account: "RefreshToken", value: response.refreshToken)
+//                    UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
+//                    UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
                 }
                 return LoginResult(rawValue: $0.statusCode)!
             }

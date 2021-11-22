@@ -64,6 +64,7 @@ extension ReplyAPI: TargetType {
     }
     
     var headers: [String : String]? {
-        return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+        return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
+//        return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
     }
 }

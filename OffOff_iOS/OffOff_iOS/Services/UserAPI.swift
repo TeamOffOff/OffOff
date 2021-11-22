@@ -106,7 +106,8 @@ extension UserAPI: TargetType {
         case .passwordChange(_), .resign, .modifyMemberInfo(_):
             return ["Authorization": "token_encoded"]
         case .getUserInfo:
-            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+            return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
+//            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
         default:
             return nil
         }

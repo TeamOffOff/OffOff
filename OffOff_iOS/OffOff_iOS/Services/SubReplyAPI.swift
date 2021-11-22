@@ -50,6 +50,6 @@ extension SubReplyAPI: TargetType {
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json", "Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+        return ["Content-type": "application/json"].merging(KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")!) { (c, _) in c }
     }
 }
