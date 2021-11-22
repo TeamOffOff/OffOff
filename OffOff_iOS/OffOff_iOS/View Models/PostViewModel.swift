@@ -23,6 +23,9 @@ class PostViewModel {
     var disposeBag = DisposeBag()
     var activityDisposeBag = DisposeBag()
     
+    var reportButtonTapped = BehaviorSubject<Bool>(value: false)
+//    var reported: Observable<Bool>
+    
     let refreshing = BehaviorSubject<Void>(value: ())
     
     init(contentId: String, boardType: String, likeButtonTapped: Observable<PostLikeModel?>, replyButtonTapped: Observable<WritingReply>) {
@@ -68,32 +71,32 @@ class PostViewModel {
                         } else {
                             self.liked.onNext(false)
                         }
-                        
+
                     }.disposed(by: self.activityDisposeBag)
                 }
             }
             .disposed(by: disposeBag)
         
-        var cell: PostPreviewCell?
-        likeButtonTapped
-            .filter { $0 != nil }
-            .do { cell = $0!.cell }
-            .flatMap { val -> Observable<PostModel?> in
-                let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
-                self.activityDisposeBag = DisposeBag()
-                return PostServices.likePost(post: post)
-            }
-            .bind {
-                if $0 != nil {
-                    self.post.onNext($0)
-                    self.liked.onNext(true)
-                    cell!.postModel.accept($0)
-                } else {
-                    self.liked.onNext(false)
-                }
-            }
-            .disposed(by: disposeBag)
-        
+//        var cell: PostPreviewCell?
+//        likeButtonTapped
+//            .filter { $0 != nil }
+//            .do { cell = $0!.cell }
+//            .flatMap { val -> Observable<PostModel?> in
+//                let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
+//                self.activityDisposeBag = DisposeBag()
+//                return PostServices.likePost(post: post)
+//            }
+//            .bind {
+//                if $0 != nil {
+//                    self.post.onNext($0)
+//                    self.liked.onNext(true)
+//                    cell!.postModel.accept($0)
+//                } else {
+//                    self.liked.onNext(false)
+//                }
+//            }
+//            .disposed(by: disposeBag)
+
         replyButtonTapped
             .filter { $0.content != "" }
             .withLatestFrom(isSubReplyInputting) { WritingReply(_id: nil, boardType: $0.boardType, postId: $0.postId, parentReplyId: ($1 != nil) ? $1?._id : nil, content: $0.content) }
@@ -121,6 +124,13 @@ class PostViewModel {
                 }
             }
             .disposed(by: disposeBag)
+        
+//        reported = self.reportButtonTapped
+//            .flatMap {
+//                if $0 {
+//                    PostServices.likePost(post: PostActivity(boardType: <#T##String#>, _id: <#T##String#>, activity: <#T##String#>))
+//                }
+//            }
     }
     
     func reloadPost(contentId: String, boardType: String) {

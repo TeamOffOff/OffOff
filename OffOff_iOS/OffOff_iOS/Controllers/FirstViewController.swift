@@ -16,25 +16,15 @@ class FirstViewController: UIViewController {
         $0.image = UIImage(named: "IconImage")
         $0.contentMode = .scaleAspectFit
     }
-    var titleLabel = UILabel().then {
-        $0.font = .defaultFont(size: 20)
-        $0.text = "오프오프"
-        $0.textColor = .white
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.addSubview(imageView)
-        self.view.addSubview(titleLabel)
         self.view.backgroundColor = .mainColor
         
         imageView.snp.makeConstraints {
             $0.center.equalToSuperview()
             $0.width.height.equalTo(130)
-        }
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(imageView.snp.bottom)
-            $0.centerX.equalToSuperview()
         }
     }
     

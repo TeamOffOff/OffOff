@@ -400,7 +400,10 @@ class PostViewController: UIViewController {
             //                }.disposed(by: rightButtonsDisposeBag)
         }
         
-        let report = UIAlertAction(title: "신고", style: .default)
+        let report = UIAlertAction(title: "신고", style: .default) { _ in
+            self.viewModel.reportButtonTapped.onNext(true)
+        }
+        
         let cancel = UIAlertAction(title: "취소", style: .cancel)
         alert.addAction(report)
         alert.addAction(cancel)
