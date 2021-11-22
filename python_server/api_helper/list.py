@@ -236,6 +236,12 @@ class TotalSearchControl(Resource):
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
                 post["image"] = get_image(post["image"], "post", "200")  
 
+                if post["boardType"] == "secret":
+                    post["author"]["nickname"] = "익명"
+                    post["author"]["profileImage"] = []
+                else:
+                    post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
+
             last_post_id = total_list[-1]["_id"]
 
         else:
@@ -289,6 +295,12 @@ class SearchControl(Resource):
                 post["_id"] = str(post["_id"])
                 post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
                 post["image"] = get_image(post["image"], "post", "200") 
+
+                if post["boardType"] == "secret":
+                    post["author"]["nickname"] = "익명"
+                    post["author"]["profileImage"] = []
+                else:
+                    post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
 
             last_post_id = total_list[-1]["_id"]
 

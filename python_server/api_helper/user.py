@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 import bcrypt
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
-
+from api_helper.utils  import GMAIL_ID, SEND_MAIL_API
 from controller.email import send_email
 from controller.image import save_image, get_image
 from controller.filter import check_duplicate, check_jwt
@@ -34,12 +34,12 @@ class VerifyControl(Resource):
         if result.raw_result["n"] == 1:  # 잘 변경됨
             print("잘 변경 됨")
             # 메일 보내기
-            send_email(verify_email, "", "변경 완료")
+            send_email(GMAIL_ID, "", "{}변경 완료".format(verify_email))
 
         else:
             print('변경 안 됨')
             # 메일 보내기
-            send_email(verify_email, "", "변경 실패")
+            send_email(GMAIL_ID, "", "{}변경 완료".format(verify_email))
         
         return make_response(render_template('email.html'))
         
@@ -195,7 +195,7 @@ class AuthRegister(Resource):
             mongodb.insert_one(data=user_info, collection_name="user")  
 
             # 메일 보내기
-            send_email(r_email, "http://152.67.210.16:5000/verify?email="+r_email, "감사합니다")
+            send_email(r_email, SEND_MAIL_API+r_email, "감사합니다")
 
             # response
             response_result = make_response({"queryStatus": 'success'}, 200)

@@ -158,16 +158,14 @@ class PostControl(Resource):
             post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
             
             if board_type == "secret_board":
-                post["author"] = None
+                post["author"]["nickname"] = "익명"
+                post["author"]["profileImage"] = []
+            else:
+                post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
             
             if post["image"]:
                 time.sleep(5) # 이미지 업로드하는데 걸리는 시간 고려
                 post["image"] = get_image(post["image"], "post", "600")
-
-            # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
-            if post["author"]: #secret인 경우 None임
-                if post["author"]["profileImage"]: #secret도 아니고 profileImage가 있는 경우 (여기에선 탈퇴한 경우 생각할 필요없음)
-                    post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
 
             response_result = make_response(post, 200)
 
