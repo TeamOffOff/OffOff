@@ -24,12 +24,26 @@
             <ImageView
                 android:id="@+id/iv_background"
                 android:layout_width="match_parent"
-                android:layout_height="270dp"
+                android:layout_height="200dp"
                 android:contentDescription="@string/background_post"
                 android:src="@drawable/layout_background_radius_bottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_d_day"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="-22dp"
+                android:background="@drawable/layout_edit_text"
+                android:drawablePadding="12dp"
+                android:importantForAutofill="no"
+                android:paddingStart="12dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/iv_background" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -40,7 +54,7 @@
                     android:id="@+id/tv_hi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="104dp"
+                    android:layout_marginTop="64dp"
                     android:padding="0dp"
                     android:text="@string/hi"
                     android:textColor="@color/white"
@@ -65,27 +79,13 @@
                 <ImageView
                     android:id="@+id/iv_avatar"
                     android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_marginTop="90dp"
+                    android:layout_height="93dp"
+                    android:layout_marginTop="46dp"
                     android:includeFontPadding="false"
                     android:scaleType="centerCrop"
                     android:background="@drawable/layout_bg_profile_big"
                     android:src="@drawable/ic_avatar_big"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_d_day"
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
-                    android:layout_marginHorizontal="32dp"
-                    android:layout_marginTop="249dp"
-                    android:background="@drawable/layout_edit_text"
-                    android:drawablePadding="12dp"
-                    android:importantForAutofill="no"
-                    android:paddingStart="12dp"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

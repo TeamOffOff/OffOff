@@ -24,10 +24,10 @@
         android:label="fragment_schedule"
         tools:layout="@layout/fragment_schedule" />
     <fragment
-        android:id="@+id/notificationFragment"
-        android:name="com.yuuuzzzin.offoff_android.views.ui.NotificationFragment"
-        android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" />
+        android:id="@+id/userFragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.UserFragment"
+        android:label="fragment_user"
+        tools:layout="@layout/fragment_user" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.yuuuzzzin.offoff_android.views.ui.SettingsFragment"

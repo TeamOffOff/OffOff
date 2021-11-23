@@ -8,10 +8,10 @@
         android:title="검색"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_more_option"
-        android:icon="@drawable/ic_more_option"
-        android:title="더보기"
-        app:showAsAction="ifRoom" />
+<!--    <item-->
+<!--        android:id="@+id/action_more_option"-->
+<!--        android:icon="@drawable/ic_more_option"-->
+<!--        android:title="더보기"-->
+<!--        app:showAsAction="ifRoom" />-->
 
 </menu>

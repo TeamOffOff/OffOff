@@ -10,7 +10,7 @@
     <string name="appbar_home">ㅇㅍㅇㅍ</string>
     <string name="appbar_boards">게시판</string>
     <string name="appbar_schedule">스케줄</string>
-    <string name="appbar_notification">알림</string>
+    <string name="appbar_user">내 활동</string>
     <string name="appbar_settings">환경설정</string>
 
     <!-- 홈 프래그먼트 앱바 메뉴 이름 -->

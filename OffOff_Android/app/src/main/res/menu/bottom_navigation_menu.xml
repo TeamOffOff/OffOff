@@ -16,9 +16,9 @@
         android:icon="@drawable/ic_bn_schedule"
         android:title="스케줄" />
 
-    <item android:id="@+id/notificationFragment"
+    <item android:id="@+id/userFragment"
         android:icon="@drawable/ic_bn_user"
-        android:title="알림" />
+        android:title="내 활동" />
 
     <item android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_bn_settings"
