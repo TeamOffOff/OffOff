@@ -18,11 +18,11 @@ constructor(private val boardService: BoardService) {
     suspend fun getPost(auth: String, postId: String, boardType: String) =
         boardService.getPost(auth, postId, boardType)
 
-    suspend fun searchPost(auth: String, boardType: String, key: String, standardId: String?) =
-        boardService.searchPost(auth, boardType, key, standardId)
+    suspend fun searchPost(auth: String, boardType: String, key: String, lastPostId: String?) =
+        boardService.searchPost(auth, boardType, key, lastPostId)
 
-    suspend fun totalSearchPost(auth: String, key: String, standardId: String?) =
-        boardService.totalSearchPost(auth, key, standardId)
+    suspend fun totalSearchPost(auth: String, key: String, lastPostId: String?) =
+        boardService.totalSearchPost(auth, key, lastPostId)
 
     suspend fun writePost(auth: String, post: PostSend) = boardService.writePost(auth, post)
     suspend fun editPost(auth: String, post: PostSend) = boardService.editPost(auth, post)

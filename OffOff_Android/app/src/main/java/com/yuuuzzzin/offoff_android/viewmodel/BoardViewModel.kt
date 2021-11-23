@@ -33,8 +33,6 @@ constructor(
     private val _clearPostList = MutableLiveData<Event<Boolean>>()
     val clearPostList: LiveData<Event<Boolean>> = _clearPostList
 
-    private var count: Int = 0 // 가져온 아이템 개수
-
     fun getPosts(boardType: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.getPosts(boardType).let { response ->
             if (response.isSuccessful) {
@@ -42,7 +40,6 @@ constructor(
                 if (!response.body()!!.postList.isNullOrEmpty()) {
                     _postList.postValue(response.body()!!.postList)
                     _lastPostId.postValue(response.body()!!.lastPostId)
-                    count = response.body()!!.postList.size
                 }
             } else {
                 Log.d("tag_fail", "getPosts Error: ${response.code()}")
@@ -58,7 +55,6 @@ constructor(
                     if (!response.body()!!.postList.isNullOrEmpty()) {
                         _postList.postValue(response.body()!!.postList)
                         _lastPostId.postValue(response.body()!!.lastPostId)
-                        count = response.body()!!.postList.size
                     }
                 } else {
                     Log.d("tag_fail", "getNextPosts Error: ${response.code()}")
@@ -74,7 +70,6 @@ constructor(
                     if (!response.body()!!.postList.isNullOrEmpty()) {
                         _postList.postValue(response.body()!!.postList)
                         _lastPostId.postValue(response.body()!!.lastPostId)
-                        count = response.body()!!.postList.size
                     } else {
                         _clearPostList.postValue(Event(true))
                     }
@@ -92,7 +87,6 @@ constructor(
                     if (!response.body()!!.postList.isNullOrEmpty()) {
                         _postList.postValue(response.body()!!.postList)
                         _lastPostId.postValue(response.body()!!.lastPostId)
-                        count = response.body()!!.postList.size
                     }
                 } else {
                     Log.d("tag_fail", "totalSearchPost Error: ${response.code()}")

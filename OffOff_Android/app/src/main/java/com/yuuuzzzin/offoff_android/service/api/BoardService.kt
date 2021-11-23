@@ -22,7 +22,7 @@ interface BoardService {
     @GET("postlist/{boardType}")
     suspend fun getNextPosts(
         @Path("boardType") board_type: String,
-        @Query("standardId") lastPostId: String
+        @Query("lastPostId") lastPostId: String
     ): Response<PostList>
 
     /* 해당 id의 게시물 불러오기 */
@@ -39,7 +39,7 @@ interface BoardService {
         @Header("Authorization") auth: String,
         @Path("boardType") boardType: String,
         @Query("key") key: String,
-        @Query("standardId") standardId: String? = null
+        @Query("lastPostId") standardId: String? = null
     ): Response<PostList>
 
     /* 게시물 통합 검색 */
@@ -47,7 +47,7 @@ interface BoardService {
     suspend fun totalSearchPost(
         @Header("Authorization") auth: String,
         @Query("key") key: String,
-        @Query("standardId") standardId: String? = null
+        @Query("lastPostId") standardId: String? = null
     ): Response<PostList>
 
     /* 게시물 작성 */
