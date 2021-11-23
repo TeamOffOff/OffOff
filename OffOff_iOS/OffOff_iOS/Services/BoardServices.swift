@@ -32,16 +32,16 @@ public class BoardServices {
                 }
                 return nil
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
     
-    static func fetchPostList(board_type: String) -> Observable<PostList?> {
+    static func fetchPostList(board_type: String, firstPostId: String? = nil, lastPostId: String? = nil) -> Observable<PostList?> {
         BoardServices.provider
-            .rx.request(.getPostList(board_type, nil))
-            .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .rx.request(.getPostList(board_type, firstPostId, lastPostId))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                print($0)
+                print(#fileID, #function, #line, $0.statusCode)
                 if $0.statusCode == 200 {
                     do {
                         let postList = try JSONDecoder().decode(PostList.self, from: $0.data)
@@ -54,6 +54,6 @@ public class BoardServices {
                 }
                 return nil
             }
-            .catchErrorJustReturn(nil)
+            .catchAndReturn(nil)
     }
 }

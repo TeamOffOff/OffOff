@@ -32,7 +32,7 @@ class EditShiftViewModel {
     }
     
     func deleteShift(shift: Shift) {
-        UserRoutineManager.shared.deleteShift(by: shift)
+        _ = UserRoutineManager.shared.deleteShift(by: shift)
     }
     
 //    private func saveNewRoutine(model: RoutineModel) {

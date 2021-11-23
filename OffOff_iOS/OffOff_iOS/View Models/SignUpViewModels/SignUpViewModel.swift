@@ -14,13 +14,17 @@ class SignUpViewModel {
     // Outputs
     let isNickNameConfirmed: Driver<Bool>
     let signedUp: Driver<Bool>
+    let isUploadingImage: Observable<Bool>
     
     init(
         input: (
             nicknameText: Driver<String>,
-            signUpButtonTap: Signal<()>
+            signUpButtonTap: Signal<()>,
+            imageUploadButtonTap: Signal<()>
         )
     ) {
+        isUploadingImage = input.imageUploadButtonTap.asObservable().map { true }
+        
         isNickNameConfirmed = input.nicknameText
             .flatMapLatest { nickName in
                 return UserServices.nicknameDuplicationCheck(nickname: nickName).asDriver(onErrorJustReturn: false) }
@@ -31,7 +35,6 @@ class SignUpViewModel {
             .flatMapLatest { pair in
                 if pair.confirmed {
                     SharedSignUpModel.model.subInformation.nickname = pair.nickname
-                    print(SharedSignUpModel.model)
                     return UserServices.signUp(with: SharedSignUpModel.model).asDriver(onErrorJustReturn: false)
                 } else {
                     return Driver.just(false)

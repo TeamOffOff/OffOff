@@ -33,7 +33,7 @@ class ScheduleCalendarCell: FSCalendarCell {
         }
         
         isEditing
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .bind {
                 if $0 {
                     self.makeBorder(color: UIColor.mainColor.cgColor, width: 1.0, cornerRadius: 0)
@@ -44,7 +44,7 @@ class ScheduleCalendarCell: FSCalendarCell {
             .disposed(by: disposeBag)
         
         savedShift
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .bind {
                 if $0 != nil {
                     self.eventTitleLabel.text = "\($0!.shift!.title.first!)"
@@ -66,7 +66,7 @@ class ScheduleCalendarCell: FSCalendarCell {
         disposeBag = DisposeBag()
         
         isEditing
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .bind {
                 if $0 {
                     self.makeBorder(color: UIColor.mainColor.cgColor, width: 1.0, cornerRadius: 0)
@@ -77,7 +77,7 @@ class ScheduleCalendarCell: FSCalendarCell {
             .disposed(by: disposeBag)
         
         savedShift
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .bind {
                 if $0 != nil {
                     self.eventTitleLabel.text = "\($0!.shift!.title.first!)"

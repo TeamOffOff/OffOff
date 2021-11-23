@@ -9,6 +9,7 @@ import RealmSwift
 import SkyFloatingLabelTextField
 import FontAwesome
 import RxSwift
+import UIKit
 
 let dateFormatter = DateFormatter() //2020-01-29
 
@@ -26,8 +27,14 @@ protocol ViewModelType {
 }
 
 extension String {
-    func toDate() -> Date? {
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+    func toImage() -> UIImage {
+        let imageData = Data.init(base64Encoded: self, options: .init(rawValue: 0))
+        let image = UIImage(data: imageData!)
+        return image!
+    }
+    
+    func toDate(format: String = "yyyy년 MM월 dd일 HH시 mm분") -> Date? {
+        dateFormatter.dateFormat = format
         return dateFormatter.date(from: self)
     }
     
@@ -38,6 +45,16 @@ extension String {
 }
 
 extension Date {
+    func toFormedString() -> String {
+        if self.isToday {
+            return self.toString("HH:mm")
+        } else if self.isThisYear {
+            return self.toString("MM/dd HH:mm")
+        } else {
+            return self.toString("yy/MM/dd HH:mm")
+        }
+    }
+    
     var startOfMonth: Date {
         
         let calendar = Calendar(identifier: .gregorian)
@@ -51,6 +68,14 @@ extension Date {
         components.month = 1
         components.second = -1
         return Calendar(identifier: .gregorian).date(byAdding: components, to: startOfMonth)!
+    }
+    
+    var isToday: Bool {
+        return Calendar.current.isDateInToday(self)
+    }
+    
+    var isThisYear: Bool {
+        return self.isSame(with: Date(), component: .year)
     }
     
     var isEndOfMonth: Bool {
@@ -159,9 +184,79 @@ extension UIView {
         self.layer.cornerRadius = cornerRadius
         self.clipsToBounds = cornerRadius > 0
     }
+    
+    func removeBorder() {
+        self.layer.borderColor = nil
+        self.layer.borderWidth = 0
+        self.layer.cornerRadius = 0
+    }
+    
+    func setCornerRadius(_ radius: Double) {
+        self.layer.cornerRadius = radius
+        self.clipsToBounds = radius > 0
+    }
+    
+    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        layer.mask = mask
+    }
+    
+    func topRoundCorner(radius: CGFloat) {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = radius
+        self.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner] // Top right corner, Top left corner respectively
+    }
+    
+    func bottomRoundCorner(radius: CGFloat) {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = radius
+        self.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+    }
 }
 
 extension UIColor {
+    static var w1: UIColor {
+        return UIColor(hex: "FFFFFF")
+    }
+    
+    static var w2: UIColor {
+        return UIColor(hex: "F1F3F4")
+    }
+    
+    static var w3: UIColor {
+        return UIColor(hex: "DEE1E6")
+    }
+    
+    static var w4: UIColor {
+        return UIColor(hex: "C4C4C4")
+    }
+    
+    static var w5: UIColor {
+        return UIColor(hex: "626365")
+    }
+    
+    static var w6: UIColor {
+        return UIColor(hex: "000000")
+    }
+    
+    static var g1: UIColor {
+        return UIColor(hex: "BAC9C2")
+    }
+    
+    static var g2: UIColor {
+        return UIColor(hex: "6D9570")
+    }
+    
+    static var g3: UIColor {
+        return UIColor(hex: "598672")
+    }
+    
+    static var g4: UIColor {
+        return UIColor(hex: "18573A")
+    }
+    
     static var mainColor: UIColor {
         return Constants.mainColor
     }
@@ -197,6 +292,24 @@ extension UIColor {
 }
 
 extension UIImage {
+    var imageRatio: CGFloat {
+        let imageRatio = CGFloat(self.size.width / self.size.height)
+        return imageRatio
+    }
+    
+    func toBase64String() -> String {
+        return self.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+    }
+    
+    func resize(to size: CGSize) -> UIImage {
+        let render = UIGraphicsImageRenderer(size: size)
+        let renderImage = render.image { context in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
+        
+        return renderImage
+    }
+    
     static var DEFAULT_PROFILE = UIImage(named: "default profile")
     
     static var personFill: UIImage {
@@ -229,6 +342,27 @@ extension UIImage {
     static let ICON_REPORT_GRAY = UIImage.fontAwesomeIcon(name: .exclamationCircle, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
     static let ICON_WRITE_GRAY = UIImage.fontAwesomeIcon(name: .pen, style: .solid, textColor: .systemGray, size: Constants.BUTTON_ICON_SIZE)
     static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
+    
+    static let LEFTARROW = UIImage(named: "LeftArrow")!
+    static let CAMERA = UIImage(named: "CameraImage")!.withRenderingMode(.alwaysTemplate)
+    static let MOREICON = UIImage(named: "MoreIcon")!.withRenderingMode(.alwaysTemplate)
+    static let SEARCHIMAGE = UIImage(named: "SearchImage")!
+
+    static let DefaultPostProfileImage = UIImage(named: "DefaultPostProfileImage")!
+    static let DefaultReplyProfileImage = UIImage(named: "DefaultReplyProfileImage")!
+    static let SubReplyArrow = UIImage(named: "SubReplyArrow")!
+    static let NewPostIcon = UIImage(named: "NewPostIcon")!.resize(to: CGSize(width: 26.61.adjustedWidth, height: 26.71.adjustedHeight))
+    static let LIKEICON = UIImage(named: "LikeIcon")!.withRenderingMode(.alwaysTemplate)
+    static let REPLYICON = UIImage(named: "ReplyIcon")!.withRenderingMode(.alwaysTemplate)
+    static let PICTUREICON = UIImage(named: "PictureIcon")!.withRenderingMode(.alwaysTemplate)
+    static let SCRAPICOn = UIImage(named: "ScrapIcon")!.withRenderingMode(.alwaysTemplate)
+    static let LikeIconFill = UIImage(named: "LikeIconFill")!.withRenderingMode(.alwaysTemplate)
+    
+    static let HOMEICON = UIImage(named: "HomeIcon")!
+    static let SETTINGICON = UIImage(named: "SettingIcon")!
+    static let CALENDARICON = UIImage(named: "CalendarIcon")!
+    static let BOARDICON = UIImage(named: "BoardIcon")!
+    static let PERSONICON = UIImage(named: "PersonIcon")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)
@@ -330,6 +464,11 @@ extension UIFont {
     func italic() -> UIFont {
         return withTraits(traits: .traitItalic)
     }
+    
+    static func defaultFont(size: Double, bold: Bool = false) -> UIFont {
+        let name = bold ? "Roboto-Bold" : "Roboto-Regular"
+        return UIFont(name: name, size: size)!
+    }
 }
 
 
@@ -354,5 +493,160 @@ extension Realm {
         } else {
             try write(block)
         }
+    }
+}
+
+extension UINavigationBar {
+    func setAppearance(titleColor: UIColor = .white, backgroundColor: UIColor = .mainColor) {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = backgroundColor
+        appearance.titleTextAttributes = [.foregroundColor: titleColor]
+        appearance.shadowColor = .g4
+        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)))
+        self.isTranslucent = false
+        self.tintColor = titleColor
+        self.standardAppearance = appearance
+        self.scrollEdgeAppearance = appearance
+        self.compactAppearance = appearance
+        if #available(iOS 15.0, *) {
+            self.compactScrollEdgeAppearance = appearance
+        }
+        self.layoutIfNeeded()
+    }
+}
+
+extension UIScrollView {
+    func scrollToView(view:UIView, animated: Bool) {
+        if let origin = view.superview {
+            // Get the Y position of your child view
+            let childStartPoint = origin.convert(view.frame.origin, to: self)
+            // Scroll to a rectangle starting at the Y of your subview, with a height of the scrollview
+            self.scrollRectToVisible(CGRect(x:0, y:childStartPoint.y,width: 1,height: self.frame.height), animated: animated)
+        }
+    }
+    
+    func scrollToTop(animated: Bool) {
+        let topOffset = CGPoint(x: 0, y: -contentInset.top)
+        setContentOffset(topOffset, animated: animated)
+    }
+    
+    func scrollToBottom() {
+        let bottomOffset = CGPoint(x: 0, y: contentSize.height - bounds.size.height + contentInset.bottom)
+        if(bottomOffset.y > 0) {
+            setContentOffset(bottomOffset, animated: true)
+        }
+    }
+}
+
+extension UIViewController {
+    func hideKeyboard() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(UIViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
+
+extension Double {
+    var adjustedWidth: Double {
+        return (Double(UIScreen.main.bounds.size.width) * self) / 390.0
+    }
+    
+    var adjustedHeight: Double {
+        return (Double(UIScreen.main.bounds.size.height) * self) / 844.0
+    }
+}
+
+extension UITextField {
+    func addLeftPadding(value: Double) {
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: value, height: self.frame.height))
+        self.leftView = paddingView
+        self.leftViewMode = ViewMode.always
+    }
+    
+    func addLeftImage(image: UIImage, size: Double) {
+        let paddingView = UIImageView(frame: CGRect(x: 0, y: 0, width: size, height: self.frame.height))
+        paddingView.image = image
+        self.leftView = paddingView
+        self.leftViewMode = ViewMode.always
+    }
+    
+    func leftImage(_ image: UIImage?, imageWidth: CGFloat, padding: CGFloat) {
+        let imageView = UIImageView(image: image)
+        imageView.frame = CGRect(x: padding, y: 0, width: imageWidth, height: frame.height)
+        imageView.contentMode = .center
+        
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: imageWidth + 2 * padding, height: frame.height))
+        containerView.addSubview(imageView)
+        leftView = containerView
+        leftViewMode = .always
+    }
+}
+
+extension UIBarButtonItem {
+    static func searchButton() -> UIBarButtonItem {
+        UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    }
+    static func menuButton() -> UIBarButtonItem {
+        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    }
+}
+
+extension UIView {
+    private static let kRotationAnimationKey = "rotationanimationkey"
+
+    func rotate(duration: Double = 1) {
+        if layer.animation(forKey: UIView.kRotationAnimationKey) == nil {
+            let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation")
+            
+            rotationAnimation.fromValue = 0.0
+            rotationAnimation.toValue = Float.pi * 2.0
+            rotationAnimation.duration = duration
+            rotationAnimation.repeatCount = Float.infinity
+
+            layer.add(rotationAnimation, forKey: UIView.kRotationAnimationKey)
+        }
+    }
+    
+    func rotateWithoutAnimation(degree: Double) {
+        self.transform = CGAffineTransform(rotationAngle: CGFloat(degree))
+    }
+
+    func stopRotating() {
+        if layer.animation(forKey: UIView.kRotationAnimationKey) != nil {
+            layer.removeAnimation(forKey: UIView.kRotationAnimationKey)
+        }
+    }
+    
+    func isRotating() -> Bool {
+        return layer.animation(forKey: UIView.kRotationAnimationKey) != nil
+    }
+}
+
+enum VerticalLocation: String {
+    case bottom
+    case top
+}
+
+extension UIView {
+    func addShadow(location: VerticalLocation, color: UIColor = .black, opacity: Float = 0.5, radius: CGFloat = 5.0) {
+        switch location {
+        case .bottom:
+             addShadow(offset: CGSize(width: 0, height: 10), color: color, opacity: opacity, radius: radius)
+        case .top:
+            addShadow(offset: CGSize(width: 0, height: -2.5), color: color, opacity: opacity, radius: radius)
+        }
+    }
+
+    func addShadow(offset: CGSize, color: UIColor = .black, opacity: Float = 0.5, radius: CGFloat = 5.0) {
+        self.layer.masksToBounds = false
+        self.layer.shadowColor = color.cgColor
+        self.layer.shadowOffset = offset
+        self.layer.shadowOpacity = opacity
+        self.layer.shadowRadius = radius
     }
 }

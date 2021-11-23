@@ -40,7 +40,7 @@ class EditShiftViewController: UIViewController {
         
         // bind outputs
         viewModel.shifts
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .bind(to: customView.routineTable.rx.items(cellIdentifier: ShiftTableViewCell.identifier, cellType: ShiftTableViewCell.self)) { row, element, cell  in
                 cell.shift.onNext(element)
                 cell.editingShift.bind { self.cellButtonAction(shift: $0!) }.disposed(by: cell.disposeBag)
@@ -48,14 +48,14 @@ class EditShiftViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.addingShift
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .bind { _ in
                 self.presentAddShiftViewController()
             }
             .disposed(by: disposeBag)
         
         viewModel.shiftSelected
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .bind {
                 print($0)
             }

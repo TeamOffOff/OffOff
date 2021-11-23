@@ -17,8 +17,10 @@ class PostListViewModel {
     
     var boardType = ""
     
-    let reloadTrigger = PublishSubject<Void>()
-    let refreshing = BehaviorSubject<Bool>(value: false)
+    let reloadTrigger = PublishSubject<PostListReloadingType>()
+    let refreshing = BehaviorSubject<Void>(value: ())
+    
+    var lastPostId: String? = nil
     
     init(boardType: String) {
         self.boardType = boardType
@@ -26,15 +28,41 @@ class PostListViewModel {
         
         self.reloadTrigger
             .debug()
-            .flatMapLatest { _ in
-                BoardServices.fetchPostList(board_type: boardType)
+            .flatMapLatest { type -> Observable<PostList?> in
+                switch type {
+                case .newer:
+                    self.refreshing.onNext(())
+                    return BoardServices.fetchPostList(board_type: boardType, firstPostId: self.postList.value.first!._id)
+                case .older:
+                    self.refreshing.onNext(())
+                    return BoardServices.fetchPostList(board_type: boardType, lastPostId: self.lastPostId)
+                }
             }
-            .map { $0?.postList ?? [] }
-            .bind(to: self.postList)
+            .filter { $0 != nil }
+            .bind {
+                var list: [PostModel] = []
+                
+                if $0?.lastPostId != nil {
+                    self.lastPostId = $0?.lastPostId
+                    list = self.postList.value + ($0?.postList ?? [])
+                } else {
+                    list = ($0?.postList ?? []) + self.postList.value
+                }
+                
+                self.postList.accept(list)
+            }
             .disposed(by: disposeBag)
     }
     
-    private func fetchPostList(boardType: String) {
-        _ = BoardServices.fetchPostList(board_type: boardType).map { $0?.postList ?? [] }.bind(to: self.postList)
+    public func fetchPostList(boardType: String) {
+        _ = BoardServices.fetchPostList(board_type: boardType).map {
+            self.lastPostId = $0?.lastPostId
+            return $0?.postList ?? []
+        }.bind(to: self.postList)
     }
+}
+
+enum PostListReloadingType {
+    case newer
+    case older
 }

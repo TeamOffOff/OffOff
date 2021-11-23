@@ -21,21 +21,32 @@ class FirstViewController: UIViewController {
         super.viewDidLoad()
         self.view.addSubview(imageView)
         self.view.backgroundColor = .mainColor
+        
         imageView.snp.makeConstraints {
-            $0.edges.equalTo(self.view.safeAreaLayoutGuide)
+            $0.center.equalToSuperview()
+            $0.width.height.equalTo(130)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loginCheck()
     }
     
     private func loginCheck() {
-        if let token = UserDefaults.standard.string(forKey: "loginToken") {
+        if let token = KeyChainController.shared.read(Constants.ServiceString, account: "AccessToken") {
             print("Auto logined... token:", token)
-            UserServices.getUserInfo(token: token)
-                .debug()
+            UserServices.getUserInfo()
                 .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
-                .observeOn(MainScheduler.instance)
+                .observe(on: MainScheduler.instance)
                 .bind {
-                    let vc = ($0 != nil) ? TabBarController() : LoginViewController()
+                    if $0 != nil {
+                        Constants.loginUser = $0
+                        let vc = TabBarController()
+                        vc.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: false)
+                    }
+                    let vc = LoginViewController()
                     vc.modalPresentationStyle = .fullScreen
                     self.present(vc, animated: false)
                 }

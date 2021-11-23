@@ -10,90 +10,184 @@
 import UIKit
 import RxSwift
 
-class PostListViewController: UITableViewController {
+class PostListViewController: UIViewController {
     var boardType: String?
     var boardName: String?
+    
+    let customView = PostListView()
+    
     let disposeBag = DisposeBag()
     var viewModel: PostListViewModel?
     
+    let searchButton = UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    let menuButton = UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    
     override func loadView() {
-        self.tableView = .init()
-        self.tableView.delegate = nil
-        self.tableView.dataSource = nil
+        self.view = customView
+        self.navigationItem.backButtonTitle = ""
         self.title = boardName ?? ""
-        self.navigationController?.navigationBar.prefersLargeTitles = false
-        self.navigationController?.navigationBar.barTintColor = .mainColor
-        self.navigationController?.navigationBar.isTranslucent = false
-        self.navigationController?.navigationBar.tintColor = .white
-        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: nil, action: nil)
         
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 200
-        tableView.register(PostPreviewCell.classForCoder(), forCellReuseIdentifier: PostPreviewCell.identifier)
-        tableView.separatorStyle = .singleLine
-        tableView.separatorColor = .mainColor
+        self.navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.font: UIFont.defaultFont(size: 20)]
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: .LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)), style: .plain, target: nil, action: nil)
+        self.navigationItem.rightBarButtonItems = [menuButton, searchButton]
+        
+        self.customView.postListTableView.rowHeight = 81.adjustedHeight
+        self.customView.postListTableView.separatorStyle = .none
+        
+        rotateRefreshIndicator(true)
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         // view model
         viewModel = PostListViewModel(boardType: boardType ?? "")
-        
-        self.tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        
+
         // tableview refresh control
         let refreshControl = UIRefreshControl()
-        self.tableView.refreshControl = refreshControl
+        self.customView.postListTableView.refreshControl = refreshControl
+        refreshControl.tintColor = .clear
+        
+        Constants.currentBoard = self.boardType
         
         // bind result
         viewModel!.postList
-            .observeOn(MainScheduler.instance)
-            .do(onNext: { _ in refreshControl.endRefreshing() })
-            .bind(to: self.tableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
-                cell.titleLabel.text = element.title
-                cell.dateAuthorLabel.text = "\(element.date) | \(element.author.nickname)"
-                cell.previewTextView.text = element.content
-                cell.likeLabel.label.text = "\(element.likes) "
-                cell.commentLabel.label.text = "\(element.replyCount)"
+            .skip(1)
+            .observe(on: MainScheduler.instance)
+            .do { _ in
+                if !refreshControl.isRefreshing {
+                    self.rotateRefreshIndicator(false)
+                }
+            }
+            .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
+                cell.postModel.accept(element)
             }
             .disposed(by: disposeBag)
         
+        viewModel!.refreshing
+            .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .bind {
+                refreshControl.endRefreshing()
+                self.rotateRefreshIndicator(false)
+            }
+            .disposed(by: disposeBag)
+
+        // Refresh control
+//        self.customView.postListTableView.rx.didScroll
+//            .bind {
+////                self.scrollViewDidScroll(scrollView: self.customView.postListTableView)
+//                self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
+//            }
+//            .disposed(by: disposeBag)
         
         refreshControl.rx.controlEvent(.valueChanged)
-                    .bind(to: viewModel!.reloadTrigger)
-                    .disposed(by: disposeBag)
-
-        // select row
-        self.tableView.rx
-            .modelSelected(PostModel.self)
+            .debug()
             .bind {
-                let vc = PostViewController()
-                vc.postInfo = (id: $0._id!, type: $0.boardType)
-                self.navigationController?.pushViewController(vc, animated: true)
+                self.rotateRefreshIndicator(true)
+                self.viewModel!.reloadTrigger.onNext(.newer)
             }
             .disposed(by: disposeBag)
         
+        // table view scroll 대응
+        self.customView.postListTableView.rx.didScroll
+            .bind {
+                if self.customView.postListTableView.contentOffset.y <= 100.adjustedHeight {
+                    self.customView.upperView.snp.updateConstraints {
+                        $0.height.equalTo(150.adjustedHeight - self.customView.postListTableView.contentOffset.y)
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        self.customView.postListTableView.rx.didEndDragging
+            .bind { _ in
+                if ((self.customView.postListTableView.contentOffset.y + self.customView.postListTableView.frame.size.height) >= self.customView.postListTableView.contentSize.height)
+                {
+                    self.viewModel!.reloadTrigger.onNext(.older)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        // select row
+        self.customView.postListTableView.rx
+            .itemSelected
+            .bind {
+                if let cell = self.customView.postListTableView.cellForRow(at: $0) as? PostPreviewCell {
+                    let vc = PostViewController()
+                    vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
+                    vc.title = self.boardName
+                    vc.postCell = cell
+                    self.customView.postListTableView.deselectRow(at: $0, animated: false)
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+            .disposed(by: disposeBag)
+
         // inputs
         self.navigationItem.leftBarButtonItem?
             .rx.tap
             .bind { self.dismiss(animated: true, completion: nil) }
             .disposed(by: disposeBag)
-        
-        self.navigationItem.rightBarButtonItem?
+
+        self.customView.newPostButton
             .rx.tap
-            .bind { self.navigationController?.pushViewController(NewPostViewController(), animated: true) }
+            .bind {
+                let vc = NewPostViewController()
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        // searching
+        self.searchButton.rx.tap
+            .bind { _ in
+                let vc = PostSearchViewController()
+                vc.boardType = self.boardType
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
             .disposed(by: disposeBag)
     }
-}
-
-// MARK: - Table view data source, delegate
-extension PostListViewController {
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 20.0
+    
+    // MARK: - Private Funcs
+    private func rotateRefreshIndicator(_ on: Bool) {
+        self.customView.refreshingImageView.isHidden = !on
+        
+        if on {
+            self.customView.refreshingImageView.rotate(duration: 2.5)
+        } else {
+            self.customView.refreshingImageView.stopRotating()
+        }
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+    private func updateProgress(with offsetY: CGFloat) {
+        let maxPullDistance = 105.adjustedHeight
+        
+        guard !self.customView.refreshingImageView.isRotating() else { return }
+        let progress = min(abs(offsetY / maxPullDistance), 1) * 10
+        
+        if progress >= 0 && progress < 2.5 {
+            self.customView.refreshingImageView.image = nil
+        } else if progress >= 2.5 && progress < 5.0 {
+            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![0]
+        } else if progress >= 5.0 && progress < 7.5 {
+            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![1]
+        } else {
+            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![2]
+        }
     }
+    
+    // variable to save the last position visited, default to zero
+    private var lastContentOffset: CGFloat = 0
+
+    func scrollViewDidScroll(scrollView: UIScrollView!) {
+        if (self.lastContentOffset > scrollView.contentOffset.y) {
+            self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
+        }
+        else if (self.lastContentOffset < scrollView.contentOffset.y) {
+           // move down
+        }
+
+        // update the new position acquired
+        self.lastContentOffset = scrollView.contentOffset.y
+    }
+
 }

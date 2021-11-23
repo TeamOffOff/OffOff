@@ -6,15 +6,21 @@
 //
 
 struct PostList: Codable {
-    var lastPostId: String
+    var lastPostId: String?
     var postList: [PostModel]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(lastPostId, forKey: .lastPostId)
+        try container.encode(lastPostId, forKey: .postList)
+    }
 }
 
 struct Author: Codable {
     var _id: String?
     var nickname: String
     var type: String?
-    var profileImage: String?
+    var profileImage: [ImageObject]
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -32,10 +38,11 @@ struct PostModel: Codable {
     var date: String
     var title: String
     var content: String
-    var image: String?
-    var likes: Int
-    var viewCount: Int
-    var reportCount: Int
+    var image: [ImageObject]
+    var likes: [String]
+    var views: Int
+    var reports: [String]
+    var bookmarks: [String]
     var replyCount: Int
     
     func encode(to encoder: Encoder) throws {
@@ -47,9 +54,38 @@ struct PostModel: Codable {
         try container.encode(date, forKey: .date)
         try container.encode(image, forKey: .image)
         try container.encode(likes, forKey: .likes)
-        try container.encode(replyCount, forKey: .replyCount)
-        try container.encode(reportCount, forKey: .reportCount)
+        try container.encode(reports, forKey: .reports)
         try container.encode(title, forKey: .title)
-        try container.encode(viewCount, forKey: .viewCount)
+        try container.encode(views, forKey: .views)
+        try container.encode(bookmarks, forKey: .bookmarks)
+        try container.encode(replyCount, forKey: .replyCount)
+    }
+}
+
+struct UserPostActivity: Codable {
+    var boardType: String
+    var postId: String
+    var replyId: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(postId, forKey: .postId)
+        try container.encode(replyId, forKey: .replyId)
+    }
+}
+
+struct PostActivity: Codable {
+    var boardType: String
+    var _id: String
+    var activity: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(activity, forKey: .activity)
     }
 }

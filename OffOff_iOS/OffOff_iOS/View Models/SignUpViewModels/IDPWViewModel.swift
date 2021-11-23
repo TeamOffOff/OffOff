@@ -53,6 +53,7 @@ final class IDPWViewModel {
         
         let enabledAndValues = Driver.combineLatest(isNextEnabled, input.idText, input.passwordRepeatText) { (enabled: $0, id: $1, password: $2) }
         isValidatedToProgress = input.nextButtonTap.withLatestFrom(enabledAndValues)
+            .debug()
             .flatMapLatest { pair in
                 if pair.enabled {
                     SharedSignUpModel.model._id = pair.id

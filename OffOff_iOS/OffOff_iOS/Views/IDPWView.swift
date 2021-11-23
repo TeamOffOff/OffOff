@@ -9,76 +9,97 @@ import UIKit
 import FontAwesome
 
 class IDPWView: UIView {
-    var idTextField = TextField().then {
+    var idTextField = UITextField().then {
         $0.placeholder = "아이디 (5-20자 이내, 영문, 숫자 사용가능)"
-        $0.font = UIFont.preferredFont(forTextStyle: .callout)
-        $0.adjustsFontForContentSizeCategory = true
-        $0.tintColor = .mainColor
-        $0.backgroundColor = .white
+        $0.font = .defaultFont(size: 14.0)
+        $0.backgroundColor = .w2
+        
+        $0.textContentType = .username
         $0.autocapitalizationType = .none
-        $0.clearButtonMode = .whileEditing
         $0.autocorrectionType = .no
-        $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_USER_GRAY, errorColor: .red)
+        
+        $0.setCornerRadius(20.0)
+        $0.addLeftPadding(value: 23.0)
+        
         $0.tag = 0
     }
+    var idConfirmLabel = UILabel().then {
+        $0.font = .defaultFont(size: 9.0)
+        $0.textColor = .w5
+        $0.text = "사용가능한 아이디입니다."
+    }
 
-    var passwordTextField = TextField().then {
-        $0.placeholder = "비밀번호 (8-16자, 영문, 숫자, 기호 포함)"
-        $0.font = UIFont.preferredFont(forTextStyle: .callout)
-        $0.adjustsFontForContentSizeCategory = true
-        $0.autocorrectionType = .no
+    var passwordTextField = UITextField().then {
+        $0.placeholder = "비밀번호"
+        $0.font = .defaultFont(size: 14.0)
+        $0.backgroundColor = .w2
         
-        $0.tintColor = .mainColor
-        $0.backgroundColor = .white
         $0.autocapitalizationType = .none
+        $0.textContentType = .password
+        $0.isSecureTextEntry = true
         $0.clearButtonMode = .whileEditing
         
-        $0.textContentType = .oneTimeCode
-        $0.isSecureTextEntry = true   // Strong Password가 TextField를 가리는 문제
-        
-        $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_LOCK_GRAY, errorColor: .red)
+        $0.setCornerRadius(20.0)
+        $0.addLeftPadding(value: 23.0)
         $0.tag = 1
     }
-    
-    var passwordRepeatField = TextField().then {
-        $0.placeholder = "비밀번호 확인"
-        $0.font = UIFont.preferredFont(forTextStyle: .callout)
-        $0.adjustsFontForContentSizeCategory = true
-        $0.autocorrectionType = .no
-        
-        $0.tintColor = .mainColor
-        $0.backgroundColor = .white
-        $0.autocapitalizationType = .none
-        $0.clearButtonMode = .whileEditing
-        
-        $0.textContentType = .oneTimeCode
-        $0.isSecureTextEntry = true
-        
-        $0.setupTextField(selectedColor: .mainColor, normalColor: .gray, iconImage: .ICON_LOCK_GRAY, errorColor: .red)
-        $0.tag = 2
+    var passwordConfirmLabel = UILabel().then {
+        $0.font = .defaultFont(size: 9.0)
+        $0.textColor = .w5
+        $0.text = "8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."
     }
     
-    var textFieldStack = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 18
-        $0.distribution = .fill
+    var passwordRepeatField = UITextField().then {
+        $0.placeholder = "비밀번호 확인"
+        $0.font = .defaultFont(size: 14.0)
+        $0.backgroundColor = .w2
+        
+        $0.autocapitalizationType = .none
+        $0.textContentType = .password
+        $0.isSecureTextEntry = true
+        $0.clearButtonMode = .whileEditing
+        
+        $0.setCornerRadius(20.0)
+        $0.addLeftPadding(value: 23.0)
+        $0.tag = 2
+    }
+    var passwordRepeatConfirmLabel = UILabel().then {
+        $0.font = .defaultFont(size: 9.0)
+        $0.textColor = .w5
+        $0.text = ""
     }
     
     var nextButton = UIButton().then {
-        $0.backgroundColor = .lightGray
-        $0.isUserInteractionEnabled = false
+        $0.backgroundColor = .g1
+        $0.isUserInteractionEnabled = true
         $0.setTitle("다음", for: .normal)
-        $0.setTitleColor(.white, for: .normal)
+        $0.setTitleColor(.w1, for: .normal)
+        $0.titleLabel?.font = .defaultFont(size: 16.0)
+        
+        $0.setCornerRadius(15.0)
+    }
+    
+    var backButton = UIButton().then {
+        $0.setImage(.LEFTARROW, for: .normal)
+        $0.setTitle(nil, for: .normal)
+        $0.tintColor = .g4
+        $0.imageView?.contentMode = .scaleAspectFit
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
-        textFieldStack.addArrangedSubview(idTextField)
-        textFieldStack.addArrangedSubview(passwordTextField)
-        textFieldStack.addArrangedSubview(passwordRepeatField)
-        self.addSubview(textFieldStack)
+        self.addSubview(idTextField)
+        self.addSubview(idConfirmLabel)
+        
+        self.addSubview(passwordTextField)
+        self.addSubview(passwordConfirmLabel)
+        
+        self.addSubview(passwordRepeatField)
+        self.addSubview(passwordRepeatConfirmLabel)
+        
         self.addSubview(nextButton)
+        self.addSubview(backButton)
     }
     
     required init?(coder: NSCoder) {
@@ -86,16 +107,50 @@ class IDPWView: UIView {
     }
     
     public func makeView() {
-        textFieldStack.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(UIScreen.main.bounds.size.height / 10.0)
+        idTextField.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(40.0)
+            $0.top.equalToSuperview().inset(174.adjustedHeight)
             $0.centerX.equalToSuperview()
-            $0.width.equalToSuperview().dividedBy(1.25)
         }
-        nextButton.snp.makeConstraints {
-            $0.top.equalTo(self.textFieldStack.snp.bottom).offset(30)
+        idConfirmLabel.snp.makeConstraints {
+            $0.top.equalTo(idTextField.snp.bottom).offset(2.0)
+            $0.left.equalTo(idTextField).offset(12.0)
+        }
+        
+        passwordTextField.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(40.0)
+            $0.top.equalTo(idConfirmLabel.snp.bottom).offset(19.0)
             $0.centerX.equalToSuperview()
-            $0.width.equalToSuperview().dividedBy(1.25)
-            $0.height.equalTo(UIScreen.main.bounds.size.height / 10.0)
+        }
+        passwordConfirmLabel.snp.makeConstraints {
+            $0.top.equalTo(passwordTextField.snp.bottom).offset(2.0)
+            $0.left.equalTo(passwordTextField).offset(12.0)
+        }
+        
+        passwordRepeatField.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(40.0)
+            $0.top.equalTo(passwordConfirmLabel.snp.bottom).offset(19.0)
+            $0.centerX.equalToSuperview()
+        }
+        passwordRepeatConfirmLabel.snp.makeConstraints {
+            $0.top.equalTo(passwordRepeatField.snp.bottom).offset(2.0)
+            $0.left.equalTo(passwordRepeatField).offset(12.0)
+        }
+        
+        nextButton.snp.makeConstraints {
+            $0.width.equalTo(270.0)
+            $0.height.equalTo(30.0)
+            $0.top.equalTo(self.passwordRepeatConfirmLabel.snp.bottom).offset(25.adjustedHeight)
+            $0.centerX.equalToSuperview()
+        }
+        backButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(87.adjustedHeight)
+            $0.left.equalToSuperview().inset(47.0)
+            $0.width.equalTo(25.0)
+            $0.height.equalTo(22.0)
         }
     }
 }
