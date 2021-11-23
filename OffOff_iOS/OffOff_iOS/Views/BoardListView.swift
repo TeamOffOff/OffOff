@@ -54,11 +54,17 @@ final class BoardListView: UIView {
     
     var boardSearchView = UITextField().then {
         $0.backgroundColor = .w2
-        $0.placeholder = "다른 게시판을 검색해보세요"
+        $0.placeholder = "통합 검색"
         $0.font = .defaultFont(size: 15, bold: true)
         $0.setCornerRadius(22.adjustedHeight)
-        
+        $0.clearButtonMode = .whileEditing
         $0.leftImage(.SEARCHIMAGE.resize(to: CGSize(width: 18.0.adjustedWidth, height: 18.0.adjustedHeight)), imageWidth: 18.0.adjustedWidth, padding: 24.adjustedWidth)
+    }
+    
+    var postListTableView = UITableView().then {
+        $0.backgroundColor = .clear
+        $0.register(PostPreviewCell.self, forCellReuseIdentifier: PostPreviewCell.identifier)
+        $0.isHidden = true
     }
     
     var boardCollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -76,6 +82,7 @@ final class BoardListView: UIView {
         self.addSubview(upperView)
         self.addSubview(boardSearchView)
         self.addSubview(boardCollectionView)
+        self.addSubview(postListTableView)
         
         makeView()
     }
@@ -125,6 +132,12 @@ final class BoardListView: UIView {
         }
         
         boardCollectionView.snp.makeConstraints {
+            $0.top.equalTo(boardSearchView.snp.bottom).offset(19.adjustedHeight)
+            $0.left.right.equalToSuperview().inset(54.adjustedWidth)
+            $0.bottom.equalToSuperview()
+        }
+        
+        postListTableView.snp.makeConstraints {
             $0.top.equalTo(boardSearchView.snp.bottom).offset(19.adjustedHeight)
             $0.left.right.equalToSuperview().inset(54.adjustedWidth)
             $0.bottom.equalToSuperview()

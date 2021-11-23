@@ -10,6 +10,7 @@ import Moya
 
 enum SearchAPI {
     case searchInBoard(boardType: String, key: String, standardId: String?)
+    case totalSearch(key: String, lastPostId: String?)
 }
 
 extension SearchAPI: TargetType {
@@ -21,13 +22,16 @@ extension SearchAPI: TargetType {
         switch self {
         case .searchInBoard(let boardType, _, _):
             return "/search/\(boardType)"
-            
+        case .totalSearch(_, _):
+            return "/totalsearch"
         }
     }
     
     var method: Moya.Method {
         switch self {
         case .searchInBoard(_, _, _):
+            return .get
+        case .totalSearch(_, _):
             return .get
         }
     }
@@ -39,6 +43,12 @@ extension SearchAPI: TargetType {
                 return .requestParameters(parameters: ["key":key], encoding: URLEncoding.default)
             } else {
                 return .requestParameters(parameters: ["standardId":standardId!, "key":key], encoding: URLEncoding.default)
+            }
+        case .totalSearch(let key, let lastPostId):
+            if lastPostId == nil {
+                return .requestParameters(parameters: ["key":key], encoding: URLEncoding.default)
+            } else {
+                return .requestParameters(parameters: ["standardId":lastPostId!, "key":key], encoding: URLEncoding.default)
             }
         }
     }
