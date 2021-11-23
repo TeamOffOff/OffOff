@@ -76,7 +76,7 @@ class BoardsFragment : Fragment() {
             }
         })
 
-        val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(4) // 아이템 사이의 거리
+        val spaceDecoration = RecyclerViewUtils.VerticalSpaceItemDecoration(16) // 아이템 사이의 거리
         binding.rvBoards.apply {
             layoutManager = GridLayoutManager(mContext, 3)
             addItemDecoration(spaceDecoration)
@@ -85,6 +85,7 @@ class BoardsFragment : Fragment() {
 
         binding.rvBoardsFavorite.apply {
             layoutManager = GridLayoutManager(mContext, 3)
+            addItemDecoration(spaceDecoration)
             adapter = boardListAdapter
         }
     }

@@ -23,7 +23,7 @@
                 <ImageView
                     android:id="@+id/iv_background"
                     android:layout_width="match_parent"
-                    android:layout_height="270dp"
+                    android:layout_height="200dp"
                     android:contentDescription="@string/background_post"
                     android:src="@drawable/layout_background_radius_bottom"
                     app:layout_constraintEnd_toEndOf="parent"

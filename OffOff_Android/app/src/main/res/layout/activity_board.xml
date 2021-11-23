@@ -17,14 +17,14 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/layout_appbar"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="163dp"
             app:elevation="0dp">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/layout_collapsing"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:minHeight="152dp"
+                android:minHeight="120dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <RelativeLayout
@@ -55,43 +55,6 @@
                             android:textSize="20sp" />
 
                     </com.google.android.material.appbar.MaterialToolbar>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layout_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="35dp"
-                    android:layout_marginTop="155dp"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/et_search"
-                        android:layout_width="match_parent"
-                        android:layout_height="41dp"
-                        android:background="@drawable/layout_edit_text"
-                        android:drawableStart="@drawable/ic_search"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="@color/green"
-                        android:imeOptions="actionSearch"
-                        android:importantForAutofill="no"
-                        android:inputType="text"
-                        android:paddingStart="12dp"
-                        android:singleLine="true"
-                        android:textSize="14sp"
-                        tools:ignore="LabelFor,RtlSymmetry"
-                        tools:targetApi="m" />
-
-                    <ImageButton
-                        android:id="@+id/bt_close"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/ic_button_x"
-                        android:contentDescription="@string/button_close" />
 
                 </RelativeLayout>
 

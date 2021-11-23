@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.service.models.Post
-import com.yuuuzzzin.offoff_android.utils.Constants.convertDPtoPX
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
@@ -74,14 +71,14 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     private fun initView() {
 
-        binding.btClose.setOnClickListener {
-            binding.layoutSearch.visibility = View.GONE
-            binding.etSearch.text = null
-            binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 152)
-            isFirst = TRUE
-            isSearching = FALSE
-            viewModel.getPosts(boardType)
-        }
+//        binding.btClose.setOnClickListener {
+//            binding.layoutSearch.visibility = View.GONE
+//            binding.etSearch.text = null
+//            binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 152)
+//            isFirst = TRUE
+//            isSearching = FALSE
+//            viewModel.getPosts(boardType)
+//        }
 
         binding.btWritePost.setOnClickListener {
             val intent = Intent(applicationContext, PostWriteActivity::class.java)
@@ -120,21 +117,21 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             currentPostList = it.toTypedArray()
         })
 
-        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                isFirst = TRUE
-                isSearching = TRUE
-
-                // 검색 첫 페이지이면
-                if (isFirst) {
-                    viewModel.searchPost(boardType, binding.etSearch.text.toString(), null)
-                } else { // 다음 페이지이면
-                    viewModel.searchPost(boardType, binding.etSearch.text.toString(), lastPostId)
-                }
-                return@setOnEditorActionListener true
-            }
-            return@setOnEditorActionListener false
-        }
+//        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
+//            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                isFirst = TRUE
+//                isSearching = TRUE
+//
+//                // 검색 첫 페이지이면
+//                if (isFirst) {
+//                    viewModel.searchPost(boardType, binding.etSearch.text.toString(), null)
+//                } else { // 다음 페이지이면
+//                    viewModel.searchPost(boardType, binding.etSearch.text.toString(), lastPostId)
+//                }
+//                return@setOnEditorActionListener true
+//            }
+//            return@setOnEditorActionListener false
+//        }
     }
 
     private fun initToolbar() {
@@ -195,11 +192,11 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                     }
                 } else {
                     if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
-                        viewModel.searchPost(
-                            boardType,
-                            binding.etSearch.text.toString(),
-                            lastPostId
-                        )
+//                        viewModel.searchPost(
+//                            boardType,
+//                            binding.etSearch.text.toString(),
+//                            lastPostId
+//                        )
                     }
                 }
             }
@@ -208,8 +205,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_board, menu)
-        //menu!!.getItem(0).icon = getDrawable(R.drawable.ic_search)
-        //menu.getItem(1).icon = getDrawable(R.drawable.ic_more_option)
         return true
     }
 
@@ -217,15 +212,19 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         return when (item.itemId) {
             R.id.action_search -> {
                 // 검색 버튼 누를 시
-                binding.layoutSearch.visibility = View.VISIBLE // 가시화
-                binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 230) // 최소 높이 조정
+                //binding.layoutSearch.visibility = View.VISIBLE // 가시화
+                //binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 230) // 최소 높이 조정
+                val intent = Intent(this, SearchPostActivity::class.java)
+                intent.putExtra("boardType", boardType)
+                intent.putExtra("boardName", boardName)
+                startActivity(intent)
                 true
             }
-            R.id.action_more_option -> {
-                // 더보기 옵션 누를 시
-
-                true
-            }
+//            R.id.action_more_option -> {
+//                // 더보기 옵션 누를 시
+//
+//                true
+//            }
             android.R.id.home -> {
                 finish()
                 true

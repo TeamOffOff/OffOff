@@ -15,8 +15,9 @@ import com.yuuuzzzin.offoff_android.R
 class ClearEditText : AppCompatEditText, TextWatcher, View.OnTouchListener, View.OnFocusChangeListener {
 
     private var clearDrawable: Drawable? = null
-    private var onFocusChange: View.OnFocusChangeListener? = null
-    private var onTouchListener: View.OnTouchListener? = null
+    private var startDrawable: Drawable? = null
+    private var onFocusChange: OnFocusChangeListener? = null
+    private var onTouchListener: OnTouchListener? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -30,18 +31,22 @@ class ClearEditText : AppCompatEditText, TextWatcher, View.OnTouchListener, View
         init()
     }
 
-    override fun setOnFocusChangeListener(onFocusChangeListener: View.OnFocusChangeListener) {
+    override fun setOnFocusChangeListener(onFocusChangeListener: OnFocusChangeListener) {
         this.onFocusChange = onFocusChangeListener
     }
 
-    override fun setOnTouchListener(onTouchListener: View.OnTouchListener) {
+    override fun setOnTouchListener(onTouchListener: OnTouchListener) {
         this.onTouchListener = onTouchListener
     }
 
     private fun init() {
-        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_button_x)
-        clearDrawable = DrawableCompat.wrap(drawable!!)
+        val btClear = ContextCompat.getDrawable(context, R.drawable.ic_button_x)
+        clearDrawable = DrawableCompat.wrap(btClear!!)
         clearDrawable!!.setBounds(0, 0, clearDrawable!!.intrinsicWidth, clearDrawable!!.intrinsicHeight)
+//
+//        val ivSearch = ContextCompat.getDrawable(context, R.drawable.ic_search)
+//        startDrawable = DrawableCompat.wrap(ivSearch!!)
+//        startDrawable!!.setTint(getColor(R.color.green))
 
         setClearIconVisible(false)
 
@@ -53,7 +58,7 @@ class ClearEditText : AppCompatEditText, TextWatcher, View.OnTouchListener, View
 
     override fun onFocusChange(view: View, hasFocus: Boolean) {
         if (hasFocus) {
-            setClearIconVisible(text!!.length > 0)
+            setClearIconVisible(text!!.isNotEmpty())
         } else {
             setClearIconVisible(false)
         }
@@ -69,7 +74,7 @@ class ClearEditText : AppCompatEditText, TextWatcher, View.OnTouchListener, View
         if (clearDrawable!!.isVisible && x > width - paddingRight - clearDrawable!!.intrinsicWidth) {
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 error = null
-                setText(null)
+                text = null
             }
             return true
         }
@@ -84,7 +89,7 @@ class ClearEditText : AppCompatEditText, TextWatcher, View.OnTouchListener, View
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         if (isFocused) {
-            setClearIconVisible(s.length > 0)
+            setClearIconVisible(s.isNotEmpty())
         }
     }
 

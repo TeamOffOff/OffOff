@@ -6,17 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".views.ui.SearchActivity">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/bt_likes"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:textSize="12sp"
-        android:text="Text button"
-        android:padding="4dp"
-        app:icon="@drawable/ic_round_person_24"
-        app:shapeAppearanceOverlay="@style/buttomShape"
-        app:strokeColor="@color/gray"
-        tools:ignore="MissingConstraints" />
+    <com.yuuuzzzin.offoff_android.utils.ClearEditText
+        android:id="@+id/et_search"
+        android:layout_width="match_parent"
+        android:layout_height="41dp"
+        android:layout_marginHorizontal="35dp"
+        android:background="@drawable/layout_edit_text"
+        android:drawableStart="@drawable/ic_camera_green"
+        android:drawablePadding="17dp"
+        android:focusable="true"
+        android:imeOptions="actionSearch"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:singleLine="true"
+        android:textSize="14sp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="1dp" />
+
+    <!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/bt_likes"-->
+<!--        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:textSize="12sp"-->
+<!--        android:text="Text button"-->
+<!--        android:padding="4dp"-->
+<!--        app:icon="@drawable/ic_round_person_24"-->
+<!--        app:shapeAppearanceOverlay="@style/buttomShape"-->
+<!--        app:strokeColor="@color/gray"-->
+<!--        tools:ignore="MissingConstraints" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
