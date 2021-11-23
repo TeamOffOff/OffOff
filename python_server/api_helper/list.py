@@ -1,3 +1,4 @@
+from abc import abstractclassmethod
 from flask import request
 from flask.helpers import make_response
 from flask_restx import Resource, Namespace
@@ -206,6 +207,8 @@ class TotalSearchControl(Resource):
 
         keyword = request.args.get("key")
         volume = int(request.args.get("volume", default=5)) # 각 게시판에서 5개씩만 긁어옴
+        last_post_id = request.args.get("lastPostId", default="")
+        first_post_id = request.args.get("firstPostId", default="")
         standard_id = request.args.get("standardId", default="")
 
         board_list = ["free", "job", "secret"]
@@ -219,9 +222,13 @@ class TotalSearchControl(Resource):
                 "$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]
                 }
             
-            if standard_id:
-                standard_id = ObjectId(standard_id)  ## 이거 안 하면 안 나옴..
-                query["_id"] = {"$lt": standard_id}
+            if first_post_id:
+                first_post_id = ObjectId(first_post_id)
+                query["_id"] = {"$gt": first_post_id}
+            
+            elif last_post_id: 
+                last_post_id = ObjectId(last_post_id)
+                query["_id"] = {"$lt": last_post_id}
 
             part_list = list(mongodb.find(collection_name=board_type,query=query).sort([("_id", -1)]).limit(volume))
             print("{} part_list: {}". format(board_type, part_list))
@@ -273,20 +280,23 @@ class SearchControl(Resource):
         keyword = request.args.get("key")
         board_type = board_type + "_board"
         volume = int(request.args.get("volume", default=20))
+        last_post_id = request.args.get("lastPostId", default="")
+        first_post_id = request.args.get("firstPostId", default="")
+        query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}
         standard_id = request.args.get("standardId", default="")
         print(board_type)
 
-        if not standard_id:  # 검색한 즉시
-            total_list = list(mongodb.find(
+        if first_post_id:
+            first_post_id = ObjectId(first_post_id)
+            query["_id"] = {"$gt": first_post_id}
+        
+        elif last_post_id:
+            last_post_id = ObjectId(last_post_id)
+            query["_id"] = {"$lt": last_post_id}
+        
+        total_list = list(mongodb.find(
                 collection_name=board_type,
-                query={"$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}
-                ).sort([("_id", -1)]).limit(volume))
-
-        elif standard_id:  # 과거 게시글 불러올 때
-            standard_id = ObjectId(standard_id)
-            total_list = list(mongodb.find(
-                collection_name=board_type,
-                query={'_id': {'$lt': standard_id}, "$or": [{"content":{"$regex":keyword}}, {"title":{"$regex":keyword}}]}
+                query=query
                 ).sort([("_id", -1)]).limit(volume))
 
 
