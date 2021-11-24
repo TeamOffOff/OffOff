@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<VB : ViewDataBinding>(
     @LayoutRes private val layoutRes: Int
-    ) : Fragment() {
+) : Fragment() {
 
     private var mBinding: VB? = null
     protected val binding get() = mBinding!!
@@ -30,8 +30,14 @@ abstract class BaseFragment<VB : ViewDataBinding>(
     ): View? {
         mBinding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+        initView()
+        initViewModel()
+
         return binding.root
     }
+
+    open fun initView() {}
+    open fun initViewModel() {}
 
     override fun onDestroyView() {
         mBinding = null
