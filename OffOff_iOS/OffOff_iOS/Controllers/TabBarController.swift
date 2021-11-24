@@ -44,7 +44,7 @@ class TabBarController: UITabBarController {
             createViewController(for: BoardListViewController(), title: nil, image: .HOMEICON),
             createNavController(for: UIViewController(), title: nil, image: .BOARDICON),
             createNavController(for: ScheduleViewController(), title: nil, image: .CALENDARICON),
-            createNavController(for: UIViewController(), title: nil, image: .PERSONICON),
+            createViewController(for: MyActivityViewController(), title: nil, image: .PERSONICON),
             createNavController(for: UIViewController(), title: nil, image: .SETTINGICON)
         ]
     }

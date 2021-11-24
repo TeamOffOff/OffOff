@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA0582C2274D1262005855F1 /* MyActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0582C1274D1262005855F1 /* MyActivityView.swift */; };
+		EA0582C4274D14D0005855F1 /* MyActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */; };
+		EA0582C6274D1CF1005855F1 /* MyActivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0582C5274D1CF1005855F1 /* MyActivityViewModel.swift */; };
 		EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
 		EA0624D926DBB1B6004FF91A /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624D826DBB1B6004FF91A /* Realm */; };
 		EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624DA26DBB1B6004FF91A /* RealmSwift */; };
@@ -156,6 +159,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EA0582C1274D1262005855F1 /* MyActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyActivityView.swift; sourceTree = "<group>"; };
+		EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyActivityViewController.swift; sourceTree = "<group>"; };
+		EA0582C5274D1CF1005855F1 /* MyActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyActivityViewModel.swift; sourceTree = "<group>"; };
 		EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmTestViewController.swift; sourceTree = "<group>"; };
 		EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRoutineManager.swift; sourceTree = "<group>"; };
 		EA07345426929C01007830ED /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
@@ -430,6 +436,7 @@
 				EA6021B427397BA500092917 /* PostListView.swift */,
 				EAD849BA273CD79C0010DE1B /* NewPostView.swift */,
 				EAD849BE273ED0260010DE1B /* PostSearchView.swift */,
+				EA0582C1274D1262005855F1 /* MyActivityView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -496,6 +503,7 @@
 				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
 				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 				EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */,
+				EA0582C5274D1CF1005855F1 /* MyActivityViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -519,6 +527,7 @@
 				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
 				EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */,
 				EAD849C0273ED26A0010DE1B /* PostSearchViewController.swift */,
+				EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -763,6 +772,7 @@
 				EA0624DF26DD1D58004FF91A /* UserRoutineManager.swift in Sources */,
 				EA6021B527397BA500092917 /* PostListView.swift in Sources */,
 				EACF1B3D26B7E42300C153D3 /* BoardListViewModel.swift in Sources */,
+				EA0582C4274D14D0005855F1 /* MyActivityViewController.swift in Sources */,
 				EA2C4DF226DFCB4A0056A93C /* EditScheduleView.swift in Sources */,
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,
 				EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */,
@@ -771,11 +781,13 @@
 				EACC255B26A5B3B0000B12B6 /* UserModel.swift in Sources */,
 				EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
+				EA0582C6274D1CF1005855F1 /* MyActivityViewModel.swift in Sources */,
 				EA983F0B26C0DDF60070604E /* PostViewModel.swift in Sources */,
 				EAD849C3273ED3E50010DE1B /* PostSearchViewModel.swift in Sources */,
 				EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */,
 				EA983F0D26C0E4980070604E /* NewPostViewModel.swift in Sources */,
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
+				EA0582C2274D1262005855F1 /* MyActivityView.swift in Sources */,
 				EA88BD502725854B004D8415 /* SubReplyServices.swift in Sources */,
 				EA83564726D37BBE00D60C46 /* ScheduleViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
