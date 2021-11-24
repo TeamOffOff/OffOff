@@ -34,7 +34,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
     private lateinit var lastPostId: String
     private var clickedPosition: Int? = 0
     private var isFirst: Boolean = TRUE
-    private var isSearching: Boolean = FALSE
     //private var totalScrolled: Int = 0
     //private val density = resources.displayMetrics.density
 
@@ -185,20 +184,11 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 val totalCount = recyclerView.adapter!!.itemCount - 1
 
                 // 스크롤이 끝에 도달하면
-                if (!isSearching) {
-                    if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
-                        // Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
-                        viewModel.getNextPosts(boardType, lastPostId)
-                    }
-                } else {
-                    if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
-//                        viewModel.searchPost(
-//                            boardType,
-//                            binding.etSearch.text.toString(),
-//                            lastPostId
-//                        )
-                    }
+                if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
+                    // Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
+                    viewModel.getNextPosts(boardType, lastPostId)
                 }
+
             }
         })
     }

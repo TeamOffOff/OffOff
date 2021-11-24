@@ -1,5 +1,6 @@
 package com.yuuuzzzin.offoff_android.views.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -73,6 +74,7 @@ class BoardAdapter :
     }
 
     fun addPostList(postList: List<Post>, isFirst: Boolean) {
+        Log.d("tag_보드어댑터에서 isFirst 값?", isFirst.toString())
         if (isFirst == TRUE) {
             this.postList.clear()
         }

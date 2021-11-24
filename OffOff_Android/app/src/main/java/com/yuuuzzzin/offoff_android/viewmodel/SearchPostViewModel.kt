@@ -45,12 +45,17 @@ constructor(
             ).let { response ->
                 if (response.isSuccessful) {
                     Log.d("tag_success", "searchPost: ${response.body()}")
+//                    if (!response.body()!!.postList.isNullOrEmpty()) {
+                        Log.d("tag_search","참")
+                            _postList.postValue(response.body()!!.postList)
                     if (!response.body()!!.postList.isNullOrEmpty()) {
-                        _postList.postValue(response.body()!!.postList)
                         _lastPostId.postValue(response.body()!!.lastPostId)
-                    } else {
-                        _clearPostList.postValue(Event(true))
                     }
+
+//                    } else {
+//                        Log.d("tag_search","빔")
+//                        //_clearPostList.postValue(Event(true))
+//                    }
                 } else {
                     Log.d("tag_fail", "searchPost Error: ${response.code()}")
                 }

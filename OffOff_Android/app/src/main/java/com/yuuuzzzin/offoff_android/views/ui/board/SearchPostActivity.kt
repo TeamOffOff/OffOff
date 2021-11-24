@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,6 @@ import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.io.Serializable
-import java.lang.Boolean
 
 @AndroidEntryPoint
 class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.activity_search_post) {
@@ -33,8 +33,9 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
     private lateinit var lastPostId: String
     private lateinit var currentPostList: Array<Post>
     private var clickedPosition: Int? = 0
+    private var searchingQuery: String? = null
 
-    private var isFirst: kotlin.Boolean = Boolean.TRUE
+    private var isFirst: Boolean = true
 
     // 게시물 액티비티 요청 및 결과 처리
     private val requestPost = registerForActivityResult(
@@ -82,19 +83,9 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
         binding.viewModel = viewModel
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
-            if (it == null) {
-                postListAdapter.clearPostList()
-            }
             postListAdapter.addPostList(it, isFirst)
             binding.refreshLayout.isRefreshing = false
-            isFirst = Boolean.FALSE
             currentPostList = it.toTypedArray()
-
-        })
-
-        viewModel.clearPostList.observe(binding.lifecycleOwner!!, {
-            postListAdapter.clearPostList()
-            isFirst = Boolean.TRUE
 
         })
 
@@ -107,26 +98,30 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
     private fun initView() {
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
-                var searchJob: Job? = null
+                val query = s.toString()
 
-                searchJob?.cancel()
-                searchJob = coroutineScope.launch {
-                    s?.let {
-                        delay(500)
-                        if (it.isEmpty()) {
-                            postListAdapter.clearPostList()
-                        } else {
-                            if (isFirst) {
-                                viewModel.searchPost(boardType, it.toString(), null)
-                            } else { // 다음 페이지이면
-                                viewModel.searchPost(boardType, it.toString(), lastPostId)
-                            }
-                        }
+                if (query == searchingQuery)
+                    return
+
+                searchingQuery = query
+
+                val coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
+                coroutineScope.launch {
+                    delay(500)  // debounce timeOut
+                    if (query != searchingQuery)
+                        return@launch
+
+                    if (searchingQuery.isNullOrBlank()) {
+                        postListAdapter.clearPostList()
+                    } else {
+                        Log.d("tag_textWatcher 감지!!!", query)
+                        isFirst = true
+                        viewModel.searchPost(boardType, query, null)
                     }
                 }
             }
@@ -135,6 +130,27 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
             }
 
         })
+
+        binding.etSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                isFirst = true
+                viewModel.searchPost(boardType, binding.etSearch.text.toString(), null)
+
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+
+        binding.refreshLayout.setOnRefreshListener {
+            isFirst = true
+            if (!searchingQuery.isNullOrBlank()) {
+                viewModel.searchPost(
+                    boardType,
+                    searchingQuery.toString(),
+                    null
+                )
+            }
+        }
     }
 
     private fun initRV() {
@@ -173,17 +189,21 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
 
                 // 스크롤이 끝에 도달하면
                 if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
-                    viewModel.searchPost(
-                        boardType,
-                        binding.etSearch.text.toString(),
-                        lastPostId
-                    )
+
+                    if (!searchingQuery.isNullOrBlank()) {
+                        isFirst = false
+                        viewModel.searchPost(
+                            boardType,
+                            searchingQuery.toString(),
+                            lastPostId
+                        )
+                    }
                 }
             }
         })
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): kotlin.Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 finish()

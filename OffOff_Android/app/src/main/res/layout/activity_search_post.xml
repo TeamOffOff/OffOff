@@ -17,10 +17,10 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/layout_appbar"
-            android:paddingHorizontal="32dp"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@drawable/layout_background_radius_bottom"
+            android:paddingHorizontal="32dp"
             app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_appbar">
@@ -104,7 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="14dp"
+                    android:paddingTop="14dp"
                     android:orientation="vertical"
                     android:scrollbars="none"
                     tools:listitem="@layout/rv_item_post_preview" />
