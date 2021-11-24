@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.Board
+import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
 import com.yuuuzzzin.offoff_android.utils.LogUtils.logCoroutineThread
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +25,12 @@ constructor(
     private val _boardList = MutableLiveData<List<Board>>()
     val boardList: LiveData<List<Board>> get() = _boardList
 
+    private val _postList = MutableLiveData<List<Post>>()
+    val postList: LiveData<List<Post>> get() = _postList
+
+    private val _lastPostId = MutableLiveData<String>()
+    val lastPostId: LiveData<String> get() = _lastPostId
+
     init {
         getBoardList()
     }
@@ -38,4 +46,20 @@ constructor(
             }
         }
     }
+
+    fun totalSearchPost(key: String, lastPostId: String?) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.totalSearchPost(OffoffApplication.pref.token.toString(), key, lastPostId)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        Log.d("tag_success", "totalSearchPost: ${response.body()}")
+                        _postList.postValue(response.body()!!.postList)
+                        if (!response.body()!!.postList.isNullOrEmpty()) {
+                            _lastPostId.postValue(response.body()!!.lastPostId)
+                        }
+                    } else {
+                        Log.d("tag_fail", "totalSearchPost Error: ${response.code()}")
+                    }
+                }
+        }
 }

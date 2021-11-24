@@ -59,12 +59,14 @@
                     android:layout_marginTop="24dp"
                     android:background="@drawable/layout_edit_text"
                     android:drawablePadding="12dp"
+                    android:hint="통합 검색 키워드를 입력해주세요."
                     android:imeOptions="actionSearch"
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:paddingHorizontal="12dp"
                     android:paddingStart="46dp"
                     android:singleLine="true"
+                    android:textColorHint="@color/white4"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -103,9 +105,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    android:paddingTop="14dp"
                     android:orientation="vertical"
+                    android:paddingTop="14dp"
                     android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/rv_item_post_preview" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -15,7 +15,7 @@ abstract class BaseFragment<VB : ViewDataBinding>(
 ) : Fragment() {
 
     private var mBinding: VB? = null
-    protected val binding get() = mBinding!!
+    val binding get() = mBinding!!
     lateinit var mContext: Context
 
     override fun onAttach(context: Context) {
@@ -30,14 +30,9 @@ abstract class BaseFragment<VB : ViewDataBinding>(
     ): View? {
         mBinding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        initView()
-        initViewModel()
 
         return binding.root
     }
-
-    open fun initView() {}
-    open fun initViewModel() {}
 
     override fun onDestroyView() {
         mBinding = null

@@ -43,7 +43,7 @@ interface BoardService {
     ): Response<PostList>
 
     /* 게시물 통합 검색 */
-    @GET("totalsearch/job")
+    @GET("totalsearch")
     suspend fun totalSearchPost(
         @Header("Authorization") auth: String,
         @Query("key") key: String,

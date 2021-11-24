@@ -40,28 +40,48 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/et_search"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_search"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="32dp"
                     android:layout_marginTop="-30dp"
                     android:layout_marginBottom="40dp"
-                    android:background="@drawable/layout_edit_text"
-                    android:drawableStart="@drawable/ic_search"
-                    android:drawablePadding="12dp"
-                    android:drawableTint="@color/green"
-                    android:hint="전체 게시판 검색 키워드를 입력해주세요."
-                    android:importantForAutofill="no"
-                    android:inputType="text"
-                    android:paddingHorizontal="12dp"
-                    android:singleLine="true"
-                    android:textColorHint="@color/white4"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_background" />
+                    app:layout_constraintTop_toBottomOf="@id/iv_background">
+
+                    <com.yuuuzzzin.offoff_android.utils.ClearEditText
+                        android:id="@+id/et_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/layout_edit_text"
+                        android:drawablePadding="12dp"
+                        android:hint="통합 검색 키워드를 입력해주세요."
+                        android:imeOptions="actionSearch"
+                        android:importantForAutofill="no"
+                        android:inputType="text"
+                        android:paddingHorizontal="12dp"
+                        android:paddingStart="46dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/white4"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginStart="12dp"
+                        android:src="@drawable/ic_search_green"
+                        app:layout_constraintBottom_toBottomOf="@id/et_search"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/et_search" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -128,7 +148,7 @@
                     android:paddingTop="20dp"
                     android:paddingBottom="22dp"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/et_search">
+                    app:layout_constraintTop_toBottomOf="@id/layout_search">
 
                     <TextView
                         android:id="@+id/tv_favorite_board"
@@ -155,6 +175,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_boards"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
@@ -174,6 +195,21 @@
                         tools:listitem="@layout/rv_item_board" />
 
                 </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_post_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="10dp"
+                    android:orientation="vertical"
+                    android:scrollbars="none"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/layout_boards"
+                    app:layout_constraintTop_toBottomOf="@id/layout_boards"
+                    tools:listitem="@layout/rv_item_post_preview" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

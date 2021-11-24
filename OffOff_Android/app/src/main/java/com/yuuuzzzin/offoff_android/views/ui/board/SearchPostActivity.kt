@@ -34,7 +34,6 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
     private lateinit var currentPostList: Array<Post>
     private var clickedPosition: Int? = 0
     private var searchingQuery: String? = null
-
     private var isFirst: Boolean = true
 
     // 게시물 액티비티 요청 및 결과 처리
@@ -86,14 +85,12 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
             postListAdapter.addPostList(it, isFirst)
             binding.refreshLayout.isRefreshing = false
             currentPostList = it.toTypedArray()
-
         })
 
         viewModel.lastPostId.observe(binding.lifecycleOwner!!, {
             lastPostId = it
         })
     }
-
 
     private fun initView() {
 
@@ -133,8 +130,10 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
 
         binding.etSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                isFirst = true
-                viewModel.searchPost(boardType, binding.etSearch.text.toString(), null)
+                if (!binding.etSearch.text.isNullOrBlank()) {
+                    isFirst = true
+                    viewModel.totalSearchPost(binding.etSearch.text.toString(), null)
+                }
 
                 return@setOnEditorActionListener true
             }
