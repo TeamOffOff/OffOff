@@ -1,9 +1,5 @@
 package com.yuuuzzzin.offoff_android.views.ui.member
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentFindIdBinding
@@ -16,18 +12,9 @@ class FindIdFragment : BaseFragment<FragmentFindIdBinding>(R.layout.fragment_fin
 
     private val viewModel: BoardListViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun initView() {}
 
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initView() {}
-
-    private fun initViewModel() {
+    override fun initViewModel() {
 //        binding.viewModel = viewModel
 //        viewModel.boardList.observe(viewLifecycleOwner, {
 //            with(boardListAdapter) { submitList(it.toMutableList()) }
