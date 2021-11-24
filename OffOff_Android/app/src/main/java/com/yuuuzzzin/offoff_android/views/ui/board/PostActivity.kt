@@ -85,7 +85,14 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         postId = intent.getStringExtra("id").toString()
         postPosition = intent.getIntExtra("position", 0)
         boardType = intent.getStringExtra("boardType").toString()
-        boardName = intent.getStringExtra("boardName").toString()
+
+        when(boardType) {
+            "free" -> boardName = BoardType.FREE
+            "secret" -> boardName = BoardType.SECRET
+            "hot" -> boardName = BoardType.HOT
+        }
+
+        // boardName = intent.getStringExtra("boardName").toString()
         //currentPostList = intent.getSerializableExtra("postList") as Array<Post>
 
         viewModel.getPost(postId, boardType)

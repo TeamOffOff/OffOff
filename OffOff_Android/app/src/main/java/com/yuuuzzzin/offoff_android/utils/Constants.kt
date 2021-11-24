@@ -21,7 +21,6 @@ object Constants {
     const val FROM_ALBUM = 0
     const val FROM_CAMERA = 1
 
-
     // 댓글 옵션
     const val DELETE_COMMENT = "삭제"
     const val REPORT_COMMENT = "신고"
@@ -56,6 +55,12 @@ object Constants {
 }
 
 object PostWriteType {
-    const val WRITE = 2 // post 작성
     const val EDIT = 1 // post 수정
+    const val WRITE = 2 // post 작성
+}
+
+object BoardType {
+    const val FREE = "자유게시판"
+    const val SECRET = "익명게시판"
+    const val HOT = "인기게시판"
 }
