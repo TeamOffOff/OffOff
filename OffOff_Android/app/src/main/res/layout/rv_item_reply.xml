@@ -109,7 +109,7 @@
                     android:layout_marginTop="8dp"
                     android:text="@{item.content}"
                     android:textColor="@color/black"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_avatar" />

@@ -35,22 +35,6 @@ class HomeFragment : Fragment() {
         mBinding = FragmentHomeBinding.inflate(inflater, container, false)
 
         initView()
-//        val toolbar : MaterialToolbar = binding. // 상단 툴바
-//
-//        toolbar.setOnMenuItemClickListener{
-//            when(it.itemId) {
-//                R.id.search -> {
-//                    startActivity(Intent(context, SearchActivity::class.java))
-//                    true
-//                }
-//                R.id.user -> {
-//                    startActivity(Intent(context, UserActivity::class.java))
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
-
         return mBinding?.root
     }
 

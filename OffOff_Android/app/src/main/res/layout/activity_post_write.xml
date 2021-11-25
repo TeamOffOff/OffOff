@@ -112,6 +112,7 @@
                     android:backgroundTint="@color/white3"
                     android:contentDescription="@string/button_camera"
                     android:padding="8dp"
+                    android:scaleType="centerInside"
                     android:src="@drawable/ic_camera_green"
                     app:layout_constraintBottom_toBottomOf="@id/iv_background"
                     app:layout_constraintStart_toStartOf="parent" />

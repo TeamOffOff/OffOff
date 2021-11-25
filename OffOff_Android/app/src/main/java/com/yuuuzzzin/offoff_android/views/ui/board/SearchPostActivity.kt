@@ -73,8 +73,7 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
             binding.tvToolbarTitle.text = boardName
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
-            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white)
-            setDisplayShowHomeEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_resized)
         }
     }
 
@@ -94,6 +93,7 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
 
     private fun initView() {
 
+        binding.etSearch.requestFocus()
         binding.etSearch.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

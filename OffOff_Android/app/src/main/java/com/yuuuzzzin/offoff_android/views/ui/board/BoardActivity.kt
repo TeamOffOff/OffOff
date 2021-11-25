@@ -139,8 +139,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
             binding.tvToolbarTitle.text = boardName
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
-            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white)
-            setDisplayShowHomeEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_resized)
         }
     }
 
@@ -195,6 +194,10 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_board, menu)
+
+        val icon = getDrawable(R.drawable.bt_search_resize)
+        menu!!.getItem(0).icon = icon
+
         return true
     }
 

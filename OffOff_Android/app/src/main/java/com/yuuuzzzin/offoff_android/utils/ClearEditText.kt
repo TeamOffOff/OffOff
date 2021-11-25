@@ -8,9 +8,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.yuuuzzzin.offoff_android.R
+import com.yuuuzzzin.offoff_android.utils.ResUtils.getDrawable
 
 class ClearEditText : AppCompatEditText, TextWatcher, View.OnTouchListener, View.OnFocusChangeListener {
 
@@ -40,13 +40,10 @@ class ClearEditText : AppCompatEditText, TextWatcher, View.OnTouchListener, View
     }
 
     private fun init() {
-        val btClear = ContextCompat.getDrawable(context, R.drawable.ic_button_x)
-        clearDrawable = DrawableCompat.wrap(btClear!!)
+
+        val icon = getDrawable(R.drawable.bt_x)
+        clearDrawable = DrawableCompat.wrap(icon!!)
         clearDrawable!!.setBounds(0, 0, clearDrawable!!.intrinsicWidth, clearDrawable!!.intrinsicHeight)
-//
-//        val ivSearch = ContextCompat.getDrawable(context, R.drawable.ic_search)
-//        startDrawable = DrawableCompat.wrap(ivSearch!!)
-//        startDrawable!!.setTint(getColor(R.color.green))
 
         setClearIconVisible(false)
 

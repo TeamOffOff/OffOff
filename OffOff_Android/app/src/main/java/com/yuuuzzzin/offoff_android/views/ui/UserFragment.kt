@@ -8,11 +8,4 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class UserFragment : BaseFragment<FragmentUserBinding>(R.layout.fragment_user) {
 
-    override fun initView() {
-        super.initView()
-    }
-
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 }

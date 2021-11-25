@@ -67,6 +67,8 @@ constructor(
             image = imageList
         )
 
+        Log.d("tag_*3 보내는 객체", post.toString())
+
         viewModelScope.launch(Dispatchers.IO) {
             repository.writePost(OffoffApplication.pref.token!!, post).let { response ->
                 if (response.isSuccessful) {

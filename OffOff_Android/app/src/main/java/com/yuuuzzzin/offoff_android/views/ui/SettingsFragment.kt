@@ -2,35 +2,23 @@ package com.yuuuzzzin.offoff_android.views.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.yuuuzzzin.offoff_android.OffoffApplication
+import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSettingsBinding
 import com.yuuuzzzin.offoff_android.utils.Constants.toast
+import com.yuuuzzzin.offoff_android.utils.base.BaseFragment
 import com.yuuuzzzin.offoff_android.views.ui.member.LoginActivity
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : BaseFragment<FragmentSettingsBinding>(R.layout.fragment_settings) {
 
-    private var mBinding : FragmentSettingsBinding? = null
-    private val binding get() = mBinding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        mBinding = FragmentSettingsBinding.inflate(inflater, container, false)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
-
-        return mBinding?.root
     }
 
     private fun initView() {
-        binding.menuLogout.setOnClickListener {
+        binding.tvLogout.setOnClickListener {
             OffoffApplication.pref.deleteToken() // 저장된 토큰 삭제
 
             val intent = Intent(context, LoginActivity::class.java)
@@ -40,10 +28,4 @@ class SettingsFragment : Fragment() {
             requireContext().toast("로그아웃되었습니다.")
         }
     }
-
-    override fun onDestroyView() {
-        mBinding = null
-        super.onDestroyView()
-    }
-
 }

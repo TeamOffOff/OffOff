@@ -147,8 +147,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         supportActionBar?.apply {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼 생성
-            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white)
-            setDisplayShowHomeEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_resized)
         }
     }
 

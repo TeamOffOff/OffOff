@@ -101,7 +101,7 @@
         <ImageButton
             android:id="@+id/bt_write_post"
             android:layout_width="66dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_gravity="bottom|right"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="38dp"
@@ -109,8 +109,9 @@
             android:contentDescription="@string/button_write_post"
             android:foregroundGravity="center"
             android:paddingVertical="11dp"
-            android:paddingEnd="2dp"
+            android:paddingHorizontal="19dp"
             android:src="@drawable/ic_pen"
+            android:scaleType="centerInside"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
