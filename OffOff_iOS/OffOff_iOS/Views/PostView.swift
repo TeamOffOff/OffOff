@@ -280,9 +280,9 @@ class ImageTableViewCell: UITableViewCell {
         disposeBag = DisposeBag()
         
         self.image
-            .bind { image in
+            .bind { [weak self] image in
                 if image != nil {
-                    self.imageView?.image = image!
+                    self?.imageView?.image = image!
                 }
             }
             .disposed(by: disposeBag)

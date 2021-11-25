@@ -11,7 +11,7 @@ import RxCocoa
 
 class ChildrenRepliesTableViewCell: UITableViewCell {
     static let identifier = "ChildrenRepliesTableViewCell"
-
+    
     var reply = BehaviorSubject<Reply?>(value: nil)
     var disposeBag = DisposeBag()
     var alertDisposeBag = DisposeBag()
@@ -115,7 +115,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         super.prepareForReuse()
         bindData()
     }
-
+    
     private func makeView() {
         subImage.snp.makeConstraints {
             $0.left.equalToSuperview().inset(23.adjustedWidth)
@@ -167,41 +167,45 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         reply
             .filter { $0 != nil }
             .map { $0! }
-            .bind {
+            .withUnretained(self)
+            .bind { (owner, reply) in
                 //            self.profileImageView.image =
-                self.nicknameLabel.text = $0.author.nickname
-                self.dateLabel.text = $0.date
-                self.contentTextView.text = $0.content
-                self.likeLabel.label.text = "\($0.likes.count)"
+                owner.nicknameLabel.text = reply.author.nickname
+                owner.dateLabel.text = reply.date
+                owner.contentTextView.text = reply.content
+                owner.likeLabel.label.text = "\(reply.likes.count)"
                 
-                if $0.author.profileImage.count != 0 {
-                    self.profileImageView.image = $0.author.profileImage.first!.body.toImage()
+                if reply.author.profileImage.count != 0 {
+                    owner.profileImageView.image = reply.author.profileImage.first!.body.toImage()
                 }
             }
             .disposed(by: disposeBag)
         
-        self.likeButton.rx.tap.withLatestFrom(reply)
+        likeButton.rx.tap.withLatestFrom(reply)
             .filter { $0 != nil }
-            .flatMap {
-                SubReplyServices.likeSubReply(likeSubReply: PostActivity(boardType: self.boardTpye!, _id: $0!._id, activity: "likes"))
+            .withUnretained(self)
+            .flatMap { (owner, reply) -> Observable<Reply?> in
+                SubReplyServices.likeSubReply(likeSubReply: PostActivity(boardType: owner.boardTpye!, _id: reply!._id, activity: "likes"))
             }
-            .do {
-                if $0 != nil {
-                    self.activityAlert!("좋아요를 했습니다.")
-                    self.reply.onNext($0)
+            .withUnretained(self)
+            .do { (owner, reply) in
+                if reply != nil {
+                    owner.activityAlert!("좋아요를 했습니다.")
+                    owner.reply.onNext(reply)
                 } else {
-                    self.activityAlert!("이미 좋아요를 누른 댓글입니다.")
+                    owner.activityAlert!("이미 좋아요를 누른 댓글입니다.")
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-            .bind { _ in
-                self.dismissAlert!(true)
-            }.disposed(by: disposeBag)
+            .bind { [weak self] (reply) in
+                self?.dismissAlert!(true)
+            }
+            .disposed(by: disposeBag)
         
         self.menubutton.rx.tap.withLatestFrom(reply)
             .filter { $0 != nil }
-            .bind {
-                self.showMenuAlert(reply: $0!)
+            .bind { [weak self] in
+                self?.showMenuAlert(reply: $0!)
             }
             .disposed(by: disposeBag)
     }
@@ -209,25 +213,28 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     private func showMenuAlert(reply: Reply) {
         self.alertDisposeBag = DisposeBag()
         let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
-        let delete = UIAlertAction(title: "삭제", style: .default) { _ in
+        let delete = UIAlertAction(title: "삭제", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            
             let delReply = DeletingSubReply(_id: reply._id, boardType: reply.boardType, postId: reply.postId, parentReplyId: reply.parentReplyId!, author: reply.author._id!)
             
             SubReplyServices.deleteSubReply(deletingSubReply: delReply)
                 .filter { $0 != nil }
-                .do {
-                    self.activityAlert!("댓글을 삭제했습니다.")
+                .withUnretained(self)
+                .do { (owner, replyList) in
+                    owner.activityAlert!("댓글을 삭제했습니다.")
                     var replies = [Reply]()
-                    $0!.forEach {
+                    replyList!.forEach {
                         replies.append($0)
                         if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
                             replies.append(contentsOf: $0.childrenReplies!)
                         }
                     }
-                    self.replies.onNext(replies)
+                    owner.replies.onNext(replies)
                 }
                 .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-                .bind { _ in
-                    self.dismissAlert!(true)
+                .bind { (owner, _) in
+                    owner.dismissAlert!(true)
                 }
                 .disposed(by: self.alertDisposeBag)
         }
@@ -240,7 +247,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         }
         alert.addAction(report)
         alert.addAction(cancel)
-    
+        
         presentMenuAlert!(alert)
     }
 }

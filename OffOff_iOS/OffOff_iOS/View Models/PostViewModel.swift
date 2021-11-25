@@ -30,7 +30,7 @@ class PostViewModel {
     
     init(contentId: String, boardType: String, likeButtonTapped: Observable<PostLikeModel?>, replyButtonTapped: Observable<WritingReply>) {
         ReplyServices.fetchReplies(of: contentId, in: boardType)
-            .bind {
+            .bind { [weak self] in
                 var replies = [Reply]()
                 $0.forEach {
                     replies.append($0)
@@ -38,13 +38,12 @@ class PostViewModel {
                         replies.append(contentsOf: $0.childrenReplies!)
                     }
                 }
-                self.replies.onNext(replies)
+                self?.replies.onNext(replies)
             }.disposed(by: disposeBag)
         
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
-            .bind {
-                self.post.onNext($0)
-            }.disposed(by: disposeBag)
+            .bind(to: post)
+            .disposed(by: disposeBag)
         
         
         
@@ -58,21 +57,41 @@ class PostViewModel {
                 }
             }
         
+//        likeButtonTapped
+//            .bind { val in
+//                if val != nil {
+//                    let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
+//                    self.activityDisposeBag = DisposeBag()
+//                    PostServices.likePost(post: post).bind {
+//                        if $0 != nil {
+//                            self.post.onNext($0)
+//                            self.liked.onNext(true)
+//                            val!.cell.postModel.accept($0)
+//                        } else {
+//                            self.liked.onNext(false)
+//                        }
+//
+//                    }.disposed(by: self.activityDisposeBag)
+//                }
+//            }
+//            .disposed(by: disposeBag)
+        
         likeButtonTapped
-            .bind { val in
+            .flatMap { val -> Observable<(PostModel?, PostLikeModel?)> in
                 if val != nil {
                     let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
-                    self.activityDisposeBag = DisposeBag()
-                    PostServices.likePost(post: post).bind {
-                        if $0 != nil {
-                            self.post.onNext($0)
-                            self.liked.onNext(true)
-                            val!.cell.postModel.accept($0)
-                        } else {
-                            self.liked.onNext(false)
-                        }
-
-                    }.disposed(by: self.activityDisposeBag)
+                    return PostServices.likePost(post: post).flatMap { Observable.just(($0, val)) }
+                } else {
+                    return Observable.just((nil, nil))
+                }
+            }
+            .bind { [weak self] (postModel, likeModel) in
+                if postModel != nil {
+                    self?.post.onNext(postModel)
+                    self?.liked.onNext(true)
+                    likeModel!.cell.postModel.accept(postModel)
+                } else {
+                    self?.liked.onNext(false)
                 }
             }
             .disposed(by: disposeBag)
@@ -109,18 +128,19 @@ class PostViewModel {
                     return ReplyServices.writeReply(reply: reply)
                 }
             }
-            .bind {
-                self.isSubReplyInputting.onNext(nil)
-                if $0 != nil {
+            .withUnretained(self)
+            .bind { (owner, replyList) in
+                owner.isSubReplyInputting.onNext(nil)
+                if replyList != nil {
                     var replies = [Reply]()
-                    $0!.forEach {
+                    replyList!.forEach {
                         replies.append($0)
                         if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
                             replies.append(contentsOf: $0.childrenReplies!)
                         }
                     }
-                    self.replies.onNext(replies)
-                    self.replyAdded.onNext(true)
+                    owner.replies.onNext(replies)
+                    owner.replyAdded.onNext(true)
                 }
             }
             .disposed(by: disposeBag)
@@ -135,15 +155,14 @@ class PostViewModel {
     
     func reloadPost(contentId: String, boardType: String) {
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
-            .bind {
-                self.post.onNext($0)
-                self.refreshing.onNext(())
-            }.disposed(by: disposeBag)
+            .do { [weak self] _ in self?.refreshing.onNext(()) }
+            .bind(to: post)
+            .disposed(by: disposeBag)
     }
     
     func reloadReplies(contentId: String, boardType: String) {
         ReplyServices.fetchReplies(of: contentId, in: boardType)
-            .bind {
+            .bind { [weak self] in
                 var replies = [Reply]()
                 $0.forEach {
                     replies.append($0)
@@ -151,7 +170,7 @@ class PostViewModel {
                         replies.append(contentsOf: $0.childrenReplies!)
                     }
                 }
-                self.replies.onNext(replies)
+                self?.replies.onNext(replies)
             }.disposed(by: disposeBag)
     }
 }

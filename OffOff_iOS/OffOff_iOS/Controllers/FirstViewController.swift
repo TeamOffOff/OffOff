@@ -39,16 +39,17 @@ class FirstViewController: UIViewController {
             UserServices.getUserInfo()
                 .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
                 .observe(on: MainScheduler.instance)
-                .bind {
-                    if $0 != nil {
-                        Constants.loginUser = $0
+                .withUnretained(self)
+                .bind { (owner, info) in
+                    if info != nil {
+                        Constants.loginUser = info
                         let vc = TabBarController()
                         vc.modalPresentationStyle = .fullScreen
-                        self.present(vc, animated: false)
+                        owner.present(vc, animated: false)
                     }
                     let vc = LoginViewController()
                     vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: false)
+                    owner.present(vc, animated: false)
                 }
                 .disposed(by: disposeBag)
         } else {
@@ -57,15 +58,4 @@ class FirstViewController: UIViewController {
             self.present(vc, animated: false)
         }
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

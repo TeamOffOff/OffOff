@@ -58,57 +58,57 @@ class IDPWViewController: UIViewController {
         
         // bind result {
         viewModel.isIdConfirmed
-            .drive(onNext:  {
+            .drive(onNext:  { [weak self] in
                 if $0 {
-                    self.idpwView.idConfirmLabel.text = "사용 가능한 아이디입니다."
+                    self?.idpwView.idConfirmLabel.text = "사용 가능한 아이디입니다."
                 } else {
-                    self.idpwView.idConfirmLabel.text = "이미 사용 중이거나 탈퇴한 아이디입니다."
+                    self?.idpwView.idConfirmLabel.text = "이미 사용 중이거나 탈퇴한 아이디입니다."
                     SharedSignUpModel.model._id = ""
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isPasswordComfirmed
-            .drive(onNext: {
+            .drive(onNext: { [weak self] in
                 if $0 {
-                    self.idpwView.passwordConfirmLabel.text = "사용 가능한 비밀번호입니다."
+                    self?.idpwView.passwordConfirmLabel.text = "사용 가능한 비밀번호입니다."
                 } else {
-                    self.idpwView.passwordConfirmLabel.text = "8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."
+                    self?.idpwView.passwordConfirmLabel.text = "8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."
                     SharedSignUpModel.model.password = ""
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isPasswordRepeatComfirmed
-            .drive(onNext: {
+            .drive(onNext: { [weak self] in
                 if $0 {
-                    self.idpwView.passwordRepeatConfirmLabel.text = "비밀번호가 일치합니다."
+                    self?.idpwView.passwordRepeatConfirmLabel.text = "비밀번호가 일치합니다."
                 } else {
-                    self.idpwView.passwordRepeatConfirmLabel.text = "비밀번호가 일치하지 않습니다."
+                    self?.idpwView.passwordRepeatConfirmLabel.text = "비밀번호가 일치하지 않습니다."
                     SharedSignUpModel.model.password = ""
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isNextEnabled
-            .drive(onNext: {
-                self.idpwView.nextButton.isUserInteractionEnabled = $0
-                self.idpwView.nextButton.backgroundColor = $0 ? .g4 : .g1
+            .drive(onNext: { [weak self] in
+                self?.idpwView.nextButton.isUserInteractionEnabled = $0
+                self?.idpwView.nextButton.backgroundColor = $0 ? .g4 : .g1
             })
             .disposed(by: disposeBag)
         
         viewModel.isValidatedToProgress
             .debug()
-            .drive(onNext: {
+            .drive(onNext: { [weak self] in
                 if $0 {
-                    self.navigationController?.pushViewController(PrivacyInfoViewController(), animated: true)
+                    self?.navigationController?.pushViewController(PrivacyInfoViewController(), animated: true)
                 }
             })
             .disposed(by: disposeBag)
         
         self.idpwView.backButton.rx.tap
-            .bind {
-                self.dismiss(animated: true, completion: nil)
+            .bind { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
         // }

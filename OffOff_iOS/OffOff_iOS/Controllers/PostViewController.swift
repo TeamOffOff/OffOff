@@ -99,14 +99,17 @@ class PostViewController: UIViewController {
         viewModel = PostViewModel(
             contentId: postInfo?.id ?? "",
             boardType: postInfo?.type ?? "",
-            likeButtonTapped: self.postView.likeButton.rx.tap
-                .map {
-                    PostLikeModel(id: self.postInfo!.id, type: self.postInfo!.type, cell: self.postCell!)
+            likeButtonTapped: postView.likeButton.rx.tap
+                .withUnretained(self)
+                .map { (owner, _) in
+                    PostLikeModel(id: owner.postInfo!.id, type: owner.postInfo!.type, cell: owner.postCell!)
                 },
-            replyButtonTapped: self.replyButton.rx.tap.map {
-                let reply = WritingReply(boardType: self.postInfo!.type, postId: self.postInfo!.id, parentReplyId: nil, content: self.replyTextView.text ?? "")
-                return reply
-            }
+            replyButtonTapped: replyButton.rx.tap
+                .withUnretained(self)
+                .map { (owner, _) in
+                    let reply = WritingReply(boardType: owner.postInfo!.type, postId: owner.postInfo!.id, parentReplyId: nil, content: owner.replyTextView.text ?? "")
+                    return reply
+                }
         )
         
         // Refresh Control 세팅
@@ -117,58 +120,60 @@ class PostViewController: UIViewController {
         self.postView.refreshControl = refreshControl
         
         self.postView.refreshControl!.rx.controlEvent(.valueChanged)
-            .bind {
-                self.rotateRefreshIndicator(true)
-                self.viewModel.reloadPost(contentId: self.postInfo!.id, boardType: self.postInfo!.type)
+            .withUnretained(self)
+            .bind { (owner, _) in
+                owner.rotateRefreshIndicator(true)
+                owner.viewModel.reloadPost(contentId: owner.postInfo!.id, boardType: owner.postInfo!.type)
             }
             .disposed(by: disposeBag)
         
         // bind result
         viewModel.refreshing
             .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
-            .bind {
+            .bind { [weak self] in
                 refreshControl.endRefreshing()
-                self.rotateRefreshIndicator(false)
+                self?.rotateRefreshIndicator(false)
             }
             .disposed(by: disposeBag)
         
         self.postView.rx.didEndDragging
-            .bind { _ in
-                if ((self.postView.contentOffset.y + self.postView.frame.size.height) >= self.postView.contentSize.height)
+            .withUnretained(self)
+            .bind { (owner, _) in
+                if ((owner.postView.contentOffset.y + owner.postView.frame.size.height) >= owner.postView.contentSize.height)
                 {
-                    print(#fileID, #function, #line, "")
-                    self.viewModel.reloadReplies(contentId: self.postInfo!.id, boardType: self.postInfo!.type)
+                    owner.viewModel.reloadReplies(contentId: owner.postInfo!.id, boardType: owner.postInfo!.type)
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.post
             .filter { $0 != nil }
-            .bind {
-                self.postView.titleLabel.text = $0!.title
-                self.postView.authorLabel.text = $0!.author.nickname
-                self.postView.contentTextView.text = $0!.content
-                self.postView.dateLabel.text = $0!.date.toDate()!.toFormedString()
-                self.postView.profileImageView.image = .DefaultPostProfileImage
+            .withUnretained(self)
+            .bind { (owner, model) in
+                owner.postView.titleLabel.text = model!.title
+                owner.postView.authorLabel.text = model!.author.nickname
+                owner.postView.contentTextView.text = model!.content
+                owner.postView.dateLabel.text = model!.date.toDate()!.toFormedString()
+                owner.postView.profileImageView.image = .DefaultPostProfileImage
                 
                 // activities
-                self.postView.likeLabel.label.text = "\($0!.likes.count)"
-                self.postView.scrapLabel.label.text = "\($0!.bookmarks.count)"
+                owner.postView.likeLabel.label.text = "\(model!.likes.count)"
+                owner.postView.scrapLabel.label.text = "\(model!.bookmarks.count)"
                 
-                self.postImages.accept($0!.image)
-                if $0!.author.profileImage.count != 0 {
-                    self.postView.profileImageView.image = $0!.author.profileImage.first!.body.toImage()
+                owner.postImages.accept(model!.image)
+                if model!.author.profileImage.count != 0 {
+                    owner.postView.profileImageView.image = model!.author.profileImage.first!.body.toImage()
                 }
-                if $0?.author._id == Constants.loginUser?._id {
-                    self.setRightButtons(set: true)
+                if model?.author._id == Constants.loginUser?._id {
+                    owner.setRightButtons(set: true)
                 } else {
-                    self.setRightButtons(set: false)
+                    owner.setRightButtons(set: false)
                 }
                 
-                if !self.loadingView.isHidden {
-                    self.rotateRefreshIndicator(false)
+                if !owner.loadingView.isHidden {
+                    owner.rotateRefreshIndicator(false)
                 }
-                self.loadingView.isHidden = true
+                owner.loadingView.isHidden = true
                 
             }
             .disposed(by: disposeBag)
@@ -178,8 +183,7 @@ class PostViewController: UIViewController {
         self.postImages
             .skip(1)
             .filter { $0.count > 0 }
-            .do { print(#fileID, #function, #line, "num: \($0.count)")}
-            .bind(to: self.postView.imageTableView.rx.items) { (tv, row, item) in
+            .bind(to: postView.imageTableView.rx.items) { (tv, row, item) in
                 let cell = tv.dequeueReusableCell(withIdentifier: ImageTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! ImageTableViewCell
                 cell.image.onNext(item.body.toImage())
                 return cell
@@ -189,38 +193,42 @@ class PostViewController: UIViewController {
         
         viewModel.postDeleted
             .filter { $0 }
-            .bind { _ in
-                self.navigationController?.popViewController(animated: true)
-                if let frontVC = self.navigationController?.topViewController as? PostListViewController {
+            .withUnretained(self)
+            .bind { (owner, _) in
+                owner.navigationController?.popViewController(animated: true)
+                if let frontVC = owner.navigationController?.topViewController as? PostListViewController {
                     frontVC.viewModel?.fetchPostList(boardType: frontVC.boardType!)
-                    print(#fileID, #function, #line, "")
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.liked
             .skip(1)
-            .do {
-                if $0 {
-                    self.activityAlert(message: "좋아요를 했습니다.")
+            .withUnretained(self)
+            .do { (owner, bool) in
+                if bool {
+                    owner.activityAlert(message: "좋아요를 했습니다.")
                 } else {
-                    self.activityAlert(message: "이미 좋아요한 게시글 입니다.")
+                    owner.activityAlert(message: "이미 좋아요한 게시글 입니다.")
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-            .bind { _ in
-                self.dismissAlert(animated: true)
+            .bind { (owner, _) in
+                owner.dismissAlert(animated: true)
             }
             .disposed(by: disposeBag)
         
         viewModel.replies
             .filter { $0 != nil }
-            .do {
-                self.postCell?.commentLabel.label.text = "\($0!.count)"
-                self.postView.replyLabel.label.text = "\($0!.count)"
-            }
             .map { $0! }
-            .bind(to: self.postView.repliesTableView.rx.items) { (tv, row, item) -> UITableViewCell in
+            .withUnretained(self)
+            .do { (owner, replies) in
+                owner.postCell?.commentLabel.label.text = "\(replies.count)"
+                owner.postView.replyLabel.label.text = "\(replies.count)"
+            }
+            .map { $1 }
+            .bind(to: postView.repliesTableView.rx.items) { [weak self] (tv, row, item) -> UITableViewCell in
+                guard let self = self else { return UITableViewCell() }
                 if item.parentReplyId != nil {
                     let cell = tv.dequeueReusableCell(withIdentifier: ChildrenRepliesTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! ChildrenRepliesTableViewCell
                     
@@ -247,11 +255,12 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isSubReplyInputting
-            .bind {
-                if $0 != nil {
-                    self.replyTextView.becomeFirstResponder()
+            .withUnretained(self)
+            .bind { (owner, bool) in
+                if bool != nil {
+                    owner.replyTextView.becomeFirstResponder()
                 } else {
-                    self.replyTextView.endEditing(true)
+                    owner.replyTextView.endEditing(true)
                 }
             }
             .disposed(by: disposeBag)
@@ -259,28 +268,29 @@ class PostViewController: UIViewController {
         let alert = UIAlertController(title: "댓글이 등록됐습니다.", message: nil, preferredStyle: .alert)
         viewModel.replyAdded
             .filter { $0 }
-            .do {
-                if $0 {
-                    self.replyTextView.text = ""
-                    self.replyTextView.resignFirstResponder()
-                    self.present(alert, animated: true, completion: nil)
+            .withUnretained(self)
+            .do { (owner, bool) in
+                if bool {
+                    owner.replyTextView.text = ""
+                    owner.replyTextView.resignFirstResponder()
+                    owner.present(alert, animated: true, completion: nil)
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-            .bind { _ in
+            .bind { (owner, _) in
                 alert.dismiss(animated: true, completion: nil)
-                if self.postView.bounds.size.height < self.postView.contentSize.height {
-                    self.postView.scrollToBottom()
+                if owner.postView.bounds.size.height < self.postView.contentSize.height {
+                    owner.postView.scrollToBottom()
                 }
             }
             .disposed(by: disposeBag)
         
         //        self.postView.makeView()
         
-        // MARK: 댓글 입력 시 키보드 높이에 맞춰 댓글 입력 뷰 높이 조정
         RxKeyboard.instance.visibleHeight
             .skip(1)
-            .drive(onNext: { keyboardVisibleHeight in
+            .drive(onNext: { [weak self] keyboardVisibleHeight in
+                guard let self = self else { return }
                 let window = UIApplication.shared.windows.first
                 
                 if keyboardVisibleHeight > 0.0 {
@@ -311,10 +321,10 @@ class PostViewController: UIViewController {
         self.postView.rx
             .anyGesture(.tap(), .swipe(direction: .up))
             .when(.recognized)
-            .withLatestFrom(self.viewModel.isSubReplyInputting)
-            .bind {
+            .withLatestFrom(viewModel.isSubReplyInputting)
+            .bind { [weak self] in
                 if $0 != nil {
-                    self.viewModel.isSubReplyInputting.onNext(nil)
+                    self?.viewModel.isSubReplyInputting.onNext(nil)
                 }
             }
             .disposed(by: disposeBag)
@@ -373,15 +383,15 @@ class PostViewController: UIViewController {
         
         
         if set {
-            let delete = UIAlertAction(title: "삭제", style: .default) { _ in
-                self.deletingConfirmAlert()
+            let delete = UIAlertAction(title: "삭제", style: .default) { [weak self] _ in
+                self?.deletingConfirmAlert()
             }
-            let modify = UIAlertAction(title: "수정", style: .default) { _ in
+            let modify = UIAlertAction(title: "수정", style: .default) { [weak self] _ in
                 let vc = NewPostViewController()
-                try? vc.postToModify = self.viewModel.post.value()
+                try? vc.postToModify = self?.viewModel.post.value()
                 let naviVC = UINavigationController(rootViewController: vc)
                 naviVC.modalPresentationStyle = .fullScreen
-                self.present(naviVC, animated: true, completion: nil)
+                self?.present(naviVC, animated: true, completion: nil)
             }
             alert.addAction(delete)
             alert.addAction(modify)
@@ -400,8 +410,8 @@ class PostViewController: UIViewController {
             //                }.disposed(by: rightButtonsDisposeBag)
         }
         
-        let report = UIAlertAction(title: "신고", style: .default) { _ in
-            self.viewModel.reportButtonTapped.onNext(true)
+        let report = UIAlertAction(title: "신고", style: .default) { [weak self] _ in
+            self?.viewModel.reportButtonTapped.onNext(true)
         }
         
         let cancel = UIAlertAction(title: "취소", style: .cancel)
@@ -410,9 +420,9 @@ class PostViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItem!
             .rx.tap
-            .bind {
-                self.present(alert, animated: true, completion: nil)
-            }.disposed(by: self.disposeBag)
+            .bind { [weak self] in
+                self?.present(alert, animated: true, completion: nil)
+            }.disposed(by: disposeBag)
     }
     
     private func deletingConfirmAlert() {
@@ -427,7 +437,7 @@ class PostViewController: UIViewController {
     var alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     private func activityAlert(message: String) {
         alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
     private func dismissAlert(animated: Bool = true) {
@@ -437,7 +447,7 @@ class PostViewController: UIViewController {
     var menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
     private func presentMenuAlert(alert: UIAlertController) {
         menuAlert = alert
-        self.present(menuAlert, animated: true, completion: nil)
+        present(menuAlert, animated: true, completion: nil)
     }
     
     private func rotateRefreshIndicator(_ on: Bool) {
@@ -451,32 +461,35 @@ class PostViewController: UIViewController {
     }
     
     private func replyTextViewSetUp() {
-        self.replyTextView.rx.didBeginEditing
-            .subscribe(onNext: { [self] in
-                if(self.replyTextView.text == "댓글을 입력하세요." ){
-                    self.replyTextView.text = nil
-                    self.replyTextView.textColor = .w5          //글자 색도 진한 색으로 바꿔줘야한다!
+        replyTextView.rx.didBeginEditing
+            .withUnretained(self)
+            .subscribe(onNext: { (owner, _) in
+                if(owner.replyTextView.text == "댓글을 입력하세요." ) {
+                    owner.replyTextView.text = nil
+                    owner.replyTextView.textColor = .w5          //글자 색도 진한 색으로 바꿔줘야한다!
                     
                 }}).disposed(by: disposeBag)
         
-        self.replyTextView.rx.didEndEditing
-            .subscribe(onNext: { [self] in
-                if(self.replyTextView.text == nil || self.replyTextView.text == ""){
-                    self.replyTextView.text = "댓글을 입력하세요."
-                    self.replyTextView.textColor = .w4        //다시 placeholder 글자색으로(연한색)
+        replyTextView.rx.didEndEditing
+            .withUnretained(self)
+            .subscribe(onNext: { (owner, _) in
+                if(owner.replyTextView.text == nil || owner.replyTextView.text == ""){
+                    owner.replyTextView.text = "댓글을 입력하세요."
+                    owner.replyTextView.textColor = .w4        //다시 placeholder 글자색으로(연한색)
                     
                 }}).disposed(by: disposeBag)
         
-        self.replyTextView.rx.text
-            .bind {
-                if $0! != "댓글을 입력하세요." && !$0!.isEmpty {
-                    self.replyButton.isUserInteractionEnabled = true
-                    self.replyButton.backgroundColor = .g1
-                    self.replyButton.setTitleColor(.white, for: .normal)
+        replyTextView.rx.text
+            .withUnretained(self)
+            .bind { (owner, text) in
+                if text! != "댓글을 입력하세요." && !text!.isEmpty {
+                    owner.replyButton.isUserInteractionEnabled = true
+                    owner.replyButton.backgroundColor = .g1
+                    owner.replyButton.setTitleColor(.white, for: .normal)
                 } else {
-                    self.replyButton.isUserInteractionEnabled = false
-                    self.replyButton.backgroundColor = .w2
-                    self.replyButton.setTitleColor(.g1, for: .normal)
+                    owner.replyButton.isUserInteractionEnabled = false
+                    owner.replyButton.backgroundColor = .w2
+                    owner.replyButton.setTitleColor(.g1, for: .normal)
                 }
             }
             .disposed(by: disposeBag)

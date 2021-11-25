@@ -78,10 +78,11 @@ class NewPostViewController: UIViewController {
         // 텍스트 뷰 크기 제한
         self.newPostView.contentTextView
             .rx.didChange
-            .bind { _ in
-                let needToScrolling = self.newPostView.contentTextView.contentSize.height > self.textViewMaxHeight
+            .withUnretained(self)
+            .bind { (owner, _) in
+                let needToScrolling = self.newPostView.contentTextView.contentSize.height > owner.textViewMaxHeight
                 
-                self.textViewNeedToScroll.onNext(needToScrolling)
+                owner.textViewNeedToScroll.onNext(needToScrolling)
             }
             .disposed(by: disposeBag)
     
@@ -98,41 +99,44 @@ class NewPostViewController: UIViewController {
         
         self.textViewNeedToScroll
             .skip(1)
-            .bind { needToScrolling in
+            .withUnretained(self)
+            .bind { (owner, needToScrolling) in
                 if needToScrolling {
-                    self.newPostView.contentTextView.snp.remakeConstraints {
-                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+                    owner.newPostView.contentTextView.snp.remakeConstraints {
+                        $0.top.equalTo(owner.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
                         $0.left.right.equalToSuperview().inset(33.adjustedWidth)
-                        $0.height.equalTo(self.textViewMaxHeight)
+                        $0.height.equalTo(owner.textViewMaxHeight)
                     }
                 } else {
-                    self.newPostView.contentTextView.snp.remakeConstraints {
-                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+                    owner.newPostView.contentTextView.snp.remakeConstraints {
+                        $0.top.equalTo(owner.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
                         $0.left.right.equalToSuperview().inset(33.adjustedWidth)
                     }
                 }
                 
-                self.newPostView.contentTextView.isScrollEnabled = needToScrolling
-                self.newPostView.contentTextView.text = self.newPostView.contentTextView.text
+                owner.newPostView.contentTextView.isScrollEnabled = needToScrolling
+                owner.newPostView.contentTextView.text = owner.newPostView.contentTextView.text
             }
             .disposed(by: disposeBag)
         
         self.viewModel.uploadingImages
-            .do {
-                if $0.isEmpty {
-                    self.newPostView.addingImagesCollectionView.snp.updateConstraints {
+            .withUnretained(self)
+            .do { (owner, images) in
+                if images.isEmpty {
+                    owner.newPostView.addingImagesCollectionView.snp.updateConstraints {
                         $0.height.equalTo(0)
                     }
                 } else {
-                    self.newPostView.addingImagesCollectionView.snp.updateConstraints {
+                    owner.newPostView.addingImagesCollectionView.snp.updateConstraints {
                         $0.height.equalTo(68.adjustedHeight)
                     }
                 }
             }
-            .bind(to: self.newPostView.addingImagesCollectionView.rx.items(cellIdentifier: AddingImagesCollectionViewCell.identifier, cellType: AddingImagesCollectionViewCell.self)) { (row, element, cell) in
+            .map { $1 }
+            .bind(to: newPostView.addingImagesCollectionView.rx.items(cellIdentifier: AddingImagesCollectionViewCell.identifier, cellType: AddingImagesCollectionViewCell.self)) { [weak self] (row, element, cell) in
                 cell.row = row
                 cell.imageView.image = element
-                cell.deletingAction = self.deleteUploadingImage
+                cell.deletingAction = self?.deleteUploadingImage
             }
             .disposed(by: disposeBag)
         
@@ -172,9 +176,9 @@ class NewPostViewController: UIViewController {
         viewModel.isTitleConfirmed
             .skip(1)
             .filter { $0 == false }
-            .do { _ in
+            .do { [weak self] _ in
                 alert = UIAlertController(title: "제목을 입력해주세요.", message: nil, preferredStyle: .alert)
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
             .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance)
             .bind { _ in
@@ -185,9 +189,9 @@ class NewPostViewController: UIViewController {
         viewModel.isContentConfiremd
             .skip(1)
             .filter { $0 == false }
-            .do { _ in
+            .do { [weak self] _ in
                 alert = UIAlertController(title: "내용을 입력해주세요.", message: nil, preferredStyle: .alert)
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
             .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance)
             .bind { _ in
@@ -196,25 +200,25 @@ class NewPostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.postCreated
-            .do { _ in self.viewModel.isCreating.onNext(false) }
+            .do { [weak self] _ in self?.viewModel.isCreating.onNext(false) }
             .filter { $0 != nil }
             .map { $0! }
-            .subscribe(onNext: {
-                if self.postToModify == nil {
-                    self.navigationController?.popViewController(animated: true)
-                    if let frontVC = self.navigationController?.topViewController as? PostListViewController {
+            .withUnretained(self)
+            .subscribe(onNext: { (owner, model) in
+                if owner.postToModify == nil {
+                    owner.navigationController?.popViewController(animated: true)
+                    if let frontVC = owner.navigationController?.topViewController as? PostListViewController {
                         frontVC.viewModel?.fetchPostList(boardType: frontVC.boardType!)
-                        print(#fileID, #function, #line, "")
                     }
                 } else {
-                    if let naviVC = self.presentingViewController as? UINavigationController {
+                    if let naviVC = owner.presentingViewController as? UINavigationController {
                         if let postVC = naviVC.topViewController as? PostViewController {
-                            postVC.postInfo = (id: $0._id!, type: $0.boardType)
-                            postVC.viewModel.reloadPost(contentId: $0._id!, boardType: $0.boardType)
+                            postVC.postInfo = (id: model._id!, type: model.boardType)
+                            postVC.viewModel.reloadPost(contentId: model._id!, boardType: model.boardType)
                         }
                     }
                     
-                    self.dismiss(animated: true) 
+                    owner.dismiss(animated: true)
                 }
             })
             .disposed(by: disposeBag)
@@ -229,7 +233,7 @@ class NewPostViewController: UIViewController {
             self.navigationController?.navigationBar.setAppearance()
             self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
             self.navigationItem.leftBarButtonItem!.rx.tap
-                .bind { self.dismiss(animated: true, completion: nil) }.disposed(by: disposeBag)
+                .bind { [weak self] in self?.dismiss(animated: true, completion: nil) }.disposed(by: disposeBag)
         }
     }
     

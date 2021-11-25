@@ -141,31 +141,32 @@ class PostPreviewCell: UITableViewCell {
         
         postModel
             .filter { $0 != nil }
-            .bind { post in
+            .withUnretained(self)
+            .bind { (owner, post) in
                 if post!.image.isEmpty {
-                    self.imagePreview.snp.updateConstraints {
+                    owner.imagePreview.snp.updateConstraints {
                         $0.width.equalTo(0)
                     }
-                    self.pictureLabel.isHidden = true
+                    owner.pictureLabel.isHidden = true
                 } else {
-                    self.imagePreview.snp.updateConstraints {
+                    owner.imagePreview.snp.updateConstraints {
                         $0.width.equalTo(78.adjustedWidth)
                     }
-                    self.imagePreview.image = post!.image.first!.body.toImage()
-                    self.pictureLabel.isHidden = false
-                    self.pictureLabel.label.text = "\(post!.image.count)"
+                    owner.imagePreview.image = post!.image.first!.body.toImage()
+                    owner.pictureLabel.isHidden = false
+                    owner.pictureLabel.label.text = "\(post!.image.count)"
                 }
                 
-                self.titleLabel.text = post!.title
-                self.previewTextView.text = post!.content
+                owner.titleLabel.text = post!.title
+                owner.previewTextView.text = post!.content
                 
-                self.likeLabel.label.text = "\(post!.likes.count)"
-                self.commentLabel.label.text = "\(post!.replyCount)"
+                owner.likeLabel.label.text = "\(post!.likes.count)"
+                owner.commentLabel.label.text = "\(post!.replyCount)"
                 
                 
                 let postDate = post!.date.toDate()!
                 
-                self.dateAuthorLabel.text = "\(postDate.toFormedString()) | \(post!.author.nickname)"
+                owner.dateAuthorLabel.text = "\(postDate.toFormedString()) | \(post!.author.nickname)"
             }
             .disposed(by: disposeBag)
     }

@@ -47,7 +47,7 @@ class ProfileViewController: UIViewController {
         
         // bind results
         viewModel.isNickNameConfirmed
-            .drive(onNext: {
+            .drive(onNext: { [weak self] in
 //                self.profileView.nickNameTextField.selectedLineColor
 //                    = $0 ? .mainColor : .red
 //                self.profileView.nickNameTextField.selectedTitleColor
@@ -56,26 +56,27 @@ class ProfileViewController: UIViewController {
 //                    = $0 ?
 //                    "\(self.profileView.nickNameTextField.text!)은(는) 사용가능한 닉네임입니다."
 //                    : "\(self.profileView.nickNameTextField.text!)은(는) 사용할 수 없습니다."
-                self.profileView.signUpButton.isUserInteractionEnabled = $0
-                self.profileView.signUpButton.backgroundColor = $0 ? .g4 : .g1
+                self?.profileView.signUpButton.isUserInteractionEnabled = $0
+                self?.profileView.signUpButton.backgroundColor = $0 ? .g4 : .g1
             })
             .disposed(by: disposeBag)
         
         viewModel.signedUp
-            .drive(onNext: { signedUp in
+            .drive(onNext: { [weak self] signedUp in
                 if signedUp {
                     let alert = UIAlertController(title: "회원가입을 완료했습니다.\n인증을 위해서 기입한 이메일을 확인해주세요", message: nil, preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default) { action in
-                        self.dismiss(animated: true, completion: nil)
+                        self?.dismiss(animated: true, completion: nil)
                     }
                     alert.addAction(action)
-                    self.present(alert, animated: true, completion: nil)
+                    self?.present(alert, animated: true, completion: nil)
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isUploadingImage
-            .bind {
+            .bind { [weak self] in
+                guard let self = self else { return }
                 if $0 {
 //                    self.imagePickingAlert()
                     let cameraConfig = ZLPhotoConfiguration.default().cameraConfiguration
@@ -99,7 +100,7 @@ class ProfileViewController: UIViewController {
                     let ps = ZLPhotoPreviewSheet()
                     
                     ps.selectImageBlock = { [weak self] (images, assets, isOriginal) in
-                        self!.profileView.profileImageView.image = images.first!
+                        self?.profileView.profileImageView.image = images.first!
                         SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: images.first!.toBase64String())]
                     }
                     ps.showPhotoLibrary(sender: self)
@@ -108,8 +109,8 @@ class ProfileViewController: UIViewController {
             .disposed(by: disposeBag)
         
         self.profileView.backButton.rx.tap
-            .bind {
-                self.navigationController?.popViewController(animated: true)
+            .bind { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }
@@ -118,11 +119,13 @@ class ProfileViewController: UIViewController {
         let alert = UIAlertController(title: "선택", message: nil, preferredStyle: .actionSheet)
         
         let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        let camera = UIAlertAction(title: "카메라", style: .default) { _ in
+        let camera = UIAlertAction(title: "카메라", style: .default) { [weak self] _ in
+            guard let self = self else { return }
             self.profileImagePicker.sourceType = .camera
             self.present(self.profileImagePicker, animated: true, completion: nil)
         }
-        let album = UIAlertAction(title: "앨범", style: .default) { _ in
+        let album = UIAlertAction(title: "앨범", style: .default) { [weak self] _ in
+            guard let self = self else { return }
             self.profileImagePicker.sourceType = .photoLibrary
             self.present(self.profileImagePicker, animated: true, completion: nil)
         }

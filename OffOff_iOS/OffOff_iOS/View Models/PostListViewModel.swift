@@ -55,10 +55,13 @@ class PostListViewModel {
     }
     
     public func fetchPostList(boardType: String) {
-        _ = BoardServices.fetchPostList(board_type: boardType).map {
-            self.lastPostId = $0?.lastPostId
-            return $0?.postList ?? []
-        }.bind(to: self.postList)
+        BoardServices.fetchPostList(board_type: boardType)
+            .map {
+                self.lastPostId = $0?.lastPostId
+                return $0?.postList ?? []
+            }
+            .bind(to: postList)
+            .disposed(by: disposeBag)
     }
 }
 

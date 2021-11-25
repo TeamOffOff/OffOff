@@ -162,8 +162,10 @@ class AddingImagesCollectionViewCell: UICollectionViewCell {
     func bindButton() {
         disposeBag = DisposeBag()
         self.removeButton.rx.tap
-            .bind {
-                self.deletingAction(self.row)
+            .bind { [weak self] in
+                if let self = self {
+                    self.deletingAction(self.row)
+                }
             }
             .disposed(by: disposeBag)
     }

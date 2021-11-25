@@ -62,11 +62,11 @@ class PrivacyInfoViewController: UIViewController {
             .disposed(by: disposeBag)
 
         viewModel.isEmailConfirmed
-            .drive(onNext: {
+            .drive(onNext: { [weak self] in
                 if $0 {
-                    self.privacyView.emailConfirmLabel.text = "사용가능한 이메일 주소입니다."
+                    self?.privacyView.emailConfirmLabel.text = "사용가능한 이메일 주소입니다."
                 } else {
-                    self.privacyView.emailConfirmLabel.text = "이미 사용중인 이메일 주소입니다."
+                    self?.privacyView.emailConfirmLabel.text = "이미 사용중인 이메일 주소입니다."
                     SharedSignUpModel.model.information.email = ""
                 }
             })
@@ -79,23 +79,23 @@ class PrivacyInfoViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isNextEnabled
-            .drive(onNext: {
-                self.privacyView.nextButton.isUserInteractionEnabled = $0
-                self.privacyView.nextButton.backgroundColor = $0 ? .g4 : .g1
+            .drive(onNext: { [weak self] in
+                self?.privacyView.nextButton.isUserInteractionEnabled = $0
+                self?.privacyView.nextButton.backgroundColor = $0 ? .g4 : .g1
             })
             .disposed(by: disposeBag)
         
         viewModel.isValidatedToProgress
-            .drive(onNext: {
+            .drive(onNext: { [weak self] in
                 if $0 {
-                    self.navigationController?.pushViewController(ProfileViewController(), animated: true)
+                    self?.navigationController?.pushViewController(ProfileViewController(), animated: true)
                 }
             })
             .disposed(by: disposeBag)
     
         self.privacyView.backButton.rx.tap
-            .bind {
-                self.navigationController?.popViewController(animated: true)
+            .bind { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }

@@ -54,21 +54,21 @@ class PostListViewController: UIViewController {
         viewModel!.postList
             .skip(1)
             .observe(on: MainScheduler.instance)
-            .do { _ in
+            .do { [weak self] _ in
                 if !refreshControl.isRefreshing {
-                    self.rotateRefreshIndicator(false)
+                    self?.rotateRefreshIndicator(false)
                 }
             }
-            .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
+            .bind(to: customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
             }
             .disposed(by: disposeBag)
         
         viewModel!.refreshing
             .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
-            .bind {
+            .bind { [weak self] in
                 refreshControl.endRefreshing()
-                self.rotateRefreshIndicator(false)
+                self?.rotateRefreshIndicator(false)
             }
             .disposed(by: disposeBag)
 
@@ -82,28 +82,31 @@ class PostListViewController: UIViewController {
         
         refreshControl.rx.controlEvent(.valueChanged)
             .debug()
-            .bind {
-                self.rotateRefreshIndicator(true)
-                self.viewModel!.reloadTrigger.onNext(.newer)
+            .withUnretained(self)
+            .bind { (owner, _) in
+                owner.rotateRefreshIndicator(true)
+                owner.viewModel!.reloadTrigger.onNext(.newer)
             }
             .disposed(by: disposeBag)
         
         // table view scroll 대응
-        self.customView.postListTableView.rx.didScroll
-            .bind {
-                if self.customView.postListTableView.contentOffset.y <= 100.adjustedHeight {
-                    self.customView.upperView.snp.updateConstraints {
-                        $0.height.equalTo(150.adjustedHeight - self.customView.postListTableView.contentOffset.y)
+        customView.postListTableView.rx.didScroll
+            .withUnretained(self)
+            .bind { (owner, _) in
+                if owner.customView.postListTableView.contentOffset.y <= 100.adjustedHeight {
+                    owner.customView.upperView.snp.updateConstraints {
+                        $0.height.equalTo(150.adjustedHeight - owner.customView.postListTableView.contentOffset.y)
                     }
                 }
             }
             .disposed(by: disposeBag)
         
         self.customView.postListTableView.rx.didEndDragging
-            .bind { _ in
-                if ((self.customView.postListTableView.contentOffset.y + self.customView.postListTableView.frame.size.height) >= self.customView.postListTableView.contentSize.height)
+            .withUnretained(self)
+            .bind { (owner, _) in
+                if ((owner.customView.postListTableView.contentOffset.y + owner.customView.postListTableView.frame.size.height) >= owner.customView.postListTableView.contentSize.height)
                 {
-                    self.viewModel!.reloadTrigger.onNext(.older)
+                    owner.viewModel!.reloadTrigger.onNext(.older)
                 }
             }
             .disposed(by: disposeBag)
@@ -111,14 +114,15 @@ class PostListViewController: UIViewController {
         // select row
         self.customView.postListTableView.rx
             .itemSelected
-            .bind {
-                if let cell = self.customView.postListTableView.cellForRow(at: $0) as? PostPreviewCell {
+            .withUnretained(self)
+            .bind { (owner, indexPath) in
+                if let cell = owner.customView.postListTableView.cellForRow(at: indexPath) as? PostPreviewCell {
                     let vc = PostViewController()
                     vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
-                    vc.title = self.boardName
+                    vc.title = owner.boardName
                     vc.postCell = cell
-                    self.customView.postListTableView.deselectRow(at: $0, animated: false)
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    owner.customView.postListTableView.deselectRow(at: indexPath, animated: false)
+                    owner.navigationController?.pushViewController(vc, animated: true)
                 }
             }
             .disposed(by: disposeBag)
@@ -126,23 +130,24 @@ class PostListViewController: UIViewController {
         // inputs
         self.navigationItem.leftBarButtonItem?
             .rx.tap
-            .bind { self.dismiss(animated: true, completion: nil) }
+            .bind { [weak self] in self?.dismiss(animated: true, completion: nil) }
             .disposed(by: disposeBag)
 
         self.customView.newPostButton
             .rx.tap
-            .bind {
+            .bind { [weak self] in
                 let vc = NewPostViewController()
-                self.navigationController?.pushViewController(vc, animated: true)
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
         
         // searching
         self.searchButton.rx.tap
-            .bind { _ in
+            .withUnretained(self)
+            .bind { (owner, _) in
                 let vc = PostSearchViewController()
-                vc.boardType = self.boardType
-                self.navigationController?.pushViewController(vc, animated: true)
+                vc.boardType = owner.boardType
+                owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
     }

@@ -41,7 +41,7 @@ class PostSearchViewController: UIViewController {
         // bind outputs
         viewModel!.searchedList
             .observe(on: MainScheduler.instance)
-            .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
+            .bind(to: customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
             }
             .disposed(by: disposeBag)

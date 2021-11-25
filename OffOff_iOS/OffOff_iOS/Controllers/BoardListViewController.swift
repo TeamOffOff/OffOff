@@ -29,7 +29,8 @@ class BoardListViewController: UIViewController {
         let viewModel = BoardListViewModel(searchText: self.customView.boardSearchView.rx.text.asObservable())
         
         viewModel.boardLists
-            .bind(to: self.customView.boardCollectionView.rx.items(cellIdentifier: BoardCollectionViewCell.identifier, cellType: BoardCollectionViewCell.self)) { (row, element, cell) in
+            .observe(on: MainScheduler.instance)
+            .bind(to: customView.boardCollectionView.rx.items(cellIdentifier: BoardCollectionViewCell.identifier, cellType: BoardCollectionViewCell.self)) { (row, element, cell) in
                 cell.titleLabel.text = element.name
                 cell.badge.isHidden = !element.newPost
             }.disposed(by: disposeBag)
@@ -37,28 +38,28 @@ class BoardListViewController: UIViewController {
 
         self.customView.boardCollectionView
             .rx.modelSelected(Board.self)
-            .bind {
+            .bind { [weak self] in
                 let vc = PostListViewController()
                 vc.boardType = $0.boardType
                 vc.boardName = $0.name
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
                 nav.navigationBar.setAppearance()
-                self.present(nav, animated: true, completion: nil)
+                self?.present(nav, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
         
         // bind result
         viewModel.isSearching
-            .bind {
-                self.customView.postListTableView.isHidden = !$0
-                self.customView.boardCollectionView.isHidden = $0
+            .bind { [weak self] in
+                self?.customView.postListTableView.isHidden = !$0
+                self?.customView.boardCollectionView.isHidden = $0
             }
             .disposed(by: disposeBag)
 
         viewModel.searchResults
             .observe(on: MainScheduler.instance)
-            .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
+            .bind(to: customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
             }
             .disposed(by: disposeBag)

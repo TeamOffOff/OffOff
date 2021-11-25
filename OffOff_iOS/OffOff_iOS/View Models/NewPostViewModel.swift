@@ -34,23 +34,24 @@ class NewPostViewModel {
         
         postCreated = input.createButtonTap.withLatestFrom(titleAndContent)
             .asObservable()
-            .do { _ in
-                self.isCreating.onNext(true)
+            .withUnretained(self)
+            .do { (owner, _) in
+                owner.isCreating.onNext(true)
             }
-            .flatMap { val -> Observable<PostModel?> in
+            .flatMap { (owner, val) -> Observable<PostModel?> in
                 if val.title == "" {
-                    self.isTitleConfirmed.onNext(false)
+                    owner.isTitleConfirmed.onNext(false)
                     return Observable.just(nil)
                 }
                 if val.content == "" {
-                    self.isContentConfiremd.onNext(false)
+                    owner.isContentConfiremd.onNext(false)
                     return Observable.just(nil)
                 }
                 
                 if Constants.currentBoard != nil && Constants.loginUser != nil {
                     var post = WritingPost(boardType: Constants.currentBoard!, author: Constants.loginUser!._id, title: val.title, content: val.content)
                     post.image = val.images.map { ImageObject(body: $0.toBase64String()) }
-                    print(#fileID, #function, #line, post.image.count)
+                    
                     if val.post != nil {
                         post._id = val.post!._id
                         post.author = val.post!.author._id!
