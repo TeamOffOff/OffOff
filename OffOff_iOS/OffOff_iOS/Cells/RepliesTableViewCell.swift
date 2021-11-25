@@ -161,25 +161,29 @@ class RepliesTableViewCell: UITableViewCell {
         self.disposeBag = DisposeBag()
 
         reply
+            .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
-            .bind {
+            .withUnretained(self)
+            .bind { (owner, reply) in
                 //            self.profileImageView.image =
-                self.nicknameLabel.text = $0!.author.nickname
-                self.dateLabel.text = $0!.date
-                self.contentTextView.text = $0!.content
-                self.likeLabel.label.text = "\($0!.likes.count)"
+                owner.nicknameLabel.text = reply!.author.nickname
+                owner.dateLabel.text = reply!.date
+                owner.contentTextView.text = reply!.content
+                owner.likeLabel.label.text = "\(reply!.likes.count)"
                 
-                if $0!.author.profileImage.count != 0 {
-                    self.profileImageView.image = $0!.author.profileImage.first!.body.toImage()
+                if reply!.author.profileImage.count != 0 {
+                    owner.profileImageView.image = reply!.author.profileImage.first!.body.toImage()
                 }
             }.disposed(by: disposeBag)
         
-        self.likeButton.rx.tap.withLatestFrom(reply)
+        likeButton.rx.tap.withLatestFrom(reply)
             .filter { $0 != nil }
             .flatMap {
                 ReplyServices.likeReply(reply: PostActivity(boardType: self.boardTpye!, _id: $0!._id, activity: "likes"))
             }
-            .do {
+            .observe(on: MainScheduler.instance)
+            .do { [weak self] in
+                guard let self = self else { return }
                 if $0 != nil {
                     self.activityAlert!("좋아요를 했습니다.")
                     self.reply.onNext($0)
@@ -187,37 +191,37 @@ class RepliesTableViewCell: UITableViewCell {
                     self.activityAlert!("이미 좋아요를 누른 댓글입니다.")
                 }
             }
-            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-            .bind { _ in
-                self.dismissAlert!(true)
-            }.disposed(by: self.disposeBag)
+            .delay(.seconds(1), scheduler: MainScheduler.instance)
+            .bind { [weak self] _ in
+                self?.dismissAlert!(true)
+            }.disposed(by: disposeBag)
         
-        self.menubutton.rx.tap.withLatestFrom(reply)
+        menubutton.rx.tap.withLatestFrom(reply)
             .filter { $0 != nil }
-            .bind {
-                self.showMenuAlert(reply: $0!)
+            .bind { [weak self] in
+                self?.showMenuAlert(reply: $0!)
             }
             .disposed(by: disposeBag)
         
-        Observable.combineLatest(self.isSubReplyInputting, self.reply)
+        Observable.combineLatest(isSubReplyInputting, reply)
             .map { one, two -> Bool in
                 if one == nil || two == nil {
                     return false
                 }
                 return one!._id == two!._id
             }
-            .bind {
+            .bind { [weak self] in
                 if $0 {
-                    self.containerView.backgroundColor = .w3
+                    self?.containerView.backgroundColor = .w3
                 } else {
-                    self.containerView.backgroundColor = .w2
+                    self?.containerView.backgroundColor = .w2
                 }
             }
             .disposed(by: disposeBag)
         
-        self.addSubReplyButton.rx.tap.withLatestFrom(self.reply)
-            .bind {
-                self.isSubReplyInputting.onNext($0)
+        addSubReplyButton.rx.tap.withLatestFrom(reply)
+            .bind { [weak self] in
+                self?.isSubReplyInputting.onNext($0)
             }
             .disposed(by: disposeBag)
     }
@@ -225,24 +229,28 @@ class RepliesTableViewCell: UITableViewCell {
     private func showMenuAlert(reply: Reply) {
         self.alertDisposeBag = DisposeBag()
         let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
-        let delete = UIAlertAction(title: "삭제", style: .default) { _ in
+        let delete = UIAlertAction(title: "삭제", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            
             let delReply = DeletingReply(_id: reply._id, postId: reply.postId, boardType: reply.boardType, author: reply.author._id!, isChildReply: false)
             ReplyServices.deleteReply(reply: delReply)
+                .observe(on: MainScheduler.instance)
                 .filter { $0 != nil }
-                .do {
-                    self.activityAlert!("댓글을 삭제했습니다.")
+                .withUnretained(self)
+                .do { (owner, replyList) in
+                    owner.activityAlert!("댓글을 삭제했습니다.")
                     var replies = [Reply]()
-                    $0!.forEach {
+                    replyList!.forEach {
                         replies.append($0)
                         if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
                             replies.append(contentsOf: $0.childrenReplies!)
                         }
                     }
-                    self.replies.onNext(replies)
+                    owner.replies.onNext(replies)
                 }
                 .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-                .bind { _ in
-                    self.dismissAlert!(true)
+                .bind { (owner, _) in
+                    owner.dismissAlert!(true)
                 }
                 .disposed(by: self.alertDisposeBag)
         }

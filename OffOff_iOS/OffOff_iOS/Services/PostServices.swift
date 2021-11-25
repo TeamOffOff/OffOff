@@ -16,6 +16,7 @@ public class PostServices {
     static func fetchPost(content_id: String, board_type: String) -> Observable<PostModel?> {
         PostServices.provider
             .rx.request(.getPost(content_id: content_id, board_type: board_type))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -30,8 +31,10 @@ public class PostServices {
     static func createPost(post: WritingPost) -> Observable<PostModel?> {
         PostServices.provider
             .rx.request(.makePost(post: post))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
+                print($0)
                 if $0.statusCode == 200 {
                     let post = try JSONDecoder().decode(PostModel.self, from: $0.data)
                     return post
@@ -44,6 +47,7 @@ public class PostServices {
     static func deletePost(post: DeletingPost) -> Observable<Bool> {
         PostServices.provider
             .rx.request(.deletePost(post: post))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -56,6 +60,7 @@ public class PostServices {
     static func likePost(post: PostActivity) -> Observable<PostModel?> {
         PostServices.provider
             .rx.request(.likePost(post: post))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -76,6 +81,7 @@ public class PostServices {
     static func modifyPost(post: WritingPost) -> Observable<PostModel?> {
         PostServices.provider
             .rx.request(.modifyPost(post: post))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {

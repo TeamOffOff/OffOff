@@ -88,6 +88,7 @@ class NewPostViewController: UIViewController {
     
         // bind results
         self.viewModel.isCreating
+            .observe(on: MainScheduler.instance)
             .bind {
                 if $0 {
                     LoadingHUD.show()
@@ -200,6 +201,7 @@ class NewPostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.postCreated
+            .observe(on: MainScheduler.instance)
             .do { [weak self] _ in self?.viewModel.isCreating.onNext(false) }
             .filter { $0 != nil }
             .map { $0! }
@@ -213,12 +215,12 @@ class NewPostViewController: UIViewController {
                 } else {
                     if let naviVC = owner.presentingViewController as? UINavigationController {
                         if let postVC = naviVC.topViewController as? PostViewController {
-                            postVC.postInfo = (id: model._id!, type: model.boardType)
+                            owner.dismiss(animated: true)
+//                            postVC.viewModel.post.onNext(model)
+//                            postVC.postInfo = (id: model._id!, type: model.boardType)
                             postVC.viewModel.reloadPost(contentId: model._id!, boardType: model.boardType)
                         }
                     }
-                    
-                    owner.dismiss(animated: true)
                 }
             })
             .disposed(by: disposeBag)

@@ -16,6 +16,7 @@ class SubReplyServices {
     static func writeSubReply(writingSubReply: WritingReply) -> Observable<[Reply]?> {
         SubReplyServices.provider
             .rx.request(.writeSubReply(subReply: writingSubReply))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -34,6 +35,7 @@ class SubReplyServices {
     static func deleteSubReply(deletingSubReply: DeletingSubReply) -> Observable<[Reply]?> {
         SubReplyServices.provider
             .rx.request(.deleteSubReply(subReply: deletingSubReply))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -52,6 +54,7 @@ class SubReplyServices {
     static func likeSubReply(likeSubReply: PostActivity) -> Observable<Reply?> {
         SubReplyServices.provider
             .rx.request(.likeSubReply(subReply: likeSubReply))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {

@@ -28,10 +28,11 @@ class PostSearchViewModel {
         searchedList = searchingText
             .skip(1)
             .flatMap { [weak self] key -> Observable<[PostModel]> in
+                guard let self = self else { return Observable.just([]) }
                 if key == "" {
                     return Observable.just([])
                 }
-                return SearchServices.searchPosts(in: boardType, key: key, standardId: self?.standardId)
+                return SearchServices.searchPosts(in: boardType, key: key, standardId: self.standardId)
                     .filter { $0 != nil }
                     .map {
                         $0!.postList

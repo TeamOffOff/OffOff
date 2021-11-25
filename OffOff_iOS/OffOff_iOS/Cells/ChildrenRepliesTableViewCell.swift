@@ -188,6 +188,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
                 SubReplyServices.likeSubReply(likeSubReply: PostActivity(boardType: owner.boardTpye!, _id: reply!._id, activity: "likes"))
             }
             .withUnretained(self)
+            .observe(on: MainScheduler.instance)
             .do { (owner, reply) in
                 if reply != nil {
                     owner.activityAlert!("좋아요를 했습니다.")
@@ -220,6 +221,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
             
             SubReplyServices.deleteSubReply(deletingSubReply: delReply)
                 .filter { $0 != nil }
+                .observe(on: MainScheduler.instance)
                 .withUnretained(self)
                 .do { (owner, replyList) in
                     owner.activityAlert!("댓글을 삭제했습니다.")

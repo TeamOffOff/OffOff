@@ -147,6 +147,7 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.post
+            .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
             .withUnretained(self)
             .bind { (owner, model) in
@@ -188,10 +189,11 @@ class PostViewController: UIViewController {
                 cell.image.onNext(item.body.toImage())
                 return cell
             }
-            .disposed(by: self.disposeBag)
+            .disposed(by: disposeBag)
         
         
         viewModel.postDeleted
+            .observe(on: MainScheduler.instance)
             .filter { $0 }
             .withUnretained(self)
             .bind { (owner, _) in
@@ -203,6 +205,7 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.liked
+            .observe(on: MainScheduler.instance)
             .skip(1)
             .withUnretained(self)
             .do { (owner, bool) in
@@ -219,6 +222,7 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.replies
+            .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
             .map { $0! }
             .withUnretained(self)
@@ -231,7 +235,7 @@ class PostViewController: UIViewController {
                 guard let self = self else { return UITableViewCell() }
                 if item.parentReplyId != nil {
                     let cell = tv.dequeueReusableCell(withIdentifier: ChildrenRepliesTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! ChildrenRepliesTableViewCell
-                    
+                    cell.containerView.backgroundColor = .w2
                     cell.boardTpye = self.postInfo?.type
                     cell.reply.onNext(item)
                     cell.activityAlert = self.activityAlert
@@ -241,6 +245,7 @@ class PostViewController: UIViewController {
                     return cell
                 } else {
                     let cell = tv.dequeueReusableCell(withIdentifier: RepliesTableViewCell.identifier, for: IndexPath(row: row, section: 0)) as! RepliesTableViewCell
+                    cell.containerView.backgroundColor = .w2
                     cell.isSubReplyInputting = self.viewModel.isSubReplyInputting
                     cell.boardTpye = self.postInfo?.type
                     cell.reply.onNext(item)
@@ -255,6 +260,7 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isSubReplyInputting
+            .observe(on: MainScheduler.instance)
             .withUnretained(self)
             .bind { (owner, bool) in
                 if bool != nil {
@@ -267,6 +273,7 @@ class PostViewController: UIViewController {
         
         let alert = UIAlertController(title: "댓글이 등록됐습니다.", message: nil, preferredStyle: .alert)
         viewModel.replyAdded
+            .observe(on: MainScheduler.instance)
             .filter { $0 }
             .withUnretained(self)
             .do { (owner, bool) in

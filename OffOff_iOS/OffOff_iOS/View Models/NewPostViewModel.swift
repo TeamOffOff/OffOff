@@ -34,6 +34,7 @@ class NewPostViewModel {
         
         postCreated = input.createButtonTap.withLatestFrom(titleAndContent)
             .asObservable()
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .withUnretained(self)
             .do { (owner, _) in
                 owner.isCreating.onNext(true)
@@ -51,7 +52,6 @@ class NewPostViewModel {
                 if Constants.currentBoard != nil && Constants.loginUser != nil {
                     var post = WritingPost(boardType: Constants.currentBoard!, author: Constants.loginUser!._id, title: val.title, content: val.content)
                     post.image = val.images.map { ImageObject(body: $0.toBase64String()) }
-                    
                     if val.post != nil {
                         post._id = val.post!._id
                         post.author = val.post!.author._id!

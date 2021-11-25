@@ -140,6 +140,7 @@ class PostPreviewCell: UITableViewCell {
         disposeBag = DisposeBag()
         
         postModel
+            .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
             .withUnretained(self)
             .bind { (owner, post) in

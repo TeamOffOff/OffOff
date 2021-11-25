@@ -42,12 +42,12 @@ class PostViewModel {
             }.disposed(by: disposeBag)
         
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
-            .bind(to: post)
+            .bind { self.post.onNext($0) }
             .disposed(by: disposeBag)
         
         
-        
         postDeleted = Observable.combineLatest(post, deleteButtonTapped)
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .filter { $0.1 != nil && $0.0 != nil }
             .flatMap { val -> Observable<Bool> in
                 if val.0!.author._id == val.1!._id {
@@ -57,26 +57,8 @@ class PostViewModel {
                 }
             }
         
-//        likeButtonTapped
-//            .bind { val in
-//                if val != nil {
-//                    let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
-//                    self.activityDisposeBag = DisposeBag()
-//                    PostServices.likePost(post: post).bind {
-//                        if $0 != nil {
-//                            self.post.onNext($0)
-//                            self.liked.onNext(true)
-//                            val!.cell.postModel.accept($0)
-//                        } else {
-//                            self.liked.onNext(false)
-//                        }
-//
-//                    }.disposed(by: self.activityDisposeBag)
-//                }
-//            }
-//            .disposed(by: disposeBag)
-        
         likeButtonTapped
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .flatMap { val -> Observable<(PostModel?, PostLikeModel?)> in
                 if val != nil {
                     let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
@@ -95,26 +77,6 @@ class PostViewModel {
                 }
             }
             .disposed(by: disposeBag)
-        
-//        var cell: PostPreviewCell?
-//        likeButtonTapped
-//            .filter { $0 != nil }
-//            .do { cell = $0!.cell }
-//            .flatMap { val -> Observable<PostModel?> in
-//                let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
-//                self.activityDisposeBag = DisposeBag()
-//                return PostServices.likePost(post: post)
-//            }
-//            .bind {
-//                if $0 != nil {
-//                    self.post.onNext($0)
-//                    self.liked.onNext(true)
-//                    cell!.postModel.accept($0)
-//                } else {
-//                    self.liked.onNext(false)
-//                }
-//            }
-//            .disposed(by: disposeBag)
 
         replyButtonTapped
             .filter { $0.content != "" }
@@ -156,7 +118,7 @@ class PostViewModel {
     func reloadPost(contentId: String, boardType: String) {
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
             .do { [weak self] _ in self?.refreshing.onNext(()) }
-            .bind(to: post)
+            .bind { [weak self] in self?.post.onNext($0) }
             .disposed(by: disposeBag)
     }
     
