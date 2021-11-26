@@ -55,3 +55,18 @@ def get_image(img_key_list: list, directory: str, img_size: str = "origin"): # "
         })
 
     return img_list
+
+
+def delete_image(img_key_list: list, directory: str):
+    possible_size = ["origin", "200", "600"]
+
+    try:
+        for img_key in img_key_list:
+            for img_size in possible_size:
+                if img_size == "origin":
+                    s3.Object(bucket.name, directory + "/" + img_key).delete()
+                else:
+                    s3.Object(resize_bucket.name, directory + "/" + img_size + "/" + img_key).delete()
+            print(f"Image <{img_key}> have been deleted")
+    except Exception as e:
+        print(f"Images do not be deleted by exception: {e}")
