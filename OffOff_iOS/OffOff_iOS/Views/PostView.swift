@@ -279,7 +279,7 @@ class ImageTableViewCell: UITableViewCell {
     private func setData() {
         disposeBag = DisposeBag()
         
-        self.image
+        image
             .bind { [weak self] image in
                 if image != nil {
                     self?.imageView?.image = image!

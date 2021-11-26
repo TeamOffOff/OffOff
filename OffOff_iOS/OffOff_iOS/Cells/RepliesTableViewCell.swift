@@ -227,7 +227,7 @@ class RepliesTableViewCell: UITableViewCell {
     }
     
     private func showMenuAlert(reply: Reply) {
-        self.alertDisposeBag = DisposeBag()
+        alertDisposeBag = DisposeBag()
         let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
         let delete = UIAlertAction(title: "삭제", style: .default) { [weak self] _ in
             guard let self = self else { return }

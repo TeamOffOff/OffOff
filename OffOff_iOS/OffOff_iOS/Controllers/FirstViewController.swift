@@ -34,6 +34,7 @@ class FirstViewController: UIViewController {
     }
     
     private func loginCheck() {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate
         if let token = KeyChainController.shared.read(Constants.ServiceString, account: "AccessToken") {
             print("Auto logined... token:", token)
             UserServices.getUserInfo()
@@ -41,21 +42,22 @@ class FirstViewController: UIViewController {
                 .observe(on: MainScheduler.instance)
                 .withUnretained(self)
                 .bind { (owner, info) in
+                    var targetVC: UIViewController?
+                    
                     if info != nil {
                         Constants.loginUser = info
-                        let vc = TabBarController()
-                        vc.modalPresentationStyle = .fullScreen
-                        owner.present(vc, animated: false)
+                        targetVC = TabBarController()
+                    } else {
+                        targetVC = LoginViewController()
                     }
-                    let vc = LoginViewController()
-                    vc.modalPresentationStyle = .fullScreen
-                    owner.present(vc, animated: false)
+                    targetVC!.modalPresentationStyle = .fullScreen
+                    sceneDelegate.window?.rootViewController = targetVC!
                 }
                 .disposed(by: disposeBag)
         } else {
             let vc = LoginViewController()
             vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: false)
+            sceneDelegate.window?.rootViewController = vc
         }
     }
 }

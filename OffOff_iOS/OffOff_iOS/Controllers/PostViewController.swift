@@ -24,7 +24,7 @@ class PostViewController: UIViewController {
     lazy var items = [editButton, deleteButton]
     var rightButtonsDisposeBag = DisposeBag()
     
-    var postCell: PostPreviewCell?
+    unowned var postCell: PostPreviewCell?
     
     var replyCellHeight = 125.0
     
@@ -88,7 +88,7 @@ class PostViewController: UIViewController {
         self.view.addSubview(loadingImageView)
         self.makeView()
         
-        replyTextView.delegate = self
+        replyTextView.rx.setDelegate(self).disposed(by: disposeBag)
         replyTextViewSetUp()
         
         //        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
@@ -434,7 +434,7 @@ class PostViewController: UIViewController {
     
     private func deletingConfirmAlert() {
         let alert = UIAlertController(title: "정말 삭제하시겠습니까??", message: nil, preferredStyle: .alert)
-        let ok = UIAlertAction(title: "예", style: .default) { _ in self.viewModel.deleteButtonTapped.onNext(Constants.loginUser) }
+        let ok = UIAlertAction(title: "예", style: .default) { [weak self] _ in self?.viewModel.deleteButtonTapped.onNext(Constants.loginUser) }
         let cancel = UIAlertAction(title: "취소", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
         alert.addAction(ok)
         alert.addAction(cancel)

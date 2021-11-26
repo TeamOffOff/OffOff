@@ -24,40 +24,42 @@ class PostListViewModel {
     
     init(boardType: String) {
         self.boardType = boardType
-        fetchPostList(boardType: self.boardType)
+        fetchPostList(boardType: boardType)
         
-        self.reloadTrigger
+        reloadTrigger
             .debug()
-            .flatMapLatest { type -> Observable<PostList?> in
+            .withUnretained(self)
+            .flatMapLatest { (owner, type) -> Observable<PostList?> in
                 switch type {
                 case .newer:
-                    self.refreshing.onNext(())
-                    return BoardServices.fetchPostList(board_type: boardType, firstPostId: self.postList.value.first!._id)
+                    owner.refreshing.onNext(())
+                    return BoardServices.fetchPostList(board_type: boardType, firstPostId: owner.postList.value.first!._id)
                 case .older:
-                    self.refreshing.onNext(())
-                    return BoardServices.fetchPostList(board_type: boardType, lastPostId: self.lastPostId)
+                    owner.refreshing.onNext(())
+                    return BoardServices.fetchPostList(board_type: boardType, lastPostId: owner.lastPostId)
                 }
             }
             .filter { $0 != nil }
-            .bind {
+            .withUnretained(self)
+            .bind { (owner, postList) in
                 var list: [PostModel] = []
                 
-                if $0?.lastPostId != nil {
-                    self.lastPostId = $0?.lastPostId
-                    list = self.postList.value + ($0?.postList ?? [])
+                if postList?.lastPostId != nil {
+                    owner.lastPostId = postList?.lastPostId
+                    list = owner.postList.value + (postList?.postList ?? [])
                 } else {
-                    list = ($0?.postList ?? []) + self.postList.value
+                    list = (postList?.postList ?? []) + owner.postList.value
                 }
                 
-                self.postList.accept(list)
+                owner.postList.accept(list)
             }
             .disposed(by: disposeBag)
     }
     
     public func fetchPostList(boardType: String) {
         BoardServices.fetchPostList(board_type: boardType)
-            .map {
-                self.lastPostId = $0?.lastPostId
+            .map { [weak self] in
+                self?.lastPostId = $0?.lastPostId
                 return $0?.postList ?? []
             }
             .bind(to: postList)

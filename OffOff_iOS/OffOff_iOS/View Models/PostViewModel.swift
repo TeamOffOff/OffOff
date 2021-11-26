@@ -42,7 +42,7 @@ class PostViewModel {
             }.disposed(by: disposeBag)
         
         PostServices.fetchPost(content_id: contentId, board_type: boardType)
-            .bind { self.post.onNext($0) }
+            .bind { [weak self] in self?.post.onNext($0) }
             .disposed(by: disposeBag)
         
         

@@ -5,8 +5,6 @@
 //  Created by Lee Nam Jun on 2021/07/05.
 //
 
-// TODO: - 맨 위, 맨 아래로 스크롤 해서 새로운 데이터 로딩
-
 import UIKit
 import RxSwift
 
@@ -21,6 +19,8 @@ class PostListViewController: UIViewController {
     
     let searchButton = UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
     let menuButton = UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    
+    var postViewController = PostViewController()
     
     override func loadView() {
         self.view = customView
@@ -110,19 +110,19 @@ class PostListViewController: UIViewController {
                 }
             }
             .disposed(by: disposeBag)
-        
+    
         // select row
         self.customView.postListTableView.rx
             .itemSelected
             .withUnretained(self)
             .bind { (owner, indexPath) in
                 if let cell = owner.customView.postListTableView.cellForRow(at: indexPath) as? PostPreviewCell {
-                    let vc = PostViewController()
-                    vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
-                    vc.title = owner.boardName
-                    vc.postCell = cell
+                    
+                    owner.postViewController.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
+                    owner.postViewController.title = owner.boardName
+                    owner.postViewController.postCell = cell
                     owner.customView.postListTableView.deselectRow(at: indexPath, animated: false)
-                    owner.navigationController?.pushViewController(vc, animated: true)
+                    owner.navigationController?.pushViewController(owner.postViewController, animated: true)
                 }
             }
             .disposed(by: disposeBag)
