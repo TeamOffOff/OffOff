@@ -153,8 +153,11 @@ class PostListControl(Resource):
             else:  # 인기게시판 이외의 게시판
                 for post in total_list:
                     post["_id"] = str(post["_id"])
+                    # print(post["_id"])
                     post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-                    post["image"] = get_image(post["image"], "post", "200")                
+                    # print(post["image"])
+                    post["image"] = get_image(post["image"], "post", "200") 
+               
 
                     if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
                         post["author"]["nickname"] = "익명"

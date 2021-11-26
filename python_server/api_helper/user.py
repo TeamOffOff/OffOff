@@ -281,15 +281,21 @@ class AuthRegister(Resource):
                 board_type = reply["boardType"] + "_board_reply"
                 reply_id = reply["replyId"]
                 print(board_type, reply_id)
-                alert_delete = {
-                    "author": None
-                }
-                # childrenReply를 어떻게 할 것인가!!!!
-                # author = null로 변경
-                reply_change_result = mongodb.update_one(
-                    query={"_id": ObjectId(reply_id)}, 
-                    collection_name=board_type, 
-                    modify={"$set": alert_delete})
+                alert_delete = { # author = null로 변경
+                        "author": None
+                    }
+                if not ("_" in reply_id): # 댓글인 경우
+                    reply_change_result = mongodb.update_one(
+                        query={"_id": ObjectId(reply_id)}, 
+                        collection_name=board_type, 
+                        modify={"$set": alert_delete})
+                else : # childrenReply를 어떻게 할 것인가!!!!
+                    parent_reply_id = reply_id.split("_")[0]
+
+                    reply_change_result = mongodb.update_one(
+                        query={"_id": ObjectId(parent_reply_id)}, 
+                        collection_name=board_type, 
+                        modify={"$set": {"childrenReplies.$[elem].author": None}}, array_filters=[{"elem._id":reply_id}])
 
                 if reply_change_result.raw_result["n"] == 0:
                     response_result = make_response({"queryStatus": "author information change fail"}, 500)
