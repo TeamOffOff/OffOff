@@ -310,6 +310,10 @@ class AuthRegister(Resource):
                 response_result = make_response({"queryStatus": "calendar delete fail"}, 500)
                 return response_result
 
+        # profileImage 삭제
+        user_image = mongodb.find_one(query={"_id": user_id}, collection_name="user")["subInformation"]["profileImage"]
+        delete_image(user_image, "user")
+
         # 탈퇴하기
         result = mongodb.delete_one(query={"_id": user_id}, collection_name="user")
 

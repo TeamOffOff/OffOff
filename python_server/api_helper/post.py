@@ -82,6 +82,10 @@ class PostControl(Resource):
         # db 컬랙션 명으로 변경
         board_type = board_type + "_board"
 
+        # 게시글 이미지 삭제를 위한 이미지 key 정보 불러오기
+        post_img_key = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)["image"]
+        delete_image(post_img_key, "post")
+
         # 게시글 삭제
         result = mongodb.delete_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
 
