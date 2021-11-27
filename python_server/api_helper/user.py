@@ -1,5 +1,6 @@
 from flask import request, render_template
 from flask.helpers import make_response
+from pymongo.message import delete
 from flask_jwt_extended.utils import get_jwt
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
@@ -8,7 +9,7 @@ from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from api_helper.utils  import GMAIL_ID, SEND_MAIL_API
 from controller.email import send_email
-from controller.image import save_image, get_image
+from controller.image import delete_image, save_image, get_image
 from controller.filter import check_duplicate, check_jwt
 
 import mongo as mongo
