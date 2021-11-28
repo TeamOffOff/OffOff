@@ -2,22 +2,22 @@ package com.yuuuzzzin.offoff_android.views.ui.member
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.yuuuzzzin.offoff_android.MainActivity
 import com.yuuuzzzin.offoff_android.OffoffApplication
+import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityLoginBinding
 import com.yuuuzzzin.offoff_android.utils.Constants.toast
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showCustomOneTextDialog
+import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
 
-    private var mBinding: ActivityLoginBinding? = null
-    private val binding get() = mBinding!!
-    private val loginViewModel: LoginViewModel by viewModels()
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +27,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-
-        mBinding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.lifecycleOwner = this
 
         binding.btSignup.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
@@ -45,18 +41,24 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initViewModel() {
 
-        binding.viewModel = loginViewModel
+        binding.viewModel = viewModel
 
-        loginViewModel.alertMsg.observe(this, { event ->
+        viewModel.loading.observe(binding.lifecycleOwner!!, {
+            binding.layoutProgress.root.visibility = View.VISIBLE
+        })
+
+        viewModel.alertMsg.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
+                binding.layoutProgress.root.visibility = View.GONE
                 showCustomOneTextDialog(this, it, "확인")
             }
         })
 
-        loginViewModel.loginSuccess.observe(this, { event ->
+        viewModel.loginSuccess.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
+//                binding.layoutProgress.root.visibility = View.GONE
+
                 val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("id", it)
                 startActivity(intent)
                 finish()
 

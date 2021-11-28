@@ -1,5 +1,7 @@
 package com.yuuuzzzin.offoff_android.views.ui
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -7,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.fragment.app.DialogFragment
 import com.yuuuzzzin.offoff_android.R
 
 class LoadingDialog(context: Context) : Dialog(context) {
@@ -26,3 +29,30 @@ class LoadingDialog(context: Context) : Dialog(context) {
         iv.startAnimation(rotateAnimation)
     }
 }
+
+//class LoadingDialog : DialogFragment() {
+//
+//    @SuppressLint("InflateParams")
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//        return activity?.let {
+//            val builder = AlertDialog.Builder(it)
+//            val inflater = requireActivity().layoutInflater;
+//
+//            builder.setView(inflater.inflate(R.layout.dialog_loading, null))
+//            builder.create()
+//
+//        } ?: throw IllegalStateException("Activity cannot be null")
+//    }
+//}
+
+//    override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
+//        return activity?.let {
+//            val builder = AlertDialog.Builder(it)
+//            val inflater = requireActivity().layoutInflater;
+//
+//            builder.setView(inflater.inflate(R.layout.dialog_loading, null))
+//            builder.create()
+//
+//        } ?: throw IllegalStateException("Activity cannot be null")
+//    }
+//}
