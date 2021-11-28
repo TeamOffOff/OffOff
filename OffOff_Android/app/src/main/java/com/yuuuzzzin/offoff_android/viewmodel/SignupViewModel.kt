@@ -90,6 +90,9 @@ constructor(
     private val _isNicknameError = MutableLiveData<String>()
     val isNicknameError: LiveData<String> get() = _isNicknameError
 
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
+
     // 회원가입 단계별 성공 여부
     private val _step1Success = combine(
         isIdVerified.asFlow(),
@@ -240,19 +243,22 @@ constructor(
     }
 
     fun signup(encodedString: String?) {
-//        var image: Image?
-//        if(encodedString != null) {
-//            image = Image(null, encodedString)
-//        } else {
-//            image = Image(null, null)
-//        }
+
+        _loading.postValue(Event(true))
+
+        val profile = mutableListOf<Image>()
+        if(encodedString != null) {
+            profile.add(Image(null, encodedString))
+        }
 
         val user = User(
             id = userId, password = userPw,
             Info(name = userName, email = userEmail, birth = userBirth),
-            SubInfo(nickname = userNickname, profile = listOf(Image(null, encodedString))),
+            SubInfo(nickname = userNickname, profile = profile),
             Activity()
         )
+
+        Log.d("tag_user", user.toString())
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.signup(user).let { response ->

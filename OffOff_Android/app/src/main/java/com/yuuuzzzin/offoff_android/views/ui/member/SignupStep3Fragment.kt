@@ -15,6 +15,7 @@ import com.yuuuzzzin.offoff_android.utils.Constants.toast
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.bitmapToString
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.uriToBitmap
 import com.yuuuzzzin.offoff_android.utils.base.BaseSignupFragment
+import com.yuuuzzzin.offoff_android.views.ui.LoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -23,6 +24,7 @@ class SignupStep3Fragment :
     BaseSignupFragment<FragmentSignupStep3Binding>(R.layout.fragment_signup_step3) {
 
     private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
+    private lateinit var loadingDialog: LoadingDialog
     private var bitmap: Bitmap? = null
     private var profileImageSet: Boolean = false
 
@@ -42,6 +44,8 @@ class SignupStep3Fragment :
     }
 
     override fun initView() {
+
+        loadingDialog = LoadingDialog(this@SignupStep3Fragment.requireContext())
 
         binding.ivPhoto.clipToOutline = true
 
@@ -86,51 +90,23 @@ class SignupStep3Fragment :
             }
         })
 
+        signupViewModel.loading.observe(binding.lifecycleOwner!!, {
+            loadingDialog.show()
+        })
+
+        signupViewModel.step3Success.observe(binding.lifecycleOwner!!, {
+            loadingDialog.dismiss()
+            requireActivity().finish()
+            requireContext().toast("가입이 완료되었습니다.")
+        })
+
         // signup 액티비티 종료
         binding.btSignup.setOnClickListener {
             if (bitmap != null)
                 signupViewModel.signup(bitmapToString(bitmap!!))
             else
                 signupViewModel.signup(null)
-            requireActivity().finish()
-            requireContext().toast("가입이 완료되었습니다.")
         }
-    }
 
-//    private fun showProfileDialog() {
-//
-//        val array = arrayOf(
-//            Constants.PROFILE_OPTION1,
-//            Constants.PROFILE_OPTION2,
-//            Constants.PROFILE_OPTION3
-//        )
-//        val builder = AlertDialog.Builder(mContext)
-//
-//        builder.setItems(array) { _, which ->
-//            val selected = array[which]
-//
-//            try {
-//                when (selected) {
-//                    // 사진 찍기
-//                    Constants.PROFILE_OPTION1 -> {
-//                        true
-//                    }
-//                    // 앨범에서 가져오기
-//                    Constants.PROFILE_OPTION2 -> {
-//                        true
-//                    }
-//                    // 취소
-//                    Constants.PROFILE_OPTION3 -> {
-//                        true
-//                    }
-//                }
-//
-//            } catch (e: IllegalArgumentException) {
-//
-//            }
-//        }
-//
-//        val dialog = builder.create()
-//        dialog.show()
-//    }
+    }
 }
