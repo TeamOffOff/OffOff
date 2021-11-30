@@ -1,8 +1,10 @@
-import boto3
 import base64
+import time
 import uuid
 
+import boto3
 from api_helper.utils import *
+from botocore.exceptions import ClientError
 
 s3 = boto3.resource("s3",
                     aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -19,6 +21,7 @@ def save_image(img_list: list, directory: str):
     if not img_list:
         return None
 
+    img_key = ""
     for img in img_list:
         img_key = str(uuid.uuid4()) + ".jpg"
         key_list.append(img_key)
@@ -28,7 +31,21 @@ def save_image(img_list: list, directory: str):
         img_obj = s3.Object(bucket.name, directory + "/" + img_key)
 
         img_obj.put(Body=img_body)
-        print("Image Saved")
+
+    while True:
+        try:
+            _ = s3.Object(resize_bucket.name, directory + "/600/" + img_key).load()
+            print("check image saved...")
+            break
+        except ClientError as e:
+            if e.response['Error']['Code'] == "404":
+                time.sleep(0.2)
+                print("image have been not saved yet")
+                continue
+            else:
+                print(e)
+
+    print("Image Saved")
 
     return key_list
 
