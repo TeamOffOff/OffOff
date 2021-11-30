@@ -44,10 +44,24 @@ interface MemberService {
         @Header("Authorization") auth: String
     ): Response<UserInfo>
 
+    /* 회원정보 수정 */
+    @PUT("user/register")
+    suspend fun editProfile(
+        @Header("Authorization") auth: String,
+        @Body userInfo: UserInfo
+    ): Response<UserInfo>
+
     /* 비밀번호 변경 */
     @PUT("user/register")
     suspend fun changePw(
         @Header("Authorization") auth: String,
         @Body password: String
     ): Response<ResultResponse>
+
+    /* 회원 탈퇴 */
+    @HTTP(method = "DELETE", path = "user/register", hasBody = true)
+    suspend fun unregister(
+        @Header("Authorization") auth: String,
+    ): Response<ResultResponse>
+
 }
