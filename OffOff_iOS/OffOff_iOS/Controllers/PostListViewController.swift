@@ -12,6 +12,7 @@ class PostListViewController: UIViewController {
     var boardType: String?
     var boardName: String?
     
+    let activityNames = ["내가 쓴 글", "댓글 단 글", "스크랩한 글"]
     let customView = PostListView()
     
     let disposeBag = DisposeBag()
@@ -43,11 +44,14 @@ class PostListViewController: UIViewController {
         // view model
         viewModel = PostListViewModel(boardType: boardType ?? "")
 
+        
         // tableview refresh control
         let refreshControl = UIRefreshControl()
-        self.customView.postListTableView.refreshControl = refreshControl
-        refreshControl.tintColor = .clear
-        
+        if !activityNames.contains(boardName ?? "") {
+            self.customView.postListTableView.refreshControl = refreshControl
+            refreshControl.tintColor = .clear
+        }
+    
         Constants.currentBoard = self.boardType
         
         // bind result
@@ -103,6 +107,7 @@ class PostListViewController: UIViewController {
         
         self.customView.postListTableView.rx.didEndDragging
             .withUnretained(self)
+            .filter { (owner, _) in !owner.activityNames.contains(owner.boardName ?? "") }
             .bind { (owner, _) in
                 if ((owner.customView.postListTableView.contentOffset.y + owner.customView.postListTableView.frame.size.height) >= owner.customView.postListTableView.contentSize.height)
                 {

@@ -12,14 +12,21 @@ import RxCocoa
 
 class MyActivityViewModel {
     
+    var viewControllerToOpen: Observable<UIViewController>
     
     init(
         alertListTapped: ControlEvent<()>,
-        myPostTapped: ControlEvent<()>,
-        myReplyTapped: ControlEvent<()>,
-        scrapTapped: ControlEvent<()>,
+        myPostTapped: Observable<String>,
+        myReplyTapped: Observable<String>,
+        scrapTapped: Observable<String>,
         messageTapped: ControlEvent<()>
     ) {
-     
+        viewControllerToOpen = Observable.merge(myPostTapped, myReplyTapped, scrapTapped)
+            .map {
+                let vc = PostListViewController()
+                vc.boardType = $0
+                vc.boardName = $0
+                return vc
+            }
     }
 }

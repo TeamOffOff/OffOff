@@ -27,7 +27,6 @@ class PostListViewModel {
         fetchPostList(boardType: boardType)
         
         reloadTrigger
-            .debug()
             .withUnretained(self)
             .flatMapLatest { (owner, type) -> Observable<PostList?> in
                 switch type {
@@ -57,13 +56,22 @@ class PostListViewModel {
     }
     
     public func fetchPostList(boardType: String) {
-        BoardServices.fetchPostList(board_type: boardType)
-            .map { [weak self] in
-                self?.lastPostId = $0?.lastPostId
-                return $0?.postList ?? []
-            }
-            .bind(to: postList)
-            .disposed(by: disposeBag)
+        if let type = ActivityTypes(rawValue: boardType) {
+            UserServices.getMyActivies(type: type)
+                .map {
+                    return $0?.postList ?? []
+                }
+                .bind(to: postList)
+                .disposed(by: disposeBag)
+        } else {
+            BoardServices.fetchPostList(board_type: boardType)
+                .map { [weak self] in
+                    self?.lastPostId = $0?.lastPostId
+                    return $0?.postList ?? []
+                }
+                .bind(to: postList)
+                .disposed(by: disposeBag)
+        }
     }
 }
 

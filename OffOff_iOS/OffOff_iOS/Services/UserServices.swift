@@ -21,14 +21,14 @@ public class UserServices {
     struct LoginResponse: Codable {
         var accessToken: String
         var refreshToken: String
-//        var queryStatus: String
+        //        var queryStatus: String
         var user: UserModel
         
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(accessToken, forKey: .accessToken)
             try container.encode(refreshToken, forKey: .refreshToken)
-//            try container.encode(queryStatus, forKey: .queryStatus)
+            //            try container.encode(queryStatus, forKey: .queryStatus)
             try container.encode(user, forKey: .user)
         }
     }
@@ -57,8 +57,8 @@ public class UserServices {
                 .asObservable()
                 .map {
                     return $0.statusCode == 200
-//                    let result = try JSONDecoder().decode(Validation.self, from: $0.data)
-//                    return result.message == "possible"
+                    //                    let result = try JSONDecoder().decode(Validation.self, from: $0.data)
+                    //                    return result.message == "possible"
                 }
                 .catchAndReturn(false)
         } else {
@@ -77,7 +77,7 @@ public class UserServices {
                     return result.queryStatus == "possible"
                 }
                 .catchAndReturn(false)
-                
+            
         } else {
             return Observable.just(false)
         }
@@ -104,8 +104,8 @@ public class UserServices {
                     let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
                     KeyChainController.shared.create(Constants.ServiceString, account: "AccessToken", value: response.accessToken)
                     KeyChainController.shared.create(Constants.ServiceString, account: "RefreshToken", value: response.refreshToken)
-//                    UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
-//                    UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
+                    //                    UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
+                    //                    UserDefaults.standard.set(response.accessToken, forKey: "accessToken")
                 }
                 return LoginResult(rawValue: $0.statusCode)!
             }
@@ -123,6 +123,24 @@ public class UserServices {
                 return response.user
             }
             .catchAndReturn(nil)
+    }
+    
+    static func getMyActivies(type: ActivityTypes) -> Observable<MyPostList?> {
+        return UserServices.provider
+            .rx.request(.getMyActivities(type: type))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    do {
+                        let postList = try JSONDecoder().decode(MyPostList.self, from: $0.data)
+                        return postList
+                    } catch {
+                        print(error)
+                    }
+                }
+                return nil
+            }
     }
 }
 
