@@ -90,8 +90,14 @@ class SignupStep3Fragment :
             }
         })
 
-        signupViewModel.loading.observe(binding.lifecycleOwner!!, {
-            loadingDialog.show()
+        signupViewModel.loading.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    loadingDialog.show()
+                } else {
+                    loadingDialog.dismiss()
+                }
+            }
         })
 
         signupViewModel.step3Success.observe(binding.lifecycleOwner!!, {
@@ -109,4 +115,5 @@ class SignupStep3Fragment :
         }
 
     }
+
 }

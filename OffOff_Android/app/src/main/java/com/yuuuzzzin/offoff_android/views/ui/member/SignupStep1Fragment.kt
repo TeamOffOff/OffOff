@@ -1,9 +1,11 @@
 package com.yuuuzzzin.offoff_android.views.ui.member
 
+import android.content.Context
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep1Binding
@@ -14,11 +16,28 @@ import dagger.hilt.android.AndroidEntryPoint
 class SignupStep1Fragment :
     BaseSignupFragment<FragmentSignupStep1Binding>(R.layout.fragment_signup_step1) {
 
+    private lateinit var callback: OnBackPressedCallback
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backToLoginActivity()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callback.remove()
+    }
+
     override fun initView() {
 
         binding.btBack.setOnClickListener {
-            val intent = Intent(mContext, LoginActivity::class.java)
-            startActivity(intent)
+            backToLoginActivity()
         }
 
         // step1 -> step2 이동
@@ -90,5 +109,11 @@ class SignupStep1Fragment :
                 binding.tvPwConfirm.text = it
             }
         }
+    }
+
+    private fun backToLoginActivity() {
+        val intent = Intent(mContext, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 }
