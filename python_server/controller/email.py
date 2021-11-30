@@ -11,7 +11,7 @@ def send_email(r_email, verify, message):
     # data["Bcc"] = bcc
     data["Subject"] = "Test Mail"
 
-    html_msg = "<h1>메일인증</h1>" + "<h2><a href = '" + verify + "'>" + "확인</a></h2>" + message
+    html_msg = "<h1 style='text-align:center;'>오프오프 메일인증</h1>" + "<div style= 'text-align:center;'><h2 style='display: inline-block; padding:13px 59px; background-color:#18573A; border-radius:23px; color:#ffffff; text-align:center;'><a href = '" + verify + "'>" + "인증하기</a></h2></div>" + "<div style='text-align:center;'>"+message+"</div>"
 
     msg = MIMEText(html_msg, 'html')
     data.attach(msg)
@@ -70,3 +70,27 @@ def send_email(r_email, verify, message):
     
 #     def smtp_disconnect(self):
 #         self.smtp.close()
+
+
+# <a href="#" class="myButton">인증하기</a>
+
+# .myButton {
+# 	background-color:#18573A;
+# 	border-radius:23px;
+# 	border:1px solid #18ab29;
+# 	display:inline-block;
+# 	cursor:pointer;
+# 	color:#ffffff;
+# 	font-family:Arial;
+# 	font-size:19px;
+# 	padding:13px 59px;
+# 	text-decoration:none;
+# 	text-shadow:0px 0px 0px #2f6627;
+# }
+# .myButton:hover {
+# 	background-color:#5cbf2a;
+# }
+# .myButton:active {
+# 	position:relative;
+# 	top:1px;
+# }

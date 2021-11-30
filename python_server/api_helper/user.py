@@ -1,5 +1,6 @@
 from flask import request, render_template
 from flask.helpers import make_response
+from pymongo.message import delete
 from flask_jwt_extended.utils import get_jwt
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
@@ -8,7 +9,7 @@ from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from api_helper.utils  import GMAIL_ID, SEND_MAIL_API
 from controller.email import send_email
-from controller.image import save_image, get_image
+from controller.image import delete_image, save_image, get_image
 from controller.filter import check_duplicate, check_jwt
 
 import mongo as mongo
@@ -281,15 +282,21 @@ class AuthRegister(Resource):
                 board_type = reply["boardType"] + "_board_reply"
                 reply_id = reply["replyId"]
                 print(board_type, reply_id)
-                alert_delete = {
-                    "author": None
-                }
-                # childrenReply를 어떻게 할 것인가!!!!
-                # author = null로 변경
-                reply_change_result = mongodb.update_one(
-                    query={"_id": ObjectId(reply_id)}, 
-                    collection_name=board_type, 
-                    modify={"$set": alert_delete})
+                alert_delete = { # author = null로 변경
+                        "author": None
+                    }
+                if not ("_" in reply_id): # 댓글인 경우
+                    reply_change_result = mongodb.update_one(
+                        query={"_id": ObjectId(reply_id)}, 
+                        collection_name=board_type, 
+                        modify={"$set": alert_delete})
+                else : # childrenReply를 어떻게 할 것인가!!!!
+                    parent_reply_id = reply_id.split("_")[0]
+
+                    reply_change_result = mongodb.update_one(
+                        query={"_id": ObjectId(parent_reply_id)}, 
+                        collection_name=board_type, 
+                        modify={"$set": {"childrenReplies.$[elem].author": None}}, array_filters=[{"elem._id":reply_id}])
 
                 if reply_change_result.raw_result["n"] == 0:
                     response_result = make_response({"queryStatus": "author information change fail"}, 500)

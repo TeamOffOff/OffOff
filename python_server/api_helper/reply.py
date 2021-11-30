@@ -233,6 +233,7 @@ class SubReplyControl(Resource):
         post_id = request_info["postId"]
         board_type = request_info["boardType"]
         parent_reply_id = request_info["parentReplyId"]
+        child_reply_id = request_info["_id"]
         print(board_type)
 
         # reply 컬랙션 이름으로
@@ -259,7 +260,7 @@ class SubReplyControl(Resource):
             return response_result
 
         # 회원활동 정보 link 형태로 등록
-        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=parent_reply_id, operator="$addToSet")
+        making_reference.link_activity_information_in_user(field="activity.replies", post_id=post_id, reply_id=child_reply_id, operator="$addToSet")
 
         # post 컬랙션 이름으로
         post_board_type = board_type + "_board"
