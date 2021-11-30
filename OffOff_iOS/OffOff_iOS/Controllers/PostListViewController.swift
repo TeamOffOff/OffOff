@@ -115,9 +115,9 @@ class PostListViewController: UIViewController {
         self.customView.postListTableView.rx
             .itemSelected
             .withUnretained(self)
+            .do { (owner, _) in owner.postViewController = PostViewController() }
             .bind { (owner, indexPath) in
                 if let cell = owner.customView.postListTableView.cellForRow(at: indexPath) as? PostPreviewCell {
-                    
                     owner.postViewController.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
                     owner.postViewController.title = owner.boardName
                     owner.postViewController.postCell = cell

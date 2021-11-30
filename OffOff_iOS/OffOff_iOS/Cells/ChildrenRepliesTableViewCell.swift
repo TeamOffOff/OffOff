@@ -31,6 +31,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     var nicknameLabel = UILabel().then {
         $0.backgroundColor = .clear
         $0.font = .defaultFont(size: 12, bold: true)
+        $0.text = "알 수 없음"
     }
     
     var dateLabel = UILabel().then {
@@ -170,13 +171,15 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
             .withUnretained(self)
             .bind { (owner, reply) in
                 //            self.profileImageView.image =
-                owner.nicknameLabel.text = reply.author.nickname
                 owner.dateLabel.text = reply.date
                 owner.contentTextView.text = reply.content
                 owner.likeLabel.label.text = "\(reply.likes.count)"
                 
-                if reply.author.profileImage.count != 0 {
-                    owner.profileImageView.image = reply.author.profileImage.first!.body.toImage()
+                if let author = reply.author {
+                    owner.nicknameLabel.text = author.nickname
+                    if author.profileImage.count != 0 {
+                        owner.profileImageView.image = author.profileImage.first!.body.toImage()
+                    }
                 }
             }
             .disposed(by: disposeBag)
@@ -217,7 +220,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         let delete = UIAlertAction(title: "삭제", style: .default) { [weak self] _ in
             guard let self = self else { return }
             
-            let delReply = DeletingSubReply(_id: reply._id, boardType: reply.boardType, postId: reply.postId, parentReplyId: reply.parentReplyId!, author: reply.author._id!)
+            let delReply = DeletingSubReply(_id: reply._id, boardType: reply.boardType, postId: reply.postId, parentReplyId: reply.parentReplyId!, author: reply.author!._id!)
             
             SubReplyServices.deleteSubReply(deletingSubReply: delReply)
                 .filter { $0 != nil }
@@ -244,9 +247,12 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         let report = UIAlertAction(title: "신고", style: .default)
         let cancel = UIAlertAction(title: "취소", style: .cancel)
         
-        if Constants.loginUser?._id == reply.author._id {
-            alert.addAction(delete)
+        if let author = reply.author {
+            if Constants.loginUser?._id == author._id {
+                alert.addAction(delete)
+            }
         }
+        
         alert.addAction(report)
         alert.addAction(cancel)
         

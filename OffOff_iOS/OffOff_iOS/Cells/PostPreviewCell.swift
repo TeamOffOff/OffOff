@@ -167,7 +167,12 @@ class PostPreviewCell: UITableViewCell {
                 
                 let postDate = post!.date.toDate()!
                 
-                owner.dateAuthorLabel.text = "\(postDate.toFormedString()) | \(post!.author.nickname)"
+                if let author = post!.author {
+                    owner.dateAuthorLabel.text = "\(postDate.toFormedString()) | \(author.nickname ?? "알 수 없음")"
+                } else {
+                    owner.dateAuthorLabel.text = "\(postDate.toFormedString()) | \("알 수 없음")"
+                }
+                
             }
             .disposed(by: disposeBag)
     }

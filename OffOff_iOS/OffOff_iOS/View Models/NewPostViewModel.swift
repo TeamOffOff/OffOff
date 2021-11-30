@@ -54,7 +54,7 @@ class NewPostViewModel {
                     post.image = val.images.map { ImageObject(body: $0.toBase64String()) }
                     if val.post != nil {
                         post._id = val.post!._id
-                        post.author = val.post!.author._id!
+                        post.author = val.post!.author!._id!
                         return PostServices.modifyPost(post: post)
                     }
                     

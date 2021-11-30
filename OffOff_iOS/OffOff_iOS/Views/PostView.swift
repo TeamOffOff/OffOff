@@ -234,9 +234,14 @@ class PostView: UIScrollView {
     
     func setupView(post: PostModel) {
         titleLabel.text = post.title
-        authorLabel.text = post.author.nickname
         dateLabel.text = post.date
         contentTextView.text = post.content
+        if let author = post.author {
+            authorLabel.text = author.nickname
+        } else {
+            authorLabel.text = "알 수 없음"
+        }
+        
     }
 }
 

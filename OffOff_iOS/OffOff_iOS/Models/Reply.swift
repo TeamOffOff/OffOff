@@ -26,7 +26,7 @@ struct WritingReply: Codable {
 
 struct Reply: Codable {
     var _id: String
-    var author: Author
+    var author: Author?
     var boardType: String
     var content: String
     var date: String

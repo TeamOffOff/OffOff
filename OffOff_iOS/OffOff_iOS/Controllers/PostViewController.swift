@@ -109,6 +109,11 @@ class PostViewController: UIViewController {
                 .map { (owner, _) in
                     let reply = WritingReply(boardType: owner.postInfo!.type, postId: owner.postInfo!.id, parentReplyId: nil, content: owner.replyTextView.text ?? "")
                     return reply
+                },
+            bookmarkButtonTapped: postView.scrapButton.rx.tap
+                .withUnretained(self)
+                .map { (owner, _) in
+                    (owner.postInfo!.id, owner.postInfo!.type)
                 }
         )
         
@@ -152,7 +157,6 @@ class PostViewController: UIViewController {
             .withUnretained(self)
             .bind { (owner, model) in
                 owner.postView.titleLabel.text = model!.title
-                owner.postView.authorLabel.text = model!.author.nickname
                 owner.postView.contentTextView.text = model!.content
                 owner.postView.dateLabel.text = model!.date.toDate()!.toFormedString()
                 owner.postView.profileImageView.image = .DefaultPostProfileImage
@@ -162,15 +166,21 @@ class PostViewController: UIViewController {
                 owner.postView.scrapLabel.label.text = "\(model!.bookmarks.count)"
                 
                 owner.postImages.accept(model!.image)
-                if model!.author.profileImage.count != 0 {
-                    owner.postView.profileImageView.image = model!.author.profileImage.first!.body.toImage()
-                }
-                if model?.author._id == Constants.loginUser?._id {
-                    owner.setRightButtons(set: true)
-                } else {
-                    owner.setRightButtons(set: false)
-                }
                 
+                if let author = model!.author {
+                    owner.postView.authorLabel.text = author.nickname
+                    if author.profileImage.count != 0 {
+                        owner.postView.profileImageView.image = author.profileImage.first!.body.toImage()
+                    }
+                    if author._id == Constants.loginUser?._id {
+                        owner.setRightButtons(set: true)
+                    } else {
+                        owner.setRightButtons(set: false)
+                    }
+                } else {
+                    owner.postView.authorLabel.text = "알 수 없음"
+                }
+        
                 if !owner.loadingView.isHidden {
                     owner.rotateRefreshIndicator(false)
                 }
@@ -213,6 +223,23 @@ class PostViewController: UIViewController {
                     owner.activityAlert(message: "좋아요를 했습니다.")
                 } else {
                     owner.activityAlert(message: "이미 좋아요한 게시글 입니다.")
+                }
+            }
+            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .bind { (owner, _) in
+                owner.dismissAlert(animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.bookmarked
+            .observe(on: MainScheduler.instance)
+            .skip(1)
+            .withUnretained(self)
+            .do { (owner, bool) in
+                if bool {
+                    owner.activityAlert(message: "스크랩을 했습니다.")
+                } else {
+                    owner.activityAlert(message: "이미 스크랩한 게시글 입니다.")
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)

@@ -16,6 +16,7 @@ class PostViewModel {
     
     var deleteButtonTapped = BehaviorSubject<UserInfo?>(value: nil)
     var liked = BehaviorSubject<Bool>(value: false)
+    var bookmarked = BehaviorSubject<Bool>(value: false)
     var replyAdded = BehaviorSubject<Bool>(value: false)
     
     var isSubReplyInputting = BehaviorSubject<Reply?>(value: nil)
@@ -28,7 +29,7 @@ class PostViewModel {
     
     let refreshing = BehaviorSubject<Void>(value: ())
     
-    init(contentId: String, boardType: String, likeButtonTapped: Observable<PostLikeModel?>, replyButtonTapped: Observable<WritingReply>) {
+    init(contentId: String, boardType: String, likeButtonTapped: Observable<PostLikeModel?>, replyButtonTapped: Observable<WritingReply>, bookmarkButtonTapped: Observable<(String, String)>) {
         ReplyServices.fetchReplies(of: contentId, in: boardType)
             .bind { [weak self] in
                 var replies = [Reply]()
@@ -50,8 +51,8 @@ class PostViewModel {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .filter { $0.1 != nil && $0.0 != nil }
             .flatMap { val -> Observable<Bool> in
-                if val.0!.author._id == val.1!._id {
-                    return PostServices.deletePost(post: DeletingPost(_id: val.0!._id!, boardType: val.0!.boardType, author: val.0!.author._id!))
+                if val.0!.author!._id == val.1!._id {
+                    return PostServices.deletePost(post: DeletingPost(_id: val.0!._id!, boardType: val.0!.boardType, author: val.0!.author!._id!))
                 } else {
                     return Observable.just(false)
                 }
@@ -106,6 +107,23 @@ class PostViewModel {
                 }
             }
             .disposed(by: disposeBag)
+        
+        bookmarkButtonTapped
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .flatMap { val -> Observable<PostModel?> in
+                let post = PostActivity(boardType: val.1, _id: val.0, activity: "bookmarks")
+                return PostServices.likePost(post: post)
+            }
+            .bind { [weak self] postModel in
+                if postModel != nil {
+                    self?.post.onNext(postModel)
+                    self?.bookmarked.onNext(true)
+                } else {
+                    self?.bookmarked.onNext(false)
+                }
+            }
+            .disposed(by: disposeBag)
+
         
 //        reported = self.reportButtonTapped
 //            .flatMap {

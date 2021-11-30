@@ -65,6 +65,7 @@ public class PostServices {
             .map {
                 if $0.statusCode == 200 {
                     do {
+                        print(#fileID, #function, #line, $0.statusCode)
                         let result = try JSONDecoder().decode(PostModel.self, from: $0.data)
                         return result
                     } catch {

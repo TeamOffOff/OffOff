@@ -18,7 +18,7 @@ struct PostList: Codable {
 
 struct Author: Codable {
     var _id: String?
-    var nickname: String
+    var nickname: String?
     var type: String?
     var profileImage: [ImageObject]
     
@@ -34,7 +34,7 @@ struct Author: Codable {
 struct PostModel: Codable {
     var _id: String?
     var boardType: String
-    var author: Author
+    var author: Author?
     var date: String
     var title: String
     var content: String
