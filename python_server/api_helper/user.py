@@ -133,15 +133,15 @@ class AuthRegister(Resource):
         response_result = "" 
 
         if check_id:
-            result = check_duplicate(key="_id", target=check_id)
+            response_result = check_duplicate(key="_id", target=check_id)
 
         if check_email:
-            result = check_duplicate(key="information.email", target=check_email)
+            response_result = check_duplicate(key="information.email", target=check_email)
 
         if check_nickname:
-            result = check_duplicate(key="subInformation.nickname", target=check_nickname)
+            response_result = check_duplicate(key="subInformation.nickname", target=check_nickname)
 
-        if not result:
+        if not response_result:
             response_result = make_response({"queryStatus": "possible"}, 200)
 
         return response_result
@@ -503,7 +503,7 @@ class ActivityControl(Resource):
 
             post_list.sort(key=lambda x: x["_id"], reverse=True)
             response_result = make_response({
-                       "{}List".format(activity_type): post_list
+                       "postList".format(activity_type): post_list
                    }, 200)
 
         return response_result

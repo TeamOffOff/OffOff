@@ -168,7 +168,7 @@ class PostControl(Resource):
                 post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
             
             if post["image"]:
-                time.sleep(5) # 이미지 업로드하는데 걸리는 시간 고려
+                time.sleep(2) # 이미지 업로드하는데 걸리는 시간 고려
                 post["image"] = get_image(post["image"], "post", "600")
 
             response_result = make_response(post, 200)

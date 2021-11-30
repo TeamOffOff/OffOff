@@ -162,7 +162,8 @@ class PostListControl(Resource):
                     if board_type == "secret_board":  # 비밀게시판인 경우에 author 을 None으로 변경
                         post["author"]["nickname"] = "익명"
                     
-                    post["author"]["profileImage"] = []  # 비밀 게시판이거나 아니거나 게시글 리스트는 profileImage [ ]
+                    if post["author"]: 
+                        post["author"]["profileImage"] = []  # 비밀 게시판이거나 아니거나 게시글 리스트는 profileImage [ ]
         
 
                 if first_post_id:
@@ -380,37 +381,63 @@ class MassageListControl(Resource):
         return response_result
 
 
-UserControl = Namespace(
-    name="usercontrol",
-    description="유저관련 기능"
-)
+Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
-@UserControl.route("")
-class UserListControl(Resource):
 
-    def get(self):
+@Activity.route("/<string:activity_type>")
+class ActivityControl(Resource):
+    """
+    공감, 스크랩, 댓글, 작성글
+    """
+
+    @jwt_required()
+    def get(self, activity_type):  # 회원활동 탭에서 보여지는 정보 (게시글 리스트)
         """
-        유저 리스트 불러오는 api
+        사용자 활동과 관련된 게시글 보여주기
         """
-        func = request.args.get("func")
-        if func == "userlist":
-            result = list(mongodb.find(collection_name="user"))
+        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
+        if not user_id:
+            response_result = make_response({"queryStatus": "wrong Token"}, 403)
+            return response_result
 
-        elif func == "blocklist":
-            result = list(mongodb.find(collection_name="block_list"))
-            for i in result:
-                i["createdAt"] = str(i["createdAt"])
-        
-        response_result = make_response({"userList":result}, 200)
+        user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
+
+        target_activity = user_info["activity"][activity_type]
+
+        if not target_activity:  # 타겟 activity 가 없는 경우
+            response_result = make_response({
+                       "postList": []  # 빈문자열로 변경
+                   }, 200)
+
+        else:  # 타켓 activity 가 있는 경우
+            post_list = []
+            for post in target_activity:
+                board_type = post["boardType"] + "_board"
+                post_id = post["postId"]
+
+                result = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
+                if result:  # 해당 게시글이 있는 경우(삭제되지 않은 경우)
+                    if result not in post_list:  # 중복 피하기 위함
+                        result["_id"] = str(result["_id"])
+                        result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+                        result["image"] = get_image(result["image"], "post", "200")                
+                        
+                        # 비밀게시판 처리
+                        if board_type == "secret_board":
+                            result["author"] = None
+                        else:
+                            result["author"]["profileImage"] = []
+                        post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
+
+                    else: # 중복된 경우
+                        continue
+
+                else:  # 삭제된 경우
+                    continue
+
+            post_list.sort(key=lambda x: x["_id"], reverse=True)
+            response_result = make_response({
+                       "postList": post_list
+                   }, 200)
 
         return response_result
-
-    def post(self):
-        """
-        token block 설정 위한 block_list 컬렉션 설정
-        """
-        result = mongodb.create_index(standard="createdAt", collection_name="block_list", expire_time=10)
-        response_result = make_response({
-            "queryStatus": result
-        }, 200)
-        return response_result 

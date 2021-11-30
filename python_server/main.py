@@ -7,12 +7,13 @@ from flask_jwt_extended import JWTManager, jwt_required
 
 from api_helper.utils import APP_SECRET_KEY, JWT_SECRET_KEY
 
-from api_helper.list import BoardList, PostList, UserControl, MessageList, SearchList, TotalSearchList
+from api_helper.list import BoardList, PostList, MessageList, SearchList, TotalSearchList, Activity
 from api_helper.post import Post, TestPost
 from api_helper.reply import Reply, SubReply
-from api_helper.user import Activity, User, Token, Verify
+from api_helper.user import  User, Token, Verify
 from api_helper.message import Message
 from api_helper.calendar import Calendar, Shift, SavedShift
+from api_helper.test import UserControl 
 
 
 import mongo as mongo
