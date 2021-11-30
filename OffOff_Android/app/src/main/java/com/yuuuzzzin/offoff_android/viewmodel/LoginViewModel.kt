@@ -28,6 +28,9 @@ constructor(
     private val _loginSuccess = MutableLiveData<Event<String>>()
     val loginSuccess: LiveData<Event<String>> = _loginSuccess
 
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
+
     // 경고 메시지
     private val _alertMsg = MutableLiveData<Event<String>>()
     val alertMsg: LiveData<Event<String>> = _alertMsg
@@ -59,6 +62,8 @@ constructor(
         val userPw = pw.value ?: return
         val loginInfo = LoginInfo(userId, userPw)
 
+        _loading.postValue(Event(true))
+
         viewModelScope.launch(Dispatchers.IO) {
             repository.login(loginInfo).let { response ->
                 if (response.isSuccessful) {
@@ -69,6 +74,9 @@ constructor(
                 } else {
                     Log.d("tag_fail", "login Error: ${response.code()}")
                     when (response.code()) {
+                        NOT_VERIFIED -> {
+                            _alertMsg.postValue(Event("이메일 인증을 완료해주세요."))
+                        }
                         NOT_EXIST -> {
                             _alertMsg.postValue(Event("존재하지 않는 아이디입니다."))
                         }
@@ -82,6 +90,7 @@ constructor(
     }
 
     companion object {
+        const val NOT_VERIFIED = 400
         const val WRONG_INFO = 401
         const val NOT_EXIST = 403
     }

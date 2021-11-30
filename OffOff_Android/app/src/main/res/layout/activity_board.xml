@@ -108,11 +108,22 @@
             android:background="@drawable/layout_button_pen"
             android:contentDescription="@string/button_write_post"
             android:foregroundGravity="center"
-            android:paddingVertical="11dp"
             android:paddingHorizontal="19dp"
-            android:src="@drawable/ic_pen"
+            android:paddingVertical="11dp"
             android:scaleType="centerInside"
+            android:src="@drawable/ic_pen"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <include
+            android:id="@+id/layout_progress"
+            layout="@layout/layout_progress_loading_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -66,7 +66,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         // val data = activityResult.data // 인텐트 데이터
 
         if (resultCode == Activity.RESULT_OK) {
-            viewModel.getPost(postId, boardType)
+            viewModel.getPost(postId, boardType, false)
             requestUpdate = true
         }
     }
@@ -86,22 +86,29 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         postPosition = intent.getIntExtra("position", 0)
         boardType = intent.getStringExtra("boardType").toString()
 
-        when(boardType) {
+        when (boardType) {
             "free" -> boardName = BoardType.FREE
             "secret" -> boardName = BoardType.SECRET
             "hot" -> boardName = BoardType.HOT
         }
 
-        // boardName = intent.getStringExtra("boardName").toString()
-        //currentPostList = intent.getSerializableExtra("postList") as Array<Post>
-
-        viewModel.getPost(postId, boardType)
-        viewModel.getComments(postId, boardType)
+        viewModel.getPost(postId, boardType, false)
+        viewModel.getComments(postId, boardType, false)
     }
 
     private fun initViewModel() {
         binding.activity = this
         binding.viewModel = viewModel
+
+        viewModel.loading.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    binding.layoutProgress.root.visibility = View.VISIBLE
+                } else {
+                    binding.layoutProgress.root.visibility = View.GONE
+                }
+            }
+        })
 
         viewModel.post.observe(binding.lifecycleOwner!!, {
             binding.post = it
@@ -232,8 +239,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         binding.refreshLayout.isRefreshing = false
 
         binding.refreshLayout.setOnRefreshListener {
-            viewModel.getPost(postId, boardType)
-            viewModel.getComments(postId, boardType)
+            viewModel.getPost(postId, boardType, true)
+            viewModel.getComments(postId, boardType, true)
             isFirst = true
         }
 
@@ -245,7 +252,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 }
             }
         )
-
     }
 
     private fun initRV() {

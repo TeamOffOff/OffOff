@@ -19,6 +19,7 @@ import com.yuuuzzzin.offoff_android.utils.DialogUtils
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.bitmapToString
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.stringToBitmap
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.uriToBitmap
+import com.yuuuzzzin.offoff_android.utils.KeyboardUtils.hideKeyboard
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
@@ -155,6 +156,8 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
         binding.viewModel = viewModel
 
         binding.btDone.setOnClickListener {
+            hideKeyboard()
+
             when (postWriteType) {
                 PostWriteType.WRITE -> {
                     if (imageAdapter.itemCount > 0) {

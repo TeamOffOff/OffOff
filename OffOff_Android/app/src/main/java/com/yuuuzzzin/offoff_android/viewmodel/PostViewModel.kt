@@ -24,6 +24,9 @@ constructor(
 
     val content = MutableLiveData("")
 
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
+
     private val _post = MutableLiveData<Post>()
     val post: LiveData<Post> get() = _post
 
@@ -57,18 +60,23 @@ constructor(
     private val _showMyReplyOptionDialog = MutableLiveData<Event<Reply>>()
     val showMyReplyOptionDialog: LiveData<Event<Reply>> = _showMyReplyOptionDialog
 
-    fun getPost(postId: String, boardType: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun getPost(postId: String, boardType: String, isRefreshing: Boolean) {
 
-        repository.getPost(OffoffApplication.pref.token.toString(), postId, boardType)
-            .let { response ->
-                if (response.isSuccessful) {
-                    _post.postValue(response.body())
-                    Log.d("tag_success", response.body().toString())
-                } else {
-                    Log.d("tag_fail", "getPost Error: ${response.code()}")
+        if (!isRefreshing)
+            _loading.postValue(Event(true))
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getPost(OffoffApplication.pref.token.toString(), postId, boardType)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        _post.postValue(response.body())
+                        Log.d("tag_success", response.body().toString())
+                    } else {
+                        Log.d("tag_fail", "getPost Error: ${response.code()}")
+                    }
                 }
-            }
 
+        }
     }
 
     fun deletePost(postId: String, boardType: String) {
@@ -180,20 +188,25 @@ constructor(
         }
     }
 
-    fun getComments(postId: String, boardType: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun getComments(postId: String, boardType: String, isRefreshing: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getComments(OffoffApplication.pref.token.toString(), postId, boardType)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        if (!isRefreshing)
+                            _loading.postValue(Event(false))
 
-        repository.getComments(OffoffApplication.pref.token.toString(), postId, boardType)
-            .let { response ->
-                if (response.isSuccessful) {
-                    Log.d("tag_success", "getComments: ${response.body()}")
-                    if (!response.body()!!.commentList.isNullOrEmpty()) {
-                        _commentList.postValue(response.body()!!.commentList)
+                        Log.d("tag_success", "getComments: ${response.body()}")
+
+                        if (!response.body()!!.commentList.isNullOrEmpty()) {
+                            _commentList.postValue(response.body()!!.commentList)
+                        }
+                    } else {
+                        Log.d("tag_fail", "getComments Error: ${response.code()}")
                     }
-                } else {
-                    Log.d("tag_fail", "getComments Error: ${response.code()}")
                 }
-            }
 
+        }
     }
 
     fun writeComment(postId: String, boardType: String) {

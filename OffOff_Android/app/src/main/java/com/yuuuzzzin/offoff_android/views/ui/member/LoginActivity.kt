@@ -10,6 +10,7 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityLoginBinding
 import com.yuuuzzzin.offoff_android.utils.Constants.toast
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showCustomOneTextDialog
+import com.yuuuzzzin.offoff_android.utils.KeyboardUtils.hideKeyboard
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,6 +45,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         binding.viewModel = viewModel
 
         viewModel.loading.observe(binding.lifecycleOwner!!, {
+            hideKeyboard()
             binding.layoutProgress.root.visibility = View.VISIBLE
         })
 
@@ -56,7 +58,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
 
         viewModel.loginSuccess.observe(this, { event ->
             event.getContentIfNotHandled()?.let {
-//                binding.layoutProgress.root.visibility = View.GONE
 
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

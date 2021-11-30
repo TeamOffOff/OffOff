@@ -1,32 +1,30 @@
 package com.yuuuzzzin.offoff_android.views.ui
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import androidx.fragment.app.DialogFragment
+import android.view.WindowManager
 import com.yuuuzzzin.offoff_android.R
 
 class LoadingDialog(context: Context) : Dialog(context) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_loading)
+        setContentView(R.layout.layout_progress_loading_opaque)
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
         setCancelable(false)
-        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        val iv: ImageView = findViewById(R.id.iv_loading)
-        val rotateAnimation = AnimationUtils.loadAnimation(
-            context,
-            R.anim.animation_loading
-        )
-
-        iv.startAnimation(rotateAnimation)
+//        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//        val iv: ImageView = findViewById(R.id.iv_loading)
+//        val rotateAnimation = AnimationUtils.loadAnimation(
+//            context,
+//            R.anim.animation_loading
+//        )
+//
+//        iv.startAnimation(rotateAnimation)
     }
 }
 

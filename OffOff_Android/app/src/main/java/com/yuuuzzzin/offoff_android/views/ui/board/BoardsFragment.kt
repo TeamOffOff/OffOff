@@ -121,6 +121,17 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
 
     private fun initViewModel() {
         binding.viewModel = viewModel
+
+        viewModel.loading.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    binding.layoutProgress.root.visibility = View.VISIBLE
+                } else {
+                    binding.layoutProgress.root.visibility = View.GONE
+                }
+            }
+        })
+
         viewModel.boardList.observe(viewLifecycleOwner, {
             with(boardListAdapter) { addBoardList(it.toMutableList()) }
         })

@@ -9,7 +9,7 @@ import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.Board
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
-import com.yuuuzzzin.offoff_android.utils.LogUtils.logCoroutineThread
+import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +21,9 @@ class BoardListViewModel
 constructor(
     private val repository: BoardRepository
 ) : ViewModel() {
+
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
 
     private val _boardList = MutableLiveData<List<Board>>()
     val boardList: LiveData<List<Board>> get() = _boardList
@@ -36,9 +39,12 @@ constructor(
     }
 
     private fun getBoardList() = viewModelScope.launch(Dispatchers.IO) {
+
+        _loading.postValue(Event(true))
+
         repository.getBoardList().let { response ->
             if (response.isSuccessful) {
-                logCoroutineThread()
+                _loading.postValue(Event(false))
                 Log.d("tag_success", "getBoardList: ${response.body()}")
                 _boardList.postValue(response.body()!!.boardList)
             } else {
@@ -49,9 +55,13 @@ constructor(
 
     fun totalSearchPost(key: String, lastPostId: String?) =
         viewModelScope.launch(Dispatchers.IO) {
+
+            _loading.postValue(Event(true))
+
             repository.totalSearchPost(OffoffApplication.pref.token.toString(), key, lastPostId)
                 .let { response ->
                     if (response.isSuccessful) {
+                        _loading.postValue(Event(false))
                         Log.d("tag_success", "totalSearchPost: ${response.body()}")
                         _postList.postValue(response.body()!!.postList)
                         if (!response.body()!!.postList.isNullOrEmpty()) {

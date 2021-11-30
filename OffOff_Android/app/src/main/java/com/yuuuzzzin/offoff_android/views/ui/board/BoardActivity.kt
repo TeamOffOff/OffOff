@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -90,7 +91,17 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
     private fun initViewModel() {
         binding.viewModel = viewModel
-        viewModel.getPosts(boardType)
+        viewModel.getPosts(boardType, false)
+
+        viewModel.loading.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    binding.layoutProgress.root.visibility = View.VISIBLE
+                } else {
+                    binding.layoutProgress.root.visibility = View.GONE
+                }
+            }
+        })
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
             if (it == null) {
@@ -171,7 +182,7 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
         binding.refreshLayout.setOnRefreshListener {
             isFirst = TRUE
-            viewModel.getPosts(boardType)
+            viewModel.getPosts(boardType, true)
         }
 
         binding.rvPostPreview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -184,7 +195,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
 
                 // 스크롤이 끝에 도달하면
                 if (!binding.rvPostPreview.canScrollVertically(1) && lastPosition == totalCount) {
-                    // Toast.makeText(this@BoardActivity, "스크롤이 최하단에 도달", Toast.LENGTH_SHORT).show()
                     viewModel.getNextPosts(boardType, lastPostId)
                 }
 
