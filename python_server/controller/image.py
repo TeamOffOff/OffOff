@@ -32,29 +32,34 @@ def save_image(img_list: list, directory: str):
 
         img_obj.put(Body=img_body)
 
+    start = time.time()
+    time_limit = 5.0
+
     while True:
         try:
-            _ = s3.Object(resize_bucket.name, directory + "/600/" + img_key).load()
             print("check image saved...")
+            _ = s3.Object(resize_bucket.name, directory + "/600/" + img_key).load()
+            print("Image Saved: {} sec".format(time.time() - start))
             break
         except ClientError as e:
+            if time.time() - start > time_limit:
+                raise Exception("fail to save image")
+
             if e.response['Error']['Code'] == "404":
-                time.sleep(0.2)
+                time.sleep(0.1)
                 print("image have been not saved yet")
                 continue
             else:
                 print(e)
 
-    print("Image Saved")
-
     return key_list
 
 
-def get_image(img_key_list: list, directory: str, img_size: str = "origin"): # "post","user" / "200","600"
+def get_image(img_key_list: list, directory: str, img_size: str = "origin"):  # "post","user" / "origin", "200","600"
     img_list = list()
 
     if not img_key_list:
-            return []
+        return []
 
     for img_key in img_key_list:
         if img_size == "origin":
@@ -86,4 +91,4 @@ def delete_image(img_key_list: list, directory: str):
                     s3.Object(resize_bucket.name, directory + "/" + img_size + "/" + img_key).delete()
             print(f"Image <{img_key}> have been deleted")
     except Exception as e:
-        print(f"Images do not be deleted by exception: {e}")
+        print(f"Images cannot be deleted by exception: {e}")
