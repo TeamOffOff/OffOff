@@ -21,8 +21,6 @@ class PostListViewController: UIViewController {
     let searchButton = UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
     let menuButton = UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
     
-    var postViewController = PostViewController()
-    
     override func loadView() {
         self.view = customView
         self.navigationItem.backButtonTitle = ""
@@ -120,14 +118,14 @@ class PostListViewController: UIViewController {
         self.customView.postListTableView.rx
             .itemSelected
             .withUnretained(self)
-            .do { (owner, _) in owner.postViewController = PostViewController() }
             .bind { (owner, indexPath) in
                 if let cell = owner.customView.postListTableView.cellForRow(at: indexPath) as? PostPreviewCell {
-                    owner.postViewController.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
-                    owner.postViewController.title = owner.boardName
-                    owner.postViewController.postCell = cell
+                    let vc = PostViewController()
+                    vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
+                    vc.title = owner.boardName
+                    vc.postCell = cell
+                    owner.navigationController?.pushViewController(vc, animated: true)
                     owner.customView.postListTableView.deselectRow(at: indexPath, animated: false)
-                    owner.navigationController?.pushViewController(owner.postViewController, animated: true)
                 }
             }
             .disposed(by: disposeBag)

@@ -22,7 +22,6 @@ class PostViewController: UIViewController {
     let deleteButton = UIBarButtonItem(title: "삭제", style: .plain, target: nil, action: nil)
     let editButton = UIBarButtonItem(title: "수정", style: .plain, target: nil, action: nil)
     lazy var items = [editButton, deleteButton]
-    var rightButtonsDisposeBag = DisposeBag()
     
     unowned var postCell: PostPreviewCell?
     
@@ -76,24 +75,24 @@ class PostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadingImageView.rotate(duration: 2.5)
-        self.navigationController?.navigationBar.setAppearance()
+        navigationController?.navigationBar.setAppearance()
         
-        self.view.backgroundColor = .white
-        self.view.addSubview(postView)
-        self.view.addSubview(replyContainer)
+        view.backgroundColor = .white
+        view.addSubview(postView)
+        view.addSubview(replyContainer)
         replyContainer.addSubview(replyBackgroundView)
         replyBackgroundView.addSubview(replyTextView)
         replyContainer.addSubview(replyButton)
-        self.view.addSubview(loadingView)
-        self.view.addSubview(loadingImageView)
-        self.makeView()
+        view.addSubview(loadingView)
+        view.addSubview(loadingImageView)
+        makeView()
         
         replyTextView.rx.setDelegate(self).disposed(by: disposeBag)
         replyTextViewSetUp()
         
         //        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
-        self.postView.repliesTableView.rowHeight = UITableView.automaticDimension
-        self.postView.repliesTableView.estimatedRowHeight = 400
+        postView.repliesTableView.rowHeight = UITableView.automaticDimension
+        postView.repliesTableView.estimatedRowHeight = 400
         
         // view model
         viewModel = PostViewModel(
@@ -122,9 +121,9 @@ class PostViewController: UIViewController {
         refreshControl.tintColor = .clear
         refreshControl.backgroundColor = .g4
         
-        self.postView.refreshControl = refreshControl
+        postView.refreshControl = refreshControl
         
-        self.postView.refreshControl!.rx.controlEvent(.valueChanged)
+        postView.refreshControl!.rx.controlEvent(.valueChanged)
             .withUnretained(self)
             .bind { (owner, _) in
                 owner.rotateRefreshIndicator(true)
@@ -141,7 +140,7 @@ class PostViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        self.postView.rx.didEndDragging
+        postView.rx.didEndDragging
             .withUnretained(self)
             .bind { (owner, _) in
                 if ((owner.postView.contentOffset.y + owner.postView.frame.size.height) >= owner.postView.contentSize.height)
@@ -190,8 +189,8 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // 이미지 표시
-        self.postView.imageTableView.rx.setDelegate(self).disposed(by: disposeBag)
-        self.postImages
+        postView.imageTableView.rx.setDelegate(self).disposed(by: disposeBag)
+        postImages
             .skip(1)
             .filter { $0.count > 0 }
             .bind(to: postView.imageTableView.rx.items) { (tv, row, item) in
@@ -313,7 +312,7 @@ class PostViewController: UIViewController {
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
             .bind { (owner, _) in
                 alert.dismiss(animated: true, completion: nil)
-                if owner.postView.bounds.size.height < self.postView.contentSize.height {
+                if owner.postView.bounds.size.height < owner.postView.contentSize.height {
                     owner.postView.scrollToBottom()
                 }
             }
@@ -352,7 +351,7 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // MARK: 화면 터치시 키보드 내리기 (대댓글 작성일 때만)
-        self.postView.rx
+        postView.rx
             .anyGesture(.tap(), .swipe(direction: .up))
             .when(.recognized)
             .withLatestFrom(viewModel.isSubReplyInputting)
@@ -412,7 +411,7 @@ class PostViewController: UIViewController {
     }
     
     private func setRightButtons(set: Bool) {
-        self.navigationItem.rightBarButtonItem = .menuButton()
+        navigationItem.rightBarButtonItem = .menuButton()
         let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
         
         
@@ -452,7 +451,7 @@ class PostViewController: UIViewController {
         alert.addAction(report)
         alert.addAction(cancel)
         
-        self.navigationItem.rightBarButtonItem!
+        navigationItem.rightBarButtonItem!
             .rx.tap
             .bind { [weak self] in
                 self?.present(alert, animated: true, completion: nil)
@@ -465,7 +464,7 @@ class PostViewController: UIViewController {
         let cancel = UIAlertAction(title: "취소", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
         alert.addAction(ok)
         alert.addAction(cancel)
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
     var alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
@@ -485,12 +484,12 @@ class PostViewController: UIViewController {
     }
     
     private func rotateRefreshIndicator(_ on: Bool) {
-        self.loadingImageView.isHidden = !on
+        loadingImageView.isHidden = !on
         
         if on {
-            self.loadingImageView.rotate(duration: 2.5)
+            loadingImageView.rotate(duration: 2.5)
         } else {
-            self.loadingImageView.stopRotating()
+            loadingImageView.stopRotating()
         }
     }
     

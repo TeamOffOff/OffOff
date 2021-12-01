@@ -21,9 +21,9 @@ class RepliesTableViewCell: UITableViewCell {
     var dismissAlert: ((_ animated: Bool) -> Void)?
     var presentMenuAlert: ((_ alert: UIAlertController) -> Void)?
     
-    var replies = BehaviorSubject<[Reply]?>(value: nil)
+    weak var replies: BehaviorSubject<[Reply]?>?
     
-    var isSubReplyInputting = BehaviorSubject<Reply?>(value: nil)
+    weak var isSubReplyInputting: BehaviorSubject<Reply?>?
     
     var profileImageView = UIImageView().then {
         $0.image = .DefaultReplyProfileImage
@@ -160,7 +160,11 @@ class RepliesTableViewCell: UITableViewCell {
     
     func bindData() {
         self.disposeBag = DisposeBag()
-
+        
+        guard let _isSubReplyInputting = isSubReplyInputting else {
+            return
+        }
+        
         reply
             .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
@@ -206,7 +210,7 @@ class RepliesTableViewCell: UITableViewCell {
             }
             .disposed(by: disposeBag)
         
-        Observable.combineLatest(isSubReplyInputting, reply)
+        Observable.combineLatest(_isSubReplyInputting, reply)
             .map { one, two -> Bool in
                 if one == nil || two == nil {
                     return false
@@ -223,9 +227,7 @@ class RepliesTableViewCell: UITableViewCell {
             .disposed(by: disposeBag)
         
         addSubReplyButton.rx.tap.withLatestFrom(reply)
-            .bind { [weak self] in
-                self?.isSubReplyInputting.onNext($0)
-            }
+            .bind(to: _isSubReplyInputting)
             .disposed(by: disposeBag)
     }
     
@@ -240,6 +242,7 @@ class RepliesTableViewCell: UITableViewCell {
                 .observe(on: MainScheduler.instance)
                 .filter { $0 != nil }
                 .withUnretained(self)
+                .filter{ (owner, _) in owner.replies != nil }
                 .do { (owner, replyList) in
                     owner.activityAlert!("댓글을 삭제했습니다.")
                     var replies = [Reply]()
@@ -249,7 +252,7 @@ class RepliesTableViewCell: UITableViewCell {
                             replies.append(contentsOf: $0.childrenReplies!)
                         }
                     }
-                    owner.replies.onNext(replies)
+                    owner.replies!.onNext(replies)
                 }
                 .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
                 .bind { (owner, _) in

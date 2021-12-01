@@ -21,7 +21,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     var dismissAlert: ((_ animated: Bool) -> Void)?
     var presentMenuAlert: ((_ alert: UIAlertController) -> Void)?
     
-    var replies = BehaviorSubject<[Reply]?>(value: nil)
+    weak var replies: BehaviorSubject<[Reply]?>?
     
     var profileImageView = UIImageView().then {
         $0.image = .DefaultReplyProfileImage
@@ -226,6 +226,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
                 .filter { $0 != nil }
                 .observe(on: MainScheduler.instance)
                 .withUnretained(self)
+                .filter { (owner, _) in owner.replies != nil}
                 .do { (owner, replyList) in
                     owner.activityAlert!("댓글을 삭제했습니다.")
                     var replies = [Reply]()
@@ -235,7 +236,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
                             replies.append(contentsOf: $0.childrenReplies!)
                         }
                     }
-                    owner.replies.onNext(replies)
+                    owner.replies!.onNext(replies)
                 }
                 .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
                 .bind { (owner, _) in
