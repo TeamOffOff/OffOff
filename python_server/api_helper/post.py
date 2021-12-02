@@ -208,24 +208,58 @@ class PostControl(Resource):
 
             activity = request_info["activity"]
 
-            past_user_list = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, projection_key={"_id": False, activity: True})[activity]
+            past_user_list = mongodb.find_one(
+                query={"_id": ObjectId(post_id)}, 
+                collection_name=board_type, 
+                projection_key={"_id": False, activity: True}
+                )[activity]
             print(past_user_list)
+
             if activity == "likes":
                 past_likes = len(past_user_list)
                 print(past_likes)
 
             if user in past_user_list:  # 해당 활동을 한 적이 있는 경우
                 if activity == "likes":  # 좋아요는 취소가 불가능함
-                    response_result = make_response({"queryStatus": "already like"}, 201)
+                    response_result = make_response({"queryStatus": "already like"}, 304)
                     return response_result
+
                 else:  # 좋아요 이외의 활동은 취소가 가능함
                     operator = "$pull"
-                    result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
+                    result = mongodb.update_one(
+                        query={"_id": ObjectId(post_id)}, 
+                        collection_name=board_type, 
+                        modify={operator: {activity: user}})
 
+                    if result.raw_result["n"] ==0:  # 활동 취소 실패
+                        response_result = make_response({"queryStatus": "activity cancle fail"}, 500)
+                        return response_result
+                    
+                    #활동 취소 성공
+                    making_reference = MakeReference(board_type=board_type, user=user)
+                    field = "activity." + activity
+                    activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator)
+
+                    if activity_result.raw_result["n"] == 0:  # 유저 컬렉션에 활동 반영 실패한 경우
+                        response_result = make_response({"queryStatus": "user activity update fail"}, 500)
+                        return response_result
+
+                    # 게시글에서 활동 취소 성공 & 유저 정보에서 활동 취소 반영 성공
+                    response_result = make_response({"queryStatus": "activity cancle success"}, 200)
+                    return response_result
+                
             else:  # 해당활동을 한 적이 없는 경우
                 operator = "$addToSet"
-                result = mongodb.update_one(query={"_id": ObjectId(post_id)}, collection_name=board_type, modify={operator: {activity: user}})
+                result = mongodb.update_one(
+                    query={"_id": ObjectId(post_id)}, 
+                    collection_name=board_type, 
+                    modify={operator: {activity: user}})
 
+                if result.raw_result["n"] ==0:  # 게시글에 활동 반영 실패
+                        response_result = make_response({"queryStatus": "activity add fail"}, 500)
+                        return response_result
+
+                # 게시글에 활동 반영 성공
                 # 인기게시판 관련   
                 if activity == "likes":
 
@@ -246,42 +280,18 @@ class PostControl(Resource):
 
                         mongodb.insert_one(data=hot_post_info, collection_name="hot_board")
 
-            # user 컬랙션에서 활동 업데이트
-            making_reference = MakeReference(board_type=board_type, user=user)
-            field = "activity." + activity
+                # 활동 반영 및 인기게시판 등록 성공
+                making_reference = MakeReference(board_type=board_type, user=user)  # user 컬렉션에 활동 업데이트
+                field = "activity." + activity
+                activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator)
 
-            activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator)
-            if activity_result.raw_result["n"] == 0:
-                response_result = make_response({"queryStatus": "user activity update fail"}, 500)
+                if activity_result.raw_result["n"] == 0:  # 유저 컬렉션에 활동 반영 실패한 경우
+                    response_result = make_response({"queryStatus": "user activity update fail"}, 500)
+                    return response_result
+                
+                # 게시글에 활동 추가 및 유저 컬렉션에 반영 성공
+                response_result = make_response({"queryStatus": "activity add success"}, 201)
                 return response_result
-        
-        # string 수정, integer 수정 모두
-        # 게시글 정보(string, likes, reports, bookmarks) 업데이트 실패한 경우
-        if result.raw_result["n"] == 0:  
-            response_result = make_response({"queryStatus": "post update fail"}, 500)
-            return response_result
-        else:
-            modified_post = mongodb.find_one(query={"_id": ObjectId(post_id)},
-                                             collection_name=board_type)
-
-            modified_post["_id"] = str(modified_post["_id"])
-            modified_post["date"] = (modified_post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-            
-            # 게시글에 있는 image base 64로 인코딩하기
-            if modified_post["image"]:
-                time.sleep(5) # 이미지 업로드하는데 걸리는 시간 고려
-                modified_post["image"] = get_image(modified_post["image"], "post", "600") 
-
-            # 게시글에 있는 author의 profileImage가 있는 경우 base64로 인코딩
-            if modified_post["author"]: #secret인 경우 None임
-                if modified_post["author"]["_id"]: #탈퇴한 경우 _id가 None임
-                    if modified_post["author"]["profileImage"]: #secret도 아니고 탈퇴한 경우도 아닌데, profileImage가 있는 경우
-                        modified_post["author"]["profileImage"] = get_image(modified_post["author"]["profileImage"], "user", "200")
-
-            response_result = make_response(modified_post, 200)
-
-            return response_result
-
 
 
 TestPost = Namespace('testpost', description='post여러개')

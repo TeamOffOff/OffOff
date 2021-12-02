@@ -20,7 +20,6 @@ User = Namespace(name="user", description="유저 관련 API")
 Token = Namespace(name="token", description="access토큰 재발급 API")
 Verify = Namespace(name="verify", description="이메일 확인을 위한 API")
 
-Activity = Namespace(name="activity", description="유저 활동 관련 API")
 
 
 @Verify.route('')
@@ -450,60 +449,3 @@ class AuthLogin(Resource):
         return response_result
 
 
-@Activity.route("/<string:activity_type>")
-class ActivityControl(Resource):
-    """
-    공감, 스크랩, 댓글, 작성글
-    """
-
-    @jwt_required()
-    def get(self, activity_type):  # 회원활동 탭에서 보여지는 정보 (게시글 리스트)
-        """
-        사용자 활동과 관련된 게시글 보여주기
-        """
-        user_id = check_jwt()  # user_id가 있는지, blocklist는 아닌지
-        if not user_id:
-            response_result = make_response({"queryStatus": "wrong Token"}, 403)
-            return response_result
-
-        user_info = mongodb.find_one(query={"_id": user_id}, collection_name="user")
-
-        target_activity = user_info["activity"][activity_type]
-
-        if not target_activity:  # 타겟 activity 가 없는 경우
-            response_result = make_response({
-                       "{}List".format(activity_type): []  # 빈문자열로 변경
-                   }, 200)
-
-        else:  # 타켓 activity 가 있는 경우
-            post_list = []
-            for post in target_activity:
-                board_type = post["boardType"] + "_board"
-                post_id = post["postId"]
-
-                result = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
-                if result:  # 해당 게시글이 있는 경우(삭제되지 않은 경우)
-                    if result not in post_list:  # 중복 피하기 위함
-                        result["_id"] = str(result["_id"])
-                        result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-                        result["image"] = get_image(result["image"], "post", "200")                
-                        
-                        # 비밀게시판 처리
-                        if board_type == "secret_board":
-                            result["author"] = None
-                        else:
-                            result["author"]["profileImage"] = []
-                        post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
-
-                    else: # 중복된 경우
-                        continue
-
-                else:  # 삭제된 경우
-                    continue
-
-            post_list.sort(key=lambda x: x["_id"], reverse=True)
-            response_result = make_response({
-                       "postList".format(activity_type): post_list
-                   }, 200)
-
-        return response_result
