@@ -11,7 +11,7 @@
         android:id="@+id/userFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.ui.UserFragment">
+        tools:context=".views.ui.settings.UserFragment">
 
         <ImageView
             android:id="@+id/iv_background"
@@ -37,52 +37,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_option"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-25dp"
             android:orientation="vertical"
             android:paddingHorizontal="32dp"
+            android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_background">
-
-            <TextView
-                android:id="@+id/tv_my_post"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="내가 쓴 글"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_my_comment_post"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="댓글 단 글"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_my_bookmark_post"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="스크랩한 글"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
-
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/iv_background"
+            tools:listitem="@layout/rv_item_option" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
