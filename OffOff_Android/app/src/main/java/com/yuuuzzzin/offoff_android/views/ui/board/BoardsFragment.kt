@@ -161,7 +161,6 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
             override fun onClickBoard(item: Board, position: Int) {
                 val intent = Intent(mContext, BoardActivity::class.java)
                 intent.putExtra("boardType", item.boardType)
-                intent.putExtra("boardName", item.name)
                 startActivity(intent)
             }
         })

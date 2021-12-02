@@ -194,7 +194,6 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     intent.putExtra("id", it)
                     intent.putExtra("boardType", boardType)
-                    intent.putExtra("boardName", boardName)
                     intent.putExtra("postWriteType", postWriteType)
                     startActivity(intent)
                     loadingDialog.dismiss()

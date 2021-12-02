@@ -42,40 +42,23 @@ constructor(
     private val _reply = MutableLiveData<Reply>()
     val reply: LiveData<Reply> get() = _reply
 
-    // 게시글 좋아요
+    // 게시글 좋아요 완료 여부
     private val _isLikedPost = MutableLiveData<Event<Boolean>>()
     val isLikedPost: LiveData<Event<Boolean>> = _isLikedPost
 
-    // 이미 좋아요
-    private val _alreadyLike = MutableLiveData<Event<String>>()
-    val alreadyLike: LiveData<Event<String>> = _alreadyLike
-
-
+    // 게시글 스크랩 완료 여부
     private val _isBookmarkedPost = MutableLiveData<Event<Boolean>>()
     val isBookmarkedPost: LiveData<Event<Boolean>> = _isBookmarkedPost
 
-
-    // 스크랩
-//    private val _successBookmark = MutableLiveData<Event<String>>()
-//    val successBookmark: LiveData<Event<String>> = _successBookmark
-//
-//    // 스크랩 취소
-//    private val _cancelBookmark = MutableLiveData<Event<String>>()
-//    val cancelBookmark: LiveData<Event<String>> = _cancelBookmark
-
-//    // 신고
-//    private val _successReport = MutableLiveData<Event<String>>()
-//    val successReport: LiveData<Event<String>> = _successReport
-
-    // 신고 취소
+    // 게시글 신고 완료 여부
     private val _isReportedPost = MutableLiveData<Event<Boolean>>()
     val isReportedPost: LiveData<Event<Boolean>> = _isReportedPost
 
-    // 댓글
+    // 대댓글 작성 이벤트
     private val _replySuccessEvent = MutableLiveData<Event<Boolean>>()
     val replySuccessEvent: LiveData<Event<Boolean>> = _replySuccessEvent
 
-    // 게시글 좋아요
+    // 댓글 좋아요 완료 여부
     private val _isLikedComment = MutableLiveData<Event<Boolean>>()
     val isLikedComment: LiveData<Event<Boolean>> = _isLikedComment
 

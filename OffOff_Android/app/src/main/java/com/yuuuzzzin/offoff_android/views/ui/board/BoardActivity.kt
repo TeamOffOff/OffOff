@@ -14,9 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.service.models.Post
+import com.yuuuzzzin.offoff_android.utils.Constants
+import com.yuuuzzzin.offoff_android.utils.Constants.toast
+import com.yuuuzzzin.offoff_android.utils.NetworkManager
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
-import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
+import com.yuuuzzzin.offoff_android.utils.base.BaseBaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.BoardViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +28,7 @@ import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
 
 @AndroidEntryPoint
-class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board) {
+class BoardActivity : BaseBaseActivity<ActivityBoardBinding>(R.layout.activity_board) {
 
     private val viewModel: BoardViewModel by viewModels()
     private lateinit var boardAdapter: BoardAdapter
@@ -64,6 +67,16 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         initRV()
     }
 
+    override fun init() {
+            Log.d("tag_init", "이닛")
+            val networkManager: NetworkManager? = this?.let { NetworkManager(it) }
+            if (!networkManager?.checkNetworkState()!!) {
+                this.toast(Constants.NETWORK_DISCONNECT)
+                finish()
+            }
+        }
+
+
     private fun processIntent() {
         boardName = intent.getStringExtra("boardName").toString()
         boardType = intent.getStringExtra("boardType").toString()
@@ -83,7 +96,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
         binding.btWritePost.setOnClickListener {
             val intent = Intent(applicationContext, PostWriteActivity::class.java)
             intent.putExtra("boardType", boardType)
-            intent.putExtra("boardName", boardName)
             intent.putExtra("postWriteType", PostWriteType.WRITE)
             startActivity(intent)
         }
@@ -171,7 +183,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 val intent = Intent(this@BoardActivity, PostActivity::class.java).apply {
                     putExtra("id", item.id)
                     putExtra("position", position)
-                    putExtra("boardName", boardName)
                     putExtra("boardType", item.boardType)
                     putExtra("postList", currentPostList as Serializable)
                 }
@@ -219,7 +230,6 @@ class BoardActivity : BaseActivity<ActivityBoardBinding>(R.layout.activity_board
                 //binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 230) // 최소 높이 조정
                 val intent = Intent(this, SearchPostActivity::class.java)
                 intent.putExtra("boardType", boardType)
-                intent.putExtra("boardName", boardName)
                 startActivity(intent)
                 true
             }

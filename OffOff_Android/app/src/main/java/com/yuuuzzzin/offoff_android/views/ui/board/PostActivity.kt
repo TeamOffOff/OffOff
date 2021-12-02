@@ -44,7 +44,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private lateinit var commentListAdapter: CommentListAdapter
     private lateinit var currentCommentList: Array<Comment>
-
     private lateinit var postImageListAdapter: PostImageAdapter
 
     lateinit var postId: String
@@ -53,8 +52,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private var post: Post? = null
     private var postPosition: Int = 0
     private var commentPosition: Int = 0
-    var parentReplyId: String? = null
-
+    private var parentReplyId: String? = null
     private var requestUpdate: Boolean? = false
     private var isFirst: Boolean = true
 
@@ -63,7 +61,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
         val resultCode = activityResult.resultCode // 결과 코드
-        // val data = activityResult.data // 인텐트 데이터
 
         if (resultCode == Activity.RESULT_OK) {
             viewModel.getPost(postId, boardType, false)
@@ -133,6 +130,19 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         })
 
+        viewModel.isLikedPost.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                if(it) {
+                    val likesNum = binding.tvLikesNum.text.toString()
+                    showAutoCloseDialog(this, "좋아요를 눌렀습니다.")
+                    binding.tvLikesNum.text = (likesNum.toInt() + 1).toString()
+                    post!!.likes!!.add(OffoffApplication.user.id)
+                    requestUpdate = true
+                } else {
+                    showAutoCloseDialog(this, "이미 좋아요를 누른 게시글입니다.")
+                }
+            }
+        })
 
         viewModel.isLikedComment.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
@@ -153,24 +163,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 }
             }
         })
-//
-//        viewModel.successBookmark.observe(binding.lifecycleOwner!!, { event ->
-//            event.getContentIfNotHandled()?.let {
-//                showAutoCloseDialog(this, "게시글을 스크랩했습니다.")
-//            }
-//        })
-//
-//        viewModel.cancelBookmark.observe(binding.lifecycleOwner!!, { event ->
-//            event.getContentIfNotHandled()?.let {
-//                showAutoCloseDialog(this, "게시글 스크랩을 취소했습니다.")
-//            }
-//        })
-
-//        viewModel.successReport.observe(binding.lifecycleOwner!!, { event ->
-//            event.getContentIfNotHandled()?.let {
-//                showAutoCloseDialog(this, "게시글을 신고했습니다.")
-//            }
-//        })
 
         viewModel.isReportedPost.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
@@ -179,26 +171,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 } else {
                     showAutoCloseDialog(this, "게시글 신고를 취소했습니다.")
                 }
-//                showYesNoDialog(this, "게시글 신고를 취소하시겠습니까?", onPositiveClick = { dialog, which ->
-//                    viewModel.reportPost(postId, boardType)
-//                },
-//                    onNegativeClick = { dialog, which ->
-//                        null
-//                    })
             }
         })
-
-//        viewModel.cancelReport.observe(binding.lifecycleOwner!!, { event ->
-//            event.getContentIfNotHandled()?.let {
-//                showAutoCloseDialog(this, "게시글 신고를 취소했습니다.")
-////                showYesNoDialog(this, "게시글 신고를 취소하시겠습니까?", onPositiveClick = { dialog, which ->
-////                    viewModel.reportPost(postId, boardType)
-////                },
-////                    onNegativeClick = { dialog, which ->
-////                        null
-////                    })
-//            }
-//        })
 
         //viewModel.getComments(postId, boardType)
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
@@ -236,7 +210,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         viewModel.replySuccessEvent.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                Log.d("tag_reply", "대댓글작성")
                 parentReplyId = null
             }
         })

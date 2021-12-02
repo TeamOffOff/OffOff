@@ -169,7 +169,6 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
                 val intent = Intent(this@SearchPostActivity, PostActivity::class.java).apply {
                     putExtra("id", item.id)
                     putExtra("position", position)
-                    putExtra("boardName", boardName)
                     putExtra("boardType", item.boardType)
                     putExtra("postList", currentPostList as Serializable)
                 }
