@@ -127,6 +127,7 @@ class AddingImagesCollectionViewCell: UICollectionViewCell {
     var removeButton = UIButton().then {
         $0.setImage(UIImage(named: "X")!.resize(to: CGSize(width: 7.25.adjustedWidth, height: 8.2.adjustedHeight)), for: .normal)
         $0.backgroundColor = .white
+        $0.tintColor = .g4
         $0.setCornerRadius(8.adjustedHeight)
     }
     

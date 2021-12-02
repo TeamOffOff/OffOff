@@ -23,6 +23,7 @@
 		EA0747DE2727B48F004DB13C /* RxKeyboard in Frameworks */ = {isa = PBXBuildFile; productRef = EA0747DD2727B48F004DB13C /* RxKeyboard */; };
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
+		EA1E6B04275739B40065A003 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA1E6B03275739B40065A003 /* Roboto-Black.ttf */; };
 		EA285A6526C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA285A6626C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA285A6726C565F000E65EB2 /* RxCocoa */; };
@@ -168,6 +169,7 @@
 		EA07345E2692CECA007830ED /* PostListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
 		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		EA1E6B03275739B40065A003 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
 		EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScheduleView.swift; sourceTree = "<group>"; };
 		EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTableViewCell.swift; sourceTree = "<group>"; };
 		EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 			children = (
 				EA602192272FBABB00092917 /* Roboto-Regular.ttf */,
 				EA602194272FBAC200092917 /* Roboto-Bold.ttf */,
+				EA1E6B03275739B40065A003 /* Roboto-Black.ttf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -716,6 +719,7 @@
 				EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */,
 				EA602195272FBAC200092917 /* Roboto-Bold.ttf in Resources */,
 				EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */,
+				EA1E6B04275739B40065A003 /* Roboto-Black.ttf in Resources */,
 				EA929F2326AC66BE009352B9 /* default profile.png in Resources */,
 				EACC257D26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */,
 			);

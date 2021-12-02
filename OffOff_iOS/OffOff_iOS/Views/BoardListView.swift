@@ -58,6 +58,7 @@ final class BoardListView: UIView {
         $0.font = .defaultFont(size: 15, bold: true)
         $0.setCornerRadius(22.adjustedHeight)
         $0.clearButtonMode = .whileEditing
+        $0.tintColor = .g4
         $0.leftImage(.SEARCHIMAGE.resize(to: CGSize(width: 18.0.adjustedWidth, height: 18.0.adjustedHeight)), imageWidth: 18.0.adjustedWidth, padding: 24.adjustedWidth)
     }
     
@@ -153,7 +154,7 @@ final class BoardCollectionViewCell: UICollectionViewCell {
         $0.setCornerRadius(14.adjustedHeight)
     }
     var titleLabel = UILabel().then {
-        $0.font = .defaultFont(size: 10)
+        $0.font = .defaultFont(size: 12)
     }
     var badge = UIView().then {
         $0.backgroundColor = .g4

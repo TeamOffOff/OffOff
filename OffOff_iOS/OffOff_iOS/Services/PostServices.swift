@@ -57,25 +57,36 @@ public class PostServices {
             }
     }
     
-    static func likePost(post: PostActivity) -> Observable<PostModel?> {
+    static func likePost(post: PostActivity) -> Observable<ActivityResultType> {
         PostServices.provider
             .rx.request(.likePost(post: post))
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                if $0.statusCode == 200 {
-                    do {
-                        print(#fileID, #function, #line, $0.statusCode)
-                        let result = try JSONDecoder().decode(PostModel.self, from: $0.data)
-                        return result
-                    } catch {
-                        print(#fileID, #function, #line, "Decode error")
-                        return nil
-                    }
-                } else {
-                    print(#fileID, #function, #line, "Status code error: \($0.statusCode)")
-                    return nil
+                print(#fileID, #function, #line, $0.statusCode)
+                switch $0.statusCode {
+                case 200:
+                    return .cancel
+                case 201:
+                    return .success
+                case 304:
+                    return .already
+                default:
+                    return .error
                 }
+//                if $0.statusCode == 200 {
+//                    do {
+//                        print(#fileID, #function, #line, $0.statusCode)
+//                        let result = try JSONDecoder().decode(PostModel.self, from: $0.data)
+//                        return result
+//                    } catch {
+//                        print(#fileID, #function, #line, "Decode error")
+//                        return nil
+//                    }
+//                } else {
+//                    print(#fileID, #function, #line, "Status code error: \($0.statusCode)")
+//                    return nil
+//                }
             }
     }
     
@@ -98,4 +109,11 @@ public class PostServices {
                 }
             }
     }
+}
+
+enum ActivityResultType {
+    case success
+    case cancel
+    case already
+    case error
 }

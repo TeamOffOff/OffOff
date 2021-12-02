@@ -9,10 +9,6 @@ import UIKit
 import RxSwift
 
 class PostView: UIScrollView {
-    var backgroundForIndicator = UIView().then {
-        $0.backgroundColor = .g4
-    }
-    
     var backgroundView = UIView().then {
         $0.backgroundColor = .g4
 //        $0.clipsToBounds = true
@@ -33,14 +29,14 @@ class PostView: UIScrollView {
         $0.contentMode = .scaleAspectFit
     }
     var authorLabel = UILabel().then {
-        $0.font = UIFont.preferredFont(forTextStyle: .body).bold()
+        $0.font = .defaulFont(size: 15, weight: .black)
         $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.text = "작성자"
         $0.textColor = .white
     }
     var dateLabel = UILabel().then {
-        $0.font = UIFont.preferredFont(forTextStyle: .caption1)
+        $0.font = .defaulFont(size: 12, weight: .regular)
         $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.textColor = .gray
@@ -48,20 +44,38 @@ class PostView: UIScrollView {
         $0.textColor = .white
     }
     var likeButton = UIButton().then {
+        $0.setImage(.LikeIconBold, for: .normal)
         $0.setTitleColor(.g4, for: .normal)
-        $0.setTitle("ㅇ 공감", for: .normal)
+        $0.setTitle("공감", for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
-        $0.titleLabel?.font = .defaultFont(size: 9, bold: true)
+        $0.titleLabel?.font = .defaultFont(size: 12, bold: true)
         $0.backgroundColor = .g1
+        $0.tintColor = .g4
         $0.setCornerRadius(8.adjustedHeight)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 7.3.adjustedWidth)
+        $0.imageView?.snp.remakeConstraints {
+            $0.left.equalToSuperview().inset(7.adjustedWidth)
+            $0.centerY.equalToSuperview()
+            $0.width.equalTo(11.adjustedWidth)
+            $0.height.equalTo(11.adjustedHeight)
+        }
     }
     var scrapButton = UIButton().then {
+        $0.setImage(.ScrapIconBold, for: .normal)
         $0.setTitleColor(.g4, for: .normal)
-        $0.setTitle("ㅇ 스크랩", for: .normal)
+        $0.setTitle("스크랩", for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
-        $0.titleLabel?.font = .defaultFont(size: 9, bold: true)
+        $0.titleLabel?.font = .defaultFont(size: 12, bold: true)
         $0.backgroundColor = .g1
+        $0.tintColor = .g4
         $0.setCornerRadius(8.adjustedHeight)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 7.3.adjustedWidth)
+        $0.imageView?.snp.remakeConstraints {
+            $0.left.equalToSuperview().inset(7.adjustedWidth)
+            $0.centerY.equalToSuperview()
+            $0.width.equalTo(11.adjustedWidth)
+            $0.height.equalTo(11.adjustedHeight)
+        }
     }
     var contentTextView = UITextView().then {
         $0.textContainerInset = .zero
@@ -125,7 +139,7 @@ class PostView: UIScrollView {
     var scrapLabel = TextWithIconView().then {
         $0.label.textColor = .white
         $0.label.font = .defaultFont(size: 12)
-        $0.iconImageView.image = .SCRAPICOn
+        $0.iconImageView.image = .ScrapIcon
         $0.iconImageView.tintColor = .white
         $0.label.text = "0"
     }
@@ -138,7 +152,6 @@ class PostView: UIScrollView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(backgroundForIndicator)
         self.addSubview(backgroundView)
         self.addSubview(textContainerView)
         self.textContainerView.addSubview(contentTextView)
@@ -161,12 +174,6 @@ class PostView: UIScrollView {
     }
     
     func makeView() {
-        backgroundForIndicator.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.width.equalToSuperview()
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(backgroundView.snp.centerY)
-        }
         backgroundView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.width.equalToSuperview()
@@ -214,14 +221,14 @@ class PostView: UIScrollView {
         likeButton.snp.makeConstraints {
             $0.top.equalTo(activityStack.snp.bottom).offset(8.adjustedHeight)
             $0.left.equalTo(profileImageView)
-            $0.width.equalTo(43.adjustedWidth)
-            $0.height.equalTo(20.adjustedHeight)
+            $0.width.equalTo(52.adjustedWidth)
+            $0.height.equalTo(23.adjustedHeight)
         }
         scrapButton.snp.makeConstraints {
             $0.top.equalTo(likeButton)
             $0.left.equalTo(likeButton.snp.right).offset(6.adjustedWidth)
-            $0.width.equalTo(51.adjustedWidth)
-            $0.height.equalTo(20.adjustedHeight)
+            $0.width.equalTo(61.adjustedWidth)
+            $0.height.equalTo(23.adjustedHeight)
         }
         
         repliesTableView.snp.makeConstraints {

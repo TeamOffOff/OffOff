@@ -64,11 +64,15 @@ class PostViewController: UIViewController {
     
     var loadingImageView = UIImageView().then {
         $0.backgroundColor = .g4
-        $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 30.adjustedWidth, height: 30.adjustedHeight))
+        $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 30.adjustedWidth, height: 30.adjustedHeight), isAlwaysTemplate: false)
         $0.contentMode = .top
     }
     
     var loadingView = UIView().then {
+        $0.backgroundColor = .g4
+    }
+
+    var backgroundForIndicator = UIView().then {
         $0.backgroundColor = .g4
     }
     
@@ -78,6 +82,7 @@ class PostViewController: UIViewController {
         navigationController?.navigationBar.setAppearance()
         
         view.backgroundColor = .white
+        view.addSubview(backgroundForIndicator)
         view.addSubview(postView)
         view.addSubview(replyContainer)
         replyContainer.addSubview(replyBackgroundView)
@@ -217,11 +222,15 @@ class PostViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .skip(1)
             .withUnretained(self)
-            .do { (owner, bool) in
-                if bool {
+            .do { (owner, type) in
+                switch type {
+                case .success:
                     owner.activityAlert(message: "좋아요를 했습니다.")
-                } else {
+                    owner.postView.likeLabel.label.text = "\(Int(owner.postView.likeLabel.label.text!)! + 1)"
+                case .already:
                     owner.activityAlert(message: "이미 좋아요한 게시글 입니다.")
+                default:
+                    owner.activityAlert(message: "오류가 발생했습니다.")
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
@@ -234,11 +243,16 @@ class PostViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .skip(1)
             .withUnretained(self)
-            .do { (owner, bool) in
-                if bool {
+            .do { (owner, type) in
+                switch type {
+                case .success:
                     owner.activityAlert(message: "스크랩을 했습니다.")
-                } else {
-                    owner.activityAlert(message: "이미 스크랩한 게시글 입니다.")
+                    owner.postView.scrapLabel.label.text = "\(Int(owner.postView.scrapLabel.label.text!)! + 1)"
+                case .cancel:
+                    owner.activityAlert(message: "스크랩을 취소했습니다.")
+                    owner.postView.scrapLabel.label.text = "\(Int(owner.postView.scrapLabel.label.text!)! - 1)"
+                default:
+                    owner.activityAlert(message: "오류가 발생했습니다.")
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
@@ -370,6 +384,10 @@ class PostViewController: UIViewController {
     
     // MARK: - Private Funcs
     private func makeView() {
+        backgroundForIndicator.snp.makeConstraints {
+            $0.top.left.right.equalToSuperview()
+            $0.bottom.equalTo(postView.contentTextView.snp.bottom)
+        }
         loadingView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }

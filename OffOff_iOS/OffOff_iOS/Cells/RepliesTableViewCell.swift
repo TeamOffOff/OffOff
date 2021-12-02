@@ -32,7 +32,7 @@ class RepliesTableViewCell: UITableViewCell {
     
     var nicknameLabel = UILabel().then {
         $0.backgroundColor = .clear
-        $0.font = .defaultFont(size: 12, bold: true)
+        $0.font = .defaultFont(size: 14, bold: true)
         $0.text = "알 수 없음"
     }
     
@@ -44,10 +44,12 @@ class RepliesTableViewCell: UITableViewCell {
     
     var contentTextView = UITextView().then {
         $0.backgroundColor = .clear
-        $0.font = .defaultFont(size: 10)
+        $0.font = .defaultFont(size: 12)
         $0.isScrollEnabled = false
         $0.sizeToFit()
         $0.isUserInteractionEnabled = false
+        $0.textContainerInset = .zero
+        $0.textContainer.lineFragmentPadding = 0
     }
     
     var addSubReplyButton = UIButton().then {
@@ -128,7 +130,7 @@ class RepliesTableViewCell: UITableViewCell {
         }
         profileImageView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(10.adjustedHeight)
-            $0.left.equalToSuperview().inset(14.adjustedWidth)
+            $0.left.equalToSuperview().inset(25.adjustedWidth)
             $0.width.height.equalTo(20.0.adjustedWidth)
         }
         nicknameLabel.snp.makeConstraints {
@@ -136,13 +138,14 @@ class RepliesTableViewCell: UITableViewCell {
             $0.centerY.equalTo(profileImageView)
         }
         contentTextView.snp.makeConstraints {
-            $0.top.equalTo(profileImageView.snp.bottom).offset(5.adjustedWidth)
-            $0.left.right.equalToSuperview().inset(13.adjustedWidth)
+            $0.top.equalTo(profileImageView.snp.bottom).offset(4.adjustedWidth)
+            $0.right.equalToSuperview().inset(25.adjustedWidth)
+            $0.left.equalTo(profileImageView)
         }
         
         dateLabel.snp.makeConstraints {
-            $0.top.equalTo(contentTextView.snp.bottom).offset(7.adjustedHeight)
-            $0.left.equalTo(profileImageView)
+            $0.top.equalTo(contentTextView.snp.bottom).offset(4.adjustedHeight)
+            $0.left.equalTo(contentTextView)
             $0.bottom.equalToSuperview().inset(7.adjustedHeight)
         }
         
@@ -171,7 +174,7 @@ class RepliesTableViewCell: UITableViewCell {
             .withUnretained(self)
             .bind { (owner, reply) in
                 //            self.profileImageView.image =
-                owner.dateLabel.text = reply!.date
+                owner.dateLabel.text = reply!.date.toDate()!.toFormedString()
                 owner.contentTextView.text = reply!.content
                 owner.likeLabel.label.text = "\(reply!.likes.count)"
                 

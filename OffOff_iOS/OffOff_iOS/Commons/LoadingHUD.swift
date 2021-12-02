@@ -21,7 +21,7 @@ class LoadingHUD {
         }
         
         let popupView = UIImageView(frame: CGRect.init(x: 0, y: 0, width: 100, height: 100)).then {
-            $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 50.adjustedWidth, height: 50.adjustedHeight))
+            $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 50.adjustedWidth, height: 50.adjustedHeight), isAlwaysTemplate: false)
         }
         
         if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) {

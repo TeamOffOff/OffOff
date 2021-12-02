@@ -35,6 +35,7 @@ class PostListView: UIView {
     var newPostButton = UIButton().then {
         $0.setCornerRadius(15.adjustedHeight)
         $0.backgroundColor = .g4
+        $0.tintColor = .white
         $0.setImage(.NewPostIcon, for: .normal)
     }
 

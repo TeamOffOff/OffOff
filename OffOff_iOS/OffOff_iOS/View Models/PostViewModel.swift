@@ -15,8 +15,8 @@ class PostViewModel {
     var replies = BehaviorSubject<[Reply]?>(value: nil)
     
     var deleteButtonTapped = BehaviorSubject<UserInfo?>(value: nil)
-    var liked = BehaviorSubject<Bool>(value: false)
-    var bookmarked = BehaviorSubject<Bool>(value: false)
+    var liked = BehaviorSubject<ActivityResultType>(value: ActivityResultType.error)
+    var bookmarked = BehaviorSubject<ActivityResultType>(value: ActivityResultType.error)
     var replyAdded = BehaviorSubject<Bool>(value: false)
     
     var isSubReplyInputting = BehaviorSubject<Reply?>(value: nil)
@@ -58,24 +58,39 @@ class PostViewModel {
                 }
             }
         
+//        likeButtonTapped
+//            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+//            .flatMap { val -> Observable<(PostModel?, PostLikeModel?)> in
+//                if val != nil {
+//                    let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
+//                    return PostServices.likePost(post: post).flatMap { Observable.just(($0, val)) }
+//                } else {
+//                    return Observable.just((nil, nil))
+//                }
+//            }
+//            .bind { [weak self] (postModel, likeModel) in
+//                if postModel != nil {
+//                    self?.post.onNext(postModel)
+//                    self?.liked.onNext(true)
+//                    likeModel!.cell.postModel.accept(postModel)
+//                } else {
+//                    self?.liked.onNext(false)
+//                }
+//            }
+//            .disposed(by: disposeBag)
+        
         likeButtonTapped
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-            .flatMap { val -> Observable<(PostModel?, PostLikeModel?)> in
+            .flatMap { val -> Observable<ActivityResultType> in
                 if val != nil {
                     let post = PostActivity(boardType: boardType, _id: val!.id, activity: "likes")
-                    return PostServices.likePost(post: post).flatMap { Observable.just(($0, val)) }
+                    return PostServices.likePost(post: post)
                 } else {
-                    return Observable.just((nil, nil))
+                    return Observable.just(ActivityResultType.error)
                 }
             }
-            .bind { [weak self] (postModel, likeModel) in
-                if postModel != nil {
-                    self?.post.onNext(postModel)
-                    self?.liked.onNext(true)
-                    likeModel!.cell.postModel.accept(postModel)
-                } else {
-                    self?.liked.onNext(false)
-                }
+            .bind { [weak self] type in
+                self?.liked.onNext(type)
             }
             .disposed(by: disposeBag)
 
@@ -110,17 +125,12 @@ class PostViewModel {
         
         bookmarkButtonTapped
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-            .flatMap { val -> Observable<PostModel?> in
+            .flatMap { val -> Observable<ActivityResultType> in
                 let post = PostActivity(boardType: val.1, _id: val.0, activity: "bookmarks")
                 return PostServices.likePost(post: post)
             }
-            .bind { [weak self] postModel in
-                if postModel != nil {
-                    self?.post.onNext(postModel)
-                    self?.bookmarked.onNext(true)
-                } else {
-                    self?.bookmarked.onNext(false)
-                }
+            .bind { [weak self] type in
+                    self?.bookmarked.onNext(type)
             }
             .disposed(by: disposeBag)
 

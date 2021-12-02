@@ -301,13 +301,18 @@ extension UIImage {
         return self.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
     }
     
-    func resize(to size: CGSize) -> UIImage {
+    func resize(to size: CGSize, isAlwaysTemplate: Bool = true) -> UIImage {
         let render = UIGraphicsImageRenderer(size: size)
         let renderImage = render.image { context in
             self.draw(in: CGRect(origin: .zero, size: size))
         }
         
-        return renderImage
+        if isAlwaysTemplate {
+            return renderImage.withRenderingMode(.alwaysTemplate)
+        } else {
+            return renderImage
+        }
+        
     }
     
     static var DEFAULT_PROFILE = UIImage(named: "default profile")
@@ -324,25 +329,6 @@ extension UIImage {
         return UIImage(systemName: "xmark.circle.fill")!
     }
     
-    static let ICON_USER_GRAY = UIImage.fontAwesomeIcon(name: .user, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_LOCK_GRAY = UIImage.fontAwesomeIcon(name: .lock, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_AT_GRAY = UIImage.fontAwesomeIcon(name: .at, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_CHECKCIRCLE_GRAY = UIImage.fontAwesomeIcon(name: .checkCircle, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_USER_MAINCOLOR = UIImage.fontAwesomeIcon(name: .user, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_LOCK_MAINCOLOR = UIImage.fontAwesomeIcon(name: .lock, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_AT_MAINCOLOR = UIImage.fontAwesomeIcon(name: .at, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_CHECKCIRCLE_MAINCOLOR = UIImage.fontAwesomeIcon(name: .checkCircle, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_EXCLAMATION_RED = UIImage.fontAwesomeIcon(name: .exclamation, style: .solid, textColor: .systemRed, size: Constants.ICON_SIZE)
-    static let ICON_BIRTHDAY_GRAY = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_BIRTHDAY_MAINCOLOR = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_LIKES_RED = UIImage.fontAwesomeIcon(name: .thumbsUp, style: .regular, textColor: .systemRed, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_COMMENT_BLUE = UIImage.fontAwesomeIcon(name: .commentAlt, style: .regular, textColor: .systemBlue, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_SCRAP_YELLOW = UIImage.fontAwesomeIcon(name: .star, style: .regular, textColor: .systemYellow, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_SEARCH_GRAY = UIImage.fontAwesomeIcon(name: .search, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_REPORT_GRAY = UIImage.fontAwesomeIcon(name: .exclamationCircle, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_WRITE_GRAY = UIImage.fontAwesomeIcon(name: .pen, style: .solid, textColor: .systemGray, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
-    
     static let LEFTARROW = UIImage(named: "LeftArrow")!
     static let CAMERA = UIImage(named: "CameraImage")!.withRenderingMode(.alwaysTemplate)
     static let MOREICON = UIImage(named: "MoreIcon")!.withRenderingMode(.alwaysTemplate)
@@ -355,7 +341,7 @@ extension UIImage {
     static let LIKEICON = UIImage(named: "LikeIcon")!.withRenderingMode(.alwaysTemplate)
     static let REPLYICON = UIImage(named: "ReplyIcon")!.withRenderingMode(.alwaysTemplate)
     static let PICTUREICON = UIImage(named: "PictureIcon")!.withRenderingMode(.alwaysTemplate)
-    static let SCRAPICOn = UIImage(named: "ScrapIcon")!.withRenderingMode(.alwaysTemplate)
+    static let ScrapIcon = UIImage(named: "ScrapIcon")!.withRenderingMode(.alwaysTemplate)
     static let LikeIconFill = UIImage(named: "LikeIconFill")!.withRenderingMode(.alwaysTemplate)
     
     static let HOMEICON = UIImage(named: "HomeIcon")!
@@ -363,6 +349,8 @@ extension UIImage {
     static let CALENDARICON = UIImage(named: "CalendarIcon")!
     static let BOARDICON = UIImage(named: "BoardIcon")!
     static let PERSONICON = UIImage(named: "PersonIcon")!
+    static let LikeIconBold = UIImage(named: "LikeIconBold")!.withRenderingMode(.alwaysTemplate)
+    static let ScrapIconBold = UIImage(named: "ScrapIconBold")!.withRenderingMode(.alwaysTemplate)
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)
@@ -396,21 +384,6 @@ extension TextField {
         self.text = nil
         self.iconImage = iconImage
         self.lineColor = .gray
-    }
-    
-    func setTextFieldFail(errorMessage: String) {
-        self.errorMessage = errorMessage
-        self.iconImage = .ICON_EXCLAMATION_RED
-    }
-    
-    func setTextFieldVerified() {
-        self.errorMessage = nil
-        self.iconImage = .ICON_CHECKCIRCLE_MAINCOLOR
-        self.lineColor = .mainColor
-    }
-    
-    func isVerified() -> Bool {
-        return self.iconImage == .ICON_CHECKCIRCLE_MAINCOLOR
     }
 }
 
@@ -469,6 +442,16 @@ extension UIFont {
         let name = bold ? "Roboto-Bold" : "Roboto-Regular"
         return UIFont(name: name, size: size)!
     }
+    
+    static func defaulFont(size: Double, weight: FontWeightType) -> UIFont {
+        return UIFont(name: "Roboto-\(weight.rawValue)", size: size)!
+    }
+}
+
+enum FontWeightType: String {
+    case regular = "Regular"
+    case bold = "Bold"
+    case black = "Black"
 }
 
 

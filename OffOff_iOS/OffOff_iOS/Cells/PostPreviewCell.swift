@@ -25,32 +25,32 @@ class PostPreviewCell: UITableViewCell {
         $0.adjustsFontForContentSizeCategory = true
     }
     var previewTextView = UILabel().then {
-        $0.font = .defaultFont(size: 10.5)
+        $0.font = .defaultFont(size: 12)
         $0.textColor = .w5
         $0.adjustsFontForContentSizeCategory = true
     }
     var dateAuthorLabel = UILabel().then {
         $0.textColor = .w5
-        $0.font = .defaultFont(size: 10.5)
+        $0.font = .defaultFont(size: 12)
         $0.textAlignment = .left
     }
     var pictureLabel = TextWithIconView().then {
         $0.label.textColor = .w5
-        $0.label.font = .defaultFont(size: 10.5)
+        $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .PICTUREICON
         $0.iconImageView.tintColor = .w5
         $0.label.text = "1"
     }
     var likeLabel = TextWithIconView().then {
         $0.label.textColor = .w5
-        $0.label.font = .defaultFont(size: 10.5)
+        $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .LIKEICON
         $0.iconImageView.tintColor = .w5
         $0.label.text = "0"
     }
     var commentLabel = TextWithIconView().then {
         $0.label.textColor = .w5
-        $0.label.font = .defaultFont(size: 10.5)
+        $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .REPLYICON
         $0.iconImageView.tintColor = .w5
         $0.label.text = "0"
@@ -118,12 +118,12 @@ class PostPreviewCell: UITableViewCell {
         pictureLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
             $0.height.equalTo(12.adjustedHeight)
-            $0.right.equalTo(likeLabel.iconImageView.snp.left).offset(-2.0)
+            $0.right.equalTo(likeLabel.iconImageView.snp.left).offset(-5)
         }
         likeLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
             $0.height.equalTo(12.adjustedHeight)
-            $0.right.equalTo(commentLabel.iconImageView.snp.left).offset(-2.0)
+            $0.right.equalTo(commentLabel.iconImageView.snp.left).offset(-5)
         }
         commentLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
