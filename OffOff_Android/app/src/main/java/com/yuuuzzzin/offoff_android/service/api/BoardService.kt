@@ -76,7 +76,7 @@ interface BoardService {
     suspend fun doPostActivity(
         @Header("Authorization") auth: String,
         @Body activityItem: ActivityItem
-    ): Response<Post>
+    ): Response<ResultResponse>
 
     /* 댓글 조회 */
     @GET("reply")

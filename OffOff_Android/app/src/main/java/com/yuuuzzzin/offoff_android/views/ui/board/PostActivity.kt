@@ -133,18 +133,72 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         })
 
-        viewModel.successLike.observe(binding.lifecycleOwner!!, { event ->
+
+        viewModel.isLikedComment.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                showSuccessLikeDialog(it)
-                requestUpdate = true
+                if(it) {
+                    showAutoCloseDialog(this, "좋아요를 눌렀습니다.")
+                } else {
+                    showAutoCloseDialog(this, "이미 좋아요를 누른 댓글입니다.")
+                }
             }
         })
 
-        viewModel.alreadyLike.observe(binding.lifecycleOwner!!, { event ->
+        viewModel.isBookmarkedPost.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                showAlreadyLikeDialog(it)
+                if(it) {
+                    showAutoCloseDialog(this, "게시글을 스크랩했습니다.")
+                } else {
+                    showAutoCloseDialog(this, "게시글 스크랩을 취소했습니다.")
+                }
             }
         })
+//
+//        viewModel.successBookmark.observe(binding.lifecycleOwner!!, { event ->
+//            event.getContentIfNotHandled()?.let {
+//                showAutoCloseDialog(this, "게시글을 스크랩했습니다.")
+//            }
+//        })
+//
+//        viewModel.cancelBookmark.observe(binding.lifecycleOwner!!, { event ->
+//            event.getContentIfNotHandled()?.let {
+//                showAutoCloseDialog(this, "게시글 스크랩을 취소했습니다.")
+//            }
+//        })
+
+//        viewModel.successReport.observe(binding.lifecycleOwner!!, { event ->
+//            event.getContentIfNotHandled()?.let {
+//                showAutoCloseDialog(this, "게시글을 신고했습니다.")
+//            }
+//        })
+
+        viewModel.isReportedPost.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                if(it) {
+                    showAutoCloseDialog(this, "게시글을 신고했습니다.")
+                } else {
+                    showAutoCloseDialog(this, "게시글 신고를 취소했습니다.")
+                }
+//                showYesNoDialog(this, "게시글 신고를 취소하시겠습니까?", onPositiveClick = { dialog, which ->
+//                    viewModel.reportPost(postId, boardType)
+//                },
+//                    onNegativeClick = { dialog, which ->
+//                        null
+//                    })
+            }
+        })
+
+//        viewModel.cancelReport.observe(binding.lifecycleOwner!!, { event ->
+//            event.getContentIfNotHandled()?.let {
+//                showAutoCloseDialog(this, "게시글 신고를 취소했습니다.")
+////                showYesNoDialog(this, "게시글 신고를 취소하시겠습니까?", onPositiveClick = { dialog, which ->
+////                    viewModel.reportPost(postId, boardType)
+////                },
+////                    onNegativeClick = { dialog, which ->
+////                        null
+////                    })
+//            }
+//        })
 
         //viewModel.getComments(postId, boardType)
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
@@ -380,6 +434,23 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         finish()
     }
 
+    override fun dispatchTouchEvent(motionEvent: MotionEvent?): Boolean {
+        val focusView = binding.etComment
+        if (focusView != null) {
+
+            var rect = Rect()
+            focusView.getGlobalVisibleRect(rect)
+            val x = motionEvent!!.x.toInt()
+            val y = motionEvent.y.toInt()
+            if (!rect.contains(x, y)) {
+                hideKeyboard()
+                focusView.clearFocus()
+            }
+        }
+
+        return super.dispatchTouchEvent(motionEvent)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_post, menu)
 
@@ -417,6 +488,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
             R.id.action_report -> {
                 // 신고 버튼 누를 시
+                showYesNoDialog(this, "게시글을 신고하시겠습니까?", onPositiveClick = { dialog, which ->
+                    viewModel.reportPost(postId, boardType)
+                },
+                    onNegativeClick = { dialog, which ->
+                        null
+                    })
                 true
             }
             android.R.id.home -> {
@@ -493,22 +570,5 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         val arrayNotMine = arrayOf(
             REPORT_COMMENT
         )
-    }
-
-    override fun dispatchTouchEvent(motionEvent: MotionEvent?): Boolean {
-        val focusView = binding.etComment
-        if (focusView != null) {
-
-            var rect = Rect()
-            focusView.getGlobalVisibleRect(rect)
-            val x = motionEvent!!.x.toInt()
-            val y = motionEvent.y.toInt()
-            if (!rect.contains(x, y)) {
-                hideKeyboard()
-                focusView.clearFocus()
-            }
-        }
-
-        return super.dispatchTouchEvent(motionEvent)
     }
 }

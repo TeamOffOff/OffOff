@@ -261,6 +261,7 @@
                             android:layout_marginTop="10dp"
                             android:background="@drawable/layout_button_post"
                             android:includeFontPadding="false"
+                            android:onClick="@{()->viewModel.bookmarkPost(post.id, activity.boardType)}"
                             android:text="@string/button_scrap"
                             android:textColor="@color/green"
                             android:textSize="9sp"

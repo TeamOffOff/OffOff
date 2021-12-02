@@ -42,17 +42,42 @@ constructor(
     private val _reply = MutableLiveData<Reply>()
     val reply: LiveData<Reply> get() = _reply
 
-    // 좋아요
-    private val _successLike = MutableLiveData<Event<String>>()
-    val successLike: LiveData<Event<String>> = _successLike
+    // 게시글 좋아요
+    private val _isLikedPost = MutableLiveData<Event<Boolean>>()
+    val isLikedPost: LiveData<Event<Boolean>> = _isLikedPost
 
     // 이미 좋아요
     private val _alreadyLike = MutableLiveData<Event<String>>()
     val alreadyLike: LiveData<Event<String>> = _alreadyLike
 
+
+    private val _isBookmarkedPost = MutableLiveData<Event<Boolean>>()
+    val isBookmarkedPost: LiveData<Event<Boolean>> = _isBookmarkedPost
+
+
+    // 스크랩
+//    private val _successBookmark = MutableLiveData<Event<String>>()
+//    val successBookmark: LiveData<Event<String>> = _successBookmark
+//
+//    // 스크랩 취소
+//    private val _cancelBookmark = MutableLiveData<Event<String>>()
+//    val cancelBookmark: LiveData<Event<String>> = _cancelBookmark
+
+//    // 신고
+//    private val _successReport = MutableLiveData<Event<String>>()
+//    val successReport: LiveData<Event<String>> = _successReport
+
+    // 신고 취소
+    private val _isReportedPost = MutableLiveData<Event<Boolean>>()
+    val isReportedPost: LiveData<Event<Boolean>> = _isReportedPost
+
     // 댓글
     private val _replySuccessEvent = MutableLiveData<Event<Boolean>>()
     val replySuccessEvent: LiveData<Event<Boolean>> = _replySuccessEvent
+
+    // 게시글 좋아요
+    private val _isLikedComment = MutableLiveData<Event<Boolean>>()
+    val isLikedComment: LiveData<Event<Boolean>> = _isLikedComment
 
     private val _showReplyOptionDialog = MutableLiveData<Event<Reply>>()
     val showReplyOptionDialog: LiveData<Event<Reply>> = _showReplyOptionDialog
@@ -103,6 +128,8 @@ constructor(
 
     fun likePost(postId: String, boardType: String) {
 
+        _loading.postValue(Event(true))
+
         val activityItem = ActivityItem(
             id = postId,
             boardType = boardType,
@@ -112,16 +139,14 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.doPostActivity(OffoffApplication.pref.token.toString(), activityItem)
                 .let { response ->
-                    if (response.isSuccessful) {
-                        when (response.code()) {
-                            OK -> {
-                                _post.postValue(response.body())
-                                _successLike.postValue(Event("좋아요를 눌렀습니다."))
-                                Log.d("tag_success", "likePost: ${response.body()}")
-                            }
-                            CREATED ->
-                                _alreadyLike.postValue(Event("이미 좋아요한 게시글입니다."))
-                        }
+                    if (response.isSuccessful && response.code() == CREATED) {
+                        _loading.postValue(Event(false))
+                        _isLikedPost.postValue(Event(true))
+                        Log.d("tag_success", "likePost: ${response.body()}")
+                    } else if (response.code() == NOT_MODIFIED) {
+                        _loading.postValue(Event(false))
+                        _isLikedPost.postValue(Event(false))
+                        Log.d("tag_fail", "likePost Error: ${response.code()}")
                     } else {
                         Log.d("tag_fail", "likePost Error: ${response.code()}")
                     }
@@ -131,6 +156,8 @@ constructor(
     }
 
     fun bookmarkPost(postId: String, boardType: String) {
+
+        _loading.postValue(Event(true))
 
         val activityItem = ActivityItem(
             id = postId,
@@ -142,17 +169,18 @@ constructor(
             repository.doPostActivity(OffoffApplication.pref.token.toString(), activityItem)
                 .let { response ->
                     if (response.isSuccessful) {
+                        _loading.postValue(Event(false))
+
                         when (response.code()) {
-                            OK -> {
-                                _post.postValue(response.body())
-                                _successLike.postValue(Event("게시물을 북마크했습니다."))
-                                Log.d("tag_success", "likePost: ${response.body()}")
+                            CREATED -> {
+                                _isBookmarkedPost.postValue(Event(true))
+                                Log.d("tag_success", "bookmarkPost: ${response.body()}")
                             }
-                            CREATED ->
-                                _alreadyLike.postValue(Event("북마크를 취소헀습니다."))
+                            OK ->
+                                _isBookmarkedPost.postValue(Event(false))
                         }
                     } else {
-                        Log.d("tag_fail", "likePost Error: ${response.code()}")
+                        Log.d("tag_fail", "bookmarkPost Error: ${response.code()}")
                     }
                 }
 
@@ -160,6 +188,8 @@ constructor(
     }
 
     fun reportPost(postId: String, boardType: String) {
+
+        _loading.postValue(Event(true))
 
         val activityItem = ActivityItem(
             id = postId,
@@ -171,17 +201,18 @@ constructor(
             repository.doPostActivity(OffoffApplication.pref.token.toString(), activityItem)
                 .let { response ->
                     if (response.isSuccessful) {
+                        _loading.postValue(Event(false))
+
                         when (response.code()) {
-                            OK -> {
-                                _post.postValue(response.body())
-                                _successLike.postValue(Event("게시물을 신고했습니다."))
-                                Log.d("tag_success", "likePost: ${response.body()}")
+                            CREATED -> {
+                                _isReportedPost.postValue(Event(true))
+                                Log.d("tag_success", "reportPost: ${response.body()}")
                             }
-                            CREATED ->
-                                _alreadyLike.postValue(Event("신고를 취소헀습니다."))
+                            OK ->
+                                _isReportedPost.postValue(Event(false))
                         }
                     } else {
-                        Log.d("tag_fail", "likePost Error: ${response.code()}")
+                        Log.d("tag_fail", "reportPost Error: ${response.code()}")
                     }
                 }
 
@@ -234,6 +265,8 @@ constructor(
 
     fun likeComment(commentId: String, boardType: String) {
 
+        _loading.postValue(Event(true))
+
         val activityItem = ActivityItem(
             id = commentId,
             boardType = boardType,
@@ -244,12 +277,14 @@ constructor(
             repository.likeComment(OffoffApplication.pref.token.toString(), activityItem)
                 .let { response ->
                     if (response.isSuccessful) {
+                        _loading.postValue(Event(false))
                         Log.d("tag_success", "likeComment: ${response.body()}")
+
                         if (!response.body()!!.id.isNullOrEmpty()) {
                             _comment.postValue(response.body())
-                            _successLike.postValue(Event("좋아요를 눌렀습니다."))
+                            _isLikedComment.postValue(Event(true))
                         } else {
-                            _alreadyLike.postValue(Event("이미 좋아요한 댓글입니다."))
+                            _isLikedComment.postValue(Event(false))
                         }
                     } else {
                         Log.d("tag_fail", "likeComment Error: ${response.code()}")
@@ -323,9 +358,9 @@ constructor(
                         Log.d("tag_success", "likeReply: ${response.body()}")
                         if (!response.body()!!.id.isNullOrEmpty()) {
                             _reply.postValue(response.body())
-                            _successLike.postValue(Event("좋아요를 눌렀습니다."))
+                            _isLikedComment.postValue(Event(true))
                         } else {
-                            _alreadyLike.postValue(Event("이미 좋아요한 댓글입니다."))
+                            _isLikedComment.postValue(Event(false))
                         }
                     } else {
                         Log.d("tag_fail", "likeReply Error: ${response.code()}")
@@ -376,5 +411,6 @@ constructor(
     companion object {
         const val OK = 200
         const val CREATED = 201
+        const val NOT_MODIFIED = 304
     }
 }
