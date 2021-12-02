@@ -1,4 +1,4 @@
-package com.yuuuzzzin.offoff_android.views.ui
+package com.yuuuzzzin.offoff_android.views.ui.settings
 
 import android.content.Intent
 import android.os.Bundle

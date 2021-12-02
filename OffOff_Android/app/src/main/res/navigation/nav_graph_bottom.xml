@@ -25,12 +25,12 @@
         tools:layout="@layout/fragment_schedule" />
     <fragment
         android:id="@+id/userFragment"
-        android:name="com.yuuuzzzin.offoff_android.views.ui.UserFragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.settings.UserFragment"
         android:label="fragment_user"
         tools:layout="@layout/fragment_user" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.yuuuzzzin.offoff_android.views.ui.SettingsFragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 

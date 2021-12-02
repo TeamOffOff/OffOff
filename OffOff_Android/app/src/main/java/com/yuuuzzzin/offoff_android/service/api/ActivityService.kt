@@ -10,31 +10,31 @@ import retrofit2.http.Header
 interface ActivityService {
 
     /* 좋아요한 게시물 목록 불러오기 */
-    @GET("user/likes")
+    @GET("activity/likes")
     suspend fun getMyLikeList(
         @Header("Authorization") auth: String,
     ): Response<PostList>
 
     /*  작성한 게시물 목록 불러오기 */
-    @GET("user/posts")
+    @GET("activity/posts")
     suspend fun getMyPostList(
         @Header("Authorization") auth: String,
     ): Response<PostList>
 
     /* 신고한 게시물 목록 불러오기 */
-    @GET("user/reports")
-    suspend fun getMyReportList(
+    @GET("activity/reports")
+    suspend fun getMyReportPostList(
         @Header("Authorization") auth: String,
     ): Response<PostList>
 
     /* 스크랩한 게시물 목록 불러오기 */
-    @GET("user/bookmarks")
-    suspend fun getMyBookmarkList(
+    @GET("activity/bookmarks")
+    suspend fun getMyBookmarkPostList(
         @Header("Authorization") auth: String,
     ): Response<PostList>
 
     /* 댓글 단 게시물 목록 불러오기 */
-    @GET("user/bookmarks")
+    @GET("activity/replies")
     suspend fun getMyCommentPostList(
         @Header("Authorization") auth: String,
     ): Response<PostList>

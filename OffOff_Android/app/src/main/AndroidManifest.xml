@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:name=".OffoffApplication"
@@ -18,8 +19,13 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <meta-data android:name="android.max_aspect" android:value="2.1" />
-        <activity android:name=".views.ui.board.SearchPostActivity"></activity>
+        <activity android:name=".views.ui.user.UserPostActivity"></activity>
+
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
+
+        <activity android:name=".views.ui.board.SearchPostActivity" />
         <activity android:name=".views.ui.CropImageActivity" />
         <activity android:name=".views.ui.member.ChangePwActivity" />
         <activity android:name=".views.ui.member.FindInfoActivity" />

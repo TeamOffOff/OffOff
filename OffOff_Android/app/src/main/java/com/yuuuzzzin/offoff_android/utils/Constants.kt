@@ -13,13 +13,7 @@ object Constants {
     const val DATABASE_NAME = "offoff-db"
     const val SCHEDULE_DATA_FILENAME = "schedule.json"
 
-    // 프로필 사진 설정
-    const val PROFILE_OPTION1 = "사진 찍기"
-    const val PROFILE_OPTION2 = "앨범에서 가져오기"
-    const val PROFILE_OPTION3 = "취소"
-
-    const val FROM_ALBUM = 0
-    const val FROM_CAMERA = 1
+    const val NETWORK_DISCONNECT = "네트워크 연결 상태를 확인해주세요."
 
     // 댓글 옵션
     const val DELETE_COMMENT = "삭제"
@@ -61,6 +55,12 @@ object PostWriteType {
 
 object BoardType {
     const val FREE = "자유게시판"
-    const val SECRET = "익명게시판"
+    const val SECRET = "비밀게시판"
     const val HOT = "인기게시판"
+}
+
+object UserPostType {
+    const val MY_POST = "내가 쓴 글"
+    const val MY_COMMENT_POST = "댓글 단 글"
+    const val MY_BOOKMARK_POST = "스크랩한 글"
 }
