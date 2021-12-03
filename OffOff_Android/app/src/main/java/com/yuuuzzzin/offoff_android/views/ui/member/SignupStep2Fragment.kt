@@ -54,6 +54,9 @@ class SignupStep2Fragment :
 
         signupViewModel.isEmailVerified.observe(viewLifecycleOwner, {
             binding.tvEmail.text = it
+            if (it.isNullOrEmpty()) {
+                binding.tvEmail.text = "사용 가능한 이메일 주소입니다."
+            }
         })
 
         /* 생년월일 파트 */

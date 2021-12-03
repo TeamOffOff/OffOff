@@ -247,7 +247,7 @@ constructor(
         _loading.postValue(Event(true))
 
         val profile = mutableListOf<Image>()
-        if(encodedString != null) {
+        if (encodedString != null) {
             profile.add(Image(null, encodedString))
         }
 

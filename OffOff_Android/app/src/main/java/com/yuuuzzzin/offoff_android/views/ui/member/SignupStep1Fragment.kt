@@ -56,6 +56,9 @@ class SignupStep1Fragment :
 
         signupViewModel.isIdVerified.observe(viewLifecycleOwner, {
             binding.tvId.text = it
+            if (it.isNullOrEmpty()) {
+                binding.tvId.text = "사용 가능한 아이디입니다."
+            }
         })
 
         /* PW 파트 */
@@ -65,6 +68,9 @@ class SignupStep1Fragment :
 
         signupViewModel.isPwVerified.observe(viewLifecycleOwner, {
             binding.tvPw.text = it
+            if (it.isNullOrEmpty()) {
+                binding.tvPw.text = "사용 가능한 비밀번호입니다."
+            }
         })
 
         binding.etPw.addTextChangedListener(object : TextWatcher {
@@ -92,7 +98,7 @@ class SignupStep1Fragment :
         /* PW 확인 파트 */
         binding.etPwConfirm.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (hasFocus) {
-                if (signupViewModel.pw.value.isNullOrEmpty() || !binding.tvPw.text.isNullOrEmpty()) {
+                if (!binding.tvPw.text.isNullOrEmpty()) {
                     binding.tvPwConfirm.text = "비밀번호를 확인해주세요"
                 } else {
                     signupViewModel.validatePwConfirm()
@@ -105,8 +111,11 @@ class SignupStep1Fragment :
         })
 
         signupViewModel.isPwConfirmVerified.observe(viewLifecycleOwner) {
-            if (!signupViewModel.pw.value.isNullOrEmpty() && binding.tvPw.text.isNullOrEmpty()) {
+            if (!binding.tvPw.text.isNullOrEmpty()) {
                 binding.tvPwConfirm.text = it
+                if (it.isNullOrEmpty()) {
+                    binding.tvPwConfirm.text = "비밀번호가 일치합니다."
+                }
             }
         }
     }
