@@ -42,6 +42,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(R.layout.fragment_user) {
             adapter = optionListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecorationComment)
+            hasFixedSize()
             //isNestedScrollingEnabled = false
         }
 

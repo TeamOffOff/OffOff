@@ -220,11 +220,11 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         }
 
         fun setOtherMonthSelected(day: Day) {
-            Log.d("tag_alpha", "여기서 뿌얘저야돼...")
+            Log.d("tag_alpha", "여기서 뿌얘져야돼...")
             view.alpha = 0.5F
             if (day.calendar.time == selectedDay) {
                 Log.d("otherMonth_tag", "다른달")
-                Log.d("tag_alpha", "여기서 뿌얘저야돼...")
+                Log.d("tag_alpha", "여기서 뿌얘져야돼...")
                 view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
 //                view.alpha = 0.5F
 //                view.setBackgroundColor(
@@ -237,7 +237,7 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 view.bringToFront()
                 //onDayClickLister?.invoke(day)
             } else {
-                Log.d("tag_alpha", "여기서 뿌얘저야돼...")
+                Log.d("tag_alpha", "여기서 뿌얘져야돼...")
                 Log.d("otherMonth_tag", "다른달")
                 view.setBackgroundResource(R.drawable.layout_border_calendar)
 //                view.alpha = 0.5F

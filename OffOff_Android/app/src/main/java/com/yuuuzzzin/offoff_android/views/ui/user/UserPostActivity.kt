@@ -114,6 +114,7 @@ class UserPostActivity : BaseActivity<ActivityUserPostBinding>(R.layout.activity
             adapter = postListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecoration)
+            hasFixedSize()
         }
 
         postListAdapter.setOnPostClickListener(object :

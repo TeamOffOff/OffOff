@@ -75,8 +75,12 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
                 replyListAdapter.addReplyList(item.childrenReplies as ArrayList<Reply>)
                 //replyListAdapter.replyList = item.childrenReplies as ArrayList<Reply>
                 replyListAdapter.notifyDataSetChanged()
-                binding.rvReply.adapter = replyListAdapter
-                binding.rvReply.layoutManager = LinearLayoutManager(binding.root.context)
+
+                binding.rvReply.apply {
+                    adapter = replyListAdapter
+                    layoutManager = LinearLayoutManager(binding.root.context)
+                    hasFixedSize()
+                }
 
                 replyListAdapter.setOnReplyClickListener(object :
                     ReplyListAdapter.OnReplyClickListener {

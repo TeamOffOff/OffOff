@@ -131,6 +131,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
             adapter = imageAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             addItemDecoration(spaceDecoration)
+            hasFixedSize()
         }
 
         // x 버튼 눌러 이미지 리사이클러뷰의 이미지 아이템 삭제

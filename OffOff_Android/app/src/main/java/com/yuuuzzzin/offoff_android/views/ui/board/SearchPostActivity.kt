@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -79,6 +80,16 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
 
     private fun initViewModel() {
         binding.viewModel = viewModel
+
+        viewModel.loading.observe(binding.lifecycleOwner!!, { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    binding.layoutProgress.root.visibility = View.VISIBLE
+                } else {
+                    binding.layoutProgress.root.visibility = View.GONE
+                }
+            }
+        })
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
             postListAdapter.addPostList(it, isFirst)
@@ -160,6 +171,7 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
             adapter = postListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecoration)
+            hasFixedSize()
         }
 
         postListAdapter.setOnPostClickListener(object :

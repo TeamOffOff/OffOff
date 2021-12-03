@@ -290,6 +290,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             adapter = commentListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecorationComment)
+            hasFixedSize()
             isNestedScrollingEnabled = false
         }
 
@@ -298,6 +299,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             adapter = postImageListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecorationImage)
+            hasFixedSize()
             isNestedScrollingEnabled = false
         }
 
@@ -313,7 +315,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
             override fun onLikeComment(position: Int, comment: Comment) {
                 commentPosition = position
-
                 viewModel.likeComment(comment.id, boardType)
             }
 

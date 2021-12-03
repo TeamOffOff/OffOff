@@ -90,7 +90,7 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
                         binding.rvPostPreview.visibility = View.GONE
                         binding.layoutBoards.visibility = View.VISIBLE
                     } else {
-                        Log.d("tag_textWatcher 감지!!!", query)
+                        Log.d("tag_textWatcher", query)
                         binding.layoutBoards.visibility = View.GONE
                         binding.rvPostPreview.visibility = View.VISIBLE
                         isFirst = true
@@ -153,6 +153,7 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
         binding.rvBoards.apply {
             layoutManager = GridLayoutManager(mContext, 3)
             adapter = boardListAdapter
+            hasFixedSize()
         }
 
         boardListAdapter.setOnBoardClickListener(object :
@@ -161,6 +162,7 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
             override fun onClickBoard(item: Board, position: Int) {
                 val intent = Intent(mContext, BoardActivity::class.java)
                 intent.putExtra("boardType", item.boardType)
+                intent.putExtra("boardName", item.name)
                 startActivity(intent)
             }
         })
@@ -168,6 +170,7 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
         binding.rvBoardsFavorite.apply {
             layoutManager = GridLayoutManager(mContext, 3)
             adapter = boardListAdapter
+            hasFixedSize()
         }
 
         postListAdapter = BoardAdapter()
@@ -177,6 +180,7 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
             adapter = postListAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecoration)
+            hasFixedSize()
         }
 
         postListAdapter.setOnPostClickListener(object :
