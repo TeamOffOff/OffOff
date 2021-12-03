@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
     <application
@@ -25,7 +26,9 @@
             android:name="android.max_aspect"
             android:value="2.1" />
 
-        <activity android:name=".views.ui.board.SearchPostActivity" />
+        <activity
+            android:name=".views.ui.board.SearchPostActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity android:name=".views.ui.CropImageActivity" />
         <activity android:name=".views.ui.member.ChangePwActivity" />
         <activity android:name=".views.ui.member.FindInfoActivity" />

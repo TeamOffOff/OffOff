@@ -7,18 +7,16 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         tools:context=".MainActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom_navigation_view">
 
             <ImageView
                 android:id="@+id/iv_background"
@@ -35,7 +33,7 @@
                 android:id="@+id/main_nav_host"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 app:defaultNavHost="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +46,7 @@
             android:id="@+id/bottom_navigation_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:elevation="0dp"
             android:itemBackground="@color/white2"
             android:paddingBottom="0dp"
@@ -55,14 +54,8 @@
             app:itemIconTint="@drawable/menu_item_selected"
             app:itemTextColor="@drawable/menu_item_selected"
             app:labelVisibilityMode="unlabeled"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1"
-            app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/bottom_navigation_menu" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </layout>
-
-

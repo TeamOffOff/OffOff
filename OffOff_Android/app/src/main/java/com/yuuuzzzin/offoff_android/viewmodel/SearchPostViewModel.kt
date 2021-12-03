@@ -8,10 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.service.models.Post
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
+import com.yuuuzzzin.offoff_android.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +21,8 @@ constructor(
     private val repository: BoardRepository
 ) : ViewModel() {
 
-    private val _loading = MutableStateFlow<Boolean>(false)
-    val loading: StateFlow<Boolean> = _loading
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
 
     private val _postList = MutableLiveData<List<Post>>()
     val postList: LiveData<List<Post>> get() = _postList

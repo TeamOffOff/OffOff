@@ -68,13 +68,13 @@ class BoardActivity : BaseBaseActivity<ActivityBoardBinding>(R.layout.activity_b
     }
 
     override fun init() {
-            Log.d("tag_init", "이닛")
-            val networkManager: NetworkManager? = this?.let { NetworkManager(it) }
-            if (!networkManager?.checkNetworkState()!!) {
-                this.toast(Constants.NETWORK_DISCONNECT)
-                finish()
-            }
+        Log.d("tag_init", "이닛")
+        val networkManager: NetworkManager? = this?.let { NetworkManager(it) }
+        if (!networkManager?.checkNetworkState()!!) {
+            this.toast(Constants.NETWORK_DISCONNECT)
+            finish()
         }
+    }
 
 
     private fun processIntent() {
@@ -174,6 +174,7 @@ class BoardActivity : BaseBaseActivity<ActivityBoardBinding>(R.layout.activity_b
             adapter = boardAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(spaceDecoration)
+            hasFixedSize()
         }
 
         boardAdapter.setOnPostClickListener(object :
@@ -230,6 +231,7 @@ class BoardActivity : BaseBaseActivity<ActivityBoardBinding>(R.layout.activity_b
                 //binding.layoutCollapsing.minimumHeight = convertDPtoPX(this, 230) // 최소 높이 조정
                 val intent = Intent(this, SearchPostActivity::class.java)
                 intent.putExtra("boardType", boardType)
+                intent.putExtra("boardName", boardName)
                 startActivity(intent)
                 true
             }
