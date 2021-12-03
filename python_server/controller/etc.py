@@ -9,7 +9,6 @@ from controller.image import *
 mongodb = mongo.MongoHelper()
 
 
-
 # 변수 추출
 @jwt_required()
 def get_variables():

@@ -14,8 +14,8 @@ import mongo as mongo
 
 mongodb = mongo.MongoHelper()
 
-
 Post = Namespace("post", description="게시물 관련 API")
+
 
 @Post.route("")
 class PostControl(Resource):
@@ -35,7 +35,7 @@ class PostControl(Resource):
         update_status = mongodb.update_one(query={"_id": ObjectId(post_id)},
                                            collection_name=board_type,
                                            modify={"$inc": {"views": 1}})
-        
+
         # viewCount가 업데이트되지 않은 경우
         if update_status.raw_result["n"] == 0:
             response_result = make_response({"queryStatus": "views update fail"}, 500)
@@ -50,18 +50,16 @@ class PostControl(Resource):
             response_result = make_response({"queryStatus": "not found"}, 404)
             print(response_result.status_code)
             return response_result
-        
-        
-        if board_type == "secret_board": # 비밀게시판인 경우에 author 변경
+
+        if board_type == "secret_board":  # 비밀게시판인 경우에 author 변경
             post["author"]["nickname"] = "익명"
             post["author"]["profileImage"] = []
         else:  # 비밀게시판 이외의 게시판
             if post["author"]:  # 탈퇴하면 author = null임 -> 비밀게시판도 아니면서 탈퇴도 안 한 경우
-                post["author"]["profileImage"]= get_image(post["author"]["profileImage"], "user", "200")
-
+                post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
 
         # 게시글에 있는 image base 64로 인코딩하기
-        post["image"] = get_image(post["image"], "post", "600") 
+        post["image"] = get_image(post["image"], "post", "600")
 
         # string 타입으로 바꿔야 오류 안 남
         post["_id"] = str(post["_id"])
@@ -70,7 +68,6 @@ class PostControl(Resource):
         response_result = make_response(post, 200)
 
         return response_result
-
 
     @ownership_required
     def delete(self):
@@ -99,11 +96,10 @@ class PostControl(Resource):
         elif activity_result.raw_result["n"] == 0:  # 활동 업데이트 실패
             response_result = make_response({"queryStatus": "delete activity fail"}, 500)
 
-        else :
+        else:
             response_result = make_response({"queryStatus": "success"}, 200)
-        
-        return response_result
 
+        return response_result
 
     @jwt_required()  # token이 있는지
     def post(self):
@@ -112,7 +108,7 @@ class PostControl(Resource):
         if not user_id:
             response_result = make_response({"queryStatus": "wrong Token"}, 403)
             return response_result
-            
+
         # 클라이언트에서 받은 변수 가져오기
         request_info, post_id, board_type, user = get_variables()
         if not user:
@@ -139,10 +135,10 @@ class PostControl(Resource):
         request_info["likes"] = []
         request_info["reports"] = []
         request_info["bookmarks"] = []
-        
+
         if request_info["image"]:
             request_info["image"] = save_image(request_info["image"], "post")
-        
+
         print(request_info)
 
         # 게시글 저장
@@ -151,24 +147,23 @@ class PostControl(Resource):
         # 회원활동 정보 등록
         result = making_reference.link_activity_information_in_user(field="activity.posts", post_id=post_id, operator="$addToSet")
 
-        
         if result.raw_result["n"] == 0:  # 회원활동 업데이트 실패
             response_result = make_response({"queryStatus": "update activity fail"}, 500)
-    
-        else: # 등록완료된 게시글 조회
+
+        else:  # 등록완료된 게시글 조회
             post = mongodb.find_one(query={"_id": ObjectId(post_id)},
                                     collection_name=board_type)
             post["_id"] = str(post["_id"])
             post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
-            
+
             if board_type == "secret_board":
                 post["author"]["nickname"] = "익명"
                 post["author"]["profileImage"] = []
             else:
                 post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
-            
+
             if post["image"]:
-                time.sleep(2) # 이미지 업로드하는데 걸리는 시간 고려
+                time.sleep(2)  # 이미지 업로드하는데 걸리는 시간 고려
                 post["image"] = get_image(post["image"], "post", "600")
 
             response_result = make_response(post, 200)
@@ -209,10 +204,10 @@ class PostControl(Resource):
             activity = request_info["activity"]
 
             past_user_list = mongodb.find_one(
-                query={"_id": ObjectId(post_id)}, 
-                collection_name=board_type, 
+                query={"_id": ObjectId(post_id)},
+                collection_name=board_type,
                 projection_key={"_id": False, activity: True}
-                )[activity]
+            )[activity]
             print(past_user_list)
 
             if activity == "likes":
@@ -227,15 +222,15 @@ class PostControl(Resource):
                 else:  # 좋아요 이외의 활동은 취소가 가능함
                     operator = "$pull"
                     result = mongodb.update_one(
-                        query={"_id": ObjectId(post_id)}, 
-                        collection_name=board_type, 
+                        query={"_id": ObjectId(post_id)},
+                        collection_name=board_type,
                         modify={operator: {activity: user}})
 
-                    if result.raw_result["n"] ==0:  # 활동 취소 실패
+                    if result.raw_result["n"] == 0:  # 활동 취소 실패
                         response_result = make_response({"queryStatus": "activity cancle fail"}, 500)
                         return response_result
-                    
-                    #활동 취소 성공
+
+                    # 활동 취소 성공
                     making_reference = MakeReference(board_type=board_type, user=user)
                     field = "activity." + activity
                     activity_result = making_reference.link_activity_information_in_user(field=field, post_id=post_id, operator=operator)
@@ -247,17 +242,17 @@ class PostControl(Resource):
                     # 게시글에서 활동 취소 성공 & 유저 정보에서 활동 취소 반영 성공
                     response_result = make_response({"queryStatus": "activity cancle success"}, 200)
                     return response_result
-                
+
             else:  # 해당활동을 한 적이 없는 경우
                 operator = "$addToSet"
                 result = mongodb.update_one(
-                    query={"_id": ObjectId(post_id)}, 
-                    collection_name=board_type, 
+                    query={"_id": ObjectId(post_id)},
+                    collection_name=board_type,
                     modify={operator: {activity: user}})
 
-                if result.raw_result["n"] ==0:  # 게시글에 활동 반영 실패
-                        response_result = make_response({"queryStatus": "activity add fail"}, 500)
-                        return response_result
+                if result.raw_result["n"] == 0:  # 게시글에 활동 반영 실패
+                    response_result = make_response({"queryStatus": "activity add fail"}, 500)
+                    return response_result
 
                 # 게시글에 활동 반영 성공
                 # 인기게시판 관련   
@@ -288,24 +283,37 @@ class PostControl(Resource):
                 if activity_result.raw_result["n"] == 0:  # 유저 컬렉션에 활동 반영 실패한 경우
                     response_result = make_response({"queryStatus": "user activity update fail"}, 500)
                     return response_result
-                
+
                 # 게시글에 활동 추가 및 유저 컬렉션에 반영 성공
                 response_result = make_response({"queryStatus": "activity add success"}, 201)
                 return response_result
 
 
+@Post.route("/image")
+class ImageControl(Resource):
+
+    def get(self):
+        request_info = request.get_json()
+
+        if request_info["image"]:
+            request_info["image"] = get_image(request_info["image"], "post", "origin")
+
+        return request_info
+
+
 TestPost = Namespace('testpost', description='post여러개')
+
 
 @TestPost.route("")
 class TestPostControl(Resource):
     def post(self):
         request_info = request.get_json()
-        board_type =  request_info["boardType"]+"_board"
+        board_type = request_info["boardType"] + "_board"
         posts = request_info["posts"]
         for post in posts:
             # user설정
             user = post["author"]
-             # _id를 지움
+            # _id를 지움
             del post["_id"]
 
             # date 추가
@@ -322,10 +330,10 @@ class TestPostControl(Resource):
             post["likes"] = []
             post["reports"] = []
             post["bookmarks"] = []
-        
+
             if post["image"]:
                 post["image"] = save_image(post["image"], "post")
-        
+
         insert_manay_post = mongodb.insert_many(collection_name=board_type, data=posts)
         print(insert_manay_post)
-        return{"queryStatus": "good"}, 200
+        return {"queryStatus": "good"}, 200
