@@ -261,6 +261,26 @@ class PostViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        viewModel.reported
+            .observe(on: MainScheduler.instance)
+            .skip(1)
+            .withUnretained(self)
+            .do { (owner, type) in
+                switch type {
+                case .success:
+                    owner.activityAlert(message: "게시글 신고가 완료됐습니다.")
+                case .cancel:
+                    owner.activityAlert(message: "게시글 신고가 취소됐습니다.")
+                default:
+                    owner.activityAlert(message: "오류가 발생했습니다.")
+                }
+            }
+            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .bind { (owner, _) in
+                owner.dismissAlert(animated: true)
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.replies
             .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
@@ -386,7 +406,7 @@ class PostViewController: UIViewController {
     private func makeView() {
         backgroundForIndicator.snp.makeConstraints {
             $0.top.left.right.equalToSuperview()
-            $0.bottom.equalTo(postView.contentTextView.snp.bottom)
+            $0.height.equalTo(self.view.snp.height).dividedBy(3.0)
         }
         loadingView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -446,19 +466,6 @@ class PostViewController: UIViewController {
             }
             alert.addAction(delete)
             alert.addAction(modify)
-            
-            //            self.navigationItem.setRightBarButtonItems(items, animated: false)
-            //            deleteButton.rx.tap.bind {
-            //                self.deletingConfirmAlert()
-            //            }.disposed(by: rightButtonsDisposeBag)
-            //            editButton.rx.tap.asObservable().withLatestFrom(viewModel.post)
-            //                .bind {
-            //                    let vc = NewPostViewController()
-            //                    vc.postToModify = $0
-            //                    let naviVC = UINavigationController(rootViewController: vc)
-            //                    naviVC.modalPresentationStyle = .fullScreen
-            //                    self.present(naviVC, animated: true, completion: nil)
-            //                }.disposed(by: rightButtonsDisposeBag)
         }
         
         let report = UIAlertAction(title: "신고", style: .default) { [weak self] _ in

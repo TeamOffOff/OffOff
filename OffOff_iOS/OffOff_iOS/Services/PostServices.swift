@@ -34,9 +34,9 @@ public class PostServices {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                print($0)
                 if $0.statusCode == 200 {
                     let post = try JSONDecoder().decode(PostModel.self, from: $0.data)
+                    print(post.date)
                     return post
                 }
                 return nil

@@ -257,7 +257,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
             }
         }
         
-        alert.addAction(report)
+//        alert.addAction(report)
         alert.addAction(cancel)
         
         presentMenuAlert!(alert)

@@ -100,6 +100,7 @@ public class UserServices {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
+                print(#fileID, #function, #line, $0)
                 if $0.statusCode == 200 {
                     let response = try JSONDecoder().decode(LoginResponse.self, from: $0.data)
                     KeyChainController.shared.create(Constants.ServiceString, account: "AccessToken", value: response.accessToken)

@@ -49,6 +49,39 @@ class BoardListViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        customView.postListTableView.rx
+            .itemSelected
+            .withUnretained(self)
+            .bind { (owner, indexPath) in
+                if let cell = owner.customView.postListTableView.cellForRow(at: indexPath) as? PostPreviewCell {
+                    let vc = PostViewController()
+                    vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
+                    vc.title = "검색 결과"
+                    vc.postCell = cell
+//                    owner.navigationController?.pushViewController(vc, animated: true)
+                    
+                    let nav = UINavigationController(rootViewController: vc)
+                    
+                    owner.present(nav, animated: true, completion: nil)
+                    owner.customView.postListTableView.deselectRow(at: indexPath, animated: false)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        customView.scrapsButton
+            .rx.tap
+            .bind { [weak self] in
+                let vc = PostListViewController()
+                vc.boardType = "스크랩한 글"
+                vc.boardName = "스크랩한 글"
+                
+                let nav = UINavigationController(rootViewController: vc)
+                nav.modalPresentationStyle = .fullScreen
+                nav.navigationBar.setAppearance()
+                self?.present(nav, animated: true, completion: nil)
+            }
+            .disposed(by: disposeBag)
+        
         // bind result
         viewModel.isSearching
             .bind { [weak self] in

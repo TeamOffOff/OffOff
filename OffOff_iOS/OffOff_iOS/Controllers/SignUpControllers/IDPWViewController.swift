@@ -37,39 +37,40 @@ class IDPWViewController: UIViewController {
                     .rx.text
                     .orEmpty // Optional 해제
                     .skip(1) // 초기 값 스킵
-                    .distinctUntilChanged() // 이전 값과 같은지 테스트
-                    .asDriver(onErrorJustReturn: ""),
+                    .distinctUntilChanged(), // 이전 값과 같은지 테스트
                 passwordText: idpwView.passwordTextField
                     .rx.text
                     .orEmpty
                     .skip(1)
-                    .distinctUntilChanged()
-                    .asDriver(onErrorJustReturn: ""),
+                    .distinctUntilChanged(),
                 passwordRepeatText: idpwView.passwordRepeatField
                     .rx.text
                     .orEmpty
                     .skip(1)
-                    .distinctUntilChanged()
-                    .asDriver(onErrorJustReturn: ""),
+                    .distinctUntilChanged(),
                 nextButtonTap: idpwView.nextButton
                     .rx.tap
-                    .asSignal()
             ))
         
         // bind result {
         viewModel.isIdConfirmed
-            .drive(onNext:  { [weak self] in
-                if $0 {
+            .observe(on: MainScheduler.instance)
+            .debug()
+            .subscribe(onNext:  { [weak self] in
+                switch $0 {
+                case .okay:
                     self?.idpwView.idConfirmLabel.text = "사용 가능한 아이디입니다."
-                } else {
+                case .duplicated:
                     self?.idpwView.idConfirmLabel.text = "이미 사용 중이거나 탈퇴한 아이디입니다."
                     SharedSignUpModel.model._id = ""
+                case .ruleNotSatisfied:
+                    self?.idpwView.idConfirmLabel.text = "아이디 (5-20자 이내, 영문, 숫자 사용가능)"
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isPasswordComfirmed
-            .drive(onNext: { [weak self] in
+            .subscribe(onNext: { [weak self] in
                 if $0 {
                     self?.idpwView.passwordConfirmLabel.text = "사용 가능한 비밀번호입니다."
                 } else {
@@ -80,7 +81,7 @@ class IDPWViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isPasswordRepeatComfirmed
-            .drive(onNext: { [weak self] in
+            .subscribe(onNext: { [weak self] in
                 if $0 {
                     self?.idpwView.passwordRepeatConfirmLabel.text = "비밀번호가 일치합니다."
                 } else {
@@ -91,7 +92,8 @@ class IDPWViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isNextEnabled
-            .drive(onNext: { [weak self] in
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
                 self?.idpwView.nextButton.isUserInteractionEnabled = $0
                 self?.idpwView.nextButton.backgroundColor = $0 ? .g4 : .g1
             })
@@ -99,7 +101,7 @@ class IDPWViewController: UIViewController {
         
         viewModel.isValidatedToProgress
             .debug()
-            .drive(onNext: { [weak self] in
+            .subscribe(onNext: { [weak self] in
                 if $0 {
                     self?.navigationController?.pushViewController(PrivacyInfoViewController(), animated: true)
                 }

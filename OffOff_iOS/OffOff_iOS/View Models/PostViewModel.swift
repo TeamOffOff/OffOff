@@ -17,6 +17,7 @@ class PostViewModel {
     var deleteButtonTapped = BehaviorSubject<UserInfo?>(value: nil)
     var liked = BehaviorSubject<ActivityResultType>(value: ActivityResultType.error)
     var bookmarked = BehaviorSubject<ActivityResultType>(value: ActivityResultType.error)
+    var reported = BehaviorSubject<ActivityResultType>(value: ActivityResultType.error)
     var replyAdded = BehaviorSubject<Bool>(value: false)
     
     var isSubReplyInputting = BehaviorSubject<Reply?>(value: nil)
@@ -133,14 +134,18 @@ class PostViewModel {
                     self?.bookmarked.onNext(type)
             }
             .disposed(by: disposeBag)
-
         
-//        reported = self.reportButtonTapped
-//            .flatMap {
-//                if $0 {
-//                    PostServices.likePost(post: PostActivity(boardType: <#T##String#>, _id: <#T##String#>, activity: <#T##String#>))
-//                }
-//            }
+        reportButtonTapped
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .filter { $0 }
+            .flatMap { val -> Observable<ActivityResultType> in
+                let post = PostActivity(boardType: boardType, _id: contentId, activity: "reports")
+                return PostServices.likePost(post: post)
+            }
+            .bind { [weak self] type in
+                    self?.reported.onNext(type)
+            }
+            .disposed(by: disposeBag)
     }
     
     func reloadPost(contentId: String, boardType: String) {

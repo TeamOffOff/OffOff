@@ -28,7 +28,7 @@ class PostListViewController: UIViewController {
         
         self.navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.font: UIFont.defaultFont(size: 20)]
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: .LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)), style: .plain, target: nil, action: nil)
-        self.navigationItem.rightBarButtonItems = [menuButton, searchButton]
+        self.navigationItem.rightBarButtonItems = [searchButton]
         
         self.customView.postListTableView.rowHeight = 81.adjustedHeight
         self.customView.postListTableView.separatorStyle = .none

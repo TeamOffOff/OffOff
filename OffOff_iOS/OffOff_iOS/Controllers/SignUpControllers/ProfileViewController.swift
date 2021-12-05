@@ -48,14 +48,6 @@ class ProfileViewController: UIViewController {
         // bind results
         viewModel.isNickNameConfirmed
             .drive(onNext: { [weak self] in
-//                self.profileView.nickNameTextField.selectedLineColor
-//                    = $0 ? .mainColor : .red
-//                self.profileView.nickNameTextField.selectedTitleColor
-//                    = $0 ? .mainColor : .red
-//                self.profileView.nickNameTextField.title
-//                    = $0 ?
-//                    "\(self.profileView.nickNameTextField.text!)은(는) 사용가능한 닉네임입니다."
-//                    : "\(self.profileView.nickNameTextField.text!)은(는) 사용할 수 없습니다."
                 self?.profileView.signUpButton.isUserInteractionEnabled = $0
                 self?.profileView.signUpButton.backgroundColor = $0 ? .g4 : .g1
             })

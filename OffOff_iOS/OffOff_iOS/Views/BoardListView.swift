@@ -47,8 +47,11 @@ final class BoardListView: UIView {
         $0.bottomRoundCorner(radius: 30.adjustedHeight)
         $0.addSubview(greetingLabel)
         $0.addSubview(nicknameLabel)
+        
         $0.addSubview(menuButton)
+        menuButton.isHidden = true
         $0.addSubview(messagesButton)
+        messagesButton.isHidden = true
         $0.addSubview(scrapsButton)
     }
     
@@ -58,6 +61,8 @@ final class BoardListView: UIView {
         $0.font = .defaultFont(size: 15, bold: true)
         $0.setCornerRadius(22.adjustedHeight)
         $0.clearButtonMode = .whileEditing
+        $0.autocorrectionType = .no
+        $0.autocapitalizationType = .none
         $0.tintColor = .g4
         $0.leftImage(.SEARCHIMAGE.resize(to: CGSize(width: 18.0.adjustedWidth, height: 18.0.adjustedHeight)), imageWidth: 18.0.adjustedWidth, padding: 24.adjustedWidth)
     }
@@ -140,7 +145,8 @@ final class BoardListView: UIView {
         
         postListTableView.snp.makeConstraints {
             $0.top.equalTo(boardSearchView.snp.bottom).offset(19.adjustedHeight)
-            $0.left.right.equalToSuperview().inset(54.adjustedWidth)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(350.adjustedWidth)
             $0.bottom.equalToSuperview()
         }
     }

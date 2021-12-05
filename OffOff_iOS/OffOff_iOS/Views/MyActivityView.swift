@@ -28,7 +28,7 @@ class MyActivityView: UIView {
     var scrapListButton = ActivityListButton(title: "스크랩한 글")
     var messageListButton = ActivityListButton(title: "쪽지함")
     
-    lazy var buttonStack = UIStackView(arrangedSubviews: [alertListButton, myPostListButton, myReplyListButton, scrapListButton, messageListButton]).then {
+    lazy var buttonStack = UIStackView(arrangedSubviews: [myPostListButton, myReplyListButton, scrapListButton]).then {
         $0.backgroundColor = .clear
         $0.axis = .vertical
         $0.spacing = 7.adjustedHeight

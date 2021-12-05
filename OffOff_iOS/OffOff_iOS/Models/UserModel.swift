@@ -89,8 +89,8 @@ struct Activity: Codable {
     var posts: [UserPostActivity] = []
     var replies: [UserPostActivity] = []
     var likes: [UserPostActivity] = []
-    var reports: [String] = []
-    var bookmarks: [String] = []
+    var reports: [UserPostActivity] = []
+    var bookmarks: [UserPostActivity] = []
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
