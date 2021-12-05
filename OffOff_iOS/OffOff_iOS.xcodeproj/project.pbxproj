@@ -1091,7 +1091,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.02;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";
@@ -1113,7 +1113,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.02;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";

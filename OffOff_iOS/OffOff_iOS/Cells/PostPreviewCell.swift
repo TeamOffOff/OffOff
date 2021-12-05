@@ -111,9 +111,9 @@ class PostPreviewCell: UITableViewCell {
             $0.right.equalTo(imagePreview.snp.left).offset(9.adjustedWidth)
         }
         dateAuthorLabel.snp.makeConstraints {
-            $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
+            $0.top.equalTo(previewTextView.snp.bottom).offset(3.adjustedHeight)
             $0.left.equalToSuperview().inset(26.adjustedWidth)
-            $0.bottom.equalToSuperview().inset(15.adjustedHeight)
+            $0.bottom.equalToSuperview().inset(10.adjustedHeight)
         }
         pictureLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
