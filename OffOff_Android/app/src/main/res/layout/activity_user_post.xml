@@ -35,7 +35,7 @@
                     android:layout_marginBottom="62dp"
                     app:layout_collapseMode="pin">
 
-                    <com.google.android.material.appbar.MaterialToolbar
+                    <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar"
                         style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
                         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                             android:textColor="@color/white"
                             android:textSize="20sp" />
 
-                    </com.google.android.material.appbar.MaterialToolbar>
+                    </androidx.appcompat.widget.Toolbar>
 
                 </RelativeLayout>
 

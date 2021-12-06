@@ -12,8 +12,8 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.appbar.MaterialToolbar
 import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityPostBinding
@@ -239,9 +239,9 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 binding.etComment.text = null
                 hideKeyboard()
 
-                binding.nestedScrollView.post {
-                    binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
-                }
+//                binding.nestedScrollView.post {
+//                    binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
+//                }
 
                 requestUpdate = true
             }
@@ -249,7 +249,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     private fun initToolbar() {
-        val toolbar: MaterialToolbar = binding.toolbar
+        val toolbar: Toolbar = binding.toolbar
         toolbar.overflowIcon = getDrawable(R.drawable.ic_more_option)
 
         setSupportActionBar(toolbar)
@@ -318,7 +318,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 viewModel.likeComment(comment.id, boardType)
             }
 
-            override fun onWriteReply(comment: Comment) {
+            override fun onWriteReply(position: Int, comment: Comment) {
+                //(binding.rvComment.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+                //val y = binding.rvComment.getChildAt(position).y + 500
+                val y = binding.nestedScrollView.getChildAt(0).height
+
+
+                binding.nestedScrollView.smoothScrollTo(0, y)
                 parentReplyId = comment.id
                 binding.etComment.isFocusableInTouchMode = true
                 binding.etComment.requestFocusAndShowKeyboard(this@PostActivity)

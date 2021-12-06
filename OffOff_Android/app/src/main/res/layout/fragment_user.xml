@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-25dp"
             android:orientation="vertical"
+            android:overScrollMode="never"
             android:paddingHorizontal="32dp"
             android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"

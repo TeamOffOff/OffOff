@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
@@ -61,12 +62,21 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                             for (i in 0 until count) {
                                 list.add(uriToBitmap(it.data!!.clipData!!.getItemAt(i).uri, this))
                             }
+
+                            if (binding.rvImage.adapter!!.itemCount == 0) {
+                                binding.rvImage.visibility = View.VISIBLE
+                            }
+
                             imageAdapter.addItems(list)
                         }
                     }
 
                     // 이미지 단일 선택시
                     else if (it.data?.data != null) {
+
+                        if (binding.rvImage.adapter!!.itemCount == 0) {
+                            binding.rvImage.visibility = View.VISIBLE
+                        }
 
                         imageAdapter.addItem(uriToBitmap(it.data?.data!!, this))
                     }
@@ -100,6 +110,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                 for (i in post.image)
                     list.add(stringToBitmap(i.body!!))
                 imageAdapter.addItems(list)
+                binding.rvImage.visibility = View.VISIBLE
             }
             postId = post.id
         }
@@ -139,6 +150,10 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
             PostWriteImageAdapter.OnPostWriteImageClickListener {
             override fun onClickBtDelete(position: Int) {
                 imageAdapter.removeItem(position)
+
+                if (binding.rvImage.adapter!!.itemCount == 0) {
+                    binding.rvImage.visibility = View.GONE
+                }
             }
         })
     }

@@ -151,7 +151,7 @@
                     android:layout_marginStart="11dp"
                     android:text="@string/board_favorite"
                     android:textColor="@color/white5"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -161,7 +161,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="11dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:overScrollMode="never"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_favorite_board"
                     tools:listitem="@layout/rv_item_board" />
@@ -184,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:clipToPadding="false"
+                    android:overScrollMode="never"
                     android:paddingBottom="?attr/actionBarSize"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="3"
