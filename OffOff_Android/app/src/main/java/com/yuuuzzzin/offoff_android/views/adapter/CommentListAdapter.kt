@@ -18,13 +18,12 @@ import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 class CommentListAdapter(private val viewModel: PostViewModel) :
     RecyclerView.Adapter<CommentListAdapter.CommentViewHolder>() {
 
-    lateinit var replyListAdapter: ReplyListAdapter
 
     interface OnCommentClickListener {
         fun onClickCommentOption(comment: Comment)
         fun onLikeComment(position: Int, comment: Comment)
-        fun onWriteReply(comment: Comment)
-        fun onLikeReply(position: Int, reply: Reply)
+        fun onWriteReply(position: Int, comment: Comment)
+        fun onLikeReply(position: Int, parentPosition: Int, reply: Reply)
     }
 
     private lateinit var commentClickListener: OnCommentClickListener
@@ -57,8 +56,9 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Comment, position: Int, viewModel: PostViewModel) {
+            lateinit var replyListAdapter: ReplyListAdapter
             binding.setVariable(BR.item, item)
-            if(!item.author.profileImage.isNullOrEmpty()) {
+            if (!item.author.profileImage.isNullOrEmpty()) {
                 binding.ivAvatar.apply {
                     setImageBitmap(ImageUtils.stringToBitmap(item.author.profileImage[0].body.toString()))
                     clipToOutline = true
@@ -71,9 +71,8 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
             }
 
             if (item.childrenReplies != null) {
-                replyListAdapter = ReplyListAdapter()
+                replyListAdapter = ReplyListAdapter(position)
                 replyListAdapter.addReplyList(item.childrenReplies as ArrayList<Reply>)
-                //replyListAdapter.replyList = item.childrenReplies as ArrayList<Reply>
                 replyListAdapter.notifyDataSetChanged()
 
                 binding.rvReply.apply {
@@ -93,8 +92,8 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
                         }
                     }
 
-                    override fun onLikeReply(position: Int, reply: Reply) {
-                        commentClickListener.onLikeReply(position, reply)
+                    override fun onLikeReply(position: Int, parentPosition: Int, reply: Reply) {
+                        commentClickListener.onLikeReply(position, parentPosition, reply)
                     }
                 })
             }
@@ -105,7 +104,7 @@ class CommentListAdapter(private val viewModel: PostViewModel) :
 
             binding.btReply.setOnClickListener {
                 binding.layoutComment.background = getDrawable(R.drawable.layout_comment_selected)
-                commentClickListener.onWriteReply(item)
+                commentClickListener.onWriteReply(position, item)
             }
         }
     }

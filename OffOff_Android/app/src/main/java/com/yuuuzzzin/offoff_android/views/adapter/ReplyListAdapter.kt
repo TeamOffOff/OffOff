@@ -10,12 +10,12 @@ import com.yuuuzzzin.offoff_android.databinding.RvItemReplyBinding
 import com.yuuuzzzin.offoff_android.service.models.Reply
 import com.yuuuzzzin.offoff_android.utils.ImageUtils
 
-class ReplyListAdapter
-    : RecyclerView.Adapter<ReplyListAdapter.ReplyViewHolder>() {
+class ReplyListAdapter(private val parentPosition: Int) :
+    RecyclerView.Adapter<ReplyListAdapter.ReplyViewHolder>() {
 
     interface OnReplyClickListener {
         fun onClickOption(item: Reply, position: Int)
-        fun onLikeReply(position: Int, reply: Reply)
+        fun onLikeReply(position: Int, parentPosition: Int, reply: Reply)
     }
 
     private lateinit var replyClickListener: OnReplyClickListener
@@ -43,16 +43,16 @@ class ReplyListAdapter
     }
 
     override fun onBindViewHolder(holder: ReplyListAdapter.ReplyViewHolder, position: Int) {
-        holder.bind(replyList[position], position)
+        holder.bind(replyList[position], position, parentPosition)
     }
 
     inner class ReplyViewHolder(
         private val binding: RvItemReplyBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Reply, position: Int) {
+        fun bind(item: Reply, position: Int, parentPosition: Int) {
             binding.setVariable(BR.item, item)
-            if(!item.author!!.profileImage.isNullOrEmpty()) {
+            if (!item.author!!.profileImage.isNullOrEmpty()) {
                 binding.ivAvatar.apply {
                     setImageBitmap(ImageUtils.stringToBitmap(item.author.profileImage!![0].body.toString()))
                     clipToOutline = true
@@ -62,7 +62,7 @@ class ReplyListAdapter
                 replyClickListener.onClickOption(item, position)
             }
             binding.btLikes.setOnClickListener {
-                replyClickListener.onLikeReply(position, item)
+                replyClickListener.onLikeReply(position, parentPosition, item)
             }
             binding.executePendingBindings()
         }
