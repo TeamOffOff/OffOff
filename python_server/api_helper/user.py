@@ -261,7 +261,12 @@ class AuthRegister(Resource):
                 post_id = post["postId"]
                 print(board_type, post_id)
                 alert_delete = {
-                    "author": None
+                    "author": {
+                        "_id": "",
+                        "nickname": "알 수 없음",
+                        "profileImage": [],
+                        "type": ""
+                    }
                 }
 
                 # author = null로 변경
@@ -281,9 +286,14 @@ class AuthRegister(Resource):
                 board_type = reply["boardType"] + "_board_reply"
                 reply_id = reply["replyId"]
                 print(board_type, reply_id)
-                alert_delete = { # author = null로 변경
-                        "author": None
+                alert_delete = {
+                    "author": {
+                        "_id": "",
+                        "nickname": "알 수 없음",
+                        "profileImage": [],
+                        "type": ""
                     }
+                }
                 if not ("_" in reply_id): # 댓글인 경우
                     reply_change_result = mongodb.update_one(
                         query={"_id": ObjectId(reply_id)}, 
@@ -295,7 +305,13 @@ class AuthRegister(Resource):
                     reply_change_result = mongodb.update_one(
                         query={"_id": ObjectId(parent_reply_id)}, 
                         collection_name=board_type, 
-                        modify={"$set": {"childrenReplies.$[elem].author": None}}, array_filters=[{"elem._id":reply_id}])
+                        modify={"$set": {"childrenReplies.$[elem].author": 
+                        {"_id": "", 
+                        "nickname":"알 수 없음", 
+                        "profileImage": [], 
+                        "type":""}
+                        }}, 
+                        array_filters=[{"elem._id":reply_id}])
 
                 if reply_change_result.raw_result["n"] == 0:
                     response_result = make_response({"queryStatus": "author information change fail"}, 500)
