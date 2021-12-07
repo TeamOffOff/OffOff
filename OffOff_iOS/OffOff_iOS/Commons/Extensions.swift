@@ -17,7 +17,7 @@ protocol ViewModelType {
     associatedtype Dependency
     associatedtype Input
     associatedtype Output
-
+    
     var dependency: Dependency { get }
     var disposeBag: DisposeBag { get set }
     
@@ -333,7 +333,7 @@ extension UIImage {
     static let CAMERA = UIImage(named: "CameraImage")!.withRenderingMode(.alwaysTemplate)
     static let MOREICON = UIImage(named: "MoreIcon")!.withRenderingMode(.alwaysTemplate)
     static let SEARCHIMAGE = UIImage(named: "SearchImage")!
-
+    
     static let DefaultPostProfileImage = UIImage(named: "DefaultPostProfileImage")!
     static let DefaultReplyProfileImage = UIImage(named: "DefaultReplyProfileImage")!
     static let SubReplyArrow = UIImage(named: "SubReplyArrow")!
@@ -409,18 +409,18 @@ extension UIView {
                        delay: 0,
                        options: .curveLinear,
                        animations: { [weak self] in
-                        self?.transform = CGAffineTransform.init(scaleX: 0.95, y: 0.95)
-                       }) {  (done) in
+            self?.transform = CGAffineTransform.init(scaleX: 0.95, y: 0.95)
+        }) {  (done) in
             UIView.animate(withDuration: 0.05,
                            delay: 0,
                            options: .curveLinear,
                            animations: { [weak self] in
-                            self?.transform = CGAffineTransform.init(scaleX: 1, y: 1)
-                           }) { [weak self] (_) in
+                self?.transform = CGAffineTransform.init(scaleX: 1, y: 1)
+            }) { [weak self] (_) in
                 self?.isUserInteractionEnabled = true
                 completionBlock()
             }
-                       }
+        }
     }
 }
 
@@ -429,22 +429,22 @@ extension UIFont {
         let descriptor = fontDescriptor.withSymbolicTraits(traits)
         return UIFont(descriptor: descriptor!, size: 0) //size 0 means keep the size as it is
     }
-
+    
     func bold() -> UIFont {
         return withTraits(traits: .traitBold)
     }
-
+    
     func italic() -> UIFont {
         return withTraits(traits: .traitItalic)
     }
     
     static func defaultFont(size: Double, bold: Bool = false) -> UIFont {
         let name = bold ? "Roboto-Bold" : "Roboto-Regular"
-        return UIFont(name: name, size: size)!
+        return UIFont(name: name, size: size.adjustedHeight)!
     }
     
     static func defaulFont(size: Double, weight: FontWeightType) -> UIFont {
-        return UIFont(name: "Roboto-\(weight.rawValue)", size: size)!
+        return UIFont(name: "Roboto-\(weight.rawValue)", size: size.adjustedHeight)!
     }
 }
 
@@ -519,6 +519,28 @@ extension UIScrollView {
             setContentOffset(bottomOffset, animated: true)
         }
     }
+    
+    
+    var minContentOffset: CGPoint {
+        return CGPoint(
+            x: -contentInset.left,
+            y: -contentInset.top)
+    }
+    
+    var maxContentOffset: CGPoint {
+        return CGPoint(
+            x: contentSize.width - bounds.width + contentInset.right,
+            y: contentSize.height - bounds.height + contentInset.bottom)
+    }
+    
+    func scrollToMinContentOffset(animated: Bool) {
+        setContentOffset(minContentOffset, animated: animated)
+    }
+    
+    func scrollToMaxContentOffset(animated: Bool) {
+        setContentOffset(maxContentOffset, animated: animated)
+    }
+    
 }
 
 extension UIViewController {
@@ -581,7 +603,7 @@ extension UIBarButtonItem {
 
 extension UIView {
     private static let kRotationAnimationKey = "rotationanimationkey"
-
+    
     func rotate(duration: Double = 1) {
         if layer.animation(forKey: UIView.kRotationAnimationKey) == nil {
             let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation")
@@ -590,7 +612,7 @@ extension UIView {
             rotationAnimation.toValue = Float.pi * 2.0
             rotationAnimation.duration = duration
             rotationAnimation.repeatCount = Float.infinity
-
+            
             layer.add(rotationAnimation, forKey: UIView.kRotationAnimationKey)
         }
     }
@@ -598,7 +620,7 @@ extension UIView {
     func rotateWithoutAnimation(degree: Double) {
         self.transform = CGAffineTransform(rotationAngle: CGFloat(degree))
     }
-
+    
     func stopRotating() {
         if layer.animation(forKey: UIView.kRotationAnimationKey) != nil {
             layer.removeAnimation(forKey: UIView.kRotationAnimationKey)
@@ -619,12 +641,12 @@ extension UIView {
     func addShadow(location: VerticalLocation, color: UIColor = .black, opacity: Float = 0.5, radius: CGFloat = 5.0) {
         switch location {
         case .bottom:
-             addShadow(offset: CGSize(width: 0, height: 10), color: color, opacity: opacity, radius: radius)
+            addShadow(offset: CGSize(width: 0, height: 10), color: color, opacity: opacity, radius: radius)
         case .top:
             addShadow(offset: CGSize(width: 0, height: -2.5), color: color, opacity: opacity, radius: radius)
         }
     }
-
+    
     func addShadow(offset: CGSize, color: UIColor = .black, opacity: Float = 0.5, radius: CGFloat = 5.0) {
         self.layer.masksToBounds = false
         self.layer.shadowColor = color.cgColor

@@ -41,7 +41,7 @@ class PostListViewController: UIViewController {
         
         // view model
         viewModel = PostListViewModel(boardType: boardType ?? "")
-
+        
         
         // tableview refresh control
         let refreshControl = UIRefreshControl()
@@ -49,7 +49,7 @@ class PostListViewController: UIViewController {
             self.customView.postListTableView.refreshControl = refreshControl
             refreshControl.tintColor = .clear
         }
-    
+        
         Constants.currentBoard = self.boardType
         
         // bind result
@@ -73,14 +73,6 @@ class PostListViewController: UIViewController {
                 self?.rotateRefreshIndicator(false)
             }
             .disposed(by: disposeBag)
-
-        // Refresh control
-//        self.customView.postListTableView.rx.didScroll
-//            .bind {
-////                self.scrollViewDidScroll(scrollView: self.customView.postListTableView)
-//                self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
-//            }
-//            .disposed(by: disposeBag)
         
         refreshControl.rx.controlEvent(.valueChanged)
             .debug()
@@ -95,7 +87,8 @@ class PostListViewController: UIViewController {
         customView.postListTableView.rx.didScroll
             .withUnretained(self)
             .bind { (owner, _) in
-                if owner.customView.postListTableView.contentOffset.y <= 100.adjustedHeight {
+                let min = min(owner.customView.postListTableView.maxContentOffset.y, 100.adjustedHeight)
+                if owner.customView.postListTableView.contentOffset.y <= min {
                     owner.customView.upperView.snp.updateConstraints {
                         $0.height.equalTo(150.adjustedHeight - owner.customView.postListTableView.contentOffset.y)
                     }
@@ -113,7 +106,7 @@ class PostListViewController: UIViewController {
                 }
             }
             .disposed(by: disposeBag)
-    
+        
         // select row
         self.customView.postListTableView.rx
             .itemSelected
@@ -129,13 +122,13 @@ class PostListViewController: UIViewController {
                 }
             }
             .disposed(by: disposeBag)
-
+        
         // inputs
         self.navigationItem.leftBarButtonItem?
             .rx.tap
             .bind { [weak self] in self?.dismiss(animated: true, completion: nil) }
             .disposed(by: disposeBag)
-
+        
         self.customView.newPostButton
             .rx.tap
             .bind { [weak self] in
@@ -165,37 +158,4 @@ class PostListViewController: UIViewController {
             self.customView.refreshingImageView.stopRotating()
         }
     }
-    
-    private func updateProgress(with offsetY: CGFloat) {
-        let maxPullDistance = 105.adjustedHeight
-        
-        guard !self.customView.refreshingImageView.isRotating() else { return }
-        let progress = min(abs(offsetY / maxPullDistance), 1) * 10
-        
-        if progress >= 0 && progress < 2.5 {
-            self.customView.refreshingImageView.image = nil
-        } else if progress >= 2.5 && progress < 5.0 {
-            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![0]
-        } else if progress >= 5.0 && progress < 7.5 {
-            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![1]
-        } else {
-            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![2]
-        }
-    }
-    
-    // variable to save the last position visited, default to zero
-    private var lastContentOffset: CGFloat = 0
-
-    func scrollViewDidScroll(scrollView: UIScrollView!) {
-        if (self.lastContentOffset > scrollView.contentOffset.y) {
-            self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
-        }
-        else if (self.lastContentOffset < scrollView.contentOffset.y) {
-           // move down
-        }
-
-        // update the new position acquired
-        self.lastContentOffset = scrollView.contentOffset.y
-    }
-
 }

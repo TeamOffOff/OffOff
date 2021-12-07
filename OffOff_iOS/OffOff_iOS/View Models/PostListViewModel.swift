@@ -27,6 +27,7 @@ class PostListViewModel {
         fetchPostList(boardType: boardType)
         
         reloadTrigger
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .withUnretained(self)
             .flatMapLatest { (owner, type) -> Observable<PostList?> in
                 switch type {
@@ -39,15 +40,19 @@ class PostListViewModel {
                 }
             }
             .filter { $0 != nil }
+            .map { $0! }
             .withUnretained(self)
             .bind { (owner, postList) in
+                if postList.postList.isEmpty {
+                    return
+                }
                 var list: [PostModel] = []
                 
-                if postList?.lastPostId != nil {
-                    owner.lastPostId = postList?.lastPostId
-                    list = owner.postList.value + (postList?.postList ?? [])
+                if postList.lastPostId != nil {
+                    owner.lastPostId = postList.lastPostId
+                    list = owner.postList.value + postList.postList
                 } else {
-                    list = (postList?.postList ?? []) + owner.postList.value
+                    list = postList.postList + owner.postList.value
                 }
                 
                 owner.postList.accept(list)
