@@ -96,7 +96,6 @@ class PostViewModel {
             .disposed(by: disposeBag)
 
         replyButtonTapped
-            .filter { $0.content != "" }
             .withLatestFrom(isSubReplyInputting) { WritingReply(_id: nil, boardType: $0.boardType, postId: $0.postId, parentReplyId: ($1 != nil) ? $1?._id : nil, content: $0.content) }
             .flatMap { reply -> Observable<[Reply]?> in
                 if reply.parentReplyId != nil {

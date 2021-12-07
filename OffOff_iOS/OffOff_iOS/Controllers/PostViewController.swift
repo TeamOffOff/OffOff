@@ -110,8 +110,12 @@ class PostViewController: UIViewController {
                 },
             replyButtonTapped: replyButton.rx.tap
                 .withUnretained(self)
+                .filter { (owner, _) in
+                    owner.replyTextView.text != "" && owner.replyTextView.text != nil
+                }
+                .do { _ in LoadingHUD.show() }
                 .map { (owner, _) in
-                    let reply = WritingReply(boardType: owner.postInfo!.type, postId: owner.postInfo!.id, parentReplyId: nil, content: owner.replyTextView.text ?? "")
+                    let reply = WritingReply(boardType: owner.postInfo!.type, postId: owner.postInfo!.id, parentReplyId: nil, content: owner.replyTextView.text)
                     return reply
                 },
             bookmarkButtonTapped: postView.scrapButton.rx.tap
@@ -341,6 +345,7 @@ class PostViewController: UIViewController {
                     owner.replyTextView.text = ""
                     owner.replyTextView.resignFirstResponder()
                     owner.present(alert, animated: true, completion: nil)
+                    LoadingHUD.hide()
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
