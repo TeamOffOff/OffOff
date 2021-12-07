@@ -29,7 +29,7 @@ enum UserAPI {
     case getMyActivities(type: ActivityTypes)
 }
 
-extension UserAPI: TargetType {
+extension UserAPI: TargetType, AccessTokenAuthorizable {
     var baseURL: URL {
         return URL(string: "\(Constants.API_SOURCE)")!
     }
@@ -124,13 +124,17 @@ extension UserAPI: TargetType {
         switch self {
         case .passwordChange(_), .resign, .modifyMemberInfo(_):
             return ["Authorization": "token_encoded"]
-        case .getUserInfo, .getMyActivities(_):
-            return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
-//            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+//        case .getUserInfo, .getMyActivities(_):
+//            return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
+////            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
         default:
             return nil
         }
         
+    }
+    
+    var authorizationType: AuthorizationType? {
+        return .bearer
     }
     
 }

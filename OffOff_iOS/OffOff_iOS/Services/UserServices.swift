@@ -11,8 +11,10 @@ import RxMoya
 import RxSwift
 import CloudKit
 
-public class UserServices {
-    static let provider = MoyaProvider<UserAPI>()
+public class UserServices: Networkable {
+    typealias Target = UserAPI
+    
+    static let provider = makeProvider()
     
     struct Validation: Codable {
         var queryStatus: String = "Impossible"
