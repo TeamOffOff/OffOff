@@ -11,9 +11,10 @@ import RxSwift
 class BoardListViewController: UIViewController {
     
     var customView = BoardListView()
-    
+
+    var viewModel: BoardListViewModel!
     let disposeBag = DisposeBag()
-    
+
     override func loadView() {
         self.view = customView
         self.customView.boardCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
@@ -26,7 +27,7 @@ class BoardListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let viewModel = BoardListViewModel(searchText: self.customView.boardSearchView.rx.text.asObservable())
+        viewModel = BoardListViewModel(searchText: self.customView.boardSearchView.rx.text.orEmpty.asObservable())
         
         viewModel.boardLists
             .observe(on: MainScheduler.instance)
@@ -84,6 +85,8 @@ class BoardListViewController: UIViewController {
         
         // bind result
         viewModel.isSearching
+            .debug()
+            .observe(on: MainScheduler.instance)
             .bind { [weak self] in
                 self?.customView.postListTableView.isHidden = !$0
                 self?.customView.boardCollectionView.isHidden = $0
@@ -94,6 +97,17 @@ class BoardListViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
+            }
+            .disposed(by: disposeBag)
+        
+        // 전체 검색 결과 추가로드
+        self.customView.postListTableView.rx.didEndDragging
+            .withUnretained(self)
+            .bind { (owner, _) in
+                if ((owner.customView.postListTableView.contentOffset.y + owner.customView.postListTableView.frame.size.height) >= owner.customView.postListTableView.contentSize.height)
+                {
+                    owner.viewModel!.reloadTrigger.onNext(true)
+                }
             }
             .disposed(by: disposeBag)
     }
