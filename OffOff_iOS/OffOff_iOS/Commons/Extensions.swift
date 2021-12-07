@@ -485,7 +485,7 @@ extension UINavigationBar {
         appearance.backgroundColor = backgroundColor
         appearance.titleTextAttributes = [.foregroundColor: titleColor]
         appearance.shadowColor = .g4
-        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)))
+        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)))
         self.isTranslucent = false
         self.tintColor = titleColor
         self.standardAppearance = appearance
@@ -558,11 +558,65 @@ extension UIViewController {
 
 extension Double {
     var adjustedWidth: Double {
-        return (Double(UIScreen.main.bounds.size.width) * self) / 390.0
+        return (Double(UIScreen.main.bounds.size.width) * self) / CGSize.baseSize.width
     }
     
     var adjustedHeight: Double {
-        return (Double(UIScreen.main.bounds.size.height) * self) / 844.0
+        return (Double(UIScreen.main.bounds.size.height) * self) / CGSize.baseSize.height
+    }
+}
+
+enum Dimension {
+    case width
+    case height
+}
+
+extension CGSize {
+    static var baseSize: CGSize {
+        return CGSize(width: 390.0, height: 844.0)
+    }
+    
+    func resized(basedOn dimension: Dimension) -> CGSize {
+        let screenWidth  = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
+        
+        var ratio:  CGFloat = 0.0
+        var width:  CGFloat = 0.0
+        var height: CGFloat = 0.0
+        
+        switch dimension {
+        case .width:
+            ratio  = self.height / self.width
+            width  = screenWidth * (self.width / CGSize.baseSize.width)
+            height = width * ratio
+        case .height:
+            ratio  = self.width / self.height
+            height = screenHeight * (self.height / CGSize.baseSize.height)
+            width  = height * ratio
+        }
+        
+        return CGSize(width: width, height: height)
+    }
+}
+
+extension CGFloat {
+    func adapted(to dimension: Dimension) -> CGFloat {
+        let screenWidth  = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
+        
+        var ratio: CGFloat = 0.0
+        var resultDimensionSize: CGFloat = 0.0
+        
+        switch dimension {
+        case .width:
+            ratio = self / CGSize.baseSize.width
+            resultDimensionSize = screenWidth * ratio
+        case .height:
+            ratio = self / CGSize.baseSize.height
+            resultDimensionSize = screenHeight * ratio
+        }
+        
+        return resultDimensionSize
     }
 }
 
@@ -594,10 +648,10 @@ extension UITextField {
 
 extension UIBarButtonItem {
     static func searchButton() -> UIBarButtonItem {
-        UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+        UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedHeight, height: 20.adjustedHeight)), style: .plain, target: nil, action: nil)
     }
     static func menuButton() -> UIBarButtonItem {
-        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedHeight, height: 20.adjustedHeight)), style: .plain, target: nil, action: nil)
     }
 }
 
@@ -635,6 +689,14 @@ extension UIView {
 enum VerticalLocation: String {
     case bottom
     case top
+}
+
+extension UITabBar {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        var sizeThatFits = super.sizeThatFits(size)
+        sizeThatFits.height = 80.adjustedHeight // 원하는 길이
+        return sizeThatFits
+    }
 }
 
 extension UIView {

@@ -63,6 +63,7 @@ class NewPostViewController: UIViewController {
                 contentText: newPostView.contentTextView
                     .rx.text
                     .orEmpty
+                    .filter { $0 != "내용을 입력해주세요." }
                     .distinctUntilChanged()
                     .asDriver(onErrorJustReturn: ""),
                 createButtonTap: saveButton.rx.tapGesture()
@@ -83,6 +84,26 @@ class NewPostViewController: UIViewController {
                 let needToScrolling = self.newPostView.contentTextView.contentSize.height > owner.textViewMaxHeight
                 
                 owner.textViewNeedToScroll.onNext(needToScrolling)
+            }
+            .disposed(by: disposeBag)
+        
+        // 텍스트 뷰 PlaceHolder
+        newPostView.contentTextView.rx.didBeginEditing
+            .withUnretained(self)
+            .bind{ (owner, _) in
+                if(owner.newPostView.contentTextView.text == "내용을 입력해주세요.") {
+                    owner.newPostView.contentTextView.text = nil
+                    owner.newPostView.contentTextView.textColor = .white
+                }
+            }.disposed(by: disposeBag)
+        
+        newPostView.contentTextView.rx.didEndEditing
+            .withUnretained(self)
+            .bind { (owner, _) in
+                if(owner.newPostView.contentTextView.text == nil || owner.newPostView.contentTextView.text == ""){
+                    owner.newPostView.contentTextView.text = "내용을 입력해주세요."
+                    owner.newPostView.contentTextView.textColor = .w3
+                }
             }
             .disposed(by: disposeBag)
     
@@ -177,11 +198,12 @@ class NewPostViewController: UIViewController {
         viewModel.isTitleConfirmed
             .skip(1)
             .filter { $0 == false }
+            .observe(on: MainScheduler.instance)
             .do { [weak self] _ in
                 alert = UIAlertController(title: "제목을 입력해주세요.", message: nil, preferredStyle: .alert)
                 self?.present(alert, animated: true, completion: nil)
             }
-            .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance)
+            .delay(.milliseconds(500), scheduler: MainScheduler.instance)
             .bind { _ in
                 alert.dismiss(animated: true, completion: nil)
             }
@@ -190,11 +212,12 @@ class NewPostViewController: UIViewController {
         viewModel.isContentConfiremd
             .skip(1)
             .filter { $0 == false }
+            .observe(on: MainScheduler.instance)
             .do { [weak self] _ in
                 alert = UIAlertController(title: "내용을 입력해주세요.", message: nil, preferredStyle: .alert)
                 self?.present(alert, animated: true, completion: nil)
             }
-            .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance)
+            .delay(.milliseconds(500), scheduler: MainScheduler.instance)
             .bind { _ in
                 alert.dismiss(animated: true, completion: nil)
             }
@@ -248,6 +271,6 @@ class NewPostViewController: UIViewController {
 
 extension NewPostViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 70.adjustedWidth, height: 68.adjustedHeight)
+        CGSize(width: 70.adjustedHeight, height: 68.adjustedHeight)
     }
 }

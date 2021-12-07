@@ -123,6 +123,7 @@
 		EADA0C57273FC110003858FA /* ZLPhotoBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = EADA0C56273FC110003858FA /* ZLPhotoBrowser */; };
 		EADEC8DF275DB4DE009A307B /* NetworkLoggerPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8DE275DB4DE009A307B /* NetworkLoggerPlugin.swift */; };
 		EADEC8E2275DC327009A307B /* Networkable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8E1275DC327009A307B /* Networkable.swift */; };
+		EADEC8E4275F9237009A307B /* ButtonWithLeftIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
@@ -250,6 +251,7 @@
 		EAD849C6273ED54F0010DE1B /* SearchServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServices.swift; sourceTree = "<group>"; };
 		EADEC8DE275DB4DE009A307B /* NetworkLoggerPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLoggerPlugin.swift; sourceTree = "<group>"; };
 		EADEC8E1275DC327009A307B /* Networkable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networkable.swift; sourceTree = "<group>"; };
+		EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonWithLeftIcon.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -449,6 +451,7 @@
 				EA6021B627397D5D00092917 /* PostListNavigationBar.swift */,
 				EAD849BC273E30E10010DE1B /* CustomRefreshControl.swift */,
 				EA3083E3274803BA0060F8B2 /* LoadingHUD.swift */,
+				EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -850,6 +853,7 @@
 				EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */,
 				EAF7073926EA059600B7B6D1 /* UnderlineSegmentedControl.swift in Sources */,
 				EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */,
+				EADEC8E4275F9237009A307B /* ButtonWithLeftIcon.swift in Sources */,
 				EAF7073726E9F35700B7B6D1 /* ShiftColorSelectViewController.swift in Sources */,
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
 				EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */,

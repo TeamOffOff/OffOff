@@ -64,7 +64,7 @@ class MyActivityView: UIView {
             $0.top.equalTo(upperView.snp.bottom).inset(25.adjustedHeight)
             $0.centerX.equalToSuperview()
             $0.width.equalTo(326.adjustedWidth)
-            $0.height.equalTo(278.adjustedHeight)
+            $0.height.equalTo((278 * 3 / 5).adjustedHeight)
         }
     }
 }

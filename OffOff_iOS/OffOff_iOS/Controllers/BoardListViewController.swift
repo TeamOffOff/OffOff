@@ -116,6 +116,6 @@ class BoardListViewController: UIViewController {
 extension BoardListViewController: UICollectionViewDelegateFlowLayout {
     // 한 가로줄에 cell이 3개만 들어가도록 크기 조정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 92.adjustedWidth, height: 92.adjustedHeight)
+        return CGSize(width: 92, height: 92).resized(basedOn: .width)
     }
 }

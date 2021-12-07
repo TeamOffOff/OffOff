@@ -64,7 +64,7 @@ class PostViewController: UIViewController {
     
     var loadingImageView = UIImageView().then {
         $0.backgroundColor = .g4
-        $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 30.adjustedWidth, height: 30.adjustedHeight), isAlwaysTemplate: false)
+        $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 30.adjustedHeight, height: 30.adjustedHeight), isAlwaysTemplate: false)
         $0.contentMode = .top
     }
     
@@ -419,7 +419,7 @@ class PostViewController: UIViewController {
         loadingImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
-            $0.width.height.equalTo(30.adjustedWidth)
+            $0.width.height.equalTo(30.adjustedHeight)
         }
         postView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
