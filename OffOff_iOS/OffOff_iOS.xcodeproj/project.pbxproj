@@ -484,7 +484,6 @@
 				EADEC8E0275DC311009A307B /* Network */,
 				EA420B36269BFBD200F6F903 /* PostServices.swift */,
 				EA975A5F26B045A600C6FB41 /* PostAPI.swift */,
-				EAF2128B26907B9600E47942 /* BoardListViewController.swift */,
 				EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */,
 				EA2FDF4926A7D88800AEC951 /* UserServices.swift */,
 				EACF1B3626B5A9DD00C153D3 /* BoardAPI.swift */,
@@ -558,6 +557,7 @@
 				EA526E1C26CD0A100059A90C /* FirstViewController.swift */,
 				EAD849C0273ED26A0010DE1B /* PostSearchViewController.swift */,
 				EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */,
+				EAF2128B26907B9600E47942 /* BoardListViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";

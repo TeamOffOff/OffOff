@@ -182,6 +182,8 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
                     owner.nicknameLabel.text = author.nickname
                     if author.profileImage.count != 0 {
                         owner.profileImageView.image = author.profileImage.first!.body.toImage()
+                    } else {
+                        owner.profileImageView.image = .DefaultReplyProfileImage
                     }
                 }
             }
