@@ -30,14 +30,9 @@ object DateUtils {
     }
 
     fun calculateLocalDate(localDateTime: LocalDateTime): String {
-        if (localDateTime.year == currentLocalDate.year) {
-            if (localDateTime.year == currentLocalDate.year && localDateTime.month == currentLocalDate.month && localDateTime.dayOfMonth == currentLocalDate.dayOfMonth) {
-                return dateFormatterHourFirst.format(localDateTime)
-            }
-            return dateFormatterMonthFirst.format(localDateTime)
-        } else {
-            return dateFormatterYearFirst.format(localDateTime)
+        if (localDateTime.year == currentLocalDate.year && localDateTime.month == currentLocalDate.month && localDateTime.dayOfMonth == currentLocalDate.dayOfMonth) {
+            return dateFormatterHourFirst.format(localDateTime)
         }
+        return dateFormatterMonthFirst.format(localDateTime)
     }
-
 }

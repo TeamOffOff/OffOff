@@ -1,10 +1,7 @@
 package com.yuuuzzzin.offoff_android.utils
 
 import android.graphics.drawable.Drawable
-import androidx.annotation.ArrayRes
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import com.yuuuzzzin.offoff_android.OffoffApplication
 
@@ -14,4 +11,8 @@ object ResUtils {
     fun getString(@StringRes id: Int): String = OffoffApplication.appCtx().getString(id)
     fun getDrawable(@DrawableRes id: Int): Drawable? = ContextCompat.getDrawable(OffoffApplication.appCtx(), id)
     fun getStringArray(@ArrayRes id: Int): Array<String> = OffoffApplication.appCtx().resources.getStringArray(id)
+
+    fun hideLayout(layoutRes: LayoutRes) {
+
+    }
 }
