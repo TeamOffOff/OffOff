@@ -11,7 +11,7 @@ import RxCocoa
 
 class ChildrenRepliesTableViewCell: UITableViewCell {
     static let identifier = "ChildrenRepliesTableViewCell"
-
+    
     var reply = BehaviorSubject<Reply?>(value: nil)
     var disposeBag = DisposeBag()
     var alertDisposeBag = DisposeBag()
@@ -21,7 +21,7 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     var dismissAlert: ((_ animated: Bool) -> Void)?
     var presentMenuAlert: ((_ alert: UIAlertController) -> Void)?
     
-    var replies = BehaviorSubject<[Reply]?>(value: nil)
+    weak var replies: BehaviorSubject<[Reply]?>?
     
     var profileImageView = UIImageView().then {
         $0.image = .DefaultReplyProfileImage
@@ -30,21 +30,24 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     
     var nicknameLabel = UILabel().then {
         $0.backgroundColor = .clear
-        $0.font = .defaultFont(size: 12, bold: true)
+        $0.font = .defaultFont(size: 14, bold: true)
+        $0.text = "알 수 없음"
     }
     
     var dateLabel = UILabel().then {
         $0.backgroundColor = .clear
         $0.textColor = .w5
-        $0.font = .defaultFont(size: 8)
+        $0.font = .defaultFont(size: 12)
     }
     
     var contentTextView = UITextView().then {
         $0.backgroundColor = .clear
-        $0.font = .defaultFont(size: 10)
+        $0.font = .defaultFont(size: 12)
         $0.isScrollEnabled = false
         $0.sizeToFit()
         $0.isUserInteractionEnabled = false
+        $0.textContainerInset = .zero
+        $0.textContainer.lineFragmentPadding = 0
     }
     
     var likeButton = UIButton().then {
@@ -115,11 +118,11 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         super.prepareForReuse()
         bindData()
     }
-
+    
     private func makeView() {
         subImage.snp.makeConstraints {
             $0.left.equalToSuperview().inset(23.adjustedWidth)
-            $0.top.equalToSuperview().inset(37.5.adjustedHeight)
+            $0.top.equalTo(profileImageView.snp.bottom).offset(5.adjustedHeight)
             $0.width.equalTo(19.adjustedWidth)
             $0.height.equalTo(16.52.adjustedHeight)
         }
@@ -129,8 +132,8 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
             $0.right.equalToSuperview().inset(20.adjustedWidth)
         }
         profileImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(11.adjustedHeight)
-            $0.left.equalToSuperview().inset(14.adjustedWidth)
+            $0.top.equalToSuperview().inset(10.adjustedHeight)
+            $0.left.equalToSuperview().inset(25.adjustedWidth)
             $0.width.height.equalTo(20.0.adjustedWidth)
         }
         nicknameLabel.snp.makeConstraints {
@@ -138,12 +141,13 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
             $0.centerY.equalTo(profileImageView)
         }
         contentTextView.snp.makeConstraints {
-            $0.top.equalTo(profileImageView.snp.bottom).offset(5.adjustedWidth)
-            $0.left.right.equalToSuperview().inset(13.adjustedWidth)
+            $0.top.equalTo(profileImageView.snp.bottom).offset(4.adjustedWidth)
+            $0.right.equalToSuperview().inset(25.adjustedWidth)
+            $0.left.equalTo(profileImageView)
         }
         
         dateLabel.snp.makeConstraints {
-            $0.top.equalTo(contentTextView.snp.bottom).offset(7.adjustedHeight)
+            $0.top.equalTo(contentTextView.snp.bottom).offset(4.adjustedHeight)
             $0.left.equalTo(profileImageView)
             $0.bottom.equalToSuperview().inset(7.adjustedHeight)
         }
@@ -167,41 +171,50 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         reply
             .filter { $0 != nil }
             .map { $0! }
-            .bind {
+            .withUnretained(self)
+            .bind { (owner, reply) in
                 //            self.profileImageView.image =
-                self.nicknameLabel.text = $0.author.nickname
-                self.dateLabel.text = $0.date
-                self.contentTextView.text = $0.content
-                self.likeLabel.label.text = "\($0.likes.count)"
+                owner.dateLabel.text = reply.date.toDate()!.toFormedString()
+                owner.contentTextView.text = reply.content
+                owner.likeLabel.label.text = "\(reply.likes.count)"
                 
-                if $0.author.profileImage.count != 0 {
-                    self.profileImageView.image = $0.author.profileImage.first!.body.toImage()
+                if let author = reply.author {
+                    owner.nicknameLabel.text = author.nickname
+                    if author.profileImage.count != 0 {
+                        owner.profileImageView.image = author.profileImage.first!.body.toImage()
+                    } else {
+                        owner.profileImageView.image = .DefaultReplyProfileImage
+                    }
                 }
             }
             .disposed(by: disposeBag)
         
-        self.likeButton.rx.tap.withLatestFrom(reply)
+        likeButton.rx.tap.withLatestFrom(reply)
             .filter { $0 != nil }
-            .flatMap {
-                SubReplyServices.likeSubReply(likeSubReply: PostActivity(boardType: self.boardTpye!, _id: $0!._id, activity: "likes"))
+            .withUnretained(self)
+            .flatMap { (owner, reply) -> Observable<Reply?> in
+                SubReplyServices.likeSubReply(likeSubReply: PostActivity(boardType: owner.boardTpye!, _id: reply!._id, activity: "likes"))
             }
-            .do {
-                if $0 != nil {
-                    self.activityAlert!("좋아요를 했습니다.")
-                    self.reply.onNext($0)
+            .withUnretained(self)
+            .observe(on: MainScheduler.instance)
+            .do { (owner, reply) in
+                if reply != nil {
+                    owner.activityAlert!("좋아요를 했습니다.")
+                    owner.reply.onNext(reply)
                 } else {
-                    self.activityAlert!("이미 좋아요를 누른 댓글입니다.")
+                    owner.activityAlert!("이미 좋아요를 누른 댓글입니다.")
                 }
             }
             .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-            .bind { _ in
-                self.dismissAlert!(true)
-            }.disposed(by: disposeBag)
+            .bind { [weak self] (reply) in
+                self?.dismissAlert!(true)
+            }
+            .disposed(by: disposeBag)
         
         self.menubutton.rx.tap.withLatestFrom(reply)
             .filter { $0 != nil }
-            .bind {
-                self.showMenuAlert(reply: $0!)
+            .bind { [weak self] in
+                self?.showMenuAlert(reply: $0!)
             }
             .disposed(by: disposeBag)
     }
@@ -209,25 +222,30 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
     private func showMenuAlert(reply: Reply) {
         self.alertDisposeBag = DisposeBag()
         let alert = UIAlertController(title: "메뉴", message: nil, preferredStyle: .actionSheet)
-        let delete = UIAlertAction(title: "삭제", style: .default) { _ in
-            let delReply = DeletingSubReply(_id: reply._id, boardType: reply.boardType, postId: reply.postId, parentReplyId: reply.parentReplyId!, author: reply.author._id!)
+        let delete = UIAlertAction(title: "삭제", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            
+            let delReply = DeletingSubReply(_id: reply._id, boardType: reply.boardType, postId: reply.postId, parentReplyId: reply.parentReplyId!, author: reply.author!._id!)
             
             SubReplyServices.deleteSubReply(deletingSubReply: delReply)
                 .filter { $0 != nil }
-                .do {
-                    self.activityAlert!("댓글을 삭제했습니다.")
+                .observe(on: MainScheduler.instance)
+                .withUnretained(self)
+                .filter { (owner, _) in owner.replies != nil}
+                .do { (owner, replyList) in
+                    owner.activityAlert!("댓글을 삭제했습니다.")
                     var replies = [Reply]()
-                    $0!.forEach {
+                    replyList!.forEach {
                         replies.append($0)
                         if $0.childrenReplies != nil &&  $0.childrenReplies!.count > 0 {
                             replies.append(contentsOf: $0.childrenReplies!)
                         }
                     }
-                    self.replies.onNext(replies)
+                    owner.replies!.onNext(replies)
                 }
                 .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-                .bind { _ in
-                    self.dismissAlert!(true)
+                .bind { (owner, _) in
+                    owner.dismissAlert!(true)
                 }
                 .disposed(by: self.alertDisposeBag)
         }
@@ -235,12 +253,15 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         let report = UIAlertAction(title: "신고", style: .default)
         let cancel = UIAlertAction(title: "취소", style: .cancel)
         
-        if Constants.loginUser?._id == reply.author._id {
-            alert.addAction(delete)
+        if let author = reply.author {
+            if Constants.loginUser?._id == author._id {
+                alert.addAction(delete)
+            }
         }
-        alert.addAction(report)
+        
+//        alert.addAction(report)
         alert.addAction(cancel)
-    
+        
         presentMenuAlert!(alert)
     }
 }

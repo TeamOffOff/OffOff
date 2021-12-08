@@ -19,7 +19,7 @@ class PostSearchView: UIView {
     }
     
     var searchIcon = UIImageView().then {
-        $0.image = .SEARCHIMAGE.resize(to: CGSize(width: 18.adjustedWidth, height: 18.adjustedHeight))
+        $0.image = .SEARCHIMAGE.resize(to: CGSize(width: 18.adjustedHeight, height: 18.adjustedHeight), isAlwaysTemplate: false)
         $0.contentMode = .scaleAspectFit
     }
     

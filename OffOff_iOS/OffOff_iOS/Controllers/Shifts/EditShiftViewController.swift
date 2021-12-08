@@ -33,24 +33,24 @@ class EditShiftViewController: UIViewController {
         customView.routineTable.rowHeight = 80
         
         customView.closeButton.rx.tap
-            .bind {
-                self.dismiss(animated: true, completion: nil)
+            .bind { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
         
         // bind outputs
         viewModel.shifts
             .observe(on: MainScheduler.instance)
-            .bind(to: customView.routineTable.rx.items(cellIdentifier: ShiftTableViewCell.identifier, cellType: ShiftTableViewCell.self)) { row, element, cell  in
+            .bind(to: customView.routineTable.rx.items(cellIdentifier: ShiftTableViewCell.identifier, cellType: ShiftTableViewCell.self)) { [weak self] row, element, cell  in
                 cell.shift.onNext(element)
-                cell.editingShift.bind { self.cellButtonAction(shift: $0!) }.disposed(by: cell.disposeBag)
+                cell.editingShift.bind { self?.cellButtonAction(shift: $0!) }.disposed(by: cell.disposeBag)
             }
             .disposed(by: disposeBag)
         
         viewModel.addingShift
             .observe(on: MainScheduler.instance)
-            .bind { _ in
-                self.presentAddShiftViewController()
+            .bind { [weak self] _ in
+                self?.presentAddShiftViewController()
             }
             .disposed(by: disposeBag)
         
@@ -66,8 +66,8 @@ class EditShiftViewController: UIViewController {
     
     private func cellButtonAction(shift: Shift) {
         let alert = UIAlertController(title: "동작", message: "선택하세요", preferredStyle: .actionSheet)
-        let edit = UIAlertAction(title: "수정", style: .default) { _ in self.presentAddShiftViewController(shift: shift) }
-        let delete = UIAlertAction(title: "삭제", style: .destructive) { _ in self.viewModel.deleteShift(shift: shift) }
+        let edit = UIAlertAction(title: "수정", style: .default) { [weak self] _ in self?.presentAddShiftViewController(shift: shift) }
+        let delete = UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in self?.viewModel.deleteShift(shift: shift) }
         let action = UIAlertAction(title: "취소", style: .cancel) { _ in alert.dismiss(animated: true, completion: nil) }
         alert.addAction(edit)
         alert.addAction(delete)

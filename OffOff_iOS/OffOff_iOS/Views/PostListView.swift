@@ -35,7 +35,9 @@ class PostListView: UIView {
     var newPostButton = UIButton().then {
         $0.setCornerRadius(15.adjustedHeight)
         $0.backgroundColor = .g4
+        $0.tintColor = .white
         $0.setImage(.NewPostIcon, for: .normal)
+        $0.imageView?.contentMode = .scaleAspectFit
     }
 
     override init(frame: CGRect) {
@@ -68,8 +70,9 @@ class PostListView: UIView {
             $0.bottom.equalTo(self.safeAreaLayoutGuide)
         }
         newPostButton.snp.makeConstraints {
-            $0.width.equalTo(66.adjustedWidth)
-            $0.height.equalTo(48.adjustedHeight)
+            let newPostButtonSize = CGSize(width: 66, height: 48).resized(basedOn: .height)
+            $0.width.equalTo(newPostButtonSize.width)
+            $0.height.equalTo(newPostButtonSize.height)
             $0.bottom.equalToSuperview().inset(35.adjustedHeight)
             $0.right.equalToSuperview().inset(24.adjustedWidth)
         }

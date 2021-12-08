@@ -51,28 +51,28 @@ class AddShiftViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.textChanged
-            .bind {
+            .bind { [weak self] in
                 if $0 != nil {
-                    self.customView.badgeButton.setTitle("\($0!.prefix(1))", for: .normal)
+                    self?.customView.badgeButton.setTitle("\($0!.prefix(1))", for: .normal)
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.isEditingShiftColor
-            .bind {
+            .bind { [weak self] in
                 if $0 {
                     let vc = ShiftColorSelectViewController()
                     vc.modalTransitionStyle = .crossDissolve
                     vc.modalPresentationStyle = .currentContext
-                    self.present(vc, animated: true, completion: nil)
+                    self?.present(vc, animated: true, completion: nil)
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.isDismissing
-            .bind {
+            .bind { [weak self] in
                 if $0 {
-                    self.dismiss(animated: true, completion: nil)
+                    self?.dismiss(animated: true, completion: nil)
                 }
             }
             .disposed(by: disposeBag)
@@ -84,49 +84,52 @@ class AddShiftViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isShiftChanged
-            .bind {
-                if $0 {
-                    self.dismiss(animated: true, completion: nil)
+            .withUnretained(self)
+            .bind { (owner, bool) in
+                if bool {
+                    owner.dismiss(animated: true, completion: nil)
                 } else {
                     let alert = UIAlertController(title: nil, message: "타이틀을 입력해주세요", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default) { _ in alert.dismiss(animated: true, completion: nil) }
                     alert.addAction(action)
-                    self.present(alert, animated: true, completion: nil)
+                    owner.present(alert, animated: true, completion: nil)
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.isStartTimeEditing
-            .bind {
-                if $0 {
-                    self.customView.endTimePicker.isHidden = true
+            .withUnretained(self)
+            .bind { (owner, bool) in
+                if bool {
+                    owner.customView.endTimePicker.isHidden = true
                     UIView.animate(withDuration: 0.3) {
-                        self.customView.startTimePicker.isHidden.toggle()
+                        owner.customView.startTimePicker.isHidden.toggle()
                     }
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.isEndTimeEditing
-            .bind {
-                if $0 {
-                    self.customView.startTimePicker.isHidden = true
+            .withUnretained(self)
+            .bind { (owner, bool) in
+                if bool {
+                    owner.customView.startTimePicker.isHidden = true
                     UIView.animate(withDuration: 0.3) {
-                        self.customView.endTimePicker.isHidden.toggle()
+                        owner.customView.endTimePicker.isHidden.toggle()
                     }
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.startTimeChanged
-            .bind {
-                self.customView.startTimeButton.setTitle($0, for: .normal)
+            .bind { [weak self] in
+                self?.customView.startTimeButton.setTitle($0, for: .normal)
             }
             .disposed(by: disposeBag)
         
         viewModel.endTimeChanged
-            .bind {
-                self.customView.endTimeButton.setTitle($0, for: .normal)
+            .bind { [weak self] in
+                self?.customView.endTimeButton.setTitle($0, for: .normal)
             }
             .disposed(by: disposeBag)
     }

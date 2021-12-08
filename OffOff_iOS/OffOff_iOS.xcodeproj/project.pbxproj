@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA0582C2274D1262005855F1 /* MyActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0582C1274D1262005855F1 /* MyActivityView.swift */; };
+		EA0582C4274D14D0005855F1 /* MyActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */; };
+		EA0582C6274D1CF1005855F1 /* MyActivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0582C5274D1CF1005855F1 /* MyActivityViewModel.swift */; };
 		EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACC258B26A71466000B12B6 /* PrivacyInfoViewController.swift */; };
 		EA0624D926DBB1B6004FF91A /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624D826DBB1B6004FF91A /* Realm */; };
 		EA0624DB26DBB1B6004FF91A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624DA26DBB1B6004FF91A /* RealmSwift */; };
-		EA0624DD26DCA13C004FF91A /* RealmTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */; };
 		EA0624DF26DD1D58004FF91A /* UserRoutineManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */; };
 		EA0624E226DE77A7004FF91A /* RxRealm in Frameworks */ = {isa = PBXBuildFile; productRef = EA0624E126DE77A7004FF91A /* RxRealm */; };
 		EA07345526929C01007830ED /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345426929C01007830ED /* Post.swift */; };
@@ -21,6 +23,7 @@
 		EA0747DE2727B48F004DB13C /* RxKeyboard in Frameworks */ = {isa = PBXBuildFile; productRef = EA0747DD2727B48F004DB13C /* RxKeyboard */; };
 		EA0EFFBB268AD08B009C4722 /* ViewControllerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */; };
 		EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0EFFBC268B468B009C4722 /* LoginView.swift */; };
+		EA1E6B04275739B40065A003 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA1E6B03275739B40065A003 /* Roboto-Black.ttf */; };
 		EA285A6526C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA285A6626C5658A00E65EB2 /* PostListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA07345A2692AD56007830ED /* PostListViewModel.swift */; };
 		EA285A6826C565F000E65EB2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = EA285A6726C565F000E65EB2 /* RxCocoa */; };
@@ -118,6 +121,9 @@
 		EAD849C5273ED4450010DE1B /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C4273ED4450010DE1B /* SearchAPI.swift */; };
 		EAD849C7273ED54F0010DE1B /* SearchServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD849C6273ED54F0010DE1B /* SearchServices.swift */; };
 		EADA0C57273FC110003858FA /* ZLPhotoBrowser in Frameworks */ = {isa = PBXBuildFile; productRef = EADA0C56273FC110003858FA /* ZLPhotoBrowser */; };
+		EADEC8DF275DB4DE009A307B /* NetworkLoggerPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8DE275DB4DE009A307B /* NetworkLoggerPlugin.swift */; };
+		EADEC8E2275DC327009A307B /* Networkable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8E1275DC327009A307B /* Networkable.swift */; };
+		EADEC8E4275F9237009A307B /* ButtonWithLeftIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
@@ -156,7 +162,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmTestViewController.swift; sourceTree = "<group>"; };
+		EA0582C1274D1262005855F1 /* MyActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyActivityView.swift; sourceTree = "<group>"; };
+		EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyActivityViewController.swift; sourceTree = "<group>"; };
+		EA0582C5274D1CF1005855F1 /* MyActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyActivityViewModel.swift; sourceTree = "<group>"; };
 		EA0624DE26DD1D58004FF91A /* UserRoutineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRoutineManager.swift; sourceTree = "<group>"; };
 		EA07345426929C01007830ED /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		EA0734562692A0B8007830ED /* PostsDummyData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = PostsDummyData.json; sourceTree = "<group>"; };
@@ -164,6 +172,7 @@
 		EA07345E2692CECA007830ED /* PostListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
 		EA0EFFBA268AD08B009C4722 /* ViewControllerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerPreview.swift; sourceTree = "<group>"; };
 		EA0EFFBC268B468B009C4722 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		EA1E6B03275739B40065A003 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
 		EA2C4DF126DFCB4A0056A93C /* EditScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScheduleView.swift; sourceTree = "<group>"; };
 		EA2C4DF326DFD4890056A93C /* ShiftTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTableViewCell.swift; sourceTree = "<group>"; };
 		EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
@@ -240,6 +249,9 @@
 		EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSearchViewModel.swift; sourceTree = "<group>"; };
 		EAD849C4273ED4450010DE1B /* SearchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		EAD849C6273ED54F0010DE1B /* SearchServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServices.swift; sourceTree = "<group>"; };
+		EADEC8DE275DB4DE009A307B /* NetworkLoggerPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLoggerPlugin.swift; sourceTree = "<group>"; };
+		EADEC8E1275DC327009A307B /* Networkable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networkable.swift; sourceTree = "<group>"; };
+		EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonWithLeftIcon.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -302,6 +314,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA0582C7274E57AD005855F1 /* Shifts */ = {
+			isa = PBXGroup;
+			children = (
+				EA83564326D3729100D60C46 /* ScheduleViewController.swift */,
+				EA8A333826D4C7540014D97C /* SetShiftViewController.swift */,
+				EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */,
+				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
+				EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */,
+			);
+			path = Shifts;
+			sourceTree = "<group>";
+		};
+		EA0582C8274F386A005855F1 /* Shifts */ = {
+			isa = PBXGroup;
+			children = (
+				EA83564626D37BBE00D60C46 /* ScheduleViewModel.swift */,
+				EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */,
+				EA8A334826D63F480014D97C /* EditShiftViewModel.swift */,
+				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
+			);
+			path = Shifts;
+			sourceTree = "<group>";
+		};
 		EA406A8C26A4759600737F90 /* SignUpControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -326,6 +361,7 @@
 			children = (
 				EA602192272FBABB00092917 /* Roboto-Regular.ttf */,
 				EA602194272FBAC200092917 /* Roboto-Bold.ttf */,
+				EA1E6B03275739B40065A003 /* Roboto-Black.ttf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -338,6 +374,15 @@
 				EAAA212226BE8203004FA6F9 /* PrivacyInfoViewModel.swift */,
 			);
 			path = SignUpViewModels;
+			sourceTree = "<group>";
+		};
+		EADEC8E0275DC311009A307B /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				EADEC8DE275DB4DE009A307B /* NetworkLoggerPlugin.swift */,
+				EADEC8E1275DC327009A307B /* Networkable.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		EAE502D62689E3D6002B1C6A = {
@@ -406,6 +451,7 @@
 				EA6021B627397D5D00092917 /* PostListNavigationBar.swift */,
 				EAD849BC273E30E10010DE1B /* CustomRefreshControl.swift */,
 				EA3083E3274803BA0060F8B2 /* LoadingHUD.swift */,
+				EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -430,6 +476,7 @@
 				EA6021B427397BA500092917 /* PostListView.swift */,
 				EAD849BA273CD79C0010DE1B /* NewPostView.swift */,
 				EAD849BE273ED0260010DE1B /* PostSearchView.swift */,
+				EA0582C1274D1262005855F1 /* MyActivityView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -437,6 +484,7 @@
 		EAE5030B268AB724002B1C6A /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EADEC8E0275DC311009A307B /* Network */,
 				EA420B36269BFBD200F6F903 /* PostServices.swift */,
 				EA975A5F26B045A600C6FB41 /* PostAPI.swift */,
 				EA2FDF4726A7C7EF00AEC951 /* UserAPI.swift */,
@@ -477,6 +525,7 @@
 				EACF1B3A26B6710800C153D3 /* Board.swift */,
 				EA83564A26D3A47600D60C46 /* RoutineModel.swift */,
 				EAA89BC4270752F600EB3818 /* Reply.swift */,
+				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -484,18 +533,15 @@
 		EAF2127B268FEC3100E47942 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				EA0582C8274F386A005855F1 /* Shifts */,
 				EAAA211F26BE80BC004FA6F9 /* SignUpViewModels */,
 				EA07345A2692AD56007830ED /* PostListViewModel.swift */,
 				EABD99C626A2EB4B001DE8BF /* LoginViewModel.swift */,
 				EACF1B3C26B7E42300C153D3 /* BoardListViewModel.swift */,
 				EA983F0A26C0DDF60070604E /* PostViewModel.swift */,
 				EA983F0C26C0E4980070604E /* NewPostViewModel.swift */,
-				EA83564626D37BBE00D60C46 /* ScheduleViewModel.swift */,
-				EA8A333C26D4CB600014D97C /* SetShiftViewModel.swift */,
-				EA8A334826D63F480014D97C /* EditShiftViewModel.swift */,
-				EAF7073226E71F7D00B7B6D1 /* AddShiftViewModel.swift */,
-				EAF2128D2690814400E47942 /* CommunityBoard.swift */,
 				EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */,
+				EA0582C5274D1CF1005855F1 /* MyActivityViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -503,22 +549,18 @@
 		EAF2127C268FEC4000E47942 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				EA0582C7274E57AD005855F1 /* Shifts */,
 				EA406A8C26A4759600737F90 /* SignUpControllers */,
 				EAE502E62689E3D6002B1C6A /* LoginViewController.swift */,
 				EAF212852690158100E47942 /* TabBarController.swift */,
 				EAF212872690355B00E47942 /* HomeViewController.swift */,
-				EAF2128B26907B9600E47942 /* BoardListViewController.swift */,
 				EA07345E2692CECA007830ED /* PostListViewController.swift */,
 				EAE652602694182D00D8F7BB /* PostViewController.swift */,
 				EA72D75D26982BCA00EB07DA /* NewPostViewController.swift */,
 				EA526E1C26CD0A100059A90C /* FirstViewController.swift */,
-				EA83564326D3729100D60C46 /* ScheduleViewController.swift */,
-				EA8A333826D4C7540014D97C /* SetShiftViewController.swift */,
-				EA8A334626D63ADD0014D97C /* EditShiftViewController.swift */,
-				EA0624DC26DCA13C004FF91A /* RealmTestViewController.swift */,
-				EA33E0D326E32C850021DDF4 /* AddShiftViewController.swift */,
-				EAF7073626E9F35700B7B6D1 /* ShiftColorSelectViewController.swift */,
 				EAD849C0273ED26A0010DE1B /* PostSearchViewController.swift */,
+				EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */,
+				EAF2128B26907B9600E47942 /* BoardListViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -694,6 +736,7 @@
 				EAE502EC2689E3D7002B1C6A /* Assets.xcassets in Resources */,
 				EA602195272FBAC200092917 /* Roboto-Bold.ttf in Resources */,
 				EACC257A26A5CFB2000B12B6 /* Font Awesome 5 Free-Solid-900.otf in Resources */,
+				EA1E6B04275739B40065A003 /* Roboto-Black.ttf in Resources */,
 				EA929F2326AC66BE009352B9 /* default profile.png in Resources */,
 				EACC257D26A5CFB3000B12B6 /* Font Awesome 5 Free-Regular-400.otf in Resources */,
 			);
@@ -734,6 +777,7 @@
 				EA07345B2692AD56007830ED /* PostListViewModel.swift in Sources */,
 				EA0EFFBD268B468B009C4722 /* LoginView.swift in Sources */,
 				EAD849C1273ED26A0010DE1B /* PostSearchViewController.swift in Sources */,
+				EADEC8E2275DC327009A307B /* Networkable.swift in Sources */,
 				EAD6FED92713146B00563005 /* RepliesTableViewCell.swift in Sources */,
 				EA3083E4274803BA0060F8B2 /* LoadingHUD.swift in Sources */,
 				EACF1B3B26B6710800C153D3 /* Board.swift in Sources */,
@@ -742,7 +786,6 @@
 				EA06133D26C4DE4800E041E9 /* PrivacyInfoViewController.swift in Sources */,
 				EAA89BC5270752F600EB3818 /* Reply.swift in Sources */,
 				EAF7073326E71F7D00B7B6D1 /* AddShiftViewModel.swift in Sources */,
-				EA0624DD26DCA13C004FF91A /* RealmTestViewController.swift in Sources */,
 				EABD99C926A32B9D001DE8BF /* CommunityTableViewCell.swift in Sources */,
 				EACC258826A6B32D000B12B6 /* PrivacyInfoView.swift in Sources */,
 				EACF1B3726B5A9DD00C153D3 /* BoardAPI.swift in Sources */,
@@ -763,19 +806,23 @@
 				EA0624DF26DD1D58004FF91A /* UserRoutineManager.swift in Sources */,
 				EA6021B527397BA500092917 /* PostListView.swift in Sources */,
 				EACF1B3D26B7E42300C153D3 /* BoardListViewModel.swift in Sources */,
+				EA0582C4274D14D0005855F1 /* MyActivityViewController.swift in Sources */,
 				EA2C4DF226DFCB4A0056A93C /* EditScheduleView.swift in Sources */,
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,
 				EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
 				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
+				EADEC8DF275DB4DE009A307B /* NetworkLoggerPlugin.swift in Sources */,
 				EACC255B26A5B3B0000B12B6 /* UserModel.swift in Sources */,
 				EAAA212326BE8203004FA6F9 /* PrivacyInfoViewModel.swift in Sources */,
 				EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */,
+				EA0582C6274D1CF1005855F1 /* MyActivityViewModel.swift in Sources */,
 				EA983F0B26C0DDF60070604E /* PostViewModel.swift in Sources */,
 				EAD849C3273ED3E50010DE1B /* PostSearchViewModel.swift in Sources */,
 				EA929F1F26A9D0E9009352B9 /* ProfileMakeView.swift in Sources */,
 				EA983F0D26C0E4980070604E /* NewPostViewModel.swift in Sources */,
 				EACC258426A677D6000B12B6 /* SignUpViewModel.swift in Sources */,
+				EA0582C2274D1262005855F1 /* MyActivityView.swift in Sources */,
 				EA88BD502725854B004D8415 /* SubReplyServices.swift in Sources */,
 				EA83564726D37BBE00D60C46 /* ScheduleViewModel.swift in Sources */,
 				EAF2128E2690814400E47942 /* CommunityBoard.swift in Sources */,
@@ -806,6 +853,7 @@
 				EA33E0D426E32C850021DDF4 /* AddShiftViewController.swift in Sources */,
 				EAF7073926EA059600B7B6D1 /* UnderlineSegmentedControl.swift in Sources */,
 				EA975A6026B045A600C6FB41 /* PostAPI.swift in Sources */,
+				EADEC8E4275F9237009A307B /* ButtonWithLeftIcon.swift in Sources */,
 				EAF7073726E9F35700B7B6D1 /* ShiftColorSelectViewController.swift in Sources */,
 				EA406A9026A4769300737F90 /* IDPWView.swift in Sources */,
 				EA8A333926D4C7540014D97C /* SetShiftViewController.swift in Sources */,
@@ -1063,7 +1111,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.02;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";
@@ -1085,7 +1133,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.02;
 				PRODUCT_BUNDLE_IDENTIFIER = "TeamOff.OffOff-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "OffOff_iOS-Bridging-Header.h";

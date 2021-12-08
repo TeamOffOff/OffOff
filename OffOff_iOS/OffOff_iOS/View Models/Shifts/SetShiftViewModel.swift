@@ -50,15 +50,15 @@ class SetShiftViewModel {
         // bind inputs
         input.leftButtonTapped.asObservable()
             .withLatestFrom(date)
-            .bind {
-                self.date.onNext($0.adjustDate(amount: -1, component: .day)!)
+            .bind { [weak self] in
+                self?.date.onNext($0.adjustDate(amount: -1, component: .day)!)
             }
             .disposed(by: disposeBag)
         
         input.rightButtonTapped.asObservable()
             .withLatestFrom(date)
-            .bind {
-                self.date.onNext($0.adjustDate(amount: 1, component: .day)!)
+            .bind { [weak self] in
+                self?.date.onNext($0.adjustDate(amount: 1, component: .day)!)
             }
             .disposed(by: disposeBag)
         

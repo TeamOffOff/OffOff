@@ -10,6 +10,12 @@ import Moya
 
 // 유저 로그인, 회원가입과 관련된 API
 
+enum ActivityTypes: String {
+    case posts = "내가 쓴 글"
+    case replies = "댓글 단 글"
+    case bookmarks = "스크랩한 글"
+}
+
 enum UserAPI {
     case idChek(_ id: String)
     case emailCheck(_ email: String)
@@ -20,34 +26,43 @@ enum UserAPI {
     case login(_ id: String, _ password: String)
     case getUserInfo
     case modifyMemberInfo(_ signUpModel: UserModel)
-    
+    case getMyActivities(type: ActivityTypes)
 }
 
-extension UserAPI: TargetType {
+extension UserAPI: TargetType, AccessTokenAuthorizable {
     var baseURL: URL {
-        return URL(string: "\(Constants.API_SOURCE)/user")!
+        return URL(string: "\(Constants.API_SOURCE)")!
     }
     
     var path: String {
         switch self {
         case .idChek(_):
-            return "/register"
+            return "/user/register"
         case .emailCheck(_):
-            return "/register"
+            return "/user/register"
         case .nicknameCheck(_):
-            return "/register"
+            return "/user/register"
         case .signUp(_):
-            return "/register"
+            return "/user/register"
         case .passwordChange(_):
-            return "/register"
+            return "/user/register"
         case .login(_, _):
-            return "/login"
+            return "/user/login"
         case .getUserInfo:
-            return "/login"
+            return "/user/login"
         case .resign:
             return "/TODO"
         case .modifyMemberInfo(_):
             return "/TODO"
+        case .getMyActivities(let type):
+            switch type {
+            case .posts:
+                return "/activity/posts"
+            case .replies:
+                return "/activity/replies"
+            case .bookmarks:
+                return "/activity/bookmarks"
+            }
         }
     }
     
@@ -70,6 +85,8 @@ extension UserAPI: TargetType {
         case .resign:
             return .get
         case .modifyMemberInfo(_):
+            return .get
+        case .getMyActivities(_):
             return .get
         }
     }
@@ -98,6 +115,8 @@ extension UserAPI: TargetType {
             return .requestPlain
         case .modifyMemberInfo(_):
             return .requestPlain
+        case .getMyActivities(_):
+            return .requestPlain
         }
     }
     
@@ -105,13 +124,17 @@ extension UserAPI: TargetType {
         switch self {
         case .passwordChange(_), .resign, .modifyMemberInfo(_):
             return ["Authorization": "token_encoded"]
-        case .getUserInfo:
-            return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
-//            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+//        case .getUserInfo, .getMyActivities(_):
+//            return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
+////            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
         default:
             return nil
         }
         
+    }
+    
+    var authorizationType: AuthorizationType? {
+        return .bearer
     }
     
 }

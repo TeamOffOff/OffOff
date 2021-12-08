@@ -35,11 +35,12 @@ class SetShiftViewController: UIViewController {
         outterView.rx
             .tapGesture()
             .when(.recognized)
-            .subscribe(onNext: { _ in
-                self.editingCell?.isEditing.onNext(false)
-                self.editingCell!.backgroundColor = .white
-                self.calendar!.deselect(self.calendar!.selectedDate!)
-                self.dismiss(animated: true, completion: nil)
+            .withUnretained(self)
+            .subscribe(onNext: { (owner, _) in
+                owner.editingCell?.isEditing.onNext(false)
+                owner.editingCell!.backgroundColor = .white
+                owner.calendar!.deselect(owner.calendar!.selectedDate!)
+                owner.dismiss(animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
         
@@ -54,41 +55,41 @@ class SetShiftViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.date
-            .bind { date in
-                self.calendar!.select(date, scrollToDate: true)
+            .withUnretained(self)
+            .bind { (owner, date) in
+                owner.calendar!.select(date, scrollToDate: true)
                 
-                guard let cell = self.calendar!.cell(for: date, at: .current) as? ScheduleCalendarCell else {
+                guard let cell = owner.calendar!.cell(for: date, at: .current) as? ScheduleCalendarCell else {
                     return
                 }
-                self.customView.routineCollection.reloadData()
-                self.editingCell?.isEditing.onNext(false)
-                self.editingCell = cell
-                self.editingCell?.isEditing.onNext(true)
+                owner.customView.routineCollection.reloadData()
+                owner.editingCell?.isEditing.onNext(false)
+                owner.editingCell = cell
+                owner.editingCell?.isEditing.onNext(true)
             }
             .disposed(by: disposeBag)
         
         viewModel.dateText
-            .bind {
-                self.customView.dateLabel.text = $0
-            }
+            .bind(to: customView.dateLabel.rx.text)
             .disposed(by: disposeBag)
         
         // 새로운 시프트 저장처리
         viewModel.shiftSaved
-            .bind {
-                if $0 != nil {
+            .withUnretained(self)
+            .bind { (owner, savedShift) in
+                if savedShift != nil {
                     print("saved")
-                    self.editingCell?.savedShift.onNext($0)
-                    if self.isEditModeOn {
-                        if self.calendar!.selectedDate!.adjustDate(amount: 1, component: .day)!.day == 1 {
-                            self.editingCell?.isEditing.onNext(false)
-                            self.dismiss(animated: true, completion: nil)
+                    owner.editingCell?.savedShift.onNext(savedShift)
+                    if owner.isEditModeOn {
+                        if owner.calendar!.selectedDate!.adjustDate(amount: 1, component: .day)!.day == 1 {
+                            owner.editingCell?.isEditing.onNext(false)
+                            owner.dismiss(animated: true, completion: nil)
                         } else {
-                            self.viewModel.date.onNext(self.calendar!.selectedDate!.adjustDate(amount: 1, component: .day)!)
+                            owner.viewModel.date.onNext(owner.calendar!.selectedDate!.adjustDate(amount: 1, component: .day)!)
                         }
                     } else {
-                        self.editingCell?.isEditing.onNext(false)
-                        self.dismiss(animated: true, completion: nil)
+                        owner.editingCell?.isEditing.onNext(false)
+                        owner.dismiss(animated: true, completion: nil)
                     }
                 } else {
                     print("failed")
@@ -97,13 +98,14 @@ class SetShiftViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.shiftDeleted
-            .bind {
-                if $0 {
+            .withUnretained(self)
+            .bind { (owner, bool) in
+                if bool {
                     print("Deleted")
-                    self.editingCell?.savedShift.onNext(nil)
-                    self.editingCell?.isEditing.onNext(false)
-                    self.calendar!.deselect(self.calendar!.selectedDate!)
-                    self.dismiss(animated: true, completion: nil)
+                    owner.editingCell?.savedShift.onNext(nil)
+                    owner.editingCell?.isEditing.onNext(false)
+                    owner.calendar!.deselect(owner.calendar!.selectedDate!)
+                    owner.dismiss(animated: true, completion: nil)
                 }
             }
             .disposed(by: disposeBag)

@@ -9,10 +9,6 @@ import UIKit
 import RxSwift
 
 class PostView: UIScrollView {
-    var backgroundForIndicator = UIView().then {
-        $0.backgroundColor = .g4
-    }
-    
     var backgroundView = UIView().then {
         $0.backgroundColor = .g4
 //        $0.clipsToBounds = true
@@ -33,34 +29,32 @@ class PostView: UIScrollView {
         $0.contentMode = .scaleAspectFit
     }
     var authorLabel = UILabel().then {
-        $0.font = UIFont.preferredFont(forTextStyle: .body).bold()
+        $0.font = .defaulFont(size: 15, weight: .black)
         $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.text = "작성자"
         $0.textColor = .white
     }
     var dateLabel = UILabel().then {
-        $0.font = UIFont.preferredFont(forTextStyle: .caption1)
+        $0.font = .defaulFont(size: 12, weight: .regular)
         $0.adjustsFontForContentSizeCategory = true
         $0.textAlignment = .left
         $0.textColor = .gray
         $0.text = "2021년 11월 11일"
         $0.textColor = .white
     }
-    var likeButton = UIButton().then {
-        $0.setTitleColor(.g4, for: .normal)
-        $0.setTitle("ㅇ 공감", for: .normal)
-        $0.imageView?.contentMode = .scaleAspectFit
-        $0.titleLabel?.font = .defaultFont(size: 9, bold: true)
+    var likeButton = ButtonWithLeftIcon(frame: .zero, image: .LikeIconBold, title: "공감", iconPadding: 7.adjustedHeight, textPadding: 7.3.adjustedHeight, iconSize: CGSize(width: 11, height: 11).resized(basedOn: .height)).then {
+        $0.textLabel.textColor = .g4
+        $0.textLabel.font = .defaultFont(size: 12, bold: true)
         $0.backgroundColor = .g1
+        $0.tintColor = .g4
         $0.setCornerRadius(8.adjustedHeight)
     }
-    var scrapButton = UIButton().then {
-        $0.setTitleColor(.g4, for: .normal)
-        $0.setTitle("ㅇ 스크랩", for: .normal)
-        $0.imageView?.contentMode = .scaleAspectFit
-        $0.titleLabel?.font = .defaultFont(size: 9, bold: true)
+    var scrapButton = ButtonWithLeftIcon(frame: .zero, image: .ScrapIconBold, title: "스크랩", iconPadding: 7.adjustedHeight, textPadding: 7.3.adjustedHeight, iconSize: CGSize(width: 11, height: 11).resized(basedOn: .height)).then {
+        $0.textLabel.textColor = .g4
+        $0.textLabel.font = .defaultFont(size: 12, bold: true)
         $0.backgroundColor = .g1
+        $0.tintColor = .g4
         $0.setCornerRadius(8.adjustedHeight)
     }
     var contentTextView = UITextView().then {
@@ -112,6 +106,10 @@ class PostView: UIScrollView {
         $0.label.textColor = .white
         $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .LIKEICON
+        $0.iconImageView.snp.updateConstraints {
+            $0.width.height.equalTo(10.adjustedHeight)
+        }
+        $0.iconImageView.contentMode = .scaleAspectFit
         $0.iconImageView.tintColor = .white
         $0.label.text = "0"
     }
@@ -119,13 +117,17 @@ class PostView: UIScrollView {
         $0.label.textColor = .white
         $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .REPLYICON
+        $0.iconImageView.snp.updateConstraints {
+            $0.width.height.equalTo(10.adjustedHeight)
+        }
+        $0.iconImageView.contentMode = .scaleAspectFit
         $0.iconImageView.tintColor = .white
         $0.label.text = "0"
     }
     var scrapLabel = TextWithIconView().then {
         $0.label.textColor = .white
         $0.label.font = .defaultFont(size: 12)
-        $0.iconImageView.image = .SCRAPICOn
+        $0.iconImageView.image = .ScrapIcon
         $0.iconImageView.tintColor = .white
         $0.label.text = "0"
     }
@@ -138,7 +140,6 @@ class PostView: UIScrollView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(backgroundForIndicator)
         self.addSubview(backgroundView)
         self.addSubview(textContainerView)
         self.textContainerView.addSubview(contentTextView)
@@ -161,12 +162,6 @@ class PostView: UIScrollView {
     }
     
     func makeView() {
-        backgroundForIndicator.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.width.equalToSuperview()
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(backgroundView.snp.centerY)
-        }
         backgroundView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.width.equalToSuperview()
@@ -212,16 +207,18 @@ class PostView: UIScrollView {
             $0.left.equalTo(profileImageView)
         }
         likeButton.snp.makeConstraints {
+            let likeButtonSize = CGSize(width: 52, height: 23).resized(basedOn: .height)
             $0.top.equalTo(activityStack.snp.bottom).offset(8.adjustedHeight)
             $0.left.equalTo(profileImageView)
-            $0.width.equalTo(43.adjustedWidth)
-            $0.height.equalTo(20.adjustedHeight)
+            $0.width.equalTo(likeButtonSize.width)
+            $0.height.equalTo(likeButtonSize.height)
         }
         scrapButton.snp.makeConstraints {
+            let scrapButtonSize = CGSize(width: 66, height: 23).resized(basedOn: .height)
             $0.top.equalTo(likeButton)
             $0.left.equalTo(likeButton.snp.right).offset(6.adjustedWidth)
-            $0.width.equalTo(51.adjustedWidth)
-            $0.height.equalTo(20.adjustedHeight)
+            $0.width.equalTo(scrapButtonSize.width)
+            $0.height.equalTo(scrapButtonSize.height)
         }
         
         repliesTableView.snp.makeConstraints {
@@ -234,9 +231,14 @@ class PostView: UIScrollView {
     
     func setupView(post: PostModel) {
         titleLabel.text = post.title
-        authorLabel.text = post.author.nickname
         dateLabel.text = post.date
         contentTextView.text = post.content
+        if let author = post.author {
+            authorLabel.text = author.nickname
+        } else {
+            authorLabel.text = "알 수 없음"
+        }
+        
     }
 }
 
@@ -279,10 +281,10 @@ class ImageTableViewCell: UITableViewCell {
     private func setData() {
         disposeBag = DisposeBag()
         
-        self.image
-            .bind { image in
+        image
+            .bind { [weak self] image in
                 if image != nil {
-                    self.imageView?.image = image!
+                    self?.imageView?.image = image!
                 }
             }
             .disposed(by: disposeBag)

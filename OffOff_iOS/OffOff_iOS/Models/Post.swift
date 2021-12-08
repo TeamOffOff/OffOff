@@ -12,13 +12,40 @@ struct PostList: Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(lastPostId, forKey: .lastPostId)
-        try container.encode(lastPostId, forKey: .postList)
+        try container.encode(postList, forKey: .postList)
+    }
+}
+
+struct MyPostList: Codable {
+    var postList: [PostModel]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(postList, forKey: .postList)
+    }
+}
+
+struct MyReplyList: Codable {
+    var repliesList: [PostModel]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(repliesList, forKey: .repliesList)
+    }
+}
+
+struct MyBookmarksList: Codable {
+    var bookmarksList: [PostModel]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(bookmarksList, forKey: .bookmarksList)
     }
 }
 
 struct Author: Codable {
     var _id: String?
-    var nickname: String
+    var nickname: String?
     var type: String?
     var profileImage: [ImageObject]
     
@@ -34,7 +61,7 @@ struct Author: Codable {
 struct PostModel: Codable {
     var _id: String?
     var boardType: String
-    var author: Author
+    var author: Author?
     var date: String
     var title: String
     var content: String

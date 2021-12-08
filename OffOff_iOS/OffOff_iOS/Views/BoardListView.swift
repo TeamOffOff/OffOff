@@ -47,25 +47,37 @@ final class BoardListView: UIView {
         $0.bottomRoundCorner(radius: 30.adjustedHeight)
         $0.addSubview(greetingLabel)
         $0.addSubview(nicknameLabel)
+        
         $0.addSubview(menuButton)
+        menuButton.isHidden = true
         $0.addSubview(messagesButton)
+        messagesButton.isHidden = true
         $0.addSubview(scrapsButton)
     }
     
     var boardSearchView = UITextField().then {
         $0.backgroundColor = .w2
-        $0.placeholder = "다른 게시판을 검색해보세요"
+        $0.placeholder = "통합 검색"
         $0.font = .defaultFont(size: 15, bold: true)
         $0.setCornerRadius(22.adjustedHeight)
-        
-        $0.leftImage(.SEARCHIMAGE.resize(to: CGSize(width: 18.0.adjustedWidth, height: 18.0.adjustedHeight)), imageWidth: 18.0.adjustedWidth, padding: 24.adjustedWidth)
+        $0.clearButtonMode = .whileEditing
+        $0.autocorrectionType = .no
+        $0.autocapitalizationType = .none
+        $0.tintColor = .g4
+        $0.leftImage(.SEARCHIMAGE.resize(to: CGSize(width: 18.0, height: 18.0).resized(basedOn: .height)), imageWidth: 18.0.adjustedWidth, padding: 24.adjustedWidth)
+    }
+    
+    var postListTableView = UITableView().then {
+        $0.backgroundColor = .clear
+        $0.register(PostPreviewCell.self, forCellReuseIdentifier: PostPreviewCell.identifier)
+        $0.isHidden = true
     }
     
     var boardCollectionViewFlowLayout = UICollectionViewFlowLayout()
     lazy var boardCollectionView = UICollectionView(frame: .zero, collectionViewLayout: boardCollectionViewFlowLayout).then {
         $0.backgroundColor = .white
         boardCollectionViewFlowLayout.scrollDirection = .vertical
-//        boardCollectionViewFlowLayout.minimumLineSpacing = 18.0.adjustedHeight
+        boardCollectionViewFlowLayout.minimumLineSpacing = 18.0.adjustedHeight
         boardCollectionViewFlowLayout.minimumInteritemSpacing = 0.0.adjustedWidth
         $0.register(BoardCollectionViewCell.self, forCellWithReuseIdentifier: BoardCollectionViewCell.identifier)
     }
@@ -76,6 +88,7 @@ final class BoardListView: UIView {
         self.addSubview(upperView)
         self.addSubview(boardSearchView)
         self.addSubview(boardCollectionView)
+        self.addSubview(postListTableView)
         
         makeView()
     }
@@ -111,15 +124,17 @@ final class BoardListView: UIView {
             $0.top.equalTo(menuButton.snp.bottom).offset(20.adjustedHeight)
         }
         scrapsButton.snp.makeConstraints {
-            $0.width.equalTo(42.adjustedWidth)
-            $0.height.equalTo(30.adjustedHeight)
+            let scrapsButtonSize = CGSize(width: 42, height: 30).resized(basedOn: .width)
+            $0.width.equalTo(scrapsButtonSize.width)
+            $0.height.equalTo(scrapsButtonSize.height)
             $0.right.equalTo(menuButton)
             $0.top.equalTo(messagesButton.snp.bottom).offset(5.adjustedHeight)
         }
         
         boardSearchView.snp.makeConstraints {
-            $0.height.equalTo(60.adjustedHeight)
-            $0.width.equalTo(328.adjustedWidth)
+            let boardSearchViewSize = CGSize(width: 328, height: 60).resized(basedOn: .width)
+            $0.height.equalTo(boardSearchViewSize.height)
+            $0.width.equalTo(boardSearchViewSize.width)
             $0.centerY.equalTo(upperView.snp.bottom)
             $0.centerX.equalToSuperview()
         }
@@ -127,6 +142,13 @@ final class BoardListView: UIView {
         boardCollectionView.snp.makeConstraints {
             $0.top.equalTo(boardSearchView.snp.bottom).offset(19.adjustedHeight)
             $0.left.right.equalToSuperview().inset(54.adjustedWidth)
+            $0.bottom.equalToSuperview()
+        }
+        
+        postListTableView.snp.makeConstraints {
+            $0.top.equalTo(boardSearchView.snp.bottom).offset(19.adjustedHeight)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(350.adjustedWidth)
             $0.bottom.equalToSuperview()
         }
     }
@@ -137,21 +159,22 @@ final class BoardCollectionViewCell: UICollectionViewCell {
     
     var boardView = UIView().then {
         $0.backgroundColor = .w2
-        $0.setCornerRadius(14.adjustedHeight)
+        $0.setCornerRadius(14.adjustedWidth)
     }
     var titleLabel = UILabel().then {
-        $0.font = .defaultFont(size: 10)
+        $0.font = .defaultFont(size: 12)
     }
+    let badgeSize = CGSize(width: 10, height: 10).resized(basedOn: .width)
     var badge = UIView().then {
         $0.backgroundColor = .g4
-        $0.setCornerRadius(10.adjustedHeight)
+        $0.setCornerRadius(10.adjustedWidth)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.contentView.addSubview(boardView)
         boardView.addSubview(titleLabel)
+        self.contentView.addSubview(boardView)
         self.contentView.addSubview(badge)
         
         makeView()
@@ -171,8 +194,10 @@ final class BoardCollectionViewCell: UICollectionViewCell {
             $0.bottom.equalToSuperview().inset(8.adjustedHeight)
         }
         badge.snp.makeConstraints {
-            $0.left.equalTo(boardView.snp.right).inset(10.adjustedWidth)
-            $0.bottom.equalTo(boardView.snp.top).inset(10.adjustedHeight)
+            $0.centerY.equalTo(boardView.snp.top)
+            $0.centerX.equalTo(boardView.snp.right)
+//            $0.left.equalTo(boardView.snp.right).inset(badgeSize.width)
+//            $0.bottom.equalTo(boardView.snp.top).inset(badgeSize.height)
             $0.width.height.equalTo(20.adjustedWidth)
         }
     }

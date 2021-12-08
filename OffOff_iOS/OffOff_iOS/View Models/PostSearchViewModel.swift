@@ -27,7 +27,8 @@ class PostSearchViewModel {
     ) {
         searchedList = searchingText
             .skip(1)
-            .flatMap { key -> Observable<[PostModel]> in
+            .flatMap { [weak self] key -> Observable<[PostModel]> in
+                guard let self = self else { return Observable.just([]) }
                 if key == "" {
                     return Observable.just([])
                 }

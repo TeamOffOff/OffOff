@@ -47,40 +47,41 @@ class ScheduleViewController: UIViewController {
         
     // bind outputs {
         viewModel.isEditShiftButtonTapped
-            .bind {
+            .bind { [weak self] in
                 if $0 {
                     let vc = EditShiftViewController()
                     vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: true, completion: nil)
+                    self?.present(vc, animated: true, completion: nil)
                 }
             }
             .disposed(by: disposeBag)
         
         viewModel.isEditModeButtonTapped
-            .bind {
-                if $0 {
+            .withUnretained(self)
+            .bind { (owner, bool) in
+                if bool {
                     let controller = UIAlertController(title: "근무편집모드를 실행할까요?", message: nil, preferredStyle: .actionSheet)
                     let yes = UIAlertAction(title: "실행", style: .default) {_ in
                         controller.dismiss(animated: true) {
-                            guard let cell = self.calendar.cell(for: self.calendar.currentPage.startOfMonth, at: .current) as? ScheduleCalendarCell else {
+                            guard let cell = owner.calendar.cell(for: owner.calendar.currentPage.startOfMonth, at: .current) as? ScheduleCalendarCell else {
                                 return
                             }
-                            self.calendar.select(self.calendar.currentPage.startOfMonth)
-                            self.setShiftVC = SetShiftViewController()
-                            self.setShiftVC.isEditModeOn = true
-                            self.setShiftVC.editingCell = cell
-                            self.setShiftVC.editingCell?.isEditing.onNext(true)
-                            self.setShiftVC.calendar = self.calendar
-                            self.setShiftVC.modalTransitionStyle = .coverVertical
-                            self.setShiftVC.modalPresentationStyle = .overFullScreen
-                            self.present(self.setShiftVC, animated: true, completion: nil)
-                            self.setShiftVC.viewModel.date.onNext(self.calendar.currentPage.startOfMonth)
+                            owner.calendar.select(owner.calendar.currentPage.startOfMonth)
+                            owner.setShiftVC = SetShiftViewController()
+                            owner.setShiftVC.isEditModeOn = true
+                            owner.setShiftVC.editingCell = cell
+                            owner.setShiftVC.editingCell?.isEditing.onNext(true)
+                            owner.setShiftVC.calendar = owner.calendar
+                            owner.setShiftVC.modalTransitionStyle = .coverVertical
+                            owner.setShiftVC.modalPresentationStyle = .overFullScreen
+                            owner.present(owner.setShiftVC, animated: true, completion: nil)
+                            owner.setShiftVC.viewModel.date.onNext(owner.calendar.currentPage.startOfMonth)
                         }
                     }
                     let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
                     controller.addAction(yes)
                     controller.addAction(cancel)
-                    self.present(controller, animated: true, completion: nil)
+                    owner.present(controller, animated: true, completion: nil)
                 }
             }
             .disposed(by: disposeBag)
@@ -143,7 +144,7 @@ extension ScheduleViewController: FSCalendarDataSource, FSCalendarDelegate {
 
 extension FSCalendar {
     func reloadData(completion: @escaping () -> ()) {
-        UIView.animate(withDuration: 0, animations: { self.reloadData() })
+        UIView.animate(withDuration: 0, animations: { [weak self] in self?.reloadData() })
                     { _ in completion() }
     }
 }

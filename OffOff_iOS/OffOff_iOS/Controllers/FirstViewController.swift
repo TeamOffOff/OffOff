@@ -34,38 +34,30 @@ class FirstViewController: UIViewController {
     }
     
     private func loginCheck() {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate
         if let token = KeyChainController.shared.read(Constants.ServiceString, account: "AccessToken") {
             print("Auto logined... token:", token)
             UserServices.getUserInfo()
                 .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
                 .observe(on: MainScheduler.instance)
-                .bind {
-                    if $0 != nil {
-                        Constants.loginUser = $0
-                        let vc = TabBarController()
-                        vc.modalPresentationStyle = .fullScreen
-                        self.present(vc, animated: false)
+                .withUnretained(self)
+                .bind { (owner, info) in
+                    var targetVC: UIViewController?
+                    
+                    if info != nil {
+                        Constants.loginUser = info
+                        targetVC = TabBarController()
+                    } else {
+                        targetVC = LoginViewController()
                     }
-                    let vc = LoginViewController()
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: false)
+                    targetVC!.modalPresentationStyle = .fullScreen
+                    sceneDelegate.window?.rootViewController = targetVC!
                 }
                 .disposed(by: disposeBag)
         } else {
             let vc = LoginViewController()
             vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: false)
+            sceneDelegate.window?.rootViewController = vc
         }
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

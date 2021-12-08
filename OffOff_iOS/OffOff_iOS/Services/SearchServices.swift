@@ -17,9 +17,9 @@ class SearchServices {
     static func searchPosts(in boardType: String, key: String, standardId: String?) -> Observable<PostList?> {
         SearchServices.provider
             .rx.request(.searchInBoard(boardType: boardType, key: key, standardId: standardId))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                print($0)
                 if $0.statusCode == 200 {
                     let postList = try JSONDecoder().decode(PostList.self, from: $0.data)
                     return postList
@@ -28,5 +28,20 @@ class SearchServices {
                 }
             }
             .catchAndReturn(nil)
+    }
+    
+    static func totalSearch(key: String, lastPostId: String?) -> Observable<PostList?> {
+        SearchServices.provider
+            .rx.request(.totalSearch(key: key, lastPostId: lastPostId))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    let postList = try JSONDecoder().decode(PostList.self, from: $0.data)
+                    return postList
+                } else {
+                    return nil
+                }
+            }
     }
 }

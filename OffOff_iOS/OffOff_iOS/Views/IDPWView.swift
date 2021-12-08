@@ -26,7 +26,7 @@ class IDPWView: UIView {
     var idConfirmLabel = UILabel().then {
         $0.font = .defaultFont(size: 9.0)
         $0.textColor = .w5
-        $0.text = "사용가능한 아이디입니다."
+        $0.text = ""
     }
 
     var passwordTextField = UITextField().then {

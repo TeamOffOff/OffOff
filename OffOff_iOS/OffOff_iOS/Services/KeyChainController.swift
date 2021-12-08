@@ -70,4 +70,12 @@ class KeyChainController {
             return nil
         }
     }
+    
+    func getAuthorizationString(service: String, account: String) -> String? {
+        if let accessToken = self.read(service, account: account) {
+            return "\(accessToken)"
+        } else {
+            return nil
+        }
+    }
 }

@@ -25,32 +25,32 @@ class PostPreviewCell: UITableViewCell {
         $0.adjustsFontForContentSizeCategory = true
     }
     var previewTextView = UILabel().then {
-        $0.font = .defaultFont(size: 10.5)
+        $0.font = .defaultFont(size: 12)
         $0.textColor = .w5
         $0.adjustsFontForContentSizeCategory = true
     }
     var dateAuthorLabel = UILabel().then {
         $0.textColor = .w5
-        $0.font = .defaultFont(size: 10.5)
+        $0.font = .defaultFont(size: 12)
         $0.textAlignment = .left
     }
     var pictureLabel = TextWithIconView().then {
         $0.label.textColor = .w5
-        $0.label.font = .defaultFont(size: 10.5)
+        $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .PICTUREICON
         $0.iconImageView.tintColor = .w5
         $0.label.text = "1"
     }
     var likeLabel = TextWithIconView().then {
         $0.label.textColor = .w5
-        $0.label.font = .defaultFont(size: 10.5)
+        $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .LIKEICON
         $0.iconImageView.tintColor = .w5
         $0.label.text = "0"
     }
     var commentLabel = TextWithIconView().then {
         $0.label.textColor = .w5
-        $0.label.font = .defaultFont(size: 10.5)
+        $0.label.font = .defaultFont(size: 12)
         $0.iconImageView.image = .REPLYICON
         $0.iconImageView.tintColor = .w5
         $0.label.text = "0"
@@ -111,19 +111,19 @@ class PostPreviewCell: UITableViewCell {
             $0.right.equalTo(imagePreview.snp.left).offset(9.adjustedWidth)
         }
         dateAuthorLabel.snp.makeConstraints {
-            $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
+            $0.top.equalTo(previewTextView.snp.bottom).offset(3.adjustedHeight)
             $0.left.equalToSuperview().inset(26.adjustedWidth)
-            $0.bottom.equalToSuperview().inset(15.adjustedHeight)
+            $0.bottom.equalToSuperview().inset(10.adjustedHeight)
         }
         pictureLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
             $0.height.equalTo(12.adjustedHeight)
-            $0.right.equalTo(likeLabel.iconImageView.snp.left).offset(-2.0)
+            $0.right.equalTo(likeLabel.iconImageView.snp.left).offset(-5)
         }
         likeLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
             $0.height.equalTo(12.adjustedHeight)
-            $0.right.equalTo(commentLabel.iconImageView.snp.left).offset(-2.0)
+            $0.right.equalTo(commentLabel.iconImageView.snp.left).offset(-5)
         }
         commentLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
@@ -140,32 +140,39 @@ class PostPreviewCell: UITableViewCell {
         disposeBag = DisposeBag()
         
         postModel
+            .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
-            .bind { post in
+            .withUnretained(self)
+            .bind { (owner, post) in
                 if post!.image.isEmpty {
-                    self.imagePreview.snp.updateConstraints {
+                    owner.imagePreview.snp.updateConstraints {
                         $0.width.equalTo(0)
                     }
-                    self.pictureLabel.isHidden = true
+                    owner.pictureLabel.isHidden = true
                 } else {
-                    self.imagePreview.snp.updateConstraints {
+                    owner.imagePreview.snp.updateConstraints {
                         $0.width.equalTo(78.adjustedWidth)
                     }
-                    self.imagePreview.image = post!.image.first!.body.toImage()
-                    self.pictureLabel.isHidden = false
-                    self.pictureLabel.label.text = "\(post!.image.count)"
+                    owner.imagePreview.image = post!.image.first!.body.toImage()
+                    owner.pictureLabel.isHidden = false
+                    owner.pictureLabel.label.text = "\(post!.image.count)"
                 }
                 
-                self.titleLabel.text = post!.title
-                self.previewTextView.text = post!.content
+                owner.titleLabel.text = post!.title
+                owner.previewTextView.text = post!.content
                 
-                self.likeLabel.label.text = "\(post!.likes.count)"
-                self.commentLabel.label.text = "\(post!.replyCount)"
+                owner.likeLabel.label.text = "\(post!.likes.count)"
+                owner.commentLabel.label.text = "\(post!.replyCount)"
                 
                 
                 let postDate = post!.date.toDate()!
                 
-                self.dateAuthorLabel.text = "\(postDate.toFormedString()) | \(post!.author.nickname)"
+                if let author = post!.author {
+                    owner.dateAuthorLabel.text = "\(postDate.toFormedString()) | \(author.nickname ?? "알 수 없음")"
+                } else {
+                    owner.dateAuthorLabel.text = "\(postDate.toFormedString()) | \("알 수 없음")"
+                }
+                
             }
             .disposed(by: disposeBag)
     }

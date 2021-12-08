@@ -11,28 +11,39 @@ import RxCocoa
 final class IDPWViewModel {
     
     // Outputs
-    let isIdConfirmed: Driver<Bool>
-    let isPasswordComfirmed: Driver<Bool>
-    let isPasswordRepeatComfirmed: Driver<Bool>
+    let isIdConfirmed: Observable<IDConfirmType>
+    let isPasswordComfirmed: Observable<Bool>
+    let isPasswordRepeatComfirmed: Observable<Bool>
     
-    let isNextEnabled: Driver<Bool>
-    let isValidatedToProgress: Driver<Bool>
+    let isNextEnabled: Observable<Bool>
+    let isValidatedToProgress: Observable<Bool>
     
     init(
         input: (
-            idText: Driver<String>,
-            passwordText: Driver<String>,
-            passwordRepeatText: Driver<String>,
-            nextButtonTap: Signal<()>
+            idText: Observable<String>,
+            passwordText: Observable<String>,
+            passwordRepeatText: Observable<String>,
+            nextButtonTap: ControlEvent<()>
         )
     ) {
         
         // Subscription이 없기 때문에 dispose가 필요 없음
         isIdConfirmed = input.idText
-            .debounce(.milliseconds(5)) // 0.5초 딜레이 주기
-            .flatMapLatest { id in
-                return UserServices.idDuplicationCheck(id: id)
-                    .asDriver(onErrorJustReturn: false)
+            .debounce(.milliseconds(500), scheduler: ConcurrentDispatchQueueScheduler(qos: .background))
+            .flatMapLatest { id -> Observable<IDConfirmType> in
+                if idValidation(id) {
+                    return UserServices.idDuplicationCheck(id: id)
+                        .map {
+                            if $0 {
+                                return IDConfirmType.okay
+                            } else {
+                                return IDConfirmType.duplicated
+                            }
+                        }
+                } else {
+                    return Observable.just(IDConfirmType.ruleNotSatisfied)
+                }
+                
             }
         
         isPasswordComfirmed = input.passwordText
@@ -40,29 +51,37 @@ final class IDPWViewModel {
                 return passwordValidation(password: password)
             }
         
-        isPasswordRepeatComfirmed = Driver.combineLatest(input.passwordText, input.passwordRepeatText, resultSelector: passwordRepeatValidation)
+        isPasswordRepeatComfirmed = Observable.combineLatest(input.passwordText, input.passwordRepeatText, resultSelector: passwordRepeatValidation)
         
-        isNextEnabled = Driver.combineLatest(
+        isNextEnabled = Observable.combineLatest(
             isIdConfirmed,
             isPasswordComfirmed,
             isPasswordRepeatComfirmed
         )   { username, password, repeatPassword in
-            username && password && repeatPassword
+            if username == .okay {
+                return password && repeatPassword
+            } else {
+                return false
+            }
         }
         .distinctUntilChanged()
         
-        let enabledAndValues = Driver.combineLatest(isNextEnabled, input.idText, input.passwordRepeatText) { (enabled: $0, id: $1, password: $2) }
+        let enabledAndValues = Observable.combineLatest(isNextEnabled, input.idText, input.passwordRepeatText) { (enabled: $0, id: $1, password: $2) }
+        
         isValidatedToProgress = input.nextButtonTap.withLatestFrom(enabledAndValues)
-            .debug()
-            .flatMapLatest { pair in
+            .map { pair in
                 if pair.enabled {
                     SharedSignUpModel.model._id = pair.id
                     SharedSignUpModel.model.password = pair.password
                 }
-                return Driver.just(pair.enabled)
+                return pair.enabled
             }
             
     }
+}
+
+private func idValidation(_ id: String?) -> Bool {
+    Constants.isValidString(str: id, regEx: Constants.USERID_RULE)
 }
 
 private func passwordValidation(password: String?) -> Bool {
@@ -71,4 +90,10 @@ private func passwordValidation(password: String?) -> Bool {
 
 private func passwordRepeatValidation(password: String?, passwordRepeat: String?) -> Bool {
     passwordValidation(password: password) && password == passwordRepeat
+}
+
+enum IDConfirmType {
+    case duplicated
+    case okay
+    case ruleNotSatisfied
 }

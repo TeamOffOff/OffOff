@@ -16,6 +16,7 @@ class ReplyServices {
     static func fetchReplies(of postId: String, in boardType: String) -> Observable<[Reply]> {
         return ReplyServices.provider
             .rx.request(.getReplies(postId, boardType))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -35,6 +36,7 @@ class ReplyServices {
     static func writeReply(reply: WritingReply) -> Observable<[Reply]?> {
         ReplyServices.provider
             .rx.request(.writeReply(reply: reply))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -53,6 +55,7 @@ class ReplyServices {
     static func likeReply(reply: PostActivity) -> Observable<Reply?> {
         ReplyServices.provider
             .rx.request(.likeReply(reply: reply))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -68,6 +71,7 @@ class ReplyServices {
     static func deleteReply(reply: DeletingReply) -> Observable<[Reply]?> {
         ReplyServices.provider
             .rx.request(.deleteReply(reply: reply))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {

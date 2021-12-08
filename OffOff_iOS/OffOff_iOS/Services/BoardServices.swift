@@ -24,6 +24,7 @@ public class BoardServices {
     static func fetchBoardList() -> Observable<BoardList?> {
         BoardServices.provider
             .rx.request(.getBoardList)
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
                 if $0.statusCode == 200 {
@@ -41,7 +42,6 @@ public class BoardServices {
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .asObservable()
             .map {
-                print(#fileID, #function, #line, $0.statusCode)
                 if $0.statusCode == 200 {
                     do {
                         let postList = try JSONDecoder().decode(PostList.self, from: $0.data)

@@ -37,15 +37,16 @@ class NewPostView: UIView {
     
     var contentTextView = UITextView().then {
         $0.font = .defaultFont(size: 14)
-        $0.textColor = .white
         $0.backgroundColor = .g4
         $0.isScrollEnabled = false
         $0.textContainerInset = .zero
         $0.textContainer.lineFragmentPadding = 0
+        $0.text = "내용을 입력해주세요."
+        $0.textColor = .w3
     }
     
     var addPictureButton = UIButton().then {
-        $0.setImage(.CAMERA.resize(to: CGSize(width: 13.94.adjustedWidth, height: 13.71.adjustedHeight)), for: .normal)
+        $0.setImage(.CAMERA.resize(to: CGSize(width: 13.94.adjustedHeight, height: 13.71.adjustedHeight)), for: .normal)
         $0.imageView?.tintColor = .g4
         $0.imageView?.contentMode = .center
         $0.backgroundColor = .w3
@@ -125,8 +126,9 @@ class AddingImagesCollectionViewCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFill
     }
     var removeButton = UIButton().then {
-        $0.setImage(UIImage(named: "X")!.resize(to: CGSize(width: 7.25.adjustedWidth, height: 8.2.adjustedHeight)), for: .normal)
+        $0.setImage(UIImage(named: "X")!.resize(to: CGSize(width: 7.25.adjustedHeight, height: 8.2.adjustedHeight)), for: .normal)
         $0.backgroundColor = .white
+        $0.tintColor = .g4
         $0.setCornerRadius(8.adjustedHeight)
     }
     
@@ -138,13 +140,13 @@ class AddingImagesCollectionViewCell: UICollectionViewCell {
         
         imageView.snp.makeConstraints {
             $0.left.bottom.equalToSuperview()
-            $0.width.height.equalTo(60.adjustedWidth)
+            $0.width.height.equalTo(60.adjustedHeight)
         }
         
         removeButton.snp.makeConstraints {
             $0.centerY.equalTo(imageView.snp.top)
             $0.centerX.equalTo(imageView.snp.right)
-            $0.width.height.equalTo(16.adjustedWidth)
+            $0.width.height.equalTo(16.adjustedHeight)
         }
         
         bindButton()
@@ -162,8 +164,10 @@ class AddingImagesCollectionViewCell: UICollectionViewCell {
     func bindButton() {
         disposeBag = DisposeBag()
         self.removeButton.rx.tap
-            .bind {
-                self.deletingAction(self.row)
+            .bind { [weak self] in
+                if let self = self {
+                    self.deletingAction(self.row)
+                }
             }
             .disposed(by: disposeBag)
     }

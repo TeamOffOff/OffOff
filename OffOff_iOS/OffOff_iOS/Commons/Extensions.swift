@@ -17,7 +17,7 @@ protocol ViewModelType {
     associatedtype Dependency
     associatedtype Input
     associatedtype Output
-
+    
     var dependency: Dependency { get }
     var disposeBag: DisposeBag { get set }
     
@@ -301,13 +301,18 @@ extension UIImage {
         return self.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
     }
     
-    func resize(to size: CGSize) -> UIImage {
+    func resize(to size: CGSize, isAlwaysTemplate: Bool = true) -> UIImage {
         let render = UIGraphicsImageRenderer(size: size)
         let renderImage = render.image { context in
             self.draw(in: CGRect(origin: .zero, size: size))
         }
         
-        return renderImage
+        if isAlwaysTemplate {
+            return renderImage.withRenderingMode(.alwaysTemplate)
+        } else {
+            return renderImage
+        }
+        
     }
     
     static var DEFAULT_PROFILE = UIImage(named: "default profile")
@@ -324,30 +329,11 @@ extension UIImage {
         return UIImage(systemName: "xmark.circle.fill")!
     }
     
-    static let ICON_USER_GRAY = UIImage.fontAwesomeIcon(name: .user, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_LOCK_GRAY = UIImage.fontAwesomeIcon(name: .lock, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_AT_GRAY = UIImage.fontAwesomeIcon(name: .at, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_CHECKCIRCLE_GRAY = UIImage.fontAwesomeIcon(name: .checkCircle, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_USER_MAINCOLOR = UIImage.fontAwesomeIcon(name: .user, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_LOCK_MAINCOLOR = UIImage.fontAwesomeIcon(name: .lock, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_AT_MAINCOLOR = UIImage.fontAwesomeIcon(name: .at, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_CHECKCIRCLE_MAINCOLOR = UIImage.fontAwesomeIcon(name: .checkCircle, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_EXCLAMATION_RED = UIImage.fontAwesomeIcon(name: .exclamation, style: .solid, textColor: .systemRed, size: Constants.ICON_SIZE)
-    static let ICON_BIRTHDAY_GRAY = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_BIRTHDAY_MAINCOLOR = UIImage.fontAwesomeIcon(name: .birthdayCake, style: .solid, textColor: .mainColor, size: Constants.ICON_SIZE)
-    static let ICON_LIKES_RED = UIImage.fontAwesomeIcon(name: .thumbsUp, style: .regular, textColor: .systemRed, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_COMMENT_BLUE = UIImage.fontAwesomeIcon(name: .commentAlt, style: .regular, textColor: .systemBlue, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_SCRAP_YELLOW = UIImage.fontAwesomeIcon(name: .star, style: .regular, textColor: .systemYellow, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_SEARCH_GRAY = UIImage.fontAwesomeIcon(name: .search, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_REPORT_GRAY = UIImage.fontAwesomeIcon(name: .exclamationCircle, style: .solid, textColor: .systemGray, size: Constants.ICON_SIZE)
-    static let ICON_WRITE_GRAY = UIImage.fontAwesomeIcon(name: .pen, style: .solid, textColor: .systemGray, size: Constants.BUTTON_ICON_SIZE)
-    static let ICON_X_WHITE = UIImage.fontAwesomeIcon(name: .times, style: .solid, textColor: .white, size: Constants.ICON_SIZE)
-    
     static let LEFTARROW = UIImage(named: "LeftArrow")!
     static let CAMERA = UIImage(named: "CameraImage")!.withRenderingMode(.alwaysTemplate)
     static let MOREICON = UIImage(named: "MoreIcon")!.withRenderingMode(.alwaysTemplate)
     static let SEARCHIMAGE = UIImage(named: "SearchImage")!
-
+    
     static let DefaultPostProfileImage = UIImage(named: "DefaultPostProfileImage")!
     static let DefaultReplyProfileImage = UIImage(named: "DefaultReplyProfileImage")!
     static let SubReplyArrow = UIImage(named: "SubReplyArrow")!
@@ -355,7 +341,7 @@ extension UIImage {
     static let LIKEICON = UIImage(named: "LikeIcon")!.withRenderingMode(.alwaysTemplate)
     static let REPLYICON = UIImage(named: "ReplyIcon")!.withRenderingMode(.alwaysTemplate)
     static let PICTUREICON = UIImage(named: "PictureIcon")!.withRenderingMode(.alwaysTemplate)
-    static let SCRAPICOn = UIImage(named: "ScrapIcon")!.withRenderingMode(.alwaysTemplate)
+    static let ScrapIcon = UIImage(named: "ScrapIcon")!.withRenderingMode(.alwaysTemplate)
     static let LikeIconFill = UIImage(named: "LikeIconFill")!.withRenderingMode(.alwaysTemplate)
     
     static let HOMEICON = UIImage(named: "HomeIcon")!
@@ -363,6 +349,8 @@ extension UIImage {
     static let CALENDARICON = UIImage(named: "CalendarIcon")!
     static let BOARDICON = UIImage(named: "BoardIcon")!
     static let PERSONICON = UIImage(named: "PersonIcon")!
+    static let LikeIconBold = UIImage(named: "LikeIconBold")!.withRenderingMode(.alwaysTemplate)
+    static let ScrapIconBold = UIImage(named: "ScrapIconBold")!.withRenderingMode(.alwaysTemplate)
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)
@@ -397,21 +385,6 @@ extension TextField {
         self.iconImage = iconImage
         self.lineColor = .gray
     }
-    
-    func setTextFieldFail(errorMessage: String) {
-        self.errorMessage = errorMessage
-        self.iconImage = .ICON_EXCLAMATION_RED
-    }
-    
-    func setTextFieldVerified() {
-        self.errorMessage = nil
-        self.iconImage = .ICON_CHECKCIRCLE_MAINCOLOR
-        self.lineColor = .mainColor
-    }
-    
-    func isVerified() -> Bool {
-        return self.iconImage == .ICON_CHECKCIRCLE_MAINCOLOR
-    }
 }
 
 extension UIBarButtonItem {
@@ -436,18 +409,18 @@ extension UIView {
                        delay: 0,
                        options: .curveLinear,
                        animations: { [weak self] in
-                        self?.transform = CGAffineTransform.init(scaleX: 0.95, y: 0.95)
-                       }) {  (done) in
+            self?.transform = CGAffineTransform.init(scaleX: 0.95, y: 0.95)
+        }) {  (done) in
             UIView.animate(withDuration: 0.05,
                            delay: 0,
                            options: .curveLinear,
                            animations: { [weak self] in
-                            self?.transform = CGAffineTransform.init(scaleX: 1, y: 1)
-                           }) { [weak self] (_) in
+                self?.transform = CGAffineTransform.init(scaleX: 1, y: 1)
+            }) { [weak self] (_) in
                 self?.isUserInteractionEnabled = true
                 completionBlock()
             }
-                       }
+        }
     }
 }
 
@@ -456,19 +429,29 @@ extension UIFont {
         let descriptor = fontDescriptor.withSymbolicTraits(traits)
         return UIFont(descriptor: descriptor!, size: 0) //size 0 means keep the size as it is
     }
-
+    
     func bold() -> UIFont {
         return withTraits(traits: .traitBold)
     }
-
+    
     func italic() -> UIFont {
         return withTraits(traits: .traitItalic)
     }
     
     static func defaultFont(size: Double, bold: Bool = false) -> UIFont {
         let name = bold ? "Roboto-Bold" : "Roboto-Regular"
-        return UIFont(name: name, size: size)!
+        return UIFont(name: name, size: size.adjustedHeight)!
     }
+    
+    static func defaulFont(size: Double, weight: FontWeightType) -> UIFont {
+        return UIFont(name: "Roboto-\(weight.rawValue)", size: size.adjustedHeight)!
+    }
+}
+
+enum FontWeightType: String {
+    case regular = "Regular"
+    case bold = "Bold"
+    case black = "Black"
 }
 
 
@@ -502,7 +485,7 @@ extension UINavigationBar {
         appearance.backgroundColor = backgroundColor
         appearance.titleTextAttributes = [.foregroundColor: titleColor]
         appearance.shadowColor = .g4
-        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)))
+        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)))
         self.isTranslucent = false
         self.tintColor = titleColor
         self.standardAppearance = appearance
@@ -536,6 +519,28 @@ extension UIScrollView {
             setContentOffset(bottomOffset, animated: true)
         }
     }
+    
+    
+    var minContentOffset: CGPoint {
+        return CGPoint(
+            x: -contentInset.left,
+            y: -contentInset.top)
+    }
+    
+    var maxContentOffset: CGPoint {
+        return CGPoint(
+            x: contentSize.width - bounds.width + contentInset.right,
+            y: contentSize.height - bounds.height + contentInset.bottom)
+    }
+    
+    func scrollToMinContentOffset(animated: Bool) {
+        setContentOffset(minContentOffset, animated: animated)
+    }
+    
+    func scrollToMaxContentOffset(animated: Bool) {
+        setContentOffset(maxContentOffset, animated: animated)
+    }
+    
 }
 
 extension UIViewController {
@@ -553,11 +558,65 @@ extension UIViewController {
 
 extension Double {
     var adjustedWidth: Double {
-        return (Double(UIScreen.main.bounds.size.width) * self) / 390.0
+        return (Double(UIScreen.main.bounds.size.width) * self) / CGSize.baseSize.width
     }
     
     var adjustedHeight: Double {
-        return (Double(UIScreen.main.bounds.size.height) * self) / 844.0
+        return (Double(UIScreen.main.bounds.size.height) * self) / CGSize.baseSize.height
+    }
+}
+
+enum Dimension {
+    case width
+    case height
+}
+
+extension CGSize {
+    static var baseSize: CGSize {
+        return CGSize(width: 390.0, height: 844.0)
+    }
+    
+    func resized(basedOn dimension: Dimension) -> CGSize {
+        let screenWidth  = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
+        
+        var ratio:  CGFloat = 0.0
+        var width:  CGFloat = 0.0
+        var height: CGFloat = 0.0
+        
+        switch dimension {
+        case .width:
+            ratio  = self.height / self.width
+            width  = screenWidth * (self.width / CGSize.baseSize.width)
+            height = width * ratio
+        case .height:
+            ratio  = self.width / self.height
+            height = screenHeight * (self.height / CGSize.baseSize.height)
+            width  = height * ratio
+        }
+        
+        return CGSize(width: width, height: height)
+    }
+}
+
+extension CGFloat {
+    func adapted(to dimension: Dimension) -> CGFloat {
+        let screenWidth  = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
+        
+        var ratio: CGFloat = 0.0
+        var resultDimensionSize: CGFloat = 0.0
+        
+        switch dimension {
+        case .width:
+            ratio = self / CGSize.baseSize.width
+            resultDimensionSize = screenWidth * ratio
+        case .height:
+            ratio = self / CGSize.baseSize.height
+            resultDimensionSize = screenHeight * ratio
+        }
+        
+        return resultDimensionSize
     }
 }
 
@@ -589,16 +648,16 @@ extension UITextField {
 
 extension UIBarButtonItem {
     static func searchButton() -> UIBarButtonItem {
-        UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+        UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedHeight, height: 20.adjustedHeight)), style: .plain, target: nil, action: nil)
     }
     static func menuButton() -> UIBarButtonItem {
-        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedHeight, height: 20.adjustedHeight)), style: .plain, target: nil, action: nil)
     }
 }
 
 extension UIView {
     private static let kRotationAnimationKey = "rotationanimationkey"
-
+    
     func rotate(duration: Double = 1) {
         if layer.animation(forKey: UIView.kRotationAnimationKey) == nil {
             let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation")
@@ -607,7 +666,7 @@ extension UIView {
             rotationAnimation.toValue = Float.pi * 2.0
             rotationAnimation.duration = duration
             rotationAnimation.repeatCount = Float.infinity
-
+            
             layer.add(rotationAnimation, forKey: UIView.kRotationAnimationKey)
         }
     }
@@ -615,7 +674,7 @@ extension UIView {
     func rotateWithoutAnimation(degree: Double) {
         self.transform = CGAffineTransform(rotationAngle: CGFloat(degree))
     }
-
+    
     func stopRotating() {
         if layer.animation(forKey: UIView.kRotationAnimationKey) != nil {
             layer.removeAnimation(forKey: UIView.kRotationAnimationKey)
@@ -632,16 +691,24 @@ enum VerticalLocation: String {
     case top
 }
 
+extension UITabBar {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        var sizeThatFits = super.sizeThatFits(size)
+        sizeThatFits.height = 80.adjustedHeight // 원하는 길이
+        return sizeThatFits
+    }
+}
+
 extension UIView {
     func addShadow(location: VerticalLocation, color: UIColor = .black, opacity: Float = 0.5, radius: CGFloat = 5.0) {
         switch location {
         case .bottom:
-             addShadow(offset: CGSize(width: 0, height: 10), color: color, opacity: opacity, radius: radius)
+            addShadow(offset: CGSize(width: 0, height: 10), color: color, opacity: opacity, radius: radius)
         case .top:
             addShadow(offset: CGSize(width: 0, height: -2.5), color: color, opacity: opacity, radius: radius)
         }
     }
-
+    
     func addShadow(offset: CGSize, color: UIColor = .black, opacity: Float = 0.5, radius: CGFloat = 5.0) {
         self.layer.masksToBounds = false
         self.layer.shadowColor = color.cgColor

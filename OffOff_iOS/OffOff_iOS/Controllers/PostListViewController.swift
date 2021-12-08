@@ -5,8 +5,6 @@
 //  Created by Lee Nam Jun on 2021/07/05.
 //
 
-// TODO: - 맨 위, 맨 아래로 스크롤 해서 새로운 데이터 로딩
-
 import UIKit
 import RxSwift
 
@@ -14,13 +12,14 @@ class PostListViewController: UIViewController {
     var boardType: String?
     var boardName: String?
     
+    let activityNames = ["내가 쓴 글", "댓글 단 글", "스크랩한 글"]
     let customView = PostListView()
     
     let disposeBag = DisposeBag()
     var viewModel: PostListViewModel?
     
-    let searchButton = UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
-    let menuButton = UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedWidth, height: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
+    let searchButton = UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20, height: 20).resized(basedOn: .height)), style: .plain, target: nil, action: nil)
+    let menuButton = UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4, height: 20).resized(basedOn: .height)), style: .plain, target: nil, action: nil)
     
     override func loadView() {
         self.view = customView
@@ -28,13 +27,17 @@ class PostListViewController: UIViewController {
         self.title = boardName ?? ""
         
         self.navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.font: UIFont.defaultFont(size: 20)]
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: .LEFTARROW.resize(to: CGSize(width: 25.adjustedWidth, height: 22.adjustedHeight)), style: .plain, target: nil, action: nil)
-        self.navigationItem.rightBarButtonItems = [menuButton, searchButton]
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: .LEFTARROW.resize(to: CGSize(width: 25, height: 22).resized(basedOn: .height)), style: .plain, target: nil, action: nil)
+        self.navigationItem.rightBarButtonItems = [searchButton]
         
         self.customView.postListTableView.rowHeight = 81.adjustedHeight
         self.customView.postListTableView.separatorStyle = .none
         
         rotateRefreshIndicator(true)
+        
+        if ActivityTypes(rawValue: boardType!) != nil {
+            customView.newPostButton.isHidden = true
+        }
     }
     
     override func viewDidLoad() {
@@ -42,11 +45,14 @@ class PostListViewController: UIViewController {
         
         // view model
         viewModel = PostListViewModel(boardType: boardType ?? "")
-
+        
+        
         // tableview refresh control
         let refreshControl = UIRefreshControl()
-        self.customView.postListTableView.refreshControl = refreshControl
-        refreshControl.tintColor = .clear
+        if !activityNames.contains(boardName ?? "") {
+            self.customView.postListTableView.refreshControl = refreshControl
+            refreshControl.tintColor = .clear
+        }
         
         Constants.currentBoard = self.boardType
         
@@ -54,56 +60,53 @@ class PostListViewController: UIViewController {
         viewModel!.postList
             .skip(1)
             .observe(on: MainScheduler.instance)
-            .do { _ in
+            .do { [weak self] _ in
                 if !refreshControl.isRefreshing {
-                    self.rotateRefreshIndicator(false)
+                    self?.rotateRefreshIndicator(false)
                 }
             }
-            .bind(to: self.customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
+            .bind(to: customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
             }
             .disposed(by: disposeBag)
         
         viewModel!.refreshing
             .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
-            .bind {
+            .bind { [weak self] in
                 refreshControl.endRefreshing()
-                self.rotateRefreshIndicator(false)
+                self?.rotateRefreshIndicator(false)
             }
             .disposed(by: disposeBag)
-
-        // Refresh control
-//        self.customView.postListTableView.rx.didScroll
-//            .bind {
-////                self.scrollViewDidScroll(scrollView: self.customView.postListTableView)
-//                self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
-//            }
-//            .disposed(by: disposeBag)
         
         refreshControl.rx.controlEvent(.valueChanged)
             .debug()
-            .bind {
-                self.rotateRefreshIndicator(true)
-                self.viewModel!.reloadTrigger.onNext(.newer)
+            .withUnretained(self)
+            .bind { (owner, _) in
+                owner.rotateRefreshIndicator(true)
+                owner.viewModel!.reloadTrigger.onNext(.newer)
             }
             .disposed(by: disposeBag)
         
         // table view scroll 대응
-        self.customView.postListTableView.rx.didScroll
-            .bind {
-                if self.customView.postListTableView.contentOffset.y <= 100.adjustedHeight {
-                    self.customView.upperView.snp.updateConstraints {
-                        $0.height.equalTo(150.adjustedHeight - self.customView.postListTableView.contentOffset.y)
+        customView.postListTableView.rx.didScroll
+            .withUnretained(self)
+            .bind { (owner, _) in
+                let min = min(owner.customView.postListTableView.maxContentOffset.y, 100.adjustedHeight)
+                if owner.customView.postListTableView.contentOffset.y <= min {
+                    owner.customView.upperView.snp.updateConstraints {
+                        $0.height.equalTo(150.adjustedHeight - owner.customView.postListTableView.contentOffset.y)
                     }
                 }
             }
             .disposed(by: disposeBag)
         
         self.customView.postListTableView.rx.didEndDragging
-            .bind { _ in
-                if ((self.customView.postListTableView.contentOffset.y + self.customView.postListTableView.frame.size.height) >= self.customView.postListTableView.contentSize.height)
+            .withUnretained(self)
+            .filter { (owner, _) in !owner.activityNames.contains(owner.boardName ?? "") }
+            .bind { (owner, _) in
+                if ((owner.customView.postListTableView.contentOffset.y + owner.customView.postListTableView.frame.size.height) >= owner.customView.postListTableView.contentSize.height)
                 {
-                    self.viewModel!.reloadTrigger.onNext(.older)
+                    owner.viewModel!.reloadTrigger.onNext(.older)
                 }
             }
             .disposed(by: disposeBag)
@@ -111,38 +114,40 @@ class PostListViewController: UIViewController {
         // select row
         self.customView.postListTableView.rx
             .itemSelected
-            .bind {
-                if let cell = self.customView.postListTableView.cellForRow(at: $0) as? PostPreviewCell {
+            .withUnretained(self)
+            .bind { (owner, indexPath) in
+                if let cell = owner.customView.postListTableView.cellForRow(at: indexPath) as? PostPreviewCell {
                     let vc = PostViewController()
                     vc.postInfo = (id: cell.postModel.value!._id!, type: cell.postModel.value!.boardType)
-                    vc.title = self.boardName
+                    vc.title = owner.boardName
                     vc.postCell = cell
-                    self.customView.postListTableView.deselectRow(at: $0, animated: false)
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    owner.navigationController?.pushViewController(vc, animated: true)
+                    owner.customView.postListTableView.deselectRow(at: indexPath, animated: false)
                 }
             }
             .disposed(by: disposeBag)
-
+        
         // inputs
         self.navigationItem.leftBarButtonItem?
             .rx.tap
-            .bind { self.dismiss(animated: true, completion: nil) }
+            .bind { [weak self] in self?.dismiss(animated: true, completion: nil) }
             .disposed(by: disposeBag)
-
+        
         self.customView.newPostButton
             .rx.tap
-            .bind {
+            .bind { [weak self] in
                 let vc = NewPostViewController()
-                self.navigationController?.pushViewController(vc, animated: true)
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
         
         // searching
         self.searchButton.rx.tap
-            .bind { _ in
+            .withUnretained(self)
+            .bind { (owner, _) in
                 let vc = PostSearchViewController()
-                vc.boardType = self.boardType
-                self.navigationController?.pushViewController(vc, animated: true)
+                vc.boardType = owner.boardType
+                owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
     }
@@ -157,37 +162,4 @@ class PostListViewController: UIViewController {
             self.customView.refreshingImageView.stopRotating()
         }
     }
-    
-    private func updateProgress(with offsetY: CGFloat) {
-        let maxPullDistance = 105.adjustedHeight
-        
-        guard !self.customView.refreshingImageView.isRotating() else { return }
-        let progress = min(abs(offsetY / maxPullDistance), 1) * 10
-        
-        if progress >= 0 && progress < 2.5 {
-            self.customView.refreshingImageView.image = nil
-        } else if progress >= 2.5 && progress < 5.0 {
-            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![0]
-        } else if progress >= 5.0 && progress < 7.5 {
-            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![1]
-        } else {
-            self.customView.refreshingImageView.image = self.customView.refreshingImageView.animationImages![2]
-        }
-    }
-    
-    // variable to save the last position visited, default to zero
-    private var lastContentOffset: CGFloat = 0
-
-    func scrollViewDidScroll(scrollView: UIScrollView!) {
-        if (self.lastContentOffset > scrollView.contentOffset.y) {
-            self.updateProgress(with: self.customView.postListTableView.contentOffset.y)
-        }
-        else if (self.lastContentOffset < scrollView.contentOffset.y) {
-           // move down
-        }
-
-        // update the new position acquired
-        self.lastContentOffset = scrollView.contentOffset.y
-    }
-
 }

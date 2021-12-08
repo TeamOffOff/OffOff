@@ -9,7 +9,7 @@ import UIKit
 
 class TextWithIconView: UIView {
     var iconImageView = UIImageView().then {
-        $0.image = .ICON_LIKES_RED
+        $0.image = .LIKEICON
         $0.contentMode = .scaleAspectFill
     }
     

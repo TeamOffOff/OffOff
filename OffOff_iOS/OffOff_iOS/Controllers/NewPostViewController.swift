@@ -63,6 +63,7 @@ class NewPostViewController: UIViewController {
                 contentText: newPostView.contentTextView
                     .rx.text
                     .orEmpty
+                    .filter { $0 != "내용을 입력해주세요." }
                     .distinctUntilChanged()
                     .asDriver(onErrorJustReturn: ""),
                 createButtonTap: saveButton.rx.tapGesture()
@@ -78,15 +79,37 @@ class NewPostViewController: UIViewController {
         // 텍스트 뷰 크기 제한
         self.newPostView.contentTextView
             .rx.didChange
-            .bind { _ in
-                let needToScrolling = self.newPostView.contentTextView.contentSize.height > self.textViewMaxHeight
+            .withUnretained(self)
+            .bind { (owner, _) in
+                let needToScrolling = self.newPostView.contentTextView.contentSize.height > owner.textViewMaxHeight
                 
-                self.textViewNeedToScroll.onNext(needToScrolling)
+                owner.textViewNeedToScroll.onNext(needToScrolling)
+            }
+            .disposed(by: disposeBag)
+        
+        // 텍스트 뷰 PlaceHolder
+        newPostView.contentTextView.rx.didBeginEditing
+            .withUnretained(self)
+            .bind{ (owner, _) in
+                if(owner.newPostView.contentTextView.text == "내용을 입력해주세요.") {
+                    owner.newPostView.contentTextView.text = nil
+                    owner.newPostView.contentTextView.textColor = .white
+                }
+            }.disposed(by: disposeBag)
+        
+        newPostView.contentTextView.rx.didEndEditing
+            .withUnretained(self)
+            .bind { (owner, _) in
+                if(owner.newPostView.contentTextView.text == nil || owner.newPostView.contentTextView.text == ""){
+                    owner.newPostView.contentTextView.text = "내용을 입력해주세요."
+                    owner.newPostView.contentTextView.textColor = .w3
+                }
             }
             .disposed(by: disposeBag)
     
         // bind results
         self.viewModel.isCreating
+            .observe(on: MainScheduler.instance)
             .bind {
                 if $0 {
                     LoadingHUD.show()
@@ -98,41 +121,44 @@ class NewPostViewController: UIViewController {
         
         self.textViewNeedToScroll
             .skip(1)
-            .bind { needToScrolling in
+            .withUnretained(self)
+            .bind { (owner, needToScrolling) in
                 if needToScrolling {
-                    self.newPostView.contentTextView.snp.remakeConstraints {
-                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+                    owner.newPostView.contentTextView.snp.remakeConstraints {
+                        $0.top.equalTo(owner.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
                         $0.left.right.equalToSuperview().inset(33.adjustedWidth)
-                        $0.height.equalTo(self.textViewMaxHeight)
+                        $0.height.equalTo(owner.textViewMaxHeight)
                     }
                 } else {
-                    self.newPostView.contentTextView.snp.remakeConstraints {
-                        $0.top.equalTo(self.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
+                    owner.newPostView.contentTextView.snp.remakeConstraints {
+                        $0.top.equalTo(owner.newPostView.lineView.snp.bottom).offset(21.adjustedHeight)
                         $0.left.right.equalToSuperview().inset(33.adjustedWidth)
                     }
                 }
                 
-                self.newPostView.contentTextView.isScrollEnabled = needToScrolling
-                self.newPostView.contentTextView.text = self.newPostView.contentTextView.text
+                owner.newPostView.contentTextView.isScrollEnabled = needToScrolling
+                owner.newPostView.contentTextView.text = owner.newPostView.contentTextView.text
             }
             .disposed(by: disposeBag)
         
         self.viewModel.uploadingImages
-            .do {
-                if $0.isEmpty {
-                    self.newPostView.addingImagesCollectionView.snp.updateConstraints {
+            .withUnretained(self)
+            .do { (owner, images) in
+                if images.isEmpty {
+                    owner.newPostView.addingImagesCollectionView.snp.updateConstraints {
                         $0.height.equalTo(0)
                     }
                 } else {
-                    self.newPostView.addingImagesCollectionView.snp.updateConstraints {
+                    owner.newPostView.addingImagesCollectionView.snp.updateConstraints {
                         $0.height.equalTo(68.adjustedHeight)
                     }
                 }
             }
-            .bind(to: self.newPostView.addingImagesCollectionView.rx.items(cellIdentifier: AddingImagesCollectionViewCell.identifier, cellType: AddingImagesCollectionViewCell.self)) { (row, element, cell) in
+            .map { $1 }
+            .bind(to: newPostView.addingImagesCollectionView.rx.items(cellIdentifier: AddingImagesCollectionViewCell.identifier, cellType: AddingImagesCollectionViewCell.self)) { [weak self] (row, element, cell) in
                 cell.row = row
                 cell.imageView.image = element
-                cell.deletingAction = self.deleteUploadingImage
+                cell.deletingAction = self?.deleteUploadingImage
             }
             .disposed(by: disposeBag)
         
@@ -172,11 +198,12 @@ class NewPostViewController: UIViewController {
         viewModel.isTitleConfirmed
             .skip(1)
             .filter { $0 == false }
-            .do { _ in
+            .observe(on: MainScheduler.instance)
+            .do { [weak self] _ in
                 alert = UIAlertController(title: "제목을 입력해주세요.", message: nil, preferredStyle: .alert)
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
-            .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance)
+            .delay(.milliseconds(500), scheduler: MainScheduler.instance)
             .bind { _ in
                 alert.dismiss(animated: true, completion: nil)
             }
@@ -185,36 +212,38 @@ class NewPostViewController: UIViewController {
         viewModel.isContentConfiremd
             .skip(1)
             .filter { $0 == false }
-            .do { _ in
+            .observe(on: MainScheduler.instance)
+            .do { [weak self] _ in
                 alert = UIAlertController(title: "내용을 입력해주세요.", message: nil, preferredStyle: .alert)
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
-            .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance)
+            .delay(.milliseconds(500), scheduler: MainScheduler.instance)
             .bind { _ in
                 alert.dismiss(animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
         
         viewModel.postCreated
-            .do { _ in self.viewModel.isCreating.onNext(false) }
+            .observe(on: MainScheduler.instance)
+            .do { [weak self] _ in self?.viewModel.isCreating.onNext(false) }
             .filter { $0 != nil }
             .map { $0! }
-            .subscribe(onNext: {
-                if self.postToModify == nil {
-                    self.navigationController?.popViewController(animated: true)
-                    if let frontVC = self.navigationController?.topViewController as? PostListViewController {
+            .withUnretained(self)
+            .subscribe(onNext: { (owner, model) in
+                if owner.postToModify == nil {
+                    owner.navigationController?.popViewController(animated: true)
+                    if let frontVC = owner.navigationController?.topViewController as? PostListViewController {
                         frontVC.viewModel?.fetchPostList(boardType: frontVC.boardType!)
-                        print(#fileID, #function, #line, "")
                     }
                 } else {
-                    if let naviVC = self.presentingViewController as? UINavigationController {
+                    if let naviVC = owner.presentingViewController as? UINavigationController {
                         if let postVC = naviVC.topViewController as? PostViewController {
-                            postVC.postInfo = (id: $0._id!, type: $0.boardType)
-                            postVC.viewModel.reloadPost(contentId: $0._id!, boardType: $0.boardType)
+                            owner.dismiss(animated: true)
+//                            postVC.viewModel.post.onNext(model)
+//                            postVC.postInfo = (id: model._id!, type: model.boardType)
+                            postVC.viewModel.reloadPost(contentId: model._id!, boardType: model.boardType)
                         }
                     }
-                    
-                    self.dismiss(animated: true) 
                 }
             })
             .disposed(by: disposeBag)
@@ -229,7 +258,7 @@ class NewPostViewController: UIViewController {
             self.navigationController?.navigationBar.setAppearance()
             self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
             self.navigationItem.leftBarButtonItem!.rx.tap
-                .bind { self.dismiss(animated: true, completion: nil) }.disposed(by: disposeBag)
+                .bind { [weak self] in self?.dismiss(animated: true, completion: nil) }.disposed(by: disposeBag)
         }
     }
     
@@ -242,6 +271,6 @@ class NewPostViewController: UIViewController {
 
 extension NewPostViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 70.adjustedWidth, height: 68.adjustedHeight)
+        CGSize(width: 70.adjustedHeight, height: 68.adjustedHeight)
     }
 }
