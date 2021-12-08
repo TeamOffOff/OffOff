@@ -92,9 +92,17 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
         })
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
-            postListAdapter.addPostList(it, isFirst)
-            binding.refreshLayout.isRefreshing = false
-            currentPostList = it.toTypedArray()
+            if(isFirst && it.isNullOrEmpty()) {
+                postListAdapter.clearPostList()
+                binding.rvPostPreview.visibility = View.GONE
+                //binding.tvNoResult.visibility = View.VISIBLE
+            } else {
+                binding.rvPostPreview.visibility = View.VISIBLE
+                //binding.tvNoResult.visibility = View.GONE
+                postListAdapter.addPostList(it, isFirst)
+                binding.refreshLayout.isRefreshing = false
+                currentPostList = it.toTypedArray()
+            }
         })
 
         viewModel.lastPostId.observe(binding.lifecycleOwner!!, {
@@ -126,6 +134,7 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
 
                     if (searchingQuery.isNullOrBlank()) {
                         postListAdapter.clearPostList()
+                        //binding.tvNoResult.visibility = View.GONE
                     } else {
                         Log.d("tag_textWatcher 감지!!!", query)
                         isFirst = true

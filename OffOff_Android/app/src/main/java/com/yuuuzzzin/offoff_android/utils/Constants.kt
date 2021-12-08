@@ -46,6 +46,17 @@ object Constants {
         val density: Float = context.resources.displayMetrics.density
         return (px.toFloat() / density).roundToInt()
     }
+
+    fun getBoardName(boardType: String) : String {
+        return when (boardType) {
+            "free" -> BoardType.FREE
+            "secret" -> BoardType.SECRET
+            "hot" -> BoardType.HOT
+            "Information" -> BoardType.INFO
+            else -> BoardType.FREE
+        }
+    }
+
 }
 
 object PostWriteType {
@@ -57,6 +68,7 @@ object BoardType {
     const val FREE = "자유게시판"
     const val SECRET = "비밀게시판"
     const val HOT = "인기게시판"
+    const val INFO = "정보게시판"
 }
 
 object UserPostType {

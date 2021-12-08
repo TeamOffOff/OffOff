@@ -43,6 +43,8 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentScheduleBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
 
         initToolbar()
         initCalendar()
@@ -167,12 +169,12 @@ class ScheduleFragment : Fragment() {
         }
 
         // 스케줄이 바뀌는지 관찰
-        viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
-            event.getContentIfNotHandled()?.let {
-                Log.d("tag_observe", "관찰됨")
-                (calendar.adapter as CalendarAdapter).notifyDataSetChanged()
-            }
-        })
+//        viewModel.scheduleChanged.observe(binding.lifecycleOwner!!, { event ->
+//            event.getContentIfNotHandled()?.let {
+//                Log.d("tag_observe", "관찰됨")
+//                (calendar.adapter as CalendarAdapter).notifyDataSetChanged()
+//            }
+//        })
     }
 
     // 캘린더의 헤더 설정

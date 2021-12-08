@@ -23,6 +23,7 @@ import com.yuuuzzzin.offoff_android.utils.base.BaseFragment
 import com.yuuuzzzin.offoff_android.viewmodel.BoardListViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.BoardAdapter
 import com.yuuuzzzin.offoff_android.views.adapter.BoardListAdapter
+import com.yuuuzzzin.offoff_android.views.ui.user.UserPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.io.Serializable
@@ -66,6 +67,12 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
     private fun initView() {
         binding.tvNickname.text = "${OffoffApplication.user.subInfo.nickname} 님"
 
+        binding.btScrap.setOnClickListener {
+            val intent = Intent(mContext, UserPostActivity::class.java)
+            intent.putExtra("option", "스크랩한 글")
+            startActivity(intent)
+        }
+
         binding.etSearch.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -88,6 +95,7 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
                     if (searchingQuery.isNullOrBlank()) {
                         postListAdapter.clearPostList()
                         binding.rvPostPreview.visibility = View.GONE
+                        //binding.tvNoResult.visibility = View.GONE
                         binding.layoutBoards.visibility = View.VISIBLE
                     } else {
                         Log.d("tag_textWatcher", query)
@@ -137,9 +145,13 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
         })
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
-            postListAdapter.addPostList(it, isFirst)
-            //binding.refreshLayout.isRefreshing = false
-            currentPostList = it.toTypedArray()
+            if(isFirst && it.isNullOrEmpty()) {
+                postListAdapter.clearPostList()
+                //binding.tvNoResult.visibility = View.VISIBLE
+            } else {
+                postListAdapter.addPostList(it, isFirst)
+                currentPostList = it.toTypedArray()
+            }
         })
 
         viewModel.lastPostId.observe(binding.lifecycleOwner!!, {

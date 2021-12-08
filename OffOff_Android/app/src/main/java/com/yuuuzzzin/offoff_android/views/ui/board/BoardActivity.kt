@@ -14,9 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.ActivityBoardBinding
 import com.yuuuzzzin.offoff_android.service.models.Post
-import com.yuuuzzzin.offoff_android.utils.Constants
-import com.yuuuzzzin.offoff_android.utils.Constants.toast
-import com.yuuuzzzin.offoff_android.utils.NetworkManager
 import com.yuuuzzzin.offoff_android.utils.PostWriteType
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseBaseActivity
@@ -69,11 +66,11 @@ class BoardActivity : BaseBaseActivity<ActivityBoardBinding>(R.layout.activity_b
 
     override fun init() {
         Log.d("tag_init", "이닛")
-        val networkManager: NetworkManager? = this?.let { NetworkManager(it) }
-        if (!networkManager?.checkNetworkState()!!) {
-            this.toast(Constants.NETWORK_DISCONNECT)
-            finish()
-        }
+//        val networkManager: NetworkManager? = this?.let { NetworkManager(it) }
+//        if (!networkManager?.checkNetworkState()!!) {
+//            this.toast(Constants.NETWORK_DISCONNECT)
+//            finish()
+//        }
     }
 
 

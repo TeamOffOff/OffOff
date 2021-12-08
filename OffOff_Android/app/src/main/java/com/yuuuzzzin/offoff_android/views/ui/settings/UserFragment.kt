@@ -21,7 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class UserFragment : BaseFragment<FragmentUserBinding>(R.layout.fragment_user) {
 
     private lateinit var optionListAdapter: OptionListAdapter
-    private val optionList = arrayListOf(Option(MY_POST), Option(MY_COMMENT_POST), Option(MY_BOOKMARK_POST))
+    private val optionList =
+        arrayListOf(Option(MY_POST), Option(MY_COMMENT_POST), Option(MY_BOOKMARK_POST))
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,7 +51,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(R.layout.fragment_user) {
             OptionListAdapter.OnOptionClickListener {
             override fun onClickOption(item: Option, position: Int) {
                 val intent = Intent(mContext, UserPostActivity::class.java)
-                intent.putExtra("option", item.title)
+                intent.putExtra("option", "스크랩한 글")
                 startActivity(intent)
             }
         })
