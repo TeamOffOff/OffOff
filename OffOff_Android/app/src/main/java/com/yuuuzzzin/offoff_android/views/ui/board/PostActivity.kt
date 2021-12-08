@@ -24,11 +24,14 @@ import com.yuuuzzzin.offoff_android.service.models.Reply
 import com.yuuuzzzin.offoff_android.utils.*
 import com.yuuuzzzin.offoff_android.utils.Constants.DELETE_COMMENT
 import com.yuuuzzzin.offoff_android.utils.Constants.REPORT_COMMENT
+import com.yuuuzzzin.offoff_android.utils.Constants.convertDPtoPX
+import com.yuuuzzzin.offoff_android.utils.Constants.getBoardName
 import com.yuuuzzzin.offoff_android.utils.DateUtils.convertStringToLocalDate
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showAutoCloseDialog
 import com.yuuuzzzin.offoff_android.utils.DialogUtils.showYesNoDialog
 import com.yuuuzzzin.offoff_android.utils.KeyboardUtils.hideKeyboard
 import com.yuuuzzzin.offoff_android.utils.KeyboardUtils.requestFocusAndShowKeyboard
+import com.yuuuzzzin.offoff_android.utils.ScrollViewUtils.smoothScrollToView
 import com.yuuuzzzin.offoff_android.utils.base.BaseActivity
 import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 import com.yuuuzzzin.offoff_android.views.adapter.CommentListAdapter
@@ -52,6 +55,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private var post: Post? = null
     private var postPosition: Int = 0
     private var commentPosition: Int = 0
+    private var selectedCommentPosition: Int? = null
+    private var replyPosition: Int = 0
     private var parentReplyId: String? = null
     private var requestUpdate: Boolean? = false
     private var isFirst: Boolean = true
@@ -82,21 +87,18 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         postId = intent.getStringExtra("id").toString()
         postPosition = intent.getIntExtra("position", 0)
         boardType = intent.getStringExtra("boardType").toString()
-
-        when (boardType) {
-            "free" -> boardName = BoardType.FREE
-            "secret" -> boardName = BoardType.SECRET
-            "hot" -> boardName = BoardType.HOT
-        }
-
-        viewModel.getPost(postId, boardType, false)
-        viewModel.getComments(postId, boardType, false)
+        boardName = getBoardName(boardType)
     }
 
     private fun initViewModel() {
         binding.activity = this
         binding.viewModel = viewModel
 
+        // 포스트 & 댓글 요청
+        viewModel.getPost(postId, boardType, false)
+        viewModel.getComments(postId, boardType, false)
+
+        // 로딩 화면 가시화 여부
         viewModel.loading.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 if (it) {
@@ -125,14 +127,16 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
             this.post = it
             binding.refreshLayout.isRefreshing = false
+
             if (isFirst) {
                 invalidateOptionsMenu()
             }
         })
 
+        // 게시글 좋아요 처리
         viewModel.isLikedPost.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                if(it) {
+                if (it) {
                     val likesNum = binding.tvLikesNum.text.toString()
                     showAutoCloseDialog(this, "좋아요를 눌렀습니다.")
                     binding.tvLikesNum.text = (likesNum.toInt() + 1).toString()
@@ -144,9 +148,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         })
 
+        // 댓글 좋아요 처리
         viewModel.isLikedComment.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                if(it) {
+                if (it) {
                     showAutoCloseDialog(this, "좋아요를 눌렀습니다.")
                 } else {
                     showAutoCloseDialog(this, "이미 좋아요를 누른 댓글입니다.")
@@ -154,9 +159,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         })
 
+        // 게시글 스크랩 처리
         viewModel.isBookmarkedPost.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                if(it) {
+                if (it) {
                     showAutoCloseDialog(this, "게시글을 스크랩했습니다.")
                 } else {
                     showAutoCloseDialog(this, "게시글 스크랩을 취소했습니다.")
@@ -164,9 +170,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         })
 
+        // 게시글 신고 처리
         viewModel.isReportedPost.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                if(it) {
+                if (it) {
                     showAutoCloseDialog(this, "게시글을 신고했습니다.")
                 } else {
                     showAutoCloseDialog(this, "게시글 신고를 취소했습니다.")
@@ -174,52 +181,100 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         })
 
-        //viewModel.getComments(postId, boardType)
+        // 댓글 요청 처리
         viewModel.commentList.observe(binding.lifecycleOwner!!, {
             with(commentListAdapter) { addCommentList(it.toMutableList()) }
             currentCommentList = it.toTypedArray()
-            if (!isFirst) {
 
-                // for문을 돌아 대댓글이 있는지 확인 후 replyCount에 더해주기
-                var replyCount = 0
-
-                for (i in it) {
-                    if (i.childrenReplies != null)
-                        replyCount += i.childrenReplies.size
-                }
-
-                post?.replyCount = it.size + replyCount
-                binding.tvCommentsNum.text = post?.replyCount.toString()
-            }
+            if (!isFirst)
+                calculateCommentNum(it)
 
             isFirst = false
             binding.refreshLayout.isRefreshing = false
         })
 
+        // 새로 작성된 댓글 처리
+        viewModel.newCommentList.observe(binding.lifecycleOwner!!, {
+            with(commentListAdapter) { addCommentList(it.toMutableList()) }
+            currentCommentList = it.toTypedArray()
+
+            if (!isFirst)
+                calculateCommentNum(it)
+
+            isFirst = false
+            binding.refreshLayout.isRefreshing = false
+
+            // 해당 댓글로 스크롤 이동
+            binding.rvComment.post {
+                val y =
+                    binding.rvComment.y + binding.rvComment.getChildAt(commentListAdapter.itemCount - 1).y
+                binding.nestedScrollView.smoothScrollTo(0, y.toInt())
+            }
+        })
+
+        // 새로 작성된 대댓글 처리
+        viewModel.replyList.observe(binding.lifecycleOwner!!, {
+            with(commentListAdapter) { addCommentList(it.toMutableList()) }
+            currentCommentList = it.toTypedArray()
+
+            if (!isFirst)
+                calculateCommentNum(it)
+
+            isFirst = false
+            binding.refreshLayout.isRefreshing = false
+
+            // 해당 댓글로 스크롤 이동
+            if (commentPosition >= commentListAdapter.itemCount - 1) {
+                binding.rvComment.post {
+                    val y = binding.rvComment.bottom
+                    binding.nestedScrollView.smoothScrollTo(0, y)
+                }
+            } else {
+                binding.rvComment.post {
+                    binding.nestedScrollView.smoothScrollToView(
+                        binding.rvComment.getChildAt(
+                            commentPosition + 1
+                        ), 360
+                    )
+                }
+            }
+        })
+
+        // 댓글 좋아요 처리
         viewModel.comment.observe(binding.lifecycleOwner!!, {
             currentCommentList[commentPosition] = it
             viewModel.update(currentCommentList)
         })
 
+        // 대댓글 좋아요 처리
         viewModel.reply.observe(binding.lifecycleOwner!!, {
-            commentListAdapter.replyListAdapter.updateItem(
-                it,
-                commentPosition
+            commentListAdapter.commentList[commentPosition].childrenReplies!![replyPosition].likes!!.add(
+                OffoffApplication.user.id
             )
+            commentListAdapter.notifyDataSetChanged()
+//            binding.rvComment.findViewHolderForAdapterPosition(commentPosition).replyListAdapter.updateItem(
+//                it,
+//                commentPosition
+//            )
         })
 
+        // 대댓글 작성 성공 처리
         viewModel.replySuccessEvent.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 parentReplyId = null
+                selectedCommentPosition = null
             }
         })
 
+        // 대댓글 옵션 다이얼로그 처리
         viewModel.showReplyOptionDialog.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
-                showReplyOptionDialog(it, isMine = false)
+//                showReplyOptionDialog(it, isMine = false)
+                showReplyOptionDialog(it, isMine = true)
             }
         })
 
+        // 내 대댓글 옵션 다이얼로그 처리
         viewModel.showMyReplyOptionDialog.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
                 showReplyOptionDialog(it, isMine = true)
@@ -238,11 +293,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
                 binding.etComment.text = null
                 hideKeyboard()
-
-//                binding.nestedScrollView.post {
-//                    binding.nestedScrollView.fullScroll(View.FOCUS_DOWN)
-//                }
-
                 requestUpdate = true
             }
         }
@@ -250,7 +300,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
     private fun initToolbar() {
         val toolbar: Toolbar = binding.toolbar
-        toolbar.overflowIcon = getDrawable(R.drawable.ic_more_option)
+        toolbar.overflowIcon = ResUtils.getDrawable(R.drawable.ic_more_option_resized)
 
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
@@ -275,7 +325,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             onHideKeyboard = {
                 binding.layout.run {
                     //키보드 내려갔을때 원하는 동작
-                    commentListAdapter.notifyDataSetChanged()
+                    //commentListAdapter.notifyDataSetChanged()
+                    if (selectedCommentPosition != null) {
+                        Log.d("tag_reply", selectedCommentPosition.toString())
+                        commentListAdapter.notifyItemChanged(selectedCommentPosition!!)
+                        parentReplyId = null
+                    }
                 }
             }
         )
@@ -285,7 +340,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         commentListAdapter = CommentListAdapter(viewModel)
         postImageListAdapter = PostImageAdapter()
 
-        val spaceDecorationComment = RecyclerViewUtils.VerticalSpaceItemDecoration(7) // 아이템 사이의 거리
+        val spaceDecorationComment =
+            RecyclerViewUtils.VerticalSpaceItemDecoration(convertDPtoPX(this, 7)) // 아이템 사이의 거리
         binding.rvComment.apply {
             adapter = commentListAdapter
             layoutManager = LinearLayoutManager(context)
@@ -294,7 +350,8 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             isNestedScrollingEnabled = false
         }
 
-        val spaceDecorationImage = RecyclerViewUtils.VerticalSpaceItemDecoration(20) // 아이템 사이의 거리
+        val spaceDecorationImage =
+            RecyclerViewUtils.VerticalSpaceItemDecoration(convertDPtoPX(this, 16)) // 아이템 사이의 거리
         binding.rvImage.apply {
             adapter = postImageListAdapter
             layoutManager = LinearLayoutManager(context)
@@ -319,19 +376,29 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
 
             override fun onWriteReply(position: Int, comment: Comment) {
-                //(binding.rvComment.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
-                //val y = binding.rvComment.getChildAt(position).y + 500
-                val y = binding.nestedScrollView.getChildAt(0).height
+                if (selectedCommentPosition != null) {
+                    commentListAdapter.notifyItemChanged(selectedCommentPosition!!)
+                }
 
-
-                binding.nestedScrollView.smoothScrollTo(0, y)
                 parentReplyId = comment.id
+                commentPosition = position
+                selectedCommentPosition = position
                 binding.etComment.isFocusableInTouchMode = true
                 binding.etComment.requestFocusAndShowKeyboard(this@PostActivity)
+
+                // 선택한 댓글이 키보드 위로 보이도록
+                binding.rvComment.post {
+                    binding.nestedScrollView.smoothScrollToView(
+                        binding.rvComment.getChildAt(
+                            commentPosition
+                        ), 320
+                    )
+                }
             }
 
-            override fun onLikeReply(position: Int, reply: Reply) {
-                commentPosition = position
+            override fun onLikeReply(position: Int, parentPosition: Int, reply: Reply) {
+                commentPosition = parentPosition
+                replyPosition = position
                 viewModel.likeReply(reply.id!!, boardType)
             }
         })
@@ -339,9 +406,25 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         postImageListAdapter.setOnPostImageClickListener(object :
             PostImageAdapter.OnPostImageClickListener {
             override fun onClickPostImage(item: Image, position: Int) {
-                TODO("Not yet implemented")
+                // TODO: 이미지 클릭 시, 큰 이미지 화면 띄우기
+                null
             }
         })
+    }
+
+    // 댓글 개수 계산
+    private fun calculateCommentNum(list: List<Comment>) {
+
+        // for문을 돌아 대댓글이 있는지 확인 후 replyCount 에 더해주기
+        var replyCount = 0
+
+        for (i in list) {
+            if (i.childrenReplies != null)
+                replyCount += i.childrenReplies.size
+        }
+
+        post?.replyCount = list.size + replyCount
+        binding.tvCommentsNum.text = post?.replyCount.toString()
     }
 
     // 게시물 삭제 다이얼로그
@@ -355,36 +438,6 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             intent.putExtra("boardName", boardName)
             startActivity(intent)
             finish()
-        },
-            onNegativeClick = { dialog, which ->
-                null
-            })
-    }
-
-    // 좋아요 성공 다이얼로그
-    private fun showSuccessLikeDialog(message: String) {
-        showAutoCloseDialog(this, message)
-    }
-
-    // 이미 좋아요를 한 경우의 다이얼로그
-    private fun showAlreadyLikeDialog(message: String) {
-        DialogUtils.showYesDialog(this, message)
-    }
-
-    // 댓글 삭제 다이얼로그
-    private fun showCommentDeleteDialog(commentId: String) {
-        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
-            viewModel.deleteComment(commentId, postId, boardType)
-        },
-            onNegativeClick = { dialog, which ->
-                null
-            })
-    }
-
-    // 대댓글 삭제 다이얼로그
-    private fun showReplyDeleteDialog(reply: Reply) {
-        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
-            viewModel.deleteReply(reply.id!!, postId, boardType, reply.parentReplyId!!)
         },
             onNegativeClick = { dialog, which ->
                 null
@@ -415,16 +468,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     }
 
     override fun dispatchTouchEvent(motionEvent: MotionEvent?): Boolean {
-        val focusView = binding.etComment
+        val focusView = binding.layoutEditComment
         if (focusView != null) {
 
-            var rect = Rect()
+            val rect = Rect()
             focusView.getGlobalVisibleRect(rect)
             val x = motionEvent!!.x.toInt()
             val y = motionEvent.y.toInt()
             if (!rect.contains(x, y)) {
                 hideKeyboard()
                 focusView.clearFocus()
+                parentReplyId = null
             }
         }
 
@@ -496,7 +550,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             try {
                 when (selected) {
                     DELETE_COMMENT -> {
-                        showCommentDeleteDialog(id)
+                        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
+                            viewModel.deleteComment(id, postId, boardType)
+                        },
+                            onNegativeClick = { dialog, which ->
+                                null
+                            })
                         requestUpdate = true
                         true
                     }
@@ -510,6 +569,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         }
 
+        builder.setTitle("메뉴")
         builder.create().show()
     }
 
@@ -525,7 +585,17 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             try {
                 when (selected) {
                     DELETE_COMMENT -> {
-                        showReplyDeleteDialog(reply)
+                        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
+                            viewModel.deleteReply(
+                                reply.id!!,
+                                postId,
+                                boardType,
+                                reply.parentReplyId!!
+                            )
+                        },
+                            onNegativeClick = { dialog, which ->
+                                null
+                            })
                         requestUpdate = true
                         true
                     }

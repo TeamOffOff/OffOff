@@ -36,6 +36,12 @@ constructor(
     private val _commentList = MutableLiveData<List<Comment>>()
     val commentList: LiveData<List<Comment>> get() = _commentList
 
+    private val _newCommentList = MutableLiveData<List<Comment>>()
+    val newCommentList: LiveData<List<Comment>> get() = _newCommentList
+
+    private val _replyList = MutableLiveData<List<Comment>>()
+    val replyList: LiveData<List<Comment>> get() = _replyList
+
     private val _comment = MutableLiveData<Comment>()
     val comment: LiveData<Comment> get() = _comment
 
@@ -53,6 +59,10 @@ constructor(
     // 게시글 신고 완료 여부
     private val _isReportedPost = MutableLiveData<Event<Boolean>>()
     val isReportedPost: LiveData<Event<Boolean>> = _isReportedPost
+
+    // 대댓글 작성 이벤트
+    private val _commentSuccessEvent = MutableLiveData<Event<Boolean>>()
+    val commentSuccessEvent: LiveData<Event<Boolean>> = _commentSuccessEvent
 
     // 대댓글 작성 이벤트
     private val _replySuccessEvent = MutableLiveData<Event<Boolean>>()
@@ -237,7 +247,7 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.writeComment(OffoffApplication.pref.token!!, comment).let { response ->
                 if (response.isSuccessful) {
-                    _commentList.postValue(response.body()!!.commentList)
+                    _newCommentList.postValue(response.body()!!.commentList)
                     Log.d("tag_success", "writeComment: ${response.body()}")
                 } else {
                     Log.d("tag_fail", "writeComment Error: $response")
@@ -279,6 +289,8 @@ constructor(
 
     fun deleteComment(commentId: String, postId: String, boardType: String) {
 
+        _loading.postValue(Event(true))
+
         val commentSend = CommentSend(
             id = commentId,
             postId = postId,
@@ -291,6 +303,7 @@ constructor(
             repository.deleteComment(OffoffApplication.pref.token.toString(), commentSend)
                 .let { response ->
                     if (response.isSuccessful) {
+                        _loading.postValue(Event(false))
                         _commentList.postValue(response.body()!!.commentList)
                         Log.d("tag_success", "deleteComment: ${response.body()}")
                     } else {
@@ -316,7 +329,7 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.writeReply(OffoffApplication.pref.token!!, reply).let { response ->
                 if (response.isSuccessful) {
-                    _commentList.postValue(response.body()!!.commentList)
+                    _replyList.postValue(response.body()!!.commentList)
                     _replySuccessEvent.postValue(Event(true))
                     Log.d("tag_success", "writeReply: ${response.body()}")
                 } else {
@@ -328,6 +341,8 @@ constructor(
 
     fun likeReply(replyId: String, boardType: String) {
 
+        _loading.postValue(Event(true))
+
         val activityItem = ActivityItem(
             id = replyId,
             boardType = boardType,
@@ -338,6 +353,7 @@ constructor(
             repository.likeReply(OffoffApplication.pref.token.toString(), activityItem)
                 .let { response ->
                     if (response.isSuccessful) {
+                        _loading.postValue(Event(false))
                         Log.d("tag_success", "likeReply: ${response.body()}")
                         if (!response.body()!!.id.isNullOrEmpty()) {
                             _reply.postValue(response.body())
@@ -355,6 +371,8 @@ constructor(
 
     fun deleteReply(replyId: String, postId: String, boardType: String, parentReplyId: String) {
 
+        _loading.postValue(Event(true))
+
         val replySend = ReplySend(
             id = replyId,
             boardType = boardType,
@@ -368,6 +386,7 @@ constructor(
             repository.deleteReply(OffoffApplication.pref.token.toString(), replySend)
                 .let { response ->
                     if (response.isSuccessful) {
+                        _loading.postValue(Event(false))
                         _commentList.postValue(response.body()!!.commentList)
                         Log.d("tag_success", "deleteReply: ${response.body()}")
                     } else {

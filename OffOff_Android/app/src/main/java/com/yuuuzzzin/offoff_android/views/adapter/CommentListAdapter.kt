@@ -18,7 +18,6 @@ import com.yuuuzzzin.offoff_android.viewmodel.PostViewModel
 class CommentListAdapter(private val viewModel: PostViewModel) :
     RecyclerView.Adapter<CommentListAdapter.CommentViewHolder>() {
 
-
     interface OnCommentClickListener {
         fun onClickCommentOption(comment: Comment)
         fun onLikeComment(position: Int, comment: Comment)
