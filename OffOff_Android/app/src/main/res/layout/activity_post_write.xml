@@ -92,7 +92,7 @@
                 <ImageView
                     android:id="@+id/iv_background"
                     android:layout_width="match_parent"
-                    android:layout_height="450dp"
+                    android:layout_height="0dp"
                     android:layout_marginBottom="-32dp"
                     android:contentDescription="@string/background_post"
                     android:src="@drawable/layout_background_radius_bottom_right"
@@ -119,9 +119,10 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_post"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="32dp"
                     android:layout_marginTop="28dp"
+                    app:layout_constraintBottom_toTopOf="@id/bt_camera"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -179,8 +180,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:visibility="gone"
-                        android:layout_marginBottom="32dp"
+                        android:layout_marginBottom="40dp"
                         android:orientation="horizontal"
                         android:outlineProvider="bounds"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

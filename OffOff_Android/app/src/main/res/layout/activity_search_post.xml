@@ -118,6 +118,23 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+            <TextView
+                android:id="@+id/tv_no_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="160dp"
+                android:gravity="center"
+                android:lineSpacingExtra="8dp"
+                android:text="검색 결과가 없습니다."
+                android:textColor="@color/green3"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include

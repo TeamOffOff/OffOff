@@ -7,144 +7,157 @@
 
     </data>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/userFragment"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".views.ui.settings.SettingsFragment">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/iv_background"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/userFragment"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:contentDescription="@string/background_post"
-            android:src="@drawable/layout_background_radius_bottom"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:paddingBottom="32dp"
+            tools:context=".views.ui.settings.SettingsFragment">
 
-        <TextView
-            android:id="@+id/tv_user_activity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="68dp"
-            android:padding="0dp"
-            android:text="환경설정"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-25dp"
-            android:orientation="vertical"
-            android:paddingHorizontal="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_background">
+            <ImageView
+                android:id="@+id/iv_background"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:contentDescription="@string/background_post"
+                android:src="@drawable/layout_background_radius_bottom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_set_profile"
+                android:id="@+id/tv_user_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="68dp"
+                android:padding="0dp"
+                android:text="환경설정"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="프로필 설정"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-25dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_background">
 
-            <TextView
-                android:id="@+id/tv_set_personal_info"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="개인정보 설정"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/tv_set_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="프로필 설정"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_set_notification"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="알림 설정"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/tv_set_personal_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="개인정보 설정"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_developer_info"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="개발자 정보"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/tv_set_notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="알림 설정"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_app_info"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="앱 정보"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/tv_developer_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="개발자 정보"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_question"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="문의하기"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/tv_app_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="앱 정보"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_withdrawal"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="회원 탈퇴"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/tv_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="문의하기"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_logout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/layout_edit_text"
-                android:paddingHorizontal="22dp"
-                android:paddingVertical="16dp"
-                android:text="로그아웃"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/tv_withdrawal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="회원 탈퇴"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/layout_edit_text"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="16dp"
+                    android:text="로그아웃"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

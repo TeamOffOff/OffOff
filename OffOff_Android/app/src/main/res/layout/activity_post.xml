@@ -24,51 +24,11 @@
         android:layout_height="match_parent"
         tools:context=".views.ui.board.PostActivity">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/layout_appbar"
-            android:layout_width="match_parent"
-            android:layout_height="122dp"
-            android:background="@android:color/transparent"
-            android:backgroundTint="@color/green"
-            app:elevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="23dp"
-                android:layout_marginHorizontal="28dp"
-                android:layout_marginTop="67dp">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:background="@android:color/transparent"
-                    style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    app:contentInsetStart="0dp">
-
-                    <TextView
-                        android:id="@+id/tv_toolbar_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="23dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="@string/board_free"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
-
-                </androidx.appcompat.widget.Toolbar>
-
-            </RelativeLayout>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
+            android:paddingTop="-32dp"
+            android:layout_marginTop="-32dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/layout_bottom"
             app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +52,7 @@
                         android:id="@+id/iv_background"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginBottom="-31dp"
+                        android:layout_marginBottom="-32dp"
                         android:contentDescription="@string/background_post"
                         android:src="@drawable/layout_background_radius_bottom_right"
                         app:layout_constraintBottom_toBottomOf="@id/layout_post"
@@ -103,9 +63,10 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/layout_post"
                         android:layout_width="match_parent"
+                        android:layout_marginTop="32dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="32dp"
-                        android:layout_marginBottom="31dp"
+                        android:layout_marginBottom="32dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -129,10 +90,11 @@
                             android:layout_marginStart="9dp"
                             android:text="@{post.author.nickname}"
                             android:textColor="@color/white"
+                            android:padding="0dp"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toEndOf="@id/iv_avatar"
-                            app:layout_constraintTop_toTopOf="@id/iv_avatar" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/tv_date"
@@ -203,8 +165,8 @@
 
                             <ImageView
                                 android:id="@+id/iv_likes"
-                                android:layout_width="10dp"
-                                android:layout_height="9dp"
+                                android:layout_width="14dp"
+                                android:layout_height="12dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="4dp"
                                 android:background="@drawable/ic_like"
@@ -218,12 +180,12 @@
                                 android:layout_marginEnd="7dp"
                                 android:text="@{String.valueOf(post.likes.size)}"
                                 android:textColor="@color/white"
-                                android:textSize="11sp" />
+                                android:textSize="12sp" />
 
                             <ImageView
                                 android:id="@+id/iv_comments"
-                                android:layout_width="9dp"
-                                android:layout_height="9dp"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="4dp"
                                 android:background="@drawable/ic_comment"
@@ -236,38 +198,33 @@
                                 android:layout_gravity="center_vertical"
                                 android:text="@{String.valueOf(post.replyCount)}"
                                 android:textColor="@color/white"
-                                android:textSize="11sp" />
+                                android:textSize="12sp" />
 
                         </LinearLayout>
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <ImageView
                             android:id="@+id/bt_like"
-                            android:layout_width="43dp"
-                            android:layout_height="20dp"
+                            android:layout_width="52dp"
+                            android:padding="0dp"
+                            android:layout_height="24dp"
+                            android:scaleType="fitXY"
                             android:layout_marginTop="10dp"
-                            android:background="@drawable/layout_button_post"
-                            android:includeFontPadding="false"
                             android:onClick="@{()->viewModel.likePost(post.id, activity.boardType)}"
-                            android:text="@string/button_like"
-                            android:textColor="@color/green"
-                            android:textSize="9sp"
-                            android:textStyle="bold"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/bt_likes"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/layout_likes_comments" />
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <ImageView
                             android:id="@+id/bt_scrap"
-                            android:layout_width="51dp"
-                            android:layout_height="20dp"
+                            android:layout_width="62dp"
+                            android:layout_height="24dp"
+                            android:scaleType="fitXY"
                             android:layout_marginStart="6dp"
                             android:layout_marginTop="10dp"
-                            android:background="@drawable/layout_button_post"
-                            android:includeFontPadding="false"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/bt_scrap"
                             android:onClick="@{()->viewModel.bookmarkPost(post.id, activity.boardType)}"
-                            android:text="@string/button_scrap"
-                            android:textColor="@color/green"
-                            android:textSize="9sp"
-                            android:textStyle="bold"
                             app:layout_constraintStart_toEndOf="@id/bt_like"
                             app:layout_constraintTop_toBottomOf="@id/layout_likes_comments" />
 
@@ -353,6 +310,47 @@
             </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="122dp"
+            android:background="@drawable/layout_background_radius_bottom_right"
+            app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="23dp"
+                android:layout_marginHorizontal="28dp"
+                android:layout_marginTop="67dp">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    app:contentInsetStart="0dp">
+
+                    <TextView
+                        android:id="@+id/tv_toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/board_free"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <include
             android:id="@+id/layout_progress"

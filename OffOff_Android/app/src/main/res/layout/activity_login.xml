@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingLeft="60dp"
         android:paddingRight="60dp"
         tools:context=".views.ui.member.LoginActivity">
@@ -65,7 +65,7 @@
         <Button
             android:id="@+id/bt_login"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_marginTop="38dp"
             android:background="@drawable/layout_button_round_enabled"
             android:enabled="@{etId.text.length() > 0 &amp;&amp; etPw.text.length() > 0}"
@@ -90,24 +90,26 @@
             android:text="@string/find_id_pw"
             android:textColor="@color/white5"
             android:textSize="12sp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_login" />
 
         <TextView
             android:id="@+id/bt_signup"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/signup"
             android:textColor="@color/white5"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bt_findIdPw" />
+            app:layout_constraintTop_toBottomOf="@id/bt_login" />
 
         <include
             android:id="@+id/layout_progress"
             layout="@layout/layout_progress_loading_opaque"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginHorizontal="-60dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
