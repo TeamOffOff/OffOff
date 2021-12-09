@@ -292,13 +292,21 @@ class PostControl(Resource):
 @Post.route("/image")
 class ImageControl(Resource):
 
+    @jwt_required()
     def get(self):
-        request_info = request.get_json()
+        post_id = request.args.get("postId")
+        board_type = request.args.get("boardType") + "_board"
 
-        if request_info["image"]:
-            request_info["image"] = get_image(request_info["image"], "post", "origin")
+        post = mongodb.find_one(query={"_id": ObjectId(post_id)},
+                                collection_name=board_type)
 
-        return request_info
+        if not post:
+            return make_response({"queryStatus": "cannot find post"}, 500)
+
+        img_dict = dict()
+        img_dict["image"] = get_image(post["image"], "post", "origin")
+
+        return img_dict
 
 
 TestPost = Namespace('testpost', description='post여러개')

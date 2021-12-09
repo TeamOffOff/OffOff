@@ -46,7 +46,7 @@ def save_image(img_list: list, directory: str):
                 raise Exception("fail to save image")
 
             if e.response['Error']['Code'] == "404":
-                time.sleep(0.1)
+                time.sleep(0.5)
                 print("image have been not saved yet")
                 continue
             else:
