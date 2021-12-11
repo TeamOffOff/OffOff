@@ -391,7 +391,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                     binding.nestedScrollView.smoothScrollToView(
                         binding.rvComment.getChildAt(
                             commentPosition
-                        ), 320
+                        ), 360
                     )
                 }
             }
@@ -488,13 +488,16 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_post, menu)
 
+        Log.d(
+            "tag_id",
+            "id : " + OffoffApplication.user.id + "/ author: " + post?.author?.id.toString()
+        )
+
         if (OffoffApplication.user.id != post?.author?.id) {
-            Log.d(
-                "tag_id",
-                "id : " + OffoffApplication.user.id + "/ author: " + post?.author?.id.toString()
-            )
             menu!!.findItem(R.id.action_delete).isVisible = false
             menu.findItem(R.id.action_edit).isVisible = false
+        } else {
+            menu!!.findItem(R.id.action_report).isVisible = false
         }
 
         return true

@@ -30,7 +30,7 @@
                 android:id="@+id/toolbar"
                 style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="52dp"
                 app:contentInsetStart="0dp">
@@ -38,7 +38,7 @@
                 <TextView
                     android:id="@+id/tv_toolbar_title"
                     android:layout_width="wrap_content"
-                    android:layout_height="23dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/board_free"

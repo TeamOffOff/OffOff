@@ -56,7 +56,7 @@
                 <TextView
                     android:id="@+id/tv_set_profile"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
                     android:paddingVertical="16dp"
@@ -68,7 +68,7 @@
                 <TextView
                     android:id="@+id/tv_set_personal_info"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
@@ -81,7 +81,7 @@
                 <TextView
                     android:id="@+id/tv_set_notification"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
@@ -94,7 +94,7 @@
                 <TextView
                     android:id="@+id/tv_developer_info"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
@@ -107,7 +107,7 @@
                 <TextView
                     android:id="@+id/tv_app_info"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
@@ -120,7 +120,7 @@
                 <TextView
                     android:id="@+id/tv_question"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
@@ -133,7 +133,7 @@
                 <TextView
                     android:id="@+id/tv_withdrawal"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
@@ -146,7 +146,7 @@
                 <TextView
                     android:id="@+id/tv_logout"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/layout_edit_text"
                     android:paddingHorizontal="22dp"
                     android:paddingVertical="16dp"

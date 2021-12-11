@@ -324,7 +324,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="23dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="28dp"
                 android:layout_marginTop="67dp">
 
@@ -339,7 +339,7 @@
                     <TextView
                         android:id="@+id/tv_toolbar_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="23dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:text="@string/board_free"
