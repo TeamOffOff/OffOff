@@ -1,4 +1,4 @@
-package com.yuuuzzzin.offoff_android.views.ui.settings
+package com.yuuuzzzin.offoff_android.views.ui.user
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +14,6 @@ import com.yuuuzzzin.offoff_android.utils.UserPostType.MY_COMMENT_POST
 import com.yuuuzzzin.offoff_android.utils.UserPostType.MY_POST
 import com.yuuuzzzin.offoff_android.utils.base.BaseFragment
 import com.yuuuzzzin.offoff_android.views.adapter.OptionListAdapter
-import com.yuuuzzzin.offoff_android.views.ui.user.UserPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,7 +50,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(R.layout.fragment_user) {
             OptionListAdapter.OnOptionClickListener {
             override fun onClickOption(item: Option, position: Int) {
                 val intent = Intent(mContext, UserPostActivity::class.java)
-                intent.putExtra("option", "스크랩한 글")
+                intent.putExtra("option", item.title)
                 startActivity(intent)
             }
         })

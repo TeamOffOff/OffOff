@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/userFragment"
-        android:name="com.yuuuzzzin.offoff_android.views.ui.settings.UserFragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.user.UserFragment"
         android:label="fragment_user"
         tools:layout="@layout/fragment_user" />
 
