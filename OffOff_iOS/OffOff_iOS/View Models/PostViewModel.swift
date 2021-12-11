@@ -97,6 +97,7 @@ class PostViewModel {
 
         replyButtonTapped
             .withLatestFrom(isSubReplyInputting) { WritingReply(_id: nil, boardType: $0.boardType, postId: $0.postId, parentReplyId: ($1 != nil) ? $1?._id : nil, content: $0.content) }
+            .do { [weak self] _ in self?.isSubReplyInputting.onNext(nil) }
             .flatMap { reply -> Observable<[Reply]?> in
                 if reply.parentReplyId != nil {
                     var subReply = reply
@@ -108,7 +109,6 @@ class PostViewModel {
             }
             .withUnretained(self)
             .bind { (owner, replyList) in
-                owner.isSubReplyInputting.onNext(nil)
                 if replyList != nil {
                     var replies = [Reply]()
                     replyList!.forEach {

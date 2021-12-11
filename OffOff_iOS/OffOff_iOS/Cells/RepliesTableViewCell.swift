@@ -111,16 +111,19 @@ class RepliesTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        self.containerView.backgroundColor = .w2
+        if let isInputting = self.isSubReplyInputting {
+            isInputting.onNext(nil)
+        }
         bindData()
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .clear
+        self.containerView.backgroundColor = .w2
         self.contentView.addSubview(containerView)
-        
         makeView()
-//        bindData()
     }
     
     private func makeView() {

@@ -57,6 +57,7 @@ class NewPostView: UIView {
         $0.minimumLineSpacing = 0.0
         $0.minimumInteritemSpacing = 0.0
         $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        $0.scrollDirection = .horizontal
     }
     lazy var addingImagesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout).then {
         $0.backgroundColor = .g4
