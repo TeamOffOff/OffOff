@@ -1,6 +1,7 @@
 package com.yuuuzzzin.offoff_android
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import com.yuuuzzzin.offoff_android.service.SharedPreferenceController
 import com.yuuuzzzin.offoff_android.service.models.User
@@ -14,6 +15,9 @@ class OffoffApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         pref = SharedPreferenceController(applicationContext)
+
+        // 다크모드 비활성화
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         // Realm 초기화
         Realm.init(this)
