@@ -23,14 +23,19 @@ def save_image(img_list: list, directory: str):
 
     img_key = ""
     for img in img_list:
-        img_key = str(uuid.uuid4()) + ".jpg"
-        key_list.append(img_key)
-        print("img_key: ", img_key)
+        if img["key"]:
+            img_key = img["key"]
+            key_list.append(img["key"])
+            print(f"Image {img_key} already exists")
+        else:
+            img_key = str(uuid.uuid4()) + ".jpg"
+            key_list.append(img_key)
+            print("img_key: ", img_key)
 
-        img_body = base64.b64decode(img["body"])
-        img_obj = s3.Object(bucket.name, directory + "/" + img_key)
+            img_body = base64.b64decode(img["body"])
+            img_obj = s3.Object(bucket.name, directory + "/" + img_key)
 
-        img_obj.put(Body=img_body)
+            img_obj.put(Body=img_body)
 
     start = time.time()
     time_limit = 5.0
