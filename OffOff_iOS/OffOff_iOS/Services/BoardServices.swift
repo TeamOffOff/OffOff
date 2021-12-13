@@ -10,8 +10,9 @@ import Moya
 import RxMoya
 import RxSwift
 
-public class BoardServices {
-    static let provider = MoyaProvider<BoardAPI>()
+public class BoardServices: Networkable {
+    typealias Target = BoardAPI
+    static let provider = makeProvider()
     
     static func makeBoard(completion: @escaping () -> Void) {
         

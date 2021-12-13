@@ -351,6 +351,7 @@ extension UIImage {
     static let PERSONICON = UIImage(named: "PersonIcon")!
     static let LikeIconBold = UIImage(named: "LikeIconBold")!.withRenderingMode(.alwaysTemplate)
     static let ScrapIconBold = UIImage(named: "ScrapIconBold")!.withRenderingMode(.alwaysTemplate)
+    static let MainLogoWithShadow = UIImage(named: "MainLogoWithShadow")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)

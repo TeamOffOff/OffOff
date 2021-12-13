@@ -15,7 +15,7 @@ enum BoardAPI {
     case getPostList(_ boardType: String, _ firstPostId: String?, _ lastContentID: String?)
 }
 
-extension BoardAPI: TargetType {
+extension BoardAPI: TargetType, AccessTokenAuthorizable {
     var baseURL: URL {
         return URL(string: Constants.API_SOURCE)!
     }
@@ -73,5 +73,7 @@ extension BoardAPI: TargetType {
         return nil
     }
     
-    
+    var authorizationType: AuthorizationType? {
+        return .bearer
+    }
 }

@@ -16,9 +16,10 @@ enum PostAPI {
     case deletePost(post: DeletingPost)
     case likePost(post: PostActivity)
     case modifyPost(post: WritingPost)
+    case getOriginalImages(postId: String, boardType: String)
 }
 
-extension PostAPI: TargetType {
+extension PostAPI: TargetType, AccessTokenAuthorizable {
     var baseURL: URL {
         return URL(string: Constants.API_SOURCE)!
     }
@@ -35,6 +36,8 @@ extension PostAPI: TargetType {
             return "/post"
         case .modifyPost(_):
             return "/post"
+        case .getOriginalImages(_, _):
+            return "/post"
         }
     }
     
@@ -50,6 +53,8 @@ extension PostAPI: TargetType {
             return .put
         case .modifyPost(_):
             return .put
+        case .getOriginalImages(_, _):
+            return .get
         }
     }
     
@@ -69,15 +74,18 @@ extension PostAPI: TargetType {
             return .requestJSONEncodable(post)
         case .modifyPost(let post):
             return .requestJSONEncodable(post)
+        case .getOriginalImages(let postId, let boardType):
+            return .requestParameters(parameters: ["postId": postId, "boardType": boardType], encoding: URLEncoding.default)
         }
     }
     
     var headers: [String : String]? {
-        return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
-//        return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
+        return nil
     }
     
-    
+    var authorizationType: AuthorizationType? {
+        .bearer
+    }
 }
 
 struct DeletingPost: Codable {

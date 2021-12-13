@@ -10,8 +10,9 @@ import Moya
 import RxMoya
 import RxSwift
 
-public class PostServices {
-    static let provider = MoyaProvider<PostAPI>()
+public class PostServices: Networkable {
+    typealias Target = PostAPI
+    static let provider = makeProvider()
     
     static func fetchPost(content_id: String, board_type: String) -> Observable<PostModel?> {
         PostServices.provider
@@ -74,19 +75,6 @@ public class PostServices {
                 default:
                     return .error
                 }
-//                if $0.statusCode == 200 {
-//                    do {
-//                        print(#fileID, #function, #line, $0.statusCode)
-//                        let result = try JSONDecoder().decode(PostModel.self, from: $0.data)
-//                        return result
-//                    } catch {
-//                        print(#fileID, #function, #line, "Decode error")
-//                        return nil
-//                    }
-//                } else {
-//                    print(#fileID, #function, #line, "Status code error: \($0.statusCode)")
-//                    return nil
-//                }
             }
     }
     
@@ -109,6 +97,30 @@ public class PostServices {
                 }
             }
     }
+    
+    static func fetchOriginalImages(postId: String, boardType: String) -> Observable<[ImageObject]> {
+        PostServices.provider
+            .rx.request(.getOriginalImages(postId: postId, boardType: boardType))
+            .asObservable()
+            .map {
+                if $0.statusCode == 200 {
+                    do {
+                        let images = try JSONDecoder().decode(ImageObjectResponse.self, from: $0.data)
+                        return images.image
+                    } catch {
+                        print(#fileID, #function, #line, "Failed to decode:\n \(try $0.mapJSON())")
+                        return []
+                    }
+                } else {
+                    return []
+                }
+            }
+    }
+}
+
+
+struct ImageObjectResponse: Codable {
+    var image: [ImageObject]
 }
 
 enum ActivityResultType {

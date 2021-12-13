@@ -199,6 +199,7 @@ class PostViewController: UIViewController {
         
         // 이미지 표시
         postView.imageTableView.rx.setDelegate(self).disposed(by: disposeBag)
+        
         postImages
             .skip(1)
             .filter { $0.count > 0 }
@@ -208,7 +209,6 @@ class PostViewController: UIViewController {
                 return cell
             }
             .disposed(by: disposeBag)
-        
         
         viewModel.postDeleted
             .observe(on: MainScheduler.instance)
@@ -357,8 +357,6 @@ class PostViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        //        self.postView.makeView()
-        
         RxKeyboard.instance.visibleHeight
             .skip(1)
             .drive(onNext: { [weak self] keyboardVisibleHeight in
@@ -390,16 +388,16 @@ class PostViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // MARK: 화면 터치시 키보드 내리기 (대댓글 작성일 때만)
-        postView.rx
-            .anyGesture(.tap(), .swipe(direction: .up))
-            .when(.recognized)
-            .withLatestFrom(viewModel.isSubReplyInputting)
-            .bind { [weak self] in
-                if $0 != nil {
-                    self?.viewModel.isSubReplyInputting.onNext(nil)
-                }
-            }
-            .disposed(by: disposeBag)
+//        postView.rx
+//            .anyGesture(.tap(), .swipe(direction: .up))
+//            .when(.recognized)
+//            .withLatestFrom(viewModel.isSubReplyInputting)
+//            .bind { [weak self] in
+//                if $0 != nil {
+//                    self?.viewModel.isSubReplyInputting.onNext(nil)
+//                }
+//            }
+//            .disposed(by: disposeBag)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -591,7 +589,19 @@ extension PostViewController: UITextViewDelegate {
 extension PostViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let image = postImages.value[indexPath.row].body.toImage()
-        
         return tableView.frame.width / image.imageRatio
+    }
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        print(#fileID, #function, #line, "")
+        return indexPath
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = OriginalImagesViewController()
+        vc.modalPresentationStyle = .fullScreen
+        vc.postInformation = self.postInfo!
+        vc.firstIndex = indexPath.row
+        self.present(vc, animated: true, completion: nil)
     }
 }

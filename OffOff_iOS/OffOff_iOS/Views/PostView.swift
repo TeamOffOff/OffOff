@@ -97,9 +97,9 @@ class PostView: UIScrollView {
     var imageTableView = ContentSizedTableView().then {
         $0.register(ImageTableViewCell.self, forCellReuseIdentifier: ImageTableViewCell.identifier)
         $0.backgroundColor = .clear
-//        $0.rowHeight = UITableView().estimatedRowHeight
         $0.separatorStyle = .none
         $0.isScrollEnabled = false
+        $0.allowsSelection = true
     }
     
     var likeLabel = TextWithIconView().then {
@@ -252,20 +252,17 @@ class ImageTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        self.contentView.addSubview(photoView)
-//
-//        photoView.snp.makeConstraints {
-//            $0.left.right.equalToSuperview()
-//            $0.top.bottom.equalToSuperview().inset(10.adjustedHeight)
-//        }
-        self.backgroundColor = .g4
-        self.imageView!.setCornerRadius(10.adjustedHeight)
-        self.imageView!.backgroundColor = .g4
-        self.imageView!.contentMode = .scaleAspectFill
-        self.imageView!.snp.remakeConstraints {
+        self.contentView.addSubview(photoView)
+        
+        self.photoView.setCornerRadius(10.adjustedHeight)
+        self.photoView.backgroundColor = .g4
+        self.photoView.contentMode = .scaleAspectFill
+        photoView.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.top.bottom.equalToSuperview().inset(10.adjustedHeight)
         }
+        self.backgroundColor = .g4
+    
         setData()
     }
     
@@ -284,7 +281,7 @@ class ImageTableViewCell: UITableViewCell {
         image
             .bind { [weak self] image in
                 if image != nil {
-                    self?.imageView?.image = image!
+                    self?.photoView.image = image!
                 }
             }
             .disposed(by: disposeBag)

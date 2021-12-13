@@ -73,6 +73,7 @@ struct NetworkLoggerPlugin: PluginType {
         /// HTTP Response Data
         httpLog.append("RESPONSE DATA: \n")
         if let responseString = String(bytes: response.data, encoding: String.Encoding.utf8) {
+            httpLog.append("\(response.statusCode)\n")
 //            httpLog.append("\(responseString)\n")
         }
         httpLog.append("[HTTP Response End]")

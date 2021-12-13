@@ -124,6 +124,12 @@
 		EADEC8DF275DB4DE009A307B /* NetworkLoggerPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8DE275DB4DE009A307B /* NetworkLoggerPlugin.swift */; };
 		EADEC8E2275DC327009A307B /* Networkable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8E1275DC327009A307B /* Networkable.swift */; };
 		EADEC8E4275F9237009A307B /* ButtonWithLeftIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */; };
+		EADF8E9B2764986100A074F0 /* OriginalImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF8E9A2764986100A074F0 /* OriginalImagesViewController.swift */; };
+		EADF8E9D27649C5700A074F0 /* OriginalImagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF8E9C27649C5700A074F0 /* OriginalImagesViewModel.swift */; };
+		EADF8E9F27649E0E00A074F0 /* OriginalImagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF8E9E27649E0E00A074F0 /* OriginalImagesView.swift */; };
+		EADF8EA12764E55F00A074F0 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF8EA02764E55F00A074F0 /* SettingView.swift */; };
+		EADF8EA32764EA0800A074F0 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF8EA22764EA0800A074F0 /* SettingViewController.swift */; };
+		EADF8EA6276592D100A074F0 /* PreparingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF8EA5276592D100A074F0 /* PreparingViewController.swift */; };
 		EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E22689E3D6002B1C6A /* AppDelegate.swift */; };
 		EAE502E52689E3D6002B1C6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */; };
 		EAE502E72689E3D6002B1C6A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE502E62689E3D6002B1C6A /* LoginViewController.swift */; };
@@ -252,6 +258,12 @@
 		EADEC8DE275DB4DE009A307B /* NetworkLoggerPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLoggerPlugin.swift; sourceTree = "<group>"; };
 		EADEC8E1275DC327009A307B /* Networkable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networkable.swift; sourceTree = "<group>"; };
 		EADEC8E3275F9237009A307B /* ButtonWithLeftIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonWithLeftIcon.swift; sourceTree = "<group>"; };
+		EADF8E9A2764986100A074F0 /* OriginalImagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginalImagesViewController.swift; sourceTree = "<group>"; };
+		EADF8E9C27649C5700A074F0 /* OriginalImagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginalImagesViewModel.swift; sourceTree = "<group>"; };
+		EADF8E9E27649E0E00A074F0 /* OriginalImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginalImagesView.swift; sourceTree = "<group>"; };
+		EADF8EA02764E55F00A074F0 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		EADF8EA22764EA0800A074F0 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		EADF8EA5276592D100A074F0 /* PreparingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreparingViewController.swift; sourceTree = "<group>"; };
 		EAE502DF2689E3D6002B1C6A /* OffOff_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffOff_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAE502E22689E3D6002B1C6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EAE502E42689E3D6002B1C6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -385,6 +397,13 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		EADF8EA42764EAD100A074F0 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		EAE502D62689E3D6002B1C6A = {
 			isa = PBXGroup;
 			children = (
@@ -477,6 +496,8 @@
 				EAD849BA273CD79C0010DE1B /* NewPostView.swift */,
 				EAD849BE273ED0260010DE1B /* PostSearchView.swift */,
 				EA0582C1274D1262005855F1 /* MyActivityView.swift */,
+				EADF8E9E27649E0E00A074F0 /* OriginalImagesView.swift */,
+				EADF8EA02764E55F00A074F0 /* SettingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -542,6 +563,7 @@
 				EA983F0C26C0E4980070604E /* NewPostViewModel.swift */,
 				EAD849C2273ED3E50010DE1B /* PostSearchViewModel.swift */,
 				EA0582C5274D1CF1005855F1 /* MyActivityViewModel.swift */,
+				EADF8E9C27649C5700A074F0 /* OriginalImagesViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -549,6 +571,7 @@
 		EAF2127C268FEC4000E47942 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				EADF8EA42764EAD100A074F0 /* Settings */,
 				EA0582C7274E57AD005855F1 /* Shifts */,
 				EA406A8C26A4759600737F90 /* SignUpControllers */,
 				EAE502E62689E3D6002B1C6A /* LoginViewController.swift */,
@@ -561,6 +584,9 @@
 				EAD849C0273ED26A0010DE1B /* PostSearchViewController.swift */,
 				EA0582C3274D14D0005855F1 /* MyActivityViewController.swift */,
 				EAF2128B26907B9600E47942 /* BoardListViewController.swift */,
+				EADF8E9A2764986100A074F0 /* OriginalImagesViewController.swift */,
+				EADF8EA22764EA0800A074F0 /* SettingViewController.swift */,
+				EADF8EA5276592D100A074F0 /* PreparingViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -811,6 +837,7 @@
 				EA72D76026987D5300EB07DA /* Extensions.swift in Sources */,
 				EAF2128C26907B9600E47942 /* BoardListViewController.swift in Sources */,
 				EA07345F2692CECA007830ED /* PostListViewController.swift in Sources */,
+				EADF8EA32764EA0800A074F0 /* SettingViewController.swift in Sources */,
 				EA420B37269BFBD200F6F903 /* PostServices.swift in Sources */,
 				EADEC8DF275DB4DE009A307B /* NetworkLoggerPlugin.swift in Sources */,
 				EACC255B26A5B3B0000B12B6 /* UserModel.swift in Sources */,
@@ -832,17 +859,21 @@
 				EAD7E30A26A00A5C00E2D311 /* CustomNavigationBar.swift in Sources */,
 				EAD849C5273ED4450010DE1B /* SearchAPI.swift in Sources */,
 				EA8A333F26D4CC720014D97C /* RoutineCell.swift in Sources */,
+				EADF8E9F27649E0E00A074F0 /* OriginalImagesView.swift in Sources */,
 				EA83564B26D3A47600D60C46 /* RoutineModel.swift in Sources */,
 				EA83564D26D3A6D500D60C46 /* ScheduleView.swift in Sources */,
 				EA07345526929C01007830ED /* Post.swift in Sources */,
+				EADF8E9D27649C5700A074F0 /* OriginalImagesViewModel.swift in Sources */,
 				EA8A333B26D4CB490014D97C /* SetRoutineView.swift in Sources */,
 				EA2C4DF426DFD4890056A93C /* ShiftTableViewCell.swift in Sources */,
 				EAF7073526E731CE00B7B6D1 /* AddShiftView.swift in Sources */,
 				EA8A334926D63F480014D97C /* EditShiftViewModel.swift in Sources */,
 				EAD6FEDB2716C45100563005 /* ContentSizedTableView.swift in Sources */,
 				EAE502E32689E3D6002B1C6A /* AppDelegate.swift in Sources */,
+				EADF8EA12764E55F00A074F0 /* SettingView.swift in Sources */,
 				EA526E1D26CD0A100059A90C /* FirstViewController.swift in Sources */,
 				EAD849BF273ED0260010DE1B /* PostSearchView.swift in Sources */,
+				EADF8E9B2764986100A074F0 /* OriginalImagesViewController.swift in Sources */,
 				EACF1B3926B6698C00C153D3 /* BoardServices.swift in Sources */,
 				EA8A334726D63ADD0014D97C /* EditShiftViewController.swift in Sources */,
 				EA72D75E26982BCA00EB07DA /* NewPostViewController.swift in Sources */,
@@ -866,6 +897,7 @@
 				EA983F0F26C1183D0070604E /* Constants.swift in Sources */,
 				EA975A5C26AFB87000C6FB41 /* CircularImageView.swift in Sources */,
 				EAF21291269081B800E47942 /* CommunityListSampleData.swift in Sources */,
+				EADF8EA6276592D100A074F0 /* PreparingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
