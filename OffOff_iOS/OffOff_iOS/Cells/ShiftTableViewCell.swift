@@ -34,7 +34,7 @@ class ShiftTableViewCell: UITableViewCell {
         disposeBag = DisposeBag()
         self.shift
             .debug()
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .filter {
                 $0 != nil
             }
@@ -53,7 +53,7 @@ class ShiftTableViewCell: UITableViewCell {
         
         self.shift
             .debug()
-            .observeOn(MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .filter {
                 $0 != nil
             }

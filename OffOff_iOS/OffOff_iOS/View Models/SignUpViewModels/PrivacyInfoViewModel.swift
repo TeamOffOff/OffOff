@@ -35,6 +35,7 @@ class PrivacyInfoViewModel {
                 return UserServices.emailDuplicationCheck(email: email).asDriver(onErrorJustReturn: false)
             }
         isBirthdayConfirmed = input.birthdayText
+            .debug()
             .map { birthday in
                 return Constants.isValidString(str: birthday, regEx: Constants.USERBIRTH_RULE)
             }

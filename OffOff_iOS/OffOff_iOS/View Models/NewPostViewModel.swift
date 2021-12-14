@@ -10,44 +10,78 @@ import RxSwift
 import RxCocoa
 
 class NewPostViewModel {
-    let postCreation: Driver<Bool>
-    let isTitleConfirmed: Driver<Bool>
-    let isContentConfiremd: Driver<Bool>
-    let postCreated: Observable<Bool>
-    let newPost: PublishSubject<PostModel?> = PublishSubject<PostModel?>()
-
+    let isTitleConfirmed = BehaviorSubject<Bool>(value: false)
+    let isContentConfiremd = BehaviorSubject<Bool>(value: false)
+    var postCreated = Observable<PostModel?>.just(nil)
+    var isUploadingImage = Observable<Bool>.just(false)
+    
+    var isCreating = BehaviorSubject<Bool>(value: false)
+    
+    var uploadingImages = BehaviorRelay<[UIImage]>(value: [])
+    var disposeBag = DisposeBag()
+    
     init(
         input: (
             titleText: Driver<String>,
             contentText: Driver<String>,
-            createButtonTap: Signal<()>
+            createButtonTap: Observable<UITapGestureRecognizer>,
+            imageUploadButtonTapped: ControlEvent<()>,
+            post: Observable<PostModel?>
         )
     ) {
         // outputs
+        let titleAndContent = Driver.combineLatest(input.titleText, input.contentText, input.post.asDriver(onErrorJustReturn: nil), uploadingImages.asDriver()) { (title: $0, content: $1, post: $2, images: $3) }
         
-        isTitleConfirmed = input.titleText.map { $0 != "" }
-        isContentConfiremd = input.contentText.map { $0 != "" }
-        
-        let titleAndContent = Driver.combineLatest(input.titleText, input.contentText) { (title: $0, content: $1) }
-        
-        postCreation = input.createButtonTap.withLatestFrom(titleAndContent)
-            .flatMap { pair in
-                return Driver.just(pair.title != "" && pair.content != "")
+        postCreated = input.createButtonTap.withLatestFrom(titleAndContent)
+            .asObservable()
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .withUnretained(self)
+            .do { (owner, _) in
+                owner.isCreating.onNext(true)
             }
-        
-        var postModel: PostModel?
-        postCreated = postCreation.asObservable().withLatestFrom(titleAndContent.asObservable()) {
-            print(#fileID, #function, #line, "")
-            if $0 {
-                print($1)
+            .flatMap { (owner, val) -> Observable<PostModel?> in
+                if val.title == "" {
+                    owner.isTitleConfirmed.onNext(false)
+                    return Observable.just(nil)
+                }
+                if val.content == "" {
+                    owner.isContentConfiremd.onNext(false)
+                    return Observable.just(nil)
+                }
                 
-                // TODO: 현재 로그인하고 있는 회원정보, 현재 접속하고 있는 게시판 정보를 넣어서 새로운 포스트 작성
-                postModel = PostModel(_id: nil, boardType: "free", author: Author(_id: "admin", nickname: "admin", type: "admin", profileImage: nil), date: "2021-08-11", title: $1.0, content: $1.1,image: nil, likes: 0, viewCount: 0, reportCount: 0, replyCount: 0)
+                if Constants.currentBoard != nil && Constants.loginUser != nil {
+                    var post = WritingPost(boardType: Constants.currentBoard!, author: Constants.loginUser!._id, title: val.title, content: val.content)
+                    post.image = val.images.map { ImageObject(body: $0.toBase64String()) }
+                    if val.post != nil {
+                        post._id = val.post!._id
+                        post.author = val.post!.author!._id!
+                        return PostServices.modifyPost(post: post)
+                    }
+                    
+                    return PostServices.createPost(post: post)
+                }
+                return Observable.just(nil)
             }
-        }
-        .debug()
-        .flatMap {
-            PostServices.createPost(post: postModel!).map { $0 }
-        }
+        
+        isUploadingImage = input.imageUploadButtonTapped.asObservable().map { true }
+    }
+}
+
+struct WritingPost: Codable {
+    var _id: String? = nil
+    var boardType: String
+    var author: String
+    var title: String
+    var content: String
+    var image: [ImageObject] = []
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(_id, forKey: ._id)
+        try container.encode(boardType, forKey: .boardType)
+        try container.encode(author, forKey: .author)
+        try container.encode(title, forKey: .title)
+        try container.encode(content, forKey: .content)
+        try container.encode(image, forKey: .image)
     }
 }

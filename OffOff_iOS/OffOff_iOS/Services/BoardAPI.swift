@@ -12,7 +12,7 @@ enum BoardAPI {
     case makeBoard
     case deleteBoard
     case getBoardList
-    case getPostList(_ boardType: String, _ lastContentID: String?)
+    case getPostList(_ boardType: String, _ firstPostId: String?, _ lastContentID: String?)
 }
 
 extension BoardAPI: TargetType {
@@ -28,7 +28,7 @@ extension BoardAPI: TargetType {
             return "/boardlist"
         case .getBoardList:
             return "/boardlist"
-        case .getPostList(let boardType, _):
+        case .getPostList(let boardType, _, _):
             return "/postlist/\(boardType)"
         }
     }
@@ -41,7 +41,7 @@ extension BoardAPI: TargetType {
             return .delete
         case .getBoardList:
             return .get
-        case .getPostList(_, _):
+        case .getPostList(_, _, _):
             return .get
         }
     }
@@ -58,13 +58,19 @@ extension BoardAPI: TargetType {
             return .requestPlain
         case .getBoardList:
             return .requestPlain
-        case .getPostList(let boardType, let lastContentID):
+        case .getPostList(_, let firstPostId, let lastPostId):
+            if lastPostId != nil {
+                return .requestParameters(parameters: ["volume":10, "lastPostId":lastPostId!], encoding: URLEncoding.default)
+            } else if firstPostId != nil {
+                return .requestParameters(parameters: ["firstPostId":firstPostId!], encoding: URLEncoding.default)
+            }
             return .requestPlain
         }
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json"]
+//        return ["Content-type": "application/json"]
+        return nil
     }
     
     

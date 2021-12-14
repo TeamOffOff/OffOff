@@ -21,40 +21,43 @@ class FirstViewController: UIViewController {
         super.viewDidLoad()
         self.view.addSubview(imageView)
         self.view.backgroundColor = .mainColor
+        
         imageView.snp.makeConstraints {
-            $0.edges.equalTo(self.view.safeAreaLayoutGuide)
+            $0.center.equalToSuperview()
+            $0.width.height.equalTo(130)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loginCheck()
     }
     
     private func loginCheck() {
-        if let token = UserDefaults.standard.string(forKey: "loginToken") {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate
+        if let token = KeyChainController.shared.read(Constants.ServiceString, account: "AccessToken") {
             print("Auto logined... token:", token)
-            UserServices.getUserInfo(token: token)
-                .debug()
+            UserServices.getUserInfo()
                 .delaySubscription(.seconds(1), scheduler: MainScheduler.instance)
-                .observeOn(MainScheduler.instance)
-                .bind {
-                    let vc = ($0 != nil) ? TabBarController() : LoginViewController()
-                    vc.modalPresentationStyle = .fullScreen
-                    self.present(vc, animated: false)
+                .observe(on: MainScheduler.instance)
+                .withUnretained(self)
+                .bind { (owner, info) in
+                    var targetVC: UIViewController?
+                    
+                    if info != nil {
+                        Constants.loginUser = info
+                        targetVC = TabBarController()
+                    } else {
+                        targetVC = LoginViewController()
+                    }
+                    targetVC!.modalPresentationStyle = .fullScreen
+                    sceneDelegate.window?.rootViewController = targetVC!
                 }
                 .disposed(by: disposeBag)
         } else {
             let vc = LoginViewController()
             vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: false)
+            sceneDelegate.window?.rootViewController = vc
         }
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

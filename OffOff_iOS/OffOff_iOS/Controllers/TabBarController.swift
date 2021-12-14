@@ -14,46 +14,41 @@ class TabBarController: UITabBarController {
         view.backgroundColor = .systemBackground
         self.tabBar.shadowImage = UIImage()
         tabBar.tintColor = Constants.mainColor
+        tabBar.backgroundColor = .w2
         setupVCs()
     }
     
-    fileprivate func createNavController(for rootViewController: UIViewController, title: String, image: UIImage) -> UIViewController {
-        let navController = UINavigationController(navigationBarClass: CustomNavigationBar.self, toolbarClass: nil)
+    fileprivate func createNavController(for rootViewController: UIViewController, title: String?, image: UIImage) -> UIViewController {
+        let navController = UINavigationController()
         navController.viewControllers = [rootViewController]
         navController.tabBarItem.title = title
-        navController.tabBarItem.image = image
+        navController.tabBarItem.image = image.resize(to: CGSize(width: 26, height: 26).resized(basedOn: .height))
+        navController.tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: -20.adjustedHeight, right: 0)
         
         navController.navigationBar.barTintColor = .mainColor
         navController.navigationBar.prefersLargeTitles = false
-        
-        if let navigationBar = navController.navigationBar as? CustomNavigationBar {
-            navigationBar.titleLabel.text = title
-            
-        }
-        
         return navController
+    }
+    
+    fileprivate func createViewController(for vc: UIViewController, title: String?, image: UIImage) -> UIViewController {
+        vc.tabBarItem.title = title
+        vc.tabBarItem.image = image.resize(to: CGSize(width: 26, height: 26).resized(basedOn: .height))
+        vc.tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: -21.adjustedHeight, right: 0)
+        return vc
     }
     
     func setupVCs() {
         viewControllers = [
             // TODO: 첫 번째 tab의 navigation bar가 작아지는 문제
-            createNavController(for: BoardListViewController(), title: NSLocalizedString("커뮤니티", comment: ""), image: UIImage(systemName: "house")!),
-//            createNavController(for: PostListViewController(), title: NSLocalizedString("Community", comment: ""), image: UIImage(systemName: "text.justify")!),
-            createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
-            createNavController(for: ScheduleViewController(), title: NSLocalizedString("스케쥴", comment: ""), image: UIImage(systemName: "person")!),
-            createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!),
-            createNavController(for: UIViewController(), title: NSLocalizedString("프로필", comment: ""), image: UIImage(systemName: "person")!)
+//            createViewController(for: BoardListViewController(), title: nil, image: .HOMEICON),
+//            createNavController(for: UIViewController(), title: nil, image: .BOARDICON),
+//            createNavController(for: ScheduleViewController(), title: nil, image: .CALENDARICON),
+//            createViewController(for: MyActivityViewController(), title: nil, image: .PERSONICON),
+//            createNavController(for: UIViewController(), title: nil, image: .SETTINGICON)
+            
+            createViewController(for: BoardListViewController(), title: nil, image: .HOMEICON),
+            createViewController(for: MyActivityViewController(), title: nil, image: .PERSONICON)
         ]
     }
     
 }
-
-//#if canImport(SwiftUI) && DEBUG
-//import SwiftUI
-//@available (iOS 13.0, *)
-//struct TabBarPreview: PreviewProvider{
-//    static var previews: some View {
-//        TabBarController().showPreview(.iPhone8)
-//    }
-//}
-//#endif

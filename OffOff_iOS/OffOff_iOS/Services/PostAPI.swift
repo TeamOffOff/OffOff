@@ -12,9 +12,10 @@ import Moya
 
 enum PostAPI {
     case getPost(content_id: String, board_type: String)
-    case makePost(post: PostModel)
-//    case modifyPost
-//    case deletePost
+    case makePost(post: WritingPost)
+    case deletePost(post: DeletingPost)
+    case likePost(post: PostActivity)
+    case modifyPost(post: WritingPost)
 }
 
 extension PostAPI: TargetType {
@@ -28,6 +29,12 @@ extension PostAPI: TargetType {
             return "/post"
         case .makePost(_):
             return "/post"
+        case .deletePost(_):
+            return "/post"
+        case .likePost(_):
+            return "/post"
+        case .modifyPost(_):
+            return "/post"
         }
     }
     
@@ -37,6 +44,12 @@ extension PostAPI: TargetType {
             return .get
         case .makePost(_):
             return .post
+        case .deletePost(_):
+            return .delete
+        case .likePost(_):
+            return .put
+        case .modifyPost(_):
+            return .put
         }
     }
     
@@ -50,12 +63,25 @@ extension PostAPI: TargetType {
             return .requestParameters(parameters: ["postId": content_id, "boardType": board_type], encoding: URLEncoding.default)
         case .makePost(let post):
             return .requestJSONEncodable(post)
+        case .deletePost(let post):
+            return .requestJSONEncodable(post)
+        case .likePost(let post):
+            return .requestJSONEncodable(post)
+        case .modifyPost(let post):
+            return .requestJSONEncodable(post)
         }
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json"]
+        return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
+//        return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
     }
     
     
+}
+
+struct DeletingPost: Codable {
+    var _id: String
+    var boardType: String
+    var author: String
 }

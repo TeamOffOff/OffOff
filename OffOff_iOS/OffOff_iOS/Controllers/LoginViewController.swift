@@ -21,6 +21,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         loginView.idTextField.delegate = self
         loginView.passwordTextField.delegate = self
         
@@ -48,45 +49,70 @@ class LoginViewController: UIViewController {
         // signup button
         loginView.signupButton
             .rx.tap
-            .bind {
+            .bind { [weak self] in
                 let vc = UINavigationController(rootViewController: IDPWViewController())
                 vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true, completion: nil)
+                self?.present(vc, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
         
         // bind to results
+        viewModel.isLoading
+            .bind {
+                if $0 {
+                    LoadingHUD.show()
+                }
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.loginButtonAvailable
-            .drive(onNext: {
+            .drive(onNext: { [weak self] in
+                guard let self = self else { return }
                 if $0 {
                     self.loginView.loginButton.isUserInteractionEnabled = true
                     self.loginView.loginButton.backgroundColor = .mainColor
                 } else {
                     self.loginView.loginButton.isUserInteractionEnabled = false
-                    self.loginView.loginButton.backgroundColor = .lightGray
+                    self.loginView.loginButton.backgroundColor = .g1
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isSignedIn
-            .drive(onNext: { result in
+            .do { _ in LoadingHUD.hide() }
+            .drive(onNext: { [weak self] result in
                 switch result {
                 case .Success:
-                    let controller = TabBarController()
-                    controller.modalPresentationStyle = .fullScreen
-                    self.present(controller, animated: true, completion: nil)
+                    print(#fileID, #function, #line, "")
                 case .NotExist:
-                    let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "로그인 오류", message: "존재하지 않는 회원입니다.", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default, handler: nil)
                     alert.addAction(action)
-                    self.present(alert, animated: true, completion: nil)
+                    self?.present(alert, animated: true, completion: nil)
                 case .PasswordNotCorrect:
                     let alert = UIAlertController(title: "로그인 오류", message: "아이디 혹은 비밀번호가 일치하지 않습니다", preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default, handler: nil)
                     alert.addAction(action)
-                    self.present(alert, animated: true, completion: nil)
+                    self?.present(alert, animated: true, completion: nil)
+                case .NoAuthorization:
+                    let alert = UIAlertController(title: "로그인 오류", message: "이메일 인증이 완료되지 않았습니다.\n이메일을 확인해주세요.", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "확인", style: .default, handler: nil)
+                    alert.addAction(action)
+                    self?.present(alert, animated: true, completion: nil)
                 }
             })
+            .disposed(by: disposeBag)
+        
+        viewModel.isEntering
+            .observe(on: MainScheduler.asyncInstance)
+            .do { _ in LoadingHUD.hide() }
+            .bind { [weak self] in
+                if $0 {
+                    let controller = TabBarController()
+                    controller.modalPresentationStyle = .fullScreen
+                    self?.present(controller, animated: true, completion: nil)
+                }
+            }
             .disposed(by: disposeBag)
     }
 }

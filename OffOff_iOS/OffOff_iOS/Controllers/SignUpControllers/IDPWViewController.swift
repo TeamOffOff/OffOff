@@ -12,20 +12,13 @@ import RxCocoa
 class IDPWViewController: UIViewController {
     let disposeBag = DisposeBag()
     lazy var idpwView = IDPWView(frame: .zero)
-    var navController: UINavigationController?
     
     // MARK: - Life Cycle
     override func loadView() {
         self.view = idpwView
-        self.title = "아이디 및 비밀번호"
+        self.navigationController?.isNavigationBarHidden = true
+        
         idpwView.makeView()
-        navController = self.navigationController
-        navController?.navigationBar.barTintColor = .mainColor
-        navController?.navigationBar.tintColor = .white
-        navController?.navigationBar.prefersLargeTitles = false
-        navController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-        navController?.navigationBar.isTranslucent = false
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "취소", style: .done, target: self, action: #selector(onBackButton))
     }
     
     override func viewDidLoad() {
@@ -35,7 +28,7 @@ class IDPWViewController: UIViewController {
         idpwView.passwordRepeatField.delegate = self
         
         // Shared Model 초기화
-        SharedSignUpModel.model = UserModel(_id: "", activity: Activity(), information: Information(name: "", email: "", birth: "", type: nil), password: "", subInformation: SubInformation(nickname: "", profileImage: nil))
+        SharedSignUpModel.model = UserModel(_id: "", activity: Activity(), information: Information(name: "", email: "", birth: "", type: "student"), password: "", subInformation: SubInformation(nickname: "", profileImage: []))
         
         // input과 함께 viewModel 생성
         let viewModel = IDPWViewModel(
@@ -44,72 +37,81 @@ class IDPWViewController: UIViewController {
                     .rx.text
                     .orEmpty // Optional 해제
                     .skip(1) // 초기 값 스킵
-                    .distinctUntilChanged() // 이전 값과 같은지 테스트
-                    .asDriver(onErrorJustReturn: ""),
+                    .distinctUntilChanged(), // 이전 값과 같은지 테스트
                 passwordText: idpwView.passwordTextField
                     .rx.text
                     .orEmpty
                     .skip(1)
-                    .distinctUntilChanged()
-                    .asDriver(onErrorJustReturn: ""),
+                    .distinctUntilChanged(),
                 passwordRepeatText: idpwView.passwordRepeatField
                     .rx.text
                     .orEmpty
                     .skip(1)
-                    .distinctUntilChanged()
-                    .asDriver(onErrorJustReturn: ""),
+                    .distinctUntilChanged(),
                 nextButtonTap: idpwView.nextButton
                     .rx.tap
-                    .asSignal()
             ))
         
         // bind result {
         viewModel.isIdConfirmed
-            .drive(onNext:  {
-                if $0 {
-                    self.idpwView.idTextField.setTextFieldVerified()
-                } else {
-                    self.idpwView.idTextField.setTextFieldFail(errorMessage: IDErrorMessage.idNotFollowRule.rawValue)
+            .observe(on: MainScheduler.instance)
+            .debug()
+            .subscribe(onNext:  { [weak self] in
+                switch $0 {
+                case .okay:
+                    self?.idpwView.idConfirmLabel.text = "사용 가능한 아이디입니다."
+                case .duplicated:
+                    self?.idpwView.idConfirmLabel.text = "이미 사용 중이거나 탈퇴한 아이디입니다."
                     SharedSignUpModel.model._id = ""
+                case .ruleNotSatisfied:
+                    self?.idpwView.idConfirmLabel.text = "아이디 (5-20자 이내, 영문, 숫자 사용가능)"
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isPasswordComfirmed
-            .drive(onNext: {
+            .subscribe(onNext: { [weak self] in
                 if $0 {
-                    self.idpwView.passwordTextField.setTextFieldVerified()
+                    self?.idpwView.passwordConfirmLabel.text = "사용 가능한 비밀번호입니다."
                 } else {
-                    self.idpwView.passwordTextField.setTextFieldFail(errorMessage: Constants.PW_ERROR_MESSAGE)
+                    self?.idpwView.passwordConfirmLabel.text = "8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."
                     SharedSignUpModel.model.password = ""
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isPasswordRepeatComfirmed
-            .drive(onNext: {
+            .subscribe(onNext: { [weak self] in
                 if $0 {
-                    self.idpwView.passwordRepeatField.setTextFieldVerified()
+                    self?.idpwView.passwordRepeatConfirmLabel.text = "비밀번호가 일치합니다."
                 } else {
-                    self.idpwView.passwordRepeatField.setTextFieldFail(errorMessage: Constants.PWVERIFY_ERROR_MESSAGE)
+                    self?.idpwView.passwordRepeatConfirmLabel.text = "비밀번호가 일치하지 않습니다."
                     SharedSignUpModel.model.password = ""
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel.isNextEnabled
-            .drive(onNext: {
-                self.idpwView.nextButton.isUserInteractionEnabled = $0
-                self.idpwView.nextButton.backgroundColor = $0 ? .mainColor : .lightGray
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                self?.idpwView.nextButton.isUserInteractionEnabled = $0
+                self?.idpwView.nextButton.backgroundColor = $0 ? .g4 : .g1
             })
             .disposed(by: disposeBag)
         
         viewModel.isValidatedToProgress
-            .drive(onNext: {
+            .debug()
+            .subscribe(onNext: { [weak self] in
                 if $0 {
-                    self.navController?.pushViewController(PrivacyInfoViewController(), animated: true)
+                    self?.navigationController?.pushViewController(PrivacyInfoViewController(), animated: true)
                 }
             })
+            .disposed(by: disposeBag)
+        
+        self.idpwView.backButton.rx.tap
+            .bind { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
+            }
             .disposed(by: disposeBag)
         // }
         

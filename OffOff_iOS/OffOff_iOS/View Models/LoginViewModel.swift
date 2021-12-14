@@ -14,6 +14,8 @@ class LoginViewModel {
     // outputs
     let loginButtonAvailable: Driver<Bool>
     let isSignedIn: Driver<LoginResult>
+    let isEntering: Observable<Bool>
+    let isLoading: Observable<Bool>
     
     init(
         input: (
@@ -27,24 +29,21 @@ class LoginViewModel {
         
         let idAndPassword = Driver.combineLatest(input.idText, input.passwordText)
         
+        isLoading = input.loginButtonTap.map { true }.asObservable()
+        
         isSignedIn = input.loginButtonTap.withLatestFrom(idAndPassword)
             .flatMapLatest {
                 return UserServices.login(id: $0, password: $1).asDriver(onErrorJustReturn: .NotExist)
             }
+        
+        isEntering = isSignedIn
+            .asObservable()
+            .filter { $0 == .Success }
+            .flatMapLatest { _ in
+                return UserServices.getUserInfo()
+            }
+            .map {
+                return $0 != nil ? true : false
+            }
     }
-    
-//    func login(loginStatus: Box<LoginStatus>) {
-//        if let loginModel = loginModel.value {
-//            print(#fileID, #function, #line, loginModel)
-//            let encoder = JSONEncoder()
-//            encoder.outputFormatting = .prettyPrinted
-//
-//            if let encodedData = try? encoder.encode(loginModel) {
-//                // 서버로 아이디 / 비밀번호 보내기
-//            }
-//
-//            // if loginSuccess
-//            loginStatus.value = [LoginStatus.failed, LoginStatus.successed].randomElement()!
-//        }
-//    }
 }

@@ -9,8 +9,8 @@ import UIKit
 
 class TextWithIconView: UIView {
     var iconImageView = UIImageView().then {
-        $0.image = .ICON_LIKES_RED
-        $0.contentMode = .scaleToFill
+        $0.image = .LIKEICON
+        $0.contentMode = .scaleAspectFill
     }
     
     var label = UILabel().then {
@@ -23,14 +23,24 @@ class TextWithIconView: UIView {
         super.init(frame: frame)
         self.addSubview(iconImageView)
         self.addSubview(label)
+//        label.snp.makeConstraints {
+//            $0.right.equalToSuperview()
+//            $0.top.bottom.equalToSuperview()
+//        }
+//        iconImageView.snp.makeConstraints {
+//            $0.right.equalTo(label.snp.left).inset(-2.5)
+//            $0.centerY.equalTo(label)
+//            $0.width.height.equalTo(10.0)
+//        }
+        iconImageView.snp.makeConstraints {
+            $0.left.equalToSuperview()
+            $0.centerY.equalTo(label)
+            $0.width.height.equalTo(10.0)
+        }
         label.snp.makeConstraints {
+            $0.left.equalTo(iconImageView.snp.right).offset(4.adjustedWidth)
             $0.right.equalToSuperview()
             $0.top.bottom.equalToSuperview()
-        }
-        iconImageView.snp.makeConstraints {
-            $0.right.equalTo(label.snp.left).inset(-2.5)
-            $0.centerY.equalTo(label)
-            $0.width.height.equalTo(label.snp.height)
         }
     }
     
