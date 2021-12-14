@@ -20,7 +20,7 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentBoardsBinding
 import com.yuuuzzzin.offoff_android.service.models.Board
 import com.yuuuzzzin.offoff_android.service.models.Post
-import com.yuuuzzzin.offoff_android.utils.Constants.toast
+import com.yuuuzzzin.offoff_android.utils.Constants.makeDefaultSnackbar
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseFragment
 import com.yuuuzzzin.offoff_android.viewmodel.BoardListViewModel
@@ -74,7 +74,8 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
                 }
 
                 // 백 버튼 최초 클릭 시
-                requireContext().toast("뒤로가기 버튼을 한 번 더 누르면\n앱이 종료됩니다.")
+                makeDefaultSnackbar(view!!, "뒤로가기 버튼을 한 번 더 누르면 앱이 종료됩니다.")
+//                requireContext().toast("뒤로가기 버튼을 한 번 더 누르면\n앱이 종료됩니다.")
                 backPressedTime = System.currentTimeMillis()
 
             }

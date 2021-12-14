@@ -612,6 +612,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             }
         }
 
+        builder.setTitle("메뉴")
         builder.create().show()
     }
 
