@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.yuuuzzzin.offoff_android.viewmodel.PostViewModel" />
@@ -130,12 +132,14 @@
                         android:layout_height="10dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="12dp"
+                        android:visibility="@{item.likes.empty ? View.GONE : View.VISIBLE}"
                         android:background="@drawable/ic_like_comment" />
 
                     <TextView
                         android:id="@+id/tv_likes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="@{item.likes.empty ? View.GONE : View.VISIBLE}"
                         android:layout_marginStart="4dp"
                         android:text="@{String.valueOf(item.likes.size)}"
                         android:textColor="@color/green2"
