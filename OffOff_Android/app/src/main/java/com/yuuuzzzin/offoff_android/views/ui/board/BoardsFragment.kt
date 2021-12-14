@@ -74,7 +74,7 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
                 }
 
                 // 백 버튼 최초 클릭 시
-                requireContext().toast("뒤로가기 버튼을 한 번 더 누르면 앱이 종료됩니다.")
+                requireContext().toast("뒤로가기 버튼을 한 번 더 누르면\n앱이 종료됩니다.")
                 backPressedTime = System.currentTimeMillis()
 
             }
