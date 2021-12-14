@@ -39,7 +39,7 @@ class VerifyControl(Resource):
         else:
             print('변경 안 됨')
             # 메일 보내기
-            send_email(GMAIL_ID, "", "{}변경 완료".format(verify_email))
+            send_email(GMAIL_ID, "", "{}변경 실패".format(verify_email))
         
         return make_response(render_template('email.html'))
         

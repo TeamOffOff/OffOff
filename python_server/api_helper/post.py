@@ -198,6 +198,28 @@ class PostControl(Resource):
                                         collection_name=board_type,
                                         modify={"$set": request_info})
 
+            if result.raw_result["n"] == 0:
+                response_result = make_response({"queryStatus": "update fail"}, 500)
+            else:
+                post = mongodb.find_one(query={"_id":ObjectId(post_id)}, collection_name=board_type)
+                post["_id"] = str(post["_id"])
+                post["date"] = (post["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
+
+                if board_type == "secret_board":
+                    post["author"]["nickname"] = "익명"
+                    post["author"]["profileImage"] = []
+                else:
+                    post["author"]["profileImage"] = get_image(post["author"]["profileImage"], "user", "200")
+
+                if post["image"]:
+                    time.sleep(2)  # 이미지 업로드하는데 걸리는 시간 고려
+                    post["image"] = get_image(post["image"], "post", "600")
+
+                response_result = make_response(post, 200)
+
+            return response_result
+
+
         else:  # integer을 수정하는 경우
             print("integer 수정하는 경우")
 

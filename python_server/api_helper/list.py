@@ -411,29 +411,32 @@ class ActivityControl(Resource):
 
         else:  # 타켓 activity 가 있는 경우
             post_list = []
+            post_id_list = []
             for post in target_activity:
                 board_type = post["boardType"] + "_board"
                 post_id = post["postId"]
+                
+                if post_id in post_id_list: # 중복피하기 위함
+                    continue
+                else:
+                    post_id_list.append(post_id)  # 중복 피하기 위함
 
-                result = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
-                if result:  # 해당 게시글이 있는 경우(삭제되지 않은 경우)
-                    if result not in post_list:  # 중복 피하기 위함
+                    result = mongodb.find_one(query={"_id": ObjectId(post_id)}, collection_name=board_type)
+                    if result:  # 해당 게시글이 있는 경우(삭제되지 않은 경우)
                         result["_id"] = str(result["_id"])
                         result["date"] = (result["date"]).strftime("%Y년 %m월 %d일 %H시 %M분")
                         result["image"] = get_image(result["image"], "post", "200")                
                         
                         # 비밀게시판 처리
                         if board_type == "secret_board":
-                            result["author"] = None
+                            post["author"]["nickname"] = "익명"
+                            post["author"]["profileImage"] = []
                         else:
                             result["author"]["profileImage"] = []
                         post_list.append(result)  # 제일 뒤로 추가함 => 결국 위치 동일
 
-                    else: # 중복된 경우
+                    else:  # 삭제된 경우
                         continue
-
-                else:  # 삭제된 경우
-                    continue
 
             post_list.sort(key=lambda x: x["_id"], reverse=True)
             response_result = make_response({
