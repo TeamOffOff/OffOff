@@ -118,22 +118,36 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <TextView
-                android:id="@+id/tv_no_result"
+            <LinearLayout
+                android:id="@+id/layout_no_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="160dp"
-                android:gravity="center"
-                android:lineSpacingExtra="8dp"
-                android:text="검색 결과가 없습니다."
-                android:textColor="@color/green3"
-                android:textSize="15sp"
-                android:textStyle="bold"
+                android:layout_marginTop="128dp"
+                android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_alert" />
+
+                <TextView
+                    android:id="@+id/tv_no_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="검색 결과가 없습니다"
+                    android:textColor="@color/white3"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
