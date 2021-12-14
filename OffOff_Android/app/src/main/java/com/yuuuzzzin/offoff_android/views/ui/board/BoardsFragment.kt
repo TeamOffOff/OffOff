@@ -1,6 +1,7 @@
 package com.yuuuzzzin.offoff_android.views.ui.board
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -8,6 +9,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,6 +20,7 @@ import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentBoardsBinding
 import com.yuuuzzzin.offoff_android.service.models.Board
 import com.yuuuzzzin.offoff_android.service.models.Post
+import com.yuuuzzzin.offoff_android.utils.Constants.toast
 import com.yuuuzzzin.offoff_android.utils.RecyclerViewUtils
 import com.yuuuzzzin.offoff_android.utils.base.BaseFragment
 import com.yuuuzzzin.offoff_android.viewmodel.BoardListViewModel
@@ -32,10 +35,13 @@ import java.io.Serializable
 class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boards) {
 
     private val viewModel: BoardListViewModel by viewModels()
+    private lateinit var callback: OnBackPressedCallback
+    private var backPressedTime: Long = 0
+
     private lateinit var boardListAdapter: BoardListAdapter
     private lateinit var postListAdapter: BoardAdapter
     private lateinit var lastPostId: String
-    private lateinit var currentPostList: Array<Post>
+    private var currentPostList: Array<Post> = emptyArray()
     private var clickedPosition: Int? = 0
     private var searchingQuery: String? = null
     private var isFirst: Boolean = true
@@ -54,6 +60,27 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
                 clickedPosition!!
             )
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                // 백 버튼 2초 내 다시 클릭 시 앱 종료
+                if (System.currentTimeMillis() - backPressedTime < 2000) {
+                    activity!!.finish()
+                    return
+                }
+
+                // 백 버튼 최초 클릭 시
+                requireContext().toast("뒤로가기 버튼을 한 번 더 누르면 앱이 종료됩니다.")
+                backPressedTime = System.currentTimeMillis()
+
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,20 +115,22 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
 
                 val coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
                 coroutineScope.launch {
-                    delay(500)  // debounce timeOut
+                    delay(500) // debounce timeOut
                     if (query != searchingQuery)
                         return@launch
 
                     if (searchingQuery.isNullOrBlank()) {
                         postListAdapter.clearPostList()
                         binding.rvPostPreview.visibility = View.GONE
-                        //binding.tvNoResult.visibility = View.GONE
+                        binding.layoutNoResult.visibility = View.GONE
                         binding.layoutBoards.visibility = View.VISIBLE
                     } else {
-                        Log.d("tag_textWatcher", query)
+                        Log.d("tag_textWatcher 감지", query)
                         binding.layoutBoards.visibility = View.GONE
+                        binding.layoutNoResult.visibility = View.GONE
                         binding.rvPostPreview.visibility = View.VISIBLE
                         isFirst = true
+                        Log.d("tag_isFirst", "isFirst변경")
                         viewModel.totalSearchPost(query, null)
                     }
                 }
@@ -145,12 +174,28 @@ class BoardsFragment : BaseFragment<FragmentBoardsBinding>(R.layout.fragment_boa
         })
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
-            if(isFirst && it.isNullOrEmpty()) {
-                postListAdapter.clearPostList()
-                //binding.tvNoResult.visibility = View.VISIBLE
-            } else {
+            // 검색 결과가 없을 때
+            if (it.isNullOrEmpty()) {
                 postListAdapter.addPostList(it, isFirst)
-                currentPostList = it.toTypedArray()
+                if (isFirst || currentPostList.isEmpty()) {
+                    postListAdapter.clearPostList()
+                    binding.rvPostPreview.visibility = View.GONE
+                    binding.layoutNoResult.visibility = View.VISIBLE
+                    currentPostList = emptyArray()
+                }
+                Log.d("tag_nullOrEmpty", currentPostList.size.toString())
+            }
+            // 검색 결과가 있을 때
+            else {
+                if (isFirst) {
+                    binding.rvPostPreview.visibility = View.VISIBLE
+                    binding.layoutNoResult.visibility = View.GONE
+                    currentPostList = it.toTypedArray()
+                } else {
+                    currentPostList += it.toTypedArray()
+                }
+                postListAdapter.addPostList(it, isFirst)
+                Log.d("tag_!nullOrEmpty", currentPostList.size.toString())
             }
         })
 

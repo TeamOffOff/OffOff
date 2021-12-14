@@ -32,7 +32,7 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
     private lateinit var boardName: String
     private lateinit var boardType: String
     private lateinit var lastPostId: String
-    private lateinit var currentPostList: Array<Post>
+    private var currentPostList: Array<Post> = emptyArray()
     private var clickedPosition: Int? = 0
     private var searchingQuery: String? = null
     private var isFirst: Boolean = true
@@ -92,16 +92,30 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
         })
 
         viewModel.postList.observe(binding.lifecycleOwner!!, {
-            if(isFirst && it.isNullOrEmpty()) {
-                postListAdapter.clearPostList()
-                binding.rvPostPreview.visibility = View.GONE
-                //binding.tvNoResult.visibility = View.VISIBLE
-            } else {
-                binding.rvPostPreview.visibility = View.VISIBLE
-                //binding.tvNoResult.visibility = View.GONE
+            // 검색 결과가 없을 때
+            if (it.isNullOrEmpty()) {
+                binding.refreshLayout.isRefreshing = false
+                postListAdapter.addPostList(it, isFirst)
+                if (isFirst) {
+                    postListAdapter.clearPostList()
+                    binding.rvPostPreview.visibility = View.GONE
+                    binding.layoutNoResult.visibility = View.VISIBLE
+                    currentPostList = emptyArray()
+                }
+                Log.d("tag_nullOrEmpty", currentPostList.size.toString())
+            }
+            // 검색 결과가 있을 때
+            else {
+                if (isFirst) {
+                    binding.rvPostPreview.visibility = View.VISIBLE
+                    binding.layoutNoResult.visibility = View.GONE
+                    currentPostList = it.toTypedArray()
+                } else {
+                    currentPostList += it.toTypedArray()
+                }
                 postListAdapter.addPostList(it, isFirst)
                 binding.refreshLayout.isRefreshing = false
-                currentPostList = it.toTypedArray()
+                Log.d("tag_!nullOrEmpty", currentPostList.size.toString())
             }
         })
 
@@ -128,15 +142,16 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
 
                 val coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
                 coroutineScope.launch {
-                    delay(500)  // debounce timeOut
+                    delay(500) // debounce timeOut
                     if (query != searchingQuery)
                         return@launch
 
                     if (searchingQuery.isNullOrBlank()) {
                         postListAdapter.clearPostList()
-                        //binding.tvNoResult.visibility = View.GONE
+                        binding.layoutNoResult.visibility = View.GONE
                     } else {
-                        Log.d("tag_textWatcher 감지!!!", query)
+                        Log.d("tag_textWatcher 감지", query)
+                        binding.layoutNoResult.visibility = View.GONE
                         isFirst = true
                         viewModel.searchPost(boardType, query, null)
                     }
@@ -152,7 +167,7 @@ class SearchPostActivity : BaseActivity<ActivitySearchPostBinding>(R.layout.acti
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (!binding.etSearch.text.isNullOrBlank()) {
                     isFirst = true
-                    viewModel.totalSearchPost(binding.etSearch.text.toString(), null)
+                    viewModel.searchPost(boardType, binding.etSearch.text.toString(), null)
                 }
 
                 return@setOnEditorActionListener true

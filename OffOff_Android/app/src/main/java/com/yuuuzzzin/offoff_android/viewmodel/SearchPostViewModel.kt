@@ -30,7 +30,10 @@ constructor(
     private val _lastPostId = MutableLiveData<String>()
     val lastPostId: LiveData<String> get() = _lastPostId
 
-    fun searchPost(boardType: String, key: String, lastPostId: String?) =
+    fun searchPost(boardType: String, key: String, lastPostId: String?) {
+
+        _loading.postValue(Event(true))
+
         viewModelScope.launch(Dispatchers.IO) {
             repository.searchPost(
                 OffoffApplication.pref.token.toString(),
@@ -39,8 +42,10 @@ constructor(
                 lastPostId
             ).let { response ->
                 if (response.isSuccessful) {
+                    _loading.postValue(Event(false))
                     Log.d("tag_success", "searchPost: ${response.body()}")
                     _postList.postValue(response.body()!!.postList)
+
                     if (!response.body()!!.postList.isNullOrEmpty()) {
                         _lastPostId.postValue(response.body()!!.lastPostId)
                     }
@@ -49,21 +54,5 @@ constructor(
                 }
             }
         }
-
-    fun totalSearchPost(key: String, lastPostId: String?) =
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.totalSearchPost(OffoffApplication.pref.token.toString(), key, lastPostId)
-                .let { response ->
-                    if (response.isSuccessful) {
-                        Log.d("tag_success", "totalSearchPost: ${response.body()}")
-                        if (!response.body()!!.postList.isNullOrEmpty()) {
-                            _postList.postValue(response.body()!!.postList)
-                            _lastPostId.postValue(response.body()!!.lastPostId)
-                        }
-                    } else {
-                        Log.d("tag_fail", "totalSearchPost Error: ${response.code()}")
-                    }
-                }
-        }
-
+    }
 }

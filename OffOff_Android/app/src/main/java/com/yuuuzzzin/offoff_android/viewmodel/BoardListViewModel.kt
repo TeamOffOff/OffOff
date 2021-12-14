@@ -38,32 +38,35 @@ constructor(
         getBoardList()
     }
 
-    private fun getBoardList() = viewModelScope.launch(Dispatchers.IO) {
+    private fun getBoardList() {
 
         _loading.postValue(Event(true))
 
-        repository.getBoardList().let { response ->
-            if (response.isSuccessful) {
-                _loading.postValue(Event(false))
-                Log.d("tag_success", "getBoardList: ${response.body()}")
-                _boardList.postValue(response.body()!!.boardList)
-            } else {
-                Log.d("tag_", "getBoardList Error: ${response.code()}")
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getBoardList().let { response ->
+                if (response.isSuccessful) {
+                    _loading.postValue(Event(false))
+                    Log.d("tag_success", "getBoardList: ${response.body()}")
+                    _boardList.postValue(response.body()!!.boardList)
+                } else {
+                    Log.d("tag_", "getBoardList Error: ${response.code()}")
+                }
             }
         }
     }
 
-    fun totalSearchPost(key: String, lastPostId: String?) =
+    fun totalSearchPost(key: String, lastPostId: String?) {
+
+        _loading.postValue(Event(true))
+
         viewModelScope.launch(Dispatchers.IO) {
-
-            _loading.postValue(Event(true))
-
             repository.totalSearchPost(OffoffApplication.pref.token.toString(), key, lastPostId)
                 .let { response ->
                     if (response.isSuccessful) {
                         _loading.postValue(Event(false))
                         Log.d("tag_success", "totalSearchPost: ${response.body()}")
                         _postList.postValue(response.body()!!.postList)
+
                         if (!response.body()!!.postList.isNullOrEmpty()) {
                             _lastPostId.postValue(response.body()!!.lastPostId)
                         }
@@ -72,4 +75,5 @@ constructor(
                     }
                 }
         }
+    }
 }
