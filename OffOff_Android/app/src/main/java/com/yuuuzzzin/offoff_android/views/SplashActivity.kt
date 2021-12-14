@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.yuuuzzzin.offoff_android.MainActivity
-import com.yuuuzzzin.offoff_android.views.ui.member.LoginActivity
 import com.yuuuzzzin.offoff_android.viewmodel.SplashViewModel
+import com.yuuuzzzin.offoff_android.views.ui.member.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

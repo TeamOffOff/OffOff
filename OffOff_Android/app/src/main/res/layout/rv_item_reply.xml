@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.yuuuzzzin.offoff_android.viewmodel.PostViewModel" />
+
+        <variable
+            name="item"
+            type="com.yuuuzzzin.offoff_android.service.models.Reply" />
+
+        <variable
+            name="position"
+            type="int" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:background="?android:attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="19dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/icon_arrow_reply"
+            android:src="@drawable/ic_arrow_reply"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_reply"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:background="@drawable/layout_comment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_arrow"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:paddingHorizontal="13dp"
+                android:paddingVertical="11dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/layout_bg_profile_comment"
+                    android:contentDescription="@string/image_avatar"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_comment"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@{item.author.nickname}"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
+                    app:layout_constraintStart_toEndOf="@id/iv_avatar"
+                    app:layout_constraintTop_toTopOf="@id/iv_avatar" />
+
+                <LinearLayout
+                    android:id="@+id/layout_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="13dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/iv_avatar">
+
+                    <ImageView
+                        android:id="@+id/bt_likes"
+                        android:layout_width="22dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bt_like_comment" />
+
+                    <ImageView
+                        android:id="@+id/bt_reply_option"
+                        android:layout_width="22dp"
+                        android:layout_height="16dp"
+                        android:contentDescription="@string/icon_more_option"
+                        android:src="@drawable/bt_more_option_comment" />
+
+                </LinearLayout>
+
+                <com.yuuuzzzin.offoff_android.utils.CharacterWrapTextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{item.content}"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_avatar" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_content">
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white5"
+                        android:textSize="12sp"
+                        app:dateFormatTextWithoutYear="@{item.date}" />
+
+                    <ImageView
+                        android:id="@+id/iv_likes"
+                        android:layout_width="11dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="12dp"
+                        android:background="@drawable/ic_like_comment"
+                        android:visibility="@{item.likes.empty ? View.GONE : View.VISIBLE}" />
+
+                    <TextView
+                        android:id="@+id/tv_likes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@{String.valueOf(item.likes.size)}"
+                        android:textColor="@color/green2"
+                        android:textSize="12sp"
+                        android:visibility="@{item.likes.empty ? View.GONE : View.VISIBLE}" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

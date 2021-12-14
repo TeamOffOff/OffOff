@@ -6,10 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".views.ui.UserActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="여기는 내 정보 액티비티 !"
-        android:textSize="50sp"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,6 @@ import javax.inject.Inject
 /* 로그인, 회원가입 Repository */
 
 class MemberRepository
-
 @Inject
 constructor(private val memberService: MemberService) {
 
@@ -29,4 +28,7 @@ constructor(private val memberService: MemberService) {
 
     suspend fun getUserInfo(auth: String) =
         memberService.getUserInfo(auth)
+
+    suspend fun changePw(auth: String, pw: String) =
+        memberService.changePw(auth, pw)
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true" android:drawable="@drawable/layout_bt_comment_green1" />
+    <item android:state_enabled="false" android:drawable="@drawable/layout_bt_comment_white2"/>
+    <item android:drawable="@drawable/layout_bt_comment_green1" />
+</selector>

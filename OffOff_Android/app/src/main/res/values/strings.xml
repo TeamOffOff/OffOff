@@ -1,13 +1,16 @@
 <resources>
     <!--    <string name=""></string>   -->
     <string name="app_name">오프오프</string>
-    <string name="green">#4CB690</string>
+    <string name="app_icon">앱 아이콘</string>
+    <string name="green">#18573A</string>
+    <string name="button_back">button_back</string>
+    <string name="layout_background_bottom_round">layout_background_bottom_round</string>
 
     <!-- 앱바에 띄울 프래그먼트 이름 -->
     <string name="appbar_home">ㅇㅍㅇㅍ</string>
     <string name="appbar_boards">게시판</string>
     <string name="appbar_schedule">스케줄</string>
-    <string name="appbar_notification">알림</string>
+    <string name="appbar_user">내 활동</string>
     <string name="appbar_settings">환경설정</string>
 
     <!-- 홈 프래그먼트 앱바 메뉴 이름 -->
@@ -26,31 +29,64 @@
     <string name="auto_login">로그인 상태 유지</string>
     <string name="signup">회원가입</string>
     <string name="signup_2">가입</string>
-    <string name="find_pw">비밀번호 찾기</string>
+    <string name="find_id_pw">아이디 / 비밀번호 찾기</string>
     <string name="check_pw">비밀번호 확인</string>
     <string name="empty_id">아이디를 입력해주세요</string>
     <string name="empty_pw">비밀번호를 입력해주세요</string>
-    <string name="id_pattern">아이디 (5-20자, 영문, 숫자 사용 가능)</string>
-    <string name="pw_pattern">비밀번호 (8-16자, 영문, 숫자, 기호 포함)</string>
-    <string name="nickname_pattern">닉네임 (2-10자, 한글, 영어, 숫자 사용 가능)</string>
+    <string name="id_pattern">아이디 (5–20자, 영문, 숫자 사용 가능)</string>
+    <string name="pw_pattern">비밀번호 (8–16자, 영문, 숫자, 기호 포함)</string>
+    <string name="nickname_pattern">닉네임 (2–10자, 한글, 영어, 숫자 사용 가능)</string>
     <string name="next">다음</string>
     <string name="signup_step1">아이디 및 비밀번호</string>
     <string name="signup_step2">개인 정보</string>
     <string name="signup_step3">프로필</string>
+    <string name="photo">사진</string>
+    <string name="button_camera">button_camera</string>
     <string name="edit">편집</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_base">BaseActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="previous">Previous</string>
+    <string name="done">완료</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <!--    <string name=""></string>-->
+    <!-- 아이디/비밀번호 찾기 -->
+    <string name="find_id">아이디 찾기</string>
+    <string name="find_pw">비밀번호 찾기</string>
+    <string name="member_email">가입된 이메일</string>
+    <string name="member_id">가입된 아이디</string>
+    <string name="advice_find_id">·	가입된 아이디가 있을 경우, 입력하신 이메일로 아이디를 안내해 드립니다.\n· 만약 이메일이 오지 않는다면, 스팸 편지함으로 이동하지 않았는지 확인해주세요.\n· 이메일 서비스 제공자 사정에 의해 즉시 도착하지 않을 수 있으니, 최대 30분 정도 기다리신후 다시 시도해주세요.</string>
+    <string name="advice_find_pw">·	가입된 아이디가 있을 경우, 입력하신 이메일로 아이디를 안내해 드립니다.
+        · 만약 이메일이 오지 않는다면, 스팸 편지함으로 이동하지 않았는지 확인해주세요.
+        · 이메일 서비스 제공자 사정에 의해 즉시 도착하지 않을 수 있으니, 최대 30분 정도 기다리신후 다시 시도해주세요.</string>
+
+    <!-- 비밀번호 변경 -->
+    <string name="advice_change_pw">8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.</string>
+    <string name="change_pw">비밀번호 변경</string>
+    <string name="new_pw">새 비밀번호</string>
+    <string name="new_pw_confirm">새 비밀번호 확인</string>
+
+    <!-- 게시판 -->
+    <string name="board_free">자유게시판</string>
+    <string name="background_board">background_board</string>
+    <string name="button_close">button_close</string>
+    <string name="button_write_post">button_write_post</string>
+    <string name="image_avatar">image_avatar</string>
+    <string name="icon_more_option">icon_more_option</string>
+    <string name="icon_arrow_reply">icon_arrow_reply</string>
+    <string name="background_post">background_post</string>
+    <string name="button_like">￮ 공감</string>
+    <string name="button_scrap">￮ 스크랩</string>
+    <string name="contents">내용</string>
+    <string name="title">제목</string>
+    <string name="write_post">글 쓰기</string>
+    <string name="message">쪽지</string>
+    <string name="welcome_greetings">안녕하세요!\noffoff 님</string>
+    <string name="board_favorite">즐겨찾는 게시판</string>
+    <string name="scrap">스크랩</string>
+    <string name="hi">안녕하세요!</string>
+    <string name="user_offoff">offoff 님</string>
+    <string name="check">확인</string>
+    <string name="getting_ready_calendar">캘린더 기능을\n준비중입니다 :)</string>
+
     <!--    <string name=""></string>-->
 
+    <!-- 요일 -->
     <string-array name="week_day">
         <item>(월)</item>
         <item>(화)</item>
@@ -60,7 +96,6 @@
         <item>(토)</item>
         <item>(일)</item>
     </string-array>
-
 
 </resources>
 

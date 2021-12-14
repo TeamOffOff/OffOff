@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yuuuzzzin.offoff_android.OffoffApplication
+import com.yuuuzzzin.offoff_android.service.models.Image
 import com.yuuuzzzin.offoff_android.service.models.PostSend
 import com.yuuuzzzin.offoff_android.service.repository.BoardRepository
 import com.yuuuzzzin.offoff_android.utils.Event
@@ -21,19 +22,14 @@ constructor(
     private val repository: BoardRepository,
 ) : ViewModel() {
 
-//    val title: MutableLiveData<String> by lazy {
-//        MutableLiveData<String>()
-//    }
-//
-//    val content: MutableLiveData<String> by lazy {
-//        MutableLiveData<String>()
-//    }
-
     val title = MutableLiveData("")
     val content = MutableLiveData("")
 
     private val _alertMsg = MutableLiveData<Event<String>>()
     val alertMsg: LiveData<Event<String>> = _alertMsg
+
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
 
     private val _successEvent = MutableLiveData<Event<String>>()
     val successEvent: LiveData<Event<String>> = _successEvent
@@ -58,22 +54,23 @@ constructor(
         return checkValue
     }
 
-    fun writePost(boardType: String) {
+    fun writePost(boardType: String, imageList: List<Image>? = emptyList()) {
         if (!check()) return
 
-        val token = OffoffApplication.pref.token // 토큰
-
-        if (token.isNullOrEmpty()) return
+        _loading.postValue(Event(true))
 
         val post = PostSend(
             boardType = boardType,
-            author = "유진박",
+            author = OffoffApplication.user.id,
             title = title.value!!,
             content = content.value!!,
+            image = imageList
         )
 
+        Log.d("tag_*3 보내는 객체", post.toString())
+
         viewModelScope.launch(Dispatchers.IO) {
-            repository.writePost(token, post).let { response ->
+            repository.writePost(OffoffApplication.pref.token!!, post).let { response ->
                 if (response.isSuccessful) {
                     _successEvent.postValue(Event(response.body()!!.id))
                     Log.d("tag_success", "writePost: ${response.body()}")
@@ -87,21 +84,23 @@ constructor(
     fun editPost(boardType: String, postId: String) {
         if (!check()) return
 
+        _loading.postValue(Event(true))
+
         val post = PostSend(
             id = postId,
             boardType = boardType,
-            author = "유진박",
+            author = OffoffApplication.user.id,
             title = title.value!!,
             content = content.value!!
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.editPost(post).let { response ->
+            repository.editPost(OffoffApplication.pref.token!!, post).let { response ->
                 if (response.isSuccessful) {
                     _successEvent.postValue(Event(response.body()!!.id))
                     Log.d("tag_success", "editPost: ${response.body()}")
                 } else {
-                    Log.d("tag_fail", "editPost Error: ${response.code()}")
+                    Log.d("tag_fail", "editPost Error: ${response}")
                 }
             }
         }

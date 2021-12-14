@@ -1,52 +1,54 @@
 package com.yuuuzzzin.offoff_android.views.ui.home
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.MaterialToolbar
+import androidx.activity.OnBackPressedCallback
+import com.yuuuzzzin.offoff_android.OffoffApplication
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentHomeBinding
-import com.yuuuzzzin.offoff_android.views.ui.SearchActivity
-import com.yuuuzzzin.offoff_android.views.ui.UserActivity
+import com.yuuuzzzin.offoff_android.utils.ImageUtils
+import com.yuuuzzzin.offoff_android.utils.base.BaseFragment
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
-    private var mBinding : FragmentHomeBinding? = null
+    private lateinit var callback: OnBackPressedCallback
+    private var backPressedTime: Long = 0
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        callback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//
+//                // 백 버튼 2초 내 다시 클릭 시 앱 종료
+//                if (System.currentTimeMillis() - backPressedTime < 2000) {
+//                    activity!!.finish()
+//                    return
+//                }
+//
+//                // 백 버튼 최초 클릭 시
+//                requireContext().toast("뒤로가기 버튼을 한 번 더 누르면 앱이 종료됩니다.")
+//                backPressedTime = System.currentTimeMillis()
+//
+//            }
+//        }
+//
+//        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+//    }
 
-        val binding = FragmentHomeBinding.inflate(inflater, container, false)
-        mBinding = binding
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val toolbar : MaterialToolbar = binding.appbarHome // 상단 툴바
-
-        toolbar.setOnMenuItemClickListener{
-            when(it.itemId) {
-                R.id.search -> {
-                    startActivity(Intent(context, SearchActivity::class.java))
-                    true
-                }
-                R.id.user -> {
-                    startActivity(Intent(context, UserActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
-
-        return mBinding?.root
+        initView()
     }
 
-    override fun onDestroyView() {
-        mBinding = null
-        super.onDestroyView()
+    private fun initView() {
+        binding.tvNickname.text = "${OffoffApplication.user.subInfo.nickname} 님"
+        if (!OffoffApplication.user.subInfo.profile.isNullOrEmpty()) {
+            binding.ivAvatar.apply {
+                setImageBitmap(ImageUtils.stringToBitmap(OffoffApplication.user.subInfo.profile!![0].body.toString()))
+                clipToOutline = true
+            }
+        }
     }
 
 }

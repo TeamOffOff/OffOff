@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.yuuuzzzin.offoff_android.viewmodel.LoginViewModel" />
@@ -11,109 +12,87 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
         tools:context=".views.ui.member.LoginActivity">
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05" />
 
         <ImageView
             android:id="@+id/iv_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_offoff_144"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="112dp"
+            android:contentDescription="@string/app_icon"
+            android:src="@drawable/ic_offoff"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline1" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.30036187" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_id"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <EditText
+            android:id="@+id/et_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="34dp"
+            android:background="@drawable/layout_edit_text"
             android:hint="@string/id"
-            app:boxStrokeErrorColor="@color/design_default_color_error"
-            app:endIconMode="clear_text"
-            app:errorEnabled="true"
-            app:helperTextTextColor="@color/design_default_color_error"
-            app:hintTextColor="@color/green"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:paddingHorizontal="23dp"
+            android:text="@={viewModel.id}"
+            android:textColorHint="@color/white4"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline2">
+            app:layout_constraintTop_toBottomOf="@id/iv_logo" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_id"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:padding="0dp"
-                android:text="@={viewModel.id}" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_pw"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <EditText
+            android:id="@+id/et_pw"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="34dp"
+            android:background="@drawable/layout_edit_text"
             android:hint="@string/pw"
-            app:boxStrokeErrorColor="@color/design_default_color_error"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="password_toggle"
-            app:errorEnabled="true"
-            app:helperTextTextColor="@color/design_default_color_error"
-            app:hintTextColor="@color/green"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            android:paddingHorizontal="23dp"
+            android:text="@={viewModel.pw}"
+            android:textColorHint="@color/white4"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tf_id">
+            app:layout_constraintTop_toBottomOf="@id/et_id" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_pw"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:padding="0dp"
-                android:text="@={viewModel.pw}" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/tv_alert_msg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.alertMsg}"
-            android:textColor="@color/design_default_color_error"
-            app:layout_constraintBottom_toTopOf="@id/bt_login"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tf_pw" />
-
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/bt_login"
             android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="38dp"
+            android:background="@drawable/layout_button_round_enabled"
             android:enabled="@{etId.text.length() > 0 &amp;&amp; etPw.text.length() > 0}"
-            android:layout_height="56dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
             android:onClick="@{()-> viewModel.login()}"
+            android:padding="0dp"
+            android:stateListAnimator="@null"
             android:text="@string/login"
-            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:cornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_alert_msg" />
+            app:layout_constraintTop_toBottomOf="@id/et_pw" />
+
+        <TextView
+            android:id="@+id/bt_findIdPw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/find_id_pw"
+            android:textColor="@color/white5"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bt_login" />
 
         <TextView
             android:id="@+id/bt_signup"
@@ -121,35 +100,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/signup"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/white5"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_login" />
 
-        <TextView
-            android:id="@+id/bt_findId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:text="@string/id"
-            app:layout_constraintEnd_toStartOf="@id/view"
-            app:layout_constraintTop_toTopOf="@id/bt_signup" />
-
-        <View
-            android:id="@+id/view"
-            android:layout_width="1dp"
+        <include
+            android:id="@+id/layout_progress"
+            layout="@layout/layout_progress_loading_opaque"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/green"
-            app:layout_constraintBottom_toBottomOf="@id/bt_signup"
-            app:layout_constraintEnd_toStartOf="@id/bt_findPw"
-            app:layout_constraintTop_toTopOf="@id/bt_signup" />
-
-        <TextView
-            android:id="@+id/bt_findPw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/find_pw"
+            android:layout_marginHorizontal="-60dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bt_signup" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

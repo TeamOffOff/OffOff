@@ -1,8 +1,5 @@
 package com.yuuuzzzin.offoff_android.views.ui.member
 
-import android.os.Bundle
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.yuuuzzzin.offoff_android.R
 import com.yuuuzzzin.offoff_android.databinding.FragmentSignupStep2Binding
@@ -18,28 +15,19 @@ class SignupStep2Fragment :
 
     override fun initView() {
 
+        // step2 -> step1 이동
+        binding.btBack.setOnClickListener {
+            findNavController().navigate(R.id.action_signupStep2Fragment_to_signupStep1Fragment)
+        }
+
+        // step2 -> step3 이동
+        binding.btNext.setOnClickListener {
+            findNavController().navigate(R.id.action_signupStep2Fragment_to_signupStep3Fragment)
+        }
+    }
+
+    override fun initViewModel() {
         binding.viewModel = signupViewModel
-
-        // 기본 에러 아이콘 제거
-        binding.apply {
-            tfName.setErrorIconDrawable(0)
-            tfEmail.setErrorIconDrawable(0)
-            tfBirth.setErrorIconDrawable(0)
-        }
-
-        if (signupViewModel.setStep2State())
-            binding.apply {
-                tfName.setTextFieldFocus()
-                tfEmail.setTextFieldFocus()
-                tfBirth.setTextFieldFocus()
-            }
-        else {
-            binding.apply {
-                tfName.setTextFieldDefault()
-                tfEmail.setTextFieldDefault()
-                tfBirth.setTextFieldDefault()
-            }
-        }
 
         datePicker = DatePickerHelper(mContext, true)
         binding.etBirth.setOnClickListener {
@@ -51,72 +39,34 @@ class SignupStep2Fragment :
         }
 
         /* 이름 파트 */
-        binding.etName.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
-            if (!hasFocus) {
-                signupViewModel.validateName()
-            } else {
-                if (!binding.tfName.isError())
-                    binding.tfName.setTextFieldFocus()
-            }
-        }
-
         signupViewModel.name.observe(viewLifecycleOwner, {
             signupViewModel.validateName()
         })
 
         signupViewModel.isNameVerified.observe(viewLifecycleOwner, {
-            binding.tfName.validate(it)
+            binding.tvName.text = it
         })
 
         /* 이메일 파트 */
-        binding.etEmail.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
-            if (!hasFocus) {
-                signupViewModel.validateEmail()
-            } else {
-                if (!binding.tfEmail.isError())
-                    binding.tfEmail.setTextFieldFocus()
-            }
-        }
-
         signupViewModel.email.observe(viewLifecycleOwner, {
             signupViewModel.validateEmail()
         })
 
         signupViewModel.isEmailVerified.observe(viewLifecycleOwner, {
-            binding.tfEmail.validate(it)
-        })
-
-        /* 생년월일 파트 */
-        signupViewModel.birth.observe(viewLifecycleOwner, {
-            if (!binding.etBirth.text.isNullOrEmpty()) {
-                binding.tfBirth.setTextFieldVerified()
-            } else {
-                binding.tfBirth.setTextFieldDefault()
+            binding.tvEmail.text = it
+            if (it.isNullOrEmpty()) {
+                binding.tvEmail.text = "사용 가능한 이메일 주소입니다."
             }
         })
 
+        /* 생년월일 파트 */
         signupViewModel.birth.observe(viewLifecycleOwner, {
             signupViewModel.validateBirth()
         })
 
         signupViewModel.isBirthVerified.observe(viewLifecycleOwner, {
-            binding.tfBirth.validate(it)
+            binding.tvBirth.text = it
         })
-
-        // step2 -> step3 이동
-        binding.btNext.setOnClickListener {
-            findNavController().navigate(R.id.action_signupStep2Fragment_to_signupStep3Fragment)
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.appbar.apply {
-            setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-            setNavigationIconTint(ContextCompat.getColor(mContext, R.color.white))
-            setNavigationOnClickListener {
-                findNavController().navigate(R.id.action_signupStep2Fragment_to_signupStep1Fragment)
-            }
-        }
     }
 
     private fun showDatePickerDialog() {

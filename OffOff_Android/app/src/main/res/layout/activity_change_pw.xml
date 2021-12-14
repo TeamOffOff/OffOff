@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.yuuuzzzin.offoff_android.viewmodel.ChangePwViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.ui.member.ChangePwActivity">
+
+        <ImageButton
+            android:id="@+id/bt_back"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="47dp"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/button_back"
+            android:padding="0dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_change_pw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="65dp"
+            android:layout_marginTop="146dp"
+            android:text="@string/change_pw"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="93dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="3dp"
+            android:background="@color/green"
+            app:layout_constraintEnd_toEndOf="@id/tv_change_pw"
+            app:layout_constraintStart_toStartOf="@id/tv_change_pw"
+            app:layout_constraintTop_toBottomOf="@id/tv_change_pw" />
+
+        <TextView
+            android:id="@+id/tv_advice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
+            android:layout_marginTop="188dp"
+            android:hint="@string/advice_change_pw"
+            android:text="@={viewModel.pw}"
+            android:textColor="@color/white5"
+            android:textSize="9sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_pw"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="33dp"
+            android:background="@drawable/layout_edit_text"
+            android:hint="@string/new_pw"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            android:paddingHorizontal="23dp"
+            android:textColorHint="@color/white4"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_advice" />
+
+        <EditText
+            android:id="@+id/et_pw_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="33dp"
+            android:background="@drawable/layout_edit_text"
+            android:hint="@string/new_pw_confirm"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            android:paddingHorizontal="23dp"
+            android:text="@={viewModel.pwConfirm}"
+            android:textColorHint="@color/white4"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_pw" />
+
+        <Button
+            android:id="@+id/bt_change_pw"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/layout_button_round_enabled"
+            android:includeFontPadding="false"
+            android:padding="0dp"
+            android:text="@string/change_pw"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_pw_confirm" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

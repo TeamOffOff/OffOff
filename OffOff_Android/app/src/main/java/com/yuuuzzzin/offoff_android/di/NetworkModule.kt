@@ -2,6 +2,7 @@ package com.yuuuzzzin.offoff_android.di
 
 import com.google.gson.GsonBuilder
 import com.yuuuzzzin.offoff_android.BuildConfig
+import com.yuuuzzzin.offoff_android.service.api.ActivityService
 import com.yuuuzzzin.offoff_android.service.api.BoardService
 import com.yuuuzzzin.offoff_android.service.api.MemberService
 import dagger.Module
@@ -27,20 +28,29 @@ object NetworkModule {
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().setLenient().create()))
+            .addConverterFactory(
+                GsonConverterFactory.create(
+                    GsonBuilder().serializeNulls().setLenient().create()
+                )
+            )
             .build()
     }
 
-    /* Post API를 위한 모듈 */
+    /* Post 관련 API 를 위한 모듈 */
     @Singleton
     @Provides
     fun provideBoardService(retrofit: Retrofit): BoardService =
         retrofit.create(BoardService::class.java)
 
-    /* 로그인 응답을 위한 모듈 */
+    /* 회원 관련 API 를 위한 모듈 */
     @Singleton
     @Provides
     fun provideMemberService(retrofit: Retrofit): MemberService =
         retrofit.create(MemberService::class.java)
 
+    /* 회원 활동 관련 API 를 위한 모듈 */
+    @Singleton
+    @Provides
+    fun provideActivityService(retrofit: Retrofit): ActivityService =
+        retrofit.create(ActivityService::class.java)
 }

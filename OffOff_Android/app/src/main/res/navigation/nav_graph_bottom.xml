@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_bottom"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/boardsFragment">
 
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.yuuuzzzin.offoff_android.views.ui.home.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+<!--    <fragment-->
+<!--        android:id="@+id/homeFragment"-->
+<!--        android:name="com.yuuuzzzin.offoff_android.views.ui.home.HomeFragment"-->
+<!--        android:label="fragment_home"-->
+<!--        tools:layout="@layout/fragment_home" />-->
 
     <fragment
         android:id="@+id/boardsFragment"
@@ -23,14 +23,16 @@
         android:name="com.yuuuzzzin.offoff_android.views.ui.schedule.ScheduleFragment"
         android:label="fragment_schedule"
         tools:layout="@layout/fragment_schedule" />
+
     <fragment
-        android:id="@+id/notificationFragment"
-        android:name="com.yuuuzzzin.offoff_android.views.ui.NotificationFragment"
-        android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" />
+        android:id="@+id/userFragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.user.UserFragment"
+        android:label="fragment_user"
+        tools:layout="@layout/fragment_user" />
+
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.yuuuzzzin.offoff_android.views.ui.SettingsFragment"
+        android:name="com.yuuuzzzin.offoff_android.views.ui.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 

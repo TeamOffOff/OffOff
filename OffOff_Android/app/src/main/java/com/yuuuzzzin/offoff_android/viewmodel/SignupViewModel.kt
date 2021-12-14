@@ -2,10 +2,7 @@ package com.yuuuzzzin.offoff_android.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.yuuuzzzin.offoff_android.service.models.Activity
-import com.yuuuzzzin.offoff_android.service.models.Info
-import com.yuuuzzzin.offoff_android.service.models.SubInfo
-import com.yuuuzzzin.offoff_android.service.models.User
+import com.yuuuzzzin.offoff_android.service.models.*
 import com.yuuuzzzin.offoff_android.service.repository.MemberRepository
 import com.yuuuzzzin.offoff_android.utils.Constants.get
 import com.yuuuzzzin.offoff_android.utils.Event
@@ -92,6 +89,9 @@ constructor(
 
     private val _isNicknameError = MutableLiveData<String>()
     val isNicknameError: LiveData<String> get() = _isNicknameError
+
+    private val _loading = MutableLiveData<Event<Boolean>>()
+    val loading: LiveData<Event<Boolean>> = _loading
 
     // 회원가입 단계별 성공 여부
     private val _step1Success = combine(
@@ -213,19 +213,19 @@ constructor(
         }
     }
 
-    fun finishStep3() {
-        if (userNickname != "" && (nickname.value == userNickname)) {
-            signup()
-
-            Log.d(
-                "tag_success 3단계",
-                userId + "/" + userPw + "/" + userName + "/" + userEmail + "/" + userBirth + "/" + userNickname
-            )
-
-        } else {
-            validateNickname()
-        }
-    }
+//    fun finishStep3() {
+//        if (userNickname != "" && (nickname.value == userNickname)) {
+//            signup()
+//
+//            Log.d(
+//                "tag_success 3단계",
+//                userId + "/" + userPw + "/" + userName + "/" + userEmail + "/" + userBirth + "/" + userNickname
+//            )
+//
+//        } else {
+//            validateNickname()
+//        }
+//    }
 
     fun setStep1State(): Boolean {
         return (userId != "")
@@ -242,14 +242,23 @@ constructor(
         return (pw.value == pwConfirm.value)
     }
 
-    fun signup() {
+    fun signup(encodedString: String?) {
+
+        _loading.postValue(Event(true))
+
+        val profile = mutableListOf<Image>()
+        if (encodedString != null) {
+            profile.add(Image(null, encodedString))
+        }
 
         val user = User(
             id = userId, password = userPw,
             Info(name = userName, email = userEmail, birth = userBirth),
-            SubInfo(nickname = userNickname),
+            SubInfo(nickname = userNickname, profile = profile),
             Activity()
         )
+
+        Log.d("tag_user", user.toString())
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.signup(user).let { response ->

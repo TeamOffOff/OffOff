@@ -43,6 +43,8 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentScheduleBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
 
         initToolbar()
         initCalendar()
@@ -167,12 +169,12 @@ class ScheduleFragment : Fragment() {
         }
 
         // 스케줄이 바뀌는지 관찰
-        viewModel.scheduleChanged.observe(viewLifecycleOwner, { event ->
-            event.getContentIfNotHandled()?.let {
-                Log.d("tag_observe", "관찰됨")
-                (calendar.adapter as CalendarAdapter).notifyDataSetChanged()
-            }
-        })
+//        viewModel.scheduleChanged.observe(binding.lifecycleOwner!!, { event ->
+//            event.getContentIfNotHandled()?.let {
+//                Log.d("tag_observe", "관찰됨")
+//                (calendar.adapter as CalendarAdapter).notifyDataSetChanged()
+//            }
+//        })
     }
 
     // 캘린더의 헤더 설정
@@ -220,11 +222,11 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
         }
 
         fun setOtherMonthSelected(day: Day) {
-            Log.d("tag_alpha", "여기서 뿌얘저야돼...")
+            Log.d("tag_alpha", "여기서 뿌얘져야돼...")
             view.alpha = 0.5F
             if (day.calendar.time == selectedDay) {
                 Log.d("otherMonth_tag", "다른달")
-                Log.d("tag_alpha", "여기서 뿌얘저야돼...")
+                Log.d("tag_alpha", "여기서 뿌얘져야돼...")
                 view.setBackgroundResource(R.drawable.layout_border_calendar_selected)
 //                view.alpha = 0.5F
 //                view.setBackgroundColor(
@@ -237,7 +239,7 @@ class CalendarAdapter(context: Context, scheduleViewModel: ScheduleViewModel) :
                 view.bringToFront()
                 //onDayClickLister?.invoke(day)
             } else {
-                Log.d("tag_alpha", "여기서 뿌얘저야돼...")
+                Log.d("tag_alpha", "여기서 뿌얘져야돼...")
                 Log.d("otherMonth_tag", "다른달")
                 view.setBackgroundResource(R.drawable.layout_border_calendar)
 //                view.alpha = 0.5F
