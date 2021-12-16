@@ -38,7 +38,7 @@ data class Post(
     @SerializedName("reports")
     val reports: List<Any>? = emptyList(),
     @SerializedName("bookmarks")
-    val bookmarks: List<Any>? = emptyList(),
+    val bookmarks: MutableList<String>? = mutableListOf()
 ) : Serializable
 
 /* 보내는 게시물 */
@@ -54,7 +54,7 @@ data class PostSend(
     @SerializedName("content")
     val content: String? = null,
     @SerializedName("image")
-    val image: List<Image>? = emptyList(),
+    val image: List<Image>? = emptyList()
 )
 
 /* 작성자 */
@@ -68,6 +68,11 @@ data class Author(
     @SerializedName("type")
     val type: String? = null
 ) : Serializable
+
+data class ImageList(
+    @SerializedName("image")
+    val image: List<Image>
+)
 
 /* 이미지 */
 data class Image(

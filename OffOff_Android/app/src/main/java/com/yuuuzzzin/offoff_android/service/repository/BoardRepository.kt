@@ -47,4 +47,7 @@ constructor(private val boardService: BoardService) {
     suspend fun likeReply(auth: String, activityItem: ActivityItem) =
         boardService.likeReply(auth, activityItem)
 
+    suspend fun getPostImages(auth: String, postId: String, boardType: String) =
+        boardService.getPostImages(auth, postId, boardType)
+
 }

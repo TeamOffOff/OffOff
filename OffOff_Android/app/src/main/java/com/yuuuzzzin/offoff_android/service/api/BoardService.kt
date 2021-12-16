@@ -127,4 +127,12 @@ interface BoardService {
         @Header("Authorization") auth: String,
         @Body reply: ReplySend
     ): Response<CommentList>
+
+    /* 원본 이미지 조회 */
+    @GET("post/image")
+    suspend fun getPostImages(
+        @Header("Authorization") auth: String,
+        @Query("postId") postId: String,
+        @Query("boardType") boardType: String
+    ): Response<ImageList>
 }
