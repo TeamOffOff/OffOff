@@ -177,7 +177,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="7dp"
+                                android:layout_marginEnd="8dp"
                                 android:text="@{String.valueOf(post.likes.size)}"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
@@ -193,10 +193,29 @@
 
                             <TextView
                                 android:id="@+id/tv_comments_num"
+                                android:layout_marginEnd="8dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:text="@{String.valueOf(post.replyCount)}"
+                                android:textColor="@color/white"
+                                android:textSize="12sp" />
+
+                            <ImageView
+                                android:id="@+id/iv_scrap"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="4dp"
+                                android:background="@drawable/ic_star"
+                                android:backgroundTint="@color/white" />
+
+                            <TextView
+                                android:id="@+id/tv_scrap_num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@{String.valueOf(post.bookmarks.size)}"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
 
