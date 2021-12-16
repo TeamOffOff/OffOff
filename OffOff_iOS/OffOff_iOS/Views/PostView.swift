@@ -90,7 +90,6 @@ class PostView: UIScrollView {
         $0.register(ChildrenRepliesTableViewCell.self, forCellReuseIdentifier: ChildrenRepliesTableViewCell.identifier)
         $0.isScrollEnabled = false
         $0.allowsSelection = false
-        $0.rowHeight = 82.adjustedHeight
         $0.separatorStyle = .none
     }
     

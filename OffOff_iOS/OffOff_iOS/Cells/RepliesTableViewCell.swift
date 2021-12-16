@@ -116,6 +116,7 @@ class RepliesTableViewCell: UITableViewCell {
             isInputting.onNext(nil)
         }
         bindData()
+        
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -124,9 +125,10 @@ class RepliesTableViewCell: UITableViewCell {
         self.containerView.backgroundColor = .w2
         self.contentView.addSubview(containerView)
         makeView()
+        bindData()
     }
     
-    private func makeView() {
+    func makeView() {
         containerView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview().inset(3.5.adjustedWidth)
             $0.left.right.equalToSuperview().inset(20.adjustedWidth)
@@ -155,6 +157,7 @@ class RepliesTableViewCell: UITableViewCell {
         likeLabel.snp.makeConstraints {
             $0.left.equalTo(dateLabel.snp.right).offset(12.adjustedWidth)
             $0.centerY.equalTo(dateLabel)
+            $0.bottom.equalToSuperview().inset(7.adjustedHeight)
         }
         buttonStackView.snp.makeConstraints {
             $0.top.equalTo(profileImageView)
@@ -167,16 +170,11 @@ class RepliesTableViewCell: UITableViewCell {
     func bindData() {
         self.disposeBag = DisposeBag()
         
-        guard let _isSubReplyInputting = isSubReplyInputting else {
-            return
-        }
-        
         reply
             .observe(on: MainScheduler.instance)
             .filter { $0 != nil }
             .withUnretained(self)
             .bind { (owner, reply) in
-                //            self.profileImageView.image =
                 owner.dateLabel.text = reply!.date.toDate()!.toFormedString()
                 owner.contentTextView.text = reply!.content
                 owner.likeLabel.label.text = "\(reply!.likes.count)"
@@ -217,6 +215,10 @@ class RepliesTableViewCell: UITableViewCell {
                 self?.showMenuAlert(reply: $0!)
             }
             .disposed(by: disposeBag)
+        
+        guard let _isSubReplyInputting = isSubReplyInputting else {
+            return
+        }
         
         Observable.combineLatest(_isSubReplyInputting, reply)
             .map { one, two -> Bool in

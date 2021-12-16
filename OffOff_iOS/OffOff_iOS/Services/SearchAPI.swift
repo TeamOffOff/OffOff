@@ -48,7 +48,7 @@ extension SearchAPI: TargetType {
             if lastPostId == nil {
                 return .requestParameters(parameters: ["key":key], encoding: URLEncoding.default)
             } else {
-                return .requestParameters(parameters: ["standardId":lastPostId!, "key":key], encoding: URLEncoding.default)
+                return .requestParameters(parameters: ["lastPostId":lastPostId!, "key":key], encoding: URLEncoding.default)
             }
         }
     }

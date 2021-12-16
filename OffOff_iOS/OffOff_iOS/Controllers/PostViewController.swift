@@ -97,7 +97,7 @@ class PostViewController: UIViewController {
         
         //        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
         postView.repliesTableView.rowHeight = UITableView.automaticDimension
-        postView.repliesTableView.estimatedRowHeight = 400
+        postView.repliesTableView.estimatedRowHeight = 82.adjustedHeight
         
         // view model
         viewModel = PostViewModel(
@@ -317,7 +317,6 @@ class PostViewController: UIViewController {
                     cell.dismissAlert = self.dismissAlert
                     cell.presentMenuAlert = self.presentMenuAlert
                     cell.replies = self.viewModel.replies
-                    cell.bindData()
                     return cell
                 }
             }
@@ -409,7 +408,7 @@ class PostViewController: UIViewController {
     private func makeView() {
         backgroundForIndicator.snp.makeConstraints {
             $0.top.left.right.equalToSuperview()
-            $0.height.equalTo(self.view.snp.height).dividedBy(3.0)
+            $0.height.equalTo(self.postView.backgroundView.snp.height).dividedBy(1.5)
         }
         loadingView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -588,6 +587,7 @@ extension PostViewController: UITextViewDelegate {
 
 extension PostViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        print(#fileID, #function, #line, "")
         let image = postImages.value[indexPath.row].body.toImage()
         return tableView.frame.width / image.imageRatio
     }
