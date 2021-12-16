@@ -121,20 +121,16 @@ extension UserAPI: TargetType, AccessTokenAuthorizable {
     }
     
     var headers: [String : String]? {
-        switch self {
-        case .passwordChange(_), .resign, .modifyMemberInfo(_):
-            return ["Authorization": "token_encoded"]
-//        case .getUserInfo, .getMyActivities(_):
-//            return KeyChainController.shared.getAuthorizationHeader(service: Constants.ServiceString, account: "AccessToken")
-////            return ["Authorization": "Bearer \(UserDefaults.standard.string(forKey: "accessToken")!)"]
-        default:
-            return nil
-        }
-        
+        return nil
     }
     
     var authorizationType: AuthorizationType? {
-        return .bearer
+        switch self {
+        case .signUp(_), .idChek(_):
+            return nil
+        default:
+            return .bearer
+        }
     }
     
 }

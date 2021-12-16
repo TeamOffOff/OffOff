@@ -31,6 +31,14 @@ class PrivacyInfoViewModel {
             }
         isEmailConfirmed = input.emailText
             .debounce(.milliseconds(5)) // 0.5초 딜레이 주기
+            .map { email in
+                if Constants.isValidString(str: email, regEx: Constants.USEREMAIL_RULE) {
+                    return email
+                } else {
+                    return nil
+                }
+            }
+            .compactMap { $0 }
             .flatMapLatest { email in
                 return UserServices.emailDuplicationCheck(email: email).asDriver(onErrorJustReturn: false)
             }

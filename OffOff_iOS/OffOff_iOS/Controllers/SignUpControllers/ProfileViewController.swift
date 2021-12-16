@@ -53,8 +53,17 @@ class ProfileViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
+        viewModel.isSigningUp
+            .drive (onNext: {
+                if $0 {
+                    LoadingHUD.show()
+                }
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.signedUp
             .drive(onNext: { [weak self] signedUp in
+                LoadingHUD.hide()
                 if signedUp {
                     let alert = UIAlertController(title: "회원가입을 완료했습니다.\n인증을 위해서 기입한 이메일을 확인해주세요", message: nil, preferredStyle: .alert)
                     let action = UIAlertAction(title: "확인", style: .default) { action in
