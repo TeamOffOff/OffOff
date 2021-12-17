@@ -172,14 +172,20 @@ class RepliesTableViewCell: UITableViewCell {
         
         reply
             .observe(on: MainScheduler.instance)
-            .filter { $0 != nil }
+            .compactMap { $0 }
             .withUnretained(self)
             .bind { (owner, reply) in
-                owner.dateLabel.text = reply!.date.toDate()!.toFormedString()
-                owner.contentTextView.text = reply!.content
-                owner.likeLabel.label.text = "\(reply!.likes.count)"
+                owner.dateLabel.text = reply.date.toDate()!.toFormedString()
+                owner.contentTextView.text = reply.content
                 
-                if let author = reply!.author {
+                if reply.likes.count > 0 {
+                    owner.likeLabel.label.text = "\(reply.likes.count)"
+                    owner.likeLabel.isHidden = false
+                } else {
+                    owner.likeLabel.isHidden = true
+                }
+                
+                if let author = reply.author {
                     owner.nicknameLabel.text = author.nickname
                     if author.profileImage.count != 0 {
                         owner.profileImageView.image = author.profileImage.first!.body.toImage()

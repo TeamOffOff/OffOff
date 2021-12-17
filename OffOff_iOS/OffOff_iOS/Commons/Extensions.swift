@@ -315,6 +315,21 @@ extension UIImage {
         
     }
     
+    func withInsets(_ insets: UIEdgeInsets) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(
+            CGSize(width: size.width + insets.left + insets.right,
+                   height: size.height + insets.top + insets.bottom),
+            false,
+            self.scale)
+        
+        let origin = CGPoint(x: insets.left, y: insets.top)
+        self.draw(at: origin)
+        let imageWithInsets = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return imageWithInsets
+    }
+    
     static var DEFAULT_PROFILE = UIImage(named: "default profile")
     
     static var personFill: UIImage {
@@ -352,6 +367,9 @@ extension UIImage {
     static let LikeIconBold = UIImage(named: "LikeIconBold")!.withRenderingMode(.alwaysTemplate)
     static let ScrapIconBold = UIImage(named: "ScrapIconBold")!.withRenderingMode(.alwaysTemplate)
     static let MainLogoWithShadow = UIImage(named: "MainLogoWithShadow")!
+    
+    static let NoSearchResultImage = UIImage(named: "NoSearchResultImage")!
+    static let XIcon = UIImage(named: "X")!
     
     static func getIcon(name: FontAwesome, color: UIColor = .systemGray, size: CGSize = Constants.ICON_SIZE) -> UIImage {
         return UIImage.fontAwesomeIcon(name: name, style: .solid, textColor: color, size: size)
@@ -486,7 +504,8 @@ extension UINavigationBar {
         appearance.backgroundColor = backgroundColor
         appearance.titleTextAttributes = [.foregroundColor: titleColor]
         appearance.shadowColor = .g4
-        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)))
+        
+        appearance.setBackIndicatorImage(.LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)).withInsets(UIEdgeInsets(top: 0, left: 20.adjustedWidth, bottom: 0, right: 0)), transitionMaskImage: .LEFTARROW.resize(to: CGSize(width: 25.adjustedHeight, height: 22.adjustedHeight)).withInsets(UIEdgeInsets(top: 0, left: 20.adjustedWidth, bottom: 0, right: 0)))
         self.isTranslucent = false
         self.tintColor = titleColor
         self.standardAppearance = appearance
@@ -652,7 +671,7 @@ extension UIBarButtonItem {
         UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20.adjustedHeight, height: 20.adjustedHeight)), style: .plain, target: nil, action: nil)
     }
     static func menuButton() -> UIBarButtonItem {
-        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedHeight, height: 20.adjustedHeight)), style: .plain, target: nil, action: nil)
+        UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4.adjustedHeight, height: 20.adjustedHeight)).withInsets(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
     }
 }
 

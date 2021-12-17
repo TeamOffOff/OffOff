@@ -15,15 +15,7 @@ class PostListView: UIView {
     }
     
     var refreshingImageView = UIImageView().then {
-        $0.image = UIImage(named: "LodingIndicator")!
-        
-        var images: [UIImage] = []
-        for idx in 0...3 {
-            images.append(UIImage(named: "LoadingProgress_0\(idx)")!)
-        }
-        
-        $0.animationImages = images
-        $0.animationDuration = 0.5
+        $0.image = UIImage(named: "LoadingIndicator")!
         $0.contentMode = .scaleAspectFit
     }
     

@@ -76,35 +76,27 @@ class ProfileViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.isUploadingImage
-            .bind { [weak self] in
+            .bind { [weak self] _ in
                 guard let self = self else { return }
-                if $0 {
-//                    self.imagePickingAlert()
-                    let cameraConfig = ZLPhotoConfiguration.default().cameraConfiguration
-                    ZLPhotoConfiguration.default().allowRecordVideo = false
-                    ZLPhotoConfiguration.default().allowSelectGif = false
-                    ZLPhotoConfiguration.default().maxSelectCount = 1
-                    ZLPhotoConfiguration.default().editImageClipRatios = [.wh1x1]
-                    ZLPhotoConfiguration.default().allowEditImage = true
-                    ZLPhotoConfiguration.default().editAfterSelectThumbnailImage = true
-                    ZLPhotoConfiguration.default().editImageTools = [.clip]
-                    ZLPhotoConfiguration.default().allowSelectOriginal = false
-//                    ZLPhotoConfiguration.default().themeColorDeploy = ZLPhotoThemeColorDeploy().
-                    
-                    // All properties of the camera configuration have default value
-                    cameraConfig.sessionPreset = .hd1920x1080
-                    cameraConfig.focusMode = .continuousAutoFocus
-                    cameraConfig.exposureMode = .continuousAutoExposure
-                    cameraConfig.flashMode = .off
-                    cameraConfig.videoExportType = .mov
-                    
+                
+                let isHaveImage = (self.profileView.profileImageView.image != nil)
+                
+                if !isHaveImage {
+                    self.configureZLPhoto()
                     let ps = ZLPhotoPreviewSheet()
                     
                     ps.selectImageBlock = { [weak self] (images, assets, isOriginal) in
                         self?.profileView.profileImageView.image = images.first!
+                        self?.profileView.profileImageLabel.isHidden = true
+                        self?.changeImageUploadButton(isUploadMode: false)
                         SharedSignUpModel.model.subInformation.profileImage = [ImageObject(key: nil, body: images.first!.toBase64String())]
                     }
                     ps.showPhotoLibrary(sender: self)
+                } else {
+                    self.profileView.profileImageView.image = nil
+                    self.profileView.profileImageLabel.isHidden = false
+                    self.changeImageUploadButton(isUploadMode: true)
+                    SharedSignUpModel.model.subInformation.profileImage = []
                 }
             }
             .disposed(by: disposeBag)
@@ -116,28 +108,32 @@ class ProfileViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    private func imagePickingAlert() {
-        let alert = UIAlertController(title: "선택", message: nil, preferredStyle: .actionSheet)
-        
-        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        let camera = UIAlertAction(title: "카메라", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.profileImagePicker.sourceType = .camera
-            self.present(self.profileImagePicker, animated: true, completion: nil)
+    private func changeImageUploadButton(isUploadMode: Bool) {
+        if isUploadMode {
+            profileView.imageUploadButton.setImage(.CAMERA, for: .normal)
+        } else {
+            profileView.imageUploadButton.setImage(.XIcon, for: .normal)
         }
-        let album = UIAlertAction(title: "앨범", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.profileImagePicker.sourceType = .photoLibrary
-            self.present(self.profileImagePicker, animated: true, completion: nil)
-        }
-        
-        alert.addAction(cancel)
-        alert.addAction(camera)
-        alert.addAction(album)
-        
-        present(alert, animated: true, completion: nil)
     }
     
+    private func configureZLPhoto() {
+        let cameraConfig = ZLPhotoConfiguration.default().cameraConfiguration
+        ZLPhotoConfiguration.default().allowRecordVideo = false
+        ZLPhotoConfiguration.default().allowSelectGif = false
+        ZLPhotoConfiguration.default().maxSelectCount = 1
+        ZLPhotoConfiguration.default().editImageClipRatios = [.wh1x1]
+        ZLPhotoConfiguration.default().allowEditImage = true
+        ZLPhotoConfiguration.default().editAfterSelectThumbnailImage = true
+        ZLPhotoConfiguration.default().editImageTools = [.clip]
+        ZLPhotoConfiguration.default().allowSelectOriginal = false
+        
+        // All properties of the camera configuration have default value
+        cameraConfig.sessionPreset = .hd1920x1080
+        cameraConfig.focusMode = .continuousAutoFocus
+        cameraConfig.exposureMode = .continuousAutoExposure
+        cameraConfig.flashMode = .off
+        cameraConfig.videoExportType = .mov
+    }
 }
 
 extension ProfileViewController: UITextFieldDelegate {

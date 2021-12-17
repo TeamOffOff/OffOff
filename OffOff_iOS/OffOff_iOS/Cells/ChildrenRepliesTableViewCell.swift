@@ -169,14 +169,19 @@ class ChildrenRepliesTableViewCell: UITableViewCell {
         disposeBag = DisposeBag()
         
         reply
-            .filter { $0 != nil }
-            .map { $0! }
+            .compactMap { $0 }
             .withUnretained(self)
             .bind { (owner, reply) in
                 //            self.profileImageView.image =
                 owner.dateLabel.text = reply.date.toDate()!.toFormedString()
                 owner.contentTextView.text = reply.content
-                owner.likeLabel.label.text = "\(reply.likes.count)"
+                
+                if reply.likes.count > 0 {
+                    owner.likeLabel.label.text = "\(reply.likes.count)"
+                    owner.likeLabel.isHidden = false
+                } else {
+                    owner.likeLabel.isHidden = true
+                }
                 
                 if let author = reply.author {
                     owner.nicknameLabel.text = author.nickname

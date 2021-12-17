@@ -19,23 +19,18 @@ final class OriginalImagesView: UIView {
         $0.register(OriginalImagesViewCell.self, forCellWithReuseIdentifier: OriginalImagesViewCell.identifier)
         $0.isPagingEnabled = true
         $0.showsHorizontalScrollIndicator = false
-    }
-    
-    lazy var carouselProgressView = UIProgressView().then {
-        $0.trackTintColor = .gray
-        $0.progressTintColor = .white
+        $0.backgroundColor = .black
     }
     
     var closeButton = UIButton().then {
-        $0.setTitle("닫기", for: .normal)
-        $0.setImage(UIImage.LEFTARROW, for: .normal)
+        $0.setImage(.LEFTARROW.resize(to: CGSize(width: 25, height: 22).resized(basedOn: .height)), for: .normal)
+        $0.imageView?.tintColor = .white
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = .black
         self.addSubview(collectionView)
-        self.addSubview(carouselProgressView)
         self.addSubview(closeButton)
         makeView()
     }
@@ -46,20 +41,15 @@ final class OriginalImagesView: UIView {
     
     func makeView() {
         collectionView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(80.adjustedHeight)
-            $0.bottom.left.right.equalToSuperview()
-        }
-        
-        carouselProgressView.snp.makeConstraints {
-            $0.bottom.equalTo(collectionView.snp.bottom).inset(30.adjustedHeight)
-            $0.left.right.equalToSuperview().inset(40.adjustedHeight)
+//            $0.top.equalToSuperview().inset(80.adjustedHeight)
+//            $0.bottom.left.right.equalToSuperview()
+            $0.edges.equalToSuperview()
         }
         
         closeButton.snp.makeConstraints {
-            $0.top.left.equalToSuperview().inset(20.adjustedHeight)
+            $0.left.equalToSuperview().inset(30.adjustedHeight)
+            $0.top.equalToSuperview().inset(65.adjustedHeight)
         }
-        
-        
     }
 }
 
@@ -73,6 +63,7 @@ final class OriginalImagesViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.contentView.addSubview(imageView)
+        self.contentView.backgroundColor = .black
         imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
     

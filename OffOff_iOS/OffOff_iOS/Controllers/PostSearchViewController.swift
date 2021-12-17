@@ -58,6 +58,10 @@ class PostSearchViewController: UIViewController {
         // bind outputs
         viewModel!.searchedList
             .observe(on: MainScheduler.instance)
+            .debug()
+            .do { [weak self] in
+                self?.customView.noResultImageView.isHidden = ($0.count != 0)
+            }
             .bind(to: customView.postListTableView.rx.items(cellIdentifier: PostPreviewCell.identifier, cellType: PostPreviewCell.self)) { (row, element, cell) in
                 cell.postModel.accept(element)
             }

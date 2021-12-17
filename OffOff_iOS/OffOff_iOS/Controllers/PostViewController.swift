@@ -64,7 +64,7 @@ class PostViewController: UIViewController {
     
     var loadingImageView = UIImageView().then {
         $0.backgroundColor = .g4
-        $0.image = UIImage(named: "LodingIndicator")!.resize(to: CGSize(width: 30.adjustedHeight, height: 30.adjustedHeight), isAlwaysTemplate: false)
+        $0.image = UIImage(named: "LoadingIndicator")!.resize(to: CGSize(width: 30.adjustedHeight, height: 30.adjustedHeight), isAlwaysTemplate: false)
         $0.contentMode = .top
     }
     
@@ -540,13 +540,16 @@ class PostViewController: UIViewController {
             .bind { (owner, text) in
                 if text! != "댓글을 입력하세요." && !text!.isEmpty {
                     owner.replyButton.isUserInteractionEnabled = true
-                    owner.replyButton.backgroundColor = .g1
+                    owner.replyButton.backgroundColor = .g4
+                    owner.replyButton.removeBorder()
                     owner.replyButton.setTitleColor(.white, for: .normal)
                 } else {
                     owner.replyButton.isUserInteractionEnabled = false
                     owner.replyButton.backgroundColor = .w2
+                    owner.replyButton.makeBorder(color: UIColor.g1.cgColor, width: 2.adjustedWidth)
                     owner.replyButton.setTitleColor(.g1, for: .normal)
                 }
+                owner.replyButton.setCornerRadius(10.adjustedHeight)
             }
             .disposed(by: disposeBag)
     }

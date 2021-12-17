@@ -16,7 +16,7 @@ class CustomRefreshControl: UIRefreshControl {
     
     override init() {
         super.init(frame: .zero)
-        self.animationView.image = UIImage(named: "LodingIndicator")!
+        self.animationView.image = UIImage(named: "LoadingIndicator")!
         setImage()
         setupView()
         self.endRefreshing()

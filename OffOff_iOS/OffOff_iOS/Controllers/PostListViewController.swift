@@ -18,8 +18,7 @@ class PostListViewController: UIViewController {
     let disposeBag = DisposeBag()
     var viewModel: PostListViewModel?
     
-    let searchButton = UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20, height: 20).resized(basedOn: .height)), style: .plain, target: nil, action: nil)
-    let menuButton = UIBarButtonItem(image: .MOREICON.resize(to: CGSize(width: 4, height: 20).resized(basedOn: .height)), style: .plain, target: nil, action: nil)
+    let searchButton = UIBarButtonItem(image: .SEARCHIMAGE.resize(to: CGSize(width: 20, height: 20).resized(basedOn: .height)).withInsets(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 20.adjustedWidth)), style: .plain, target: nil, action: nil)
     
     override func loadView() {
         self.view = customView
@@ -27,7 +26,7 @@ class PostListViewController: UIViewController {
         self.title = boardName ?? ""
         
         self.navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.font: UIFont.defaultFont(size: 20)]
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: .LEFTARROW.resize(to: CGSize(width: 25, height: 22).resized(basedOn: .height)), style: .plain, target: nil, action: nil)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: .LEFTARROW.resize(to: CGSize(width: 25, height: 22).resized(basedOn: .height)).withInsets(UIEdgeInsets(top: 0, left: 20.adjustedWidth, bottom: 0, right: 0)), style: .plain, target: nil, action: nil)
         self.navigationItem.rightBarButtonItems = [searchButton]
         
         self.customView.postListTableView.rowHeight = 81.adjustedHeight

@@ -9,14 +9,21 @@ import UIKit
 
 class ProfileMakeView: UIView {
     
-    var profileImageView = UIImageView().then {
-        $0.backgroundColor = .w3
+    var profileImageLabel = UILabel().then {
+        $0.text = "사진"
+        $0.font = .defaulFont(size: 16, weight: .black)
+        $0.textColor = .w4
+    }
+    
+    lazy var profileImageView = UIImageView().then {
+        $0.backgroundColor = UIColor(hex: "F1F3F4")
         $0.setCornerRadius(26.59)
         $0.contentMode = .scaleAspectFit
+        $0.addSubview(profileImageLabel)
     }
     
     var imageUploadButton = UIButton().then {
-        $0.backgroundColor = .w4
+        $0.backgroundColor = .w3
         $0.setCornerRadius(10.64)
         $0.tintColor = .w5
         $0.setImage(.CAMERA, for: .normal)
@@ -101,6 +108,9 @@ class ProfileMakeView: UIView {
             $0.left.equalToSuperview().inset(47.0)
             $0.width.equalTo(25.0)
             $0.height.equalTo(22.0)
+        }
+        profileImageLabel.snp.makeConstraints {
+            $0.center.equalToSuperview()
         }
     }
 }

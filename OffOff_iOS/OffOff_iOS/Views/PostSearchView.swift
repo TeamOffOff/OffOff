@@ -36,6 +36,11 @@ class PostSearchView: UIView {
         $0.addSubview(searchIcon)
         $0.addSubview(searchTextField)
     }
+    
+    var noResultImageView = UIImageView(image: .NoSearchResultImage).then {
+        $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,6 +48,7 @@ class PostSearchView: UIView {
         self.addSubview(upperView)
         self.addSubview(postListTableView)
         self.addSubview(searchContainer)
+        self.addSubview(noResultImageView)
         makeView()
     }
     
@@ -53,7 +59,7 @@ class PostSearchView: UIView {
     private func makeView() {
         upperView.snp.makeConstraints {
             $0.top.left.right.equalToSuperview()
-            $0.height.equalTo(270.adjustedHeight)
+            $0.height.equalTo(150.adjustedHeight)
         }
         postListTableView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
@@ -76,6 +82,12 @@ class PostSearchView: UIView {
             $0.centerY.equalToSuperview()
             $0.left.equalTo(searchIcon.snp.right).offset(16.adjustedWidth)
             $0.right.equalToSuperview().inset(6.5.adjustedWidth)
+        }
+        noResultImageView.snp.makeConstraints {
+            $0.top.equalTo(upperView.snp.bottom).offset(128.adjustedHeight)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(141.adjustedWidth)
+            $0.height.equalTo(94.adjustedHeight)
         }
     }
 }
