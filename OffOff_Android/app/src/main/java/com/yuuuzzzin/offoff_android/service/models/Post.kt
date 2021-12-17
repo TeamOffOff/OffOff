@@ -72,7 +72,7 @@ data class Author(
 data class ImageList(
     @SerializedName("image")
     val image: List<Image>
-)
+): Serializable
 
 /* 이미지 */
 data class Image(

@@ -48,6 +48,9 @@ constructor(
     private val _reply = MutableLiveData<Reply>()
     val reply: LiveData<Reply> get() = _reply
 
+    private val _imageList = MutableLiveData<List<Image>>()
+    val imageList: LiveData<List<Image>> get() = _imageList
+
     // 게시글 좋아요 완료 여부
     private val _isLikedPost = MutableLiveData<Event<Boolean>>()
     val isLikedPost: LiveData<Event<Boolean>> = _isLikedPost
@@ -391,6 +394,23 @@ constructor(
                         Log.d("tag_success", "deleteReply: ${response.body()}")
                     } else {
                         Log.d("tag_fail", "deleteReply Error: ${response.code()}")
+                    }
+                }
+
+        }
+    }
+
+    fun getPostImages(postId: String, boardType: String) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getPostImages(OffoffApplication.pref.token.toString(), postId, boardType)
+                .let { response ->
+                    if (response.isSuccessful) {
+                        //_imageList.postValue(response.body()!!.image)
+                        OffoffApplication.imageList = response.body()!!.image
+                        Log.d("tag_success", "getPostImages: ${response.body()}")
+                    } else {
+                        Log.d("tag_fail", "getPostImages Error: ${response.code()}")
                     }
                 }
 

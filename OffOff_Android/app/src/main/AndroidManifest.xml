@@ -20,6 +20,8 @@
         android:theme="@style/Theme.OffOff_Android"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".PagerActivity"></activity>
+        <activity android:name=".views.ui.board.ImageSlideActivity" />
         <activity android:name=".views.ui.user.UserPostActivity" />
 
         <meta-data
@@ -46,12 +48,11 @@
         </activity>
         <activity
             android:name=".views.ui.board.PostWriteActivity"
-            android:windowSoftInputMode="adjustPan" /><!-- <intent-filter> -->
+            android:windowSoftInputMode="adjustPan" /> <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.MAIN" /> -->
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
         <!-- </activity> -->
-
         <activity
             android:name=".views.ui.member.SignupActivity"
             android:windowSoftInputMode="adjustPan" />

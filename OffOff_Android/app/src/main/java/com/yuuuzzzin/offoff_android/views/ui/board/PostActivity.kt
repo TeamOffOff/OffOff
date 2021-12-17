@@ -60,6 +60,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
     private var parentReplyId: String? = null
     private var requestUpdate: Boolean? = false
     private var isFirst: Boolean = true
+    private var imageList: List<Image>? = null
 
     // 게시물 수정 액티비티 요청 및 결과 처리
     private val requestEditPost = registerForActivityResult(
@@ -97,6 +98,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         // 포스트 & 댓글 요청
         viewModel.getPost(postId, boardType, false)
         viewModel.getComments(postId, boardType, false)
+        viewModel.getPostImages(postId, boardType)
+
+//        viewModel.isSuccess.observe(binding.lifecycleOwner!!, {
+//            if(it)
+//                binding.layoutProgress.root.visibility = View.GONE
+//        })
 
         // 로딩 화면 가시화 여부
         viewModel.loading.observe(binding.lifecycleOwner!!, { event ->
@@ -162,10 +169,13 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         // 게시글 스크랩 처리
         viewModel.isBookmarkedPost.observe(binding.lifecycleOwner!!, { event ->
             event.getContentIfNotHandled()?.let {
+                val scrapNum = binding.tvScrapNum.text.toString()
                 if (it) {
                     showAutoCloseDialog(this, "게시글을 스크랩했습니다.")
+                    binding.tvScrapNum.text = (scrapNum.toInt() + 1).toString()
                 } else {
                     showAutoCloseDialog(this, "게시글 스크랩을 취소했습니다.")
+                    binding.tvScrapNum.text = (scrapNum.toInt() - 1).toString()
                 }
             }
         })
@@ -280,6 +290,12 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
                 showReplyOptionDialog(it, isMine = true)
             }
         })
+
+        // 이미지 리스트 처리
+//        viewModel.imageList.observe(binding.lifecycleOwner!!, {
+//            imageList = it
+//            OffoffApplication.imageList = it
+//        })
 
         binding.btWrite.setOnClickListener {
 
@@ -407,7 +423,9 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             PostImageAdapter.OnPostImageClickListener {
             override fun onClickPostImage(item: Image, position: Int) {
                 // TODO: 이미지 클릭 시, 큰 이미지 화면 띄우기
-                null
+                val intent = Intent(this@PostActivity, ImageSlideActivity::class.java)
+                intent.putExtra("position", position)
+                startActivity(intent)
             }
         })
     }
@@ -553,9 +571,11 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             try {
                 when (selected) {
                     DELETE_COMMENT -> {
-                        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
-                            viewModel.deleteComment(id, postId, boardType)
-                        },
+                        showYesNoDialog(this,
+                            "댓글을 삭제하시겠습니까?",
+                            onPositiveClick = { dialog, which ->
+                                viewModel.deleteComment(id, postId, boardType)
+                            },
                             onNegativeClick = { dialog, which ->
                                 null
                             })
@@ -588,14 +608,16 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
             try {
                 when (selected) {
                     DELETE_COMMENT -> {
-                        showYesNoDialog(this, "댓글을 삭제하시겠습니까?", onPositiveClick = { dialog, which ->
-                            viewModel.deleteReply(
-                                reply.id!!,
-                                postId,
-                                boardType,
-                                reply.parentReplyId!!
-                            )
-                        },
+                        showYesNoDialog(this,
+                            "댓글을 삭제하시겠습니까?",
+                            onPositiveClick = { dialog, which ->
+                                viewModel.deleteReply(
+                                    reply.id!!,
+                                    postId,
+                                    boardType,
+                                    reply.parentReplyId!!
+                                )
+                            },
                             onNegativeClick = { dialog, which ->
                                 null
                             })
