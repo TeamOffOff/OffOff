@@ -96,6 +96,11 @@ class PostPreviewCell: UITableViewCell {
         setData()
     }
     private func setupCell() {
+        pictureLabel.snp.contentHuggingHorizontalPriority = 251
+        commentLabel.snp.contentHuggingHorizontalPriority = 251
+        likeLabel.snp.contentHuggingHorizontalPriority = 251
+        dateAuthorLabel.snp.contentHuggingHorizontalPriority = 0
+        dateAuthorLabel.snp.contentCompressionResistanceHorizontalPriority = 0
         containerView.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.top.bottom.equalToSuperview().inset(3.5.adjustedHeight)
@@ -110,29 +115,30 @@ class PostPreviewCell: UITableViewCell {
             $0.left.equalToSuperview().inset(26.adjustedWidth)
             $0.right.equalTo(imagePreview.snp.left).offset(9.adjustedWidth)
         }
-        dateAuthorLabel.snp.makeConstraints {
-            $0.top.equalTo(previewTextView.snp.bottom).offset(3.adjustedHeight)
-            $0.left.equalToSuperview().inset(26.adjustedWidth)
-            $0.bottom.equalToSuperview().inset(10.adjustedHeight)
-        }
-        pictureLabel.snp.makeConstraints {
-            $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
-            $0.height.equalTo(12.adjustedHeight)
-            $0.right.equalTo(likeLabel.iconImageView.snp.left).offset(-5)
-        }
-        likeLabel.snp.makeConstraints {
-            $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
-            $0.height.equalTo(12.adjustedHeight)
-            $0.right.equalTo(commentLabel.iconImageView.snp.left).offset(-5)
+        imagePreview.snp.makeConstraints {
+            $0.top.bottom.right.equalToSuperview().inset(9.adjustedHeight)
+            $0.width.equalTo(78.adjustedWidth)
         }
         commentLabel.snp.makeConstraints {
             $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
             $0.height.equalTo(12.adjustedHeight)
             $0.right.equalTo(imagePreview.snp.left).inset(-9.adjustedWidth)
         }
-        imagePreview.snp.makeConstraints {
-            $0.top.bottom.right.equalToSuperview().inset(9.adjustedHeight)
-            $0.width.equalTo(78.adjustedWidth)
+        likeLabel.snp.makeConstraints {
+            $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
+            $0.height.equalTo(12.adjustedHeight)
+            $0.right.equalTo(commentLabel.iconImageView.snp.left).offset(-5)
+        }
+        pictureLabel.snp.makeConstraints {
+            $0.top.equalTo(previewTextView.snp.bottom).offset(2.adjustedHeight)
+            $0.height.equalTo(12.adjustedHeight)
+            $0.right.equalTo(likeLabel.iconImageView.snp.left).offset(-5)
+        }
+        dateAuthorLabel.snp.makeConstraints {
+            $0.right.equalTo(pictureLabel.snp.left)
+            $0.top.equalTo(previewTextView.snp.bottom).offset(3.adjustedHeight)
+            $0.left.equalToSuperview().inset(26.adjustedWidth)
+            $0.bottom.equalToSuperview().inset(10.adjustedHeight)
         }
     }
     
