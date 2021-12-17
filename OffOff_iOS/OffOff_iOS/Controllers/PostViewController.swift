@@ -71,18 +71,14 @@ class PostViewController: UIViewController {
     var loadingView = UIView().then {
         $0.backgroundColor = .g4
     }
-
-    var backgroundForIndicator = UIView().then {
-        $0.backgroundColor = .g4
-    }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func loadView() {
+        self.view = UIView()
+        
         loadingImageView.rotate(duration: 2.5)
         navigationController?.navigationBar.setAppearance()
         
         view.backgroundColor = .white
-        view.addSubview(backgroundForIndicator)
         view.addSubview(postView)
         view.addSubview(replyContainer)
         replyContainer.addSubview(replyBackgroundView)
@@ -91,11 +87,14 @@ class PostViewController: UIViewController {
         view.addSubview(loadingView)
         view.addSubview(loadingImageView)
         makeView()
-        
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+       
         replyTextView.rx.setDelegate(self).disposed(by: disposeBag)
         replyTextViewSetUp()
         
-        //        self.postView.repliesTableView.rx.setDelegate(self).disposed(by: disposeBag)
         postView.repliesTableView.rowHeight = UITableView.automaticDimension
         postView.repliesTableView.estimatedRowHeight = 82.adjustedHeight
         
@@ -406,10 +405,6 @@ class PostViewController: UIViewController {
     
     // MARK: - Private Funcs
     private func makeView() {
-        backgroundForIndicator.snp.makeConstraints {
-            $0.top.left.right.equalToSuperview()
-            $0.height.equalTo(self.postView.backgroundView.snp.height).dividedBy(1.5)
-        }
         loadingView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
@@ -419,7 +414,8 @@ class PostViewController: UIViewController {
             $0.width.height.equalTo(30.adjustedHeight)
         }
         postView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
+//            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalToSuperview()
             $0.left.right.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(50.adjustedHeight)
         }
@@ -587,7 +583,6 @@ extension PostViewController: UITextViewDelegate {
 
 extension PostViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        print(#fileID, #function, #line, "")
         let image = postImages.value[indexPath.row].body.toImage()
         return tableView.frame.width / image.imageRatio
     }
