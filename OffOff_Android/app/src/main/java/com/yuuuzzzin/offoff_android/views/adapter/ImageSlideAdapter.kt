@@ -11,10 +11,10 @@ import com.yuuuzzzin.offoff_android.databinding.ViewPagerItemImageBinding
 import com.yuuuzzzin.offoff_android.service.models.Image
 import com.yuuuzzzin.offoff_android.utils.ImageUtils.stringToBitmap
 
-class ImageSlideAdapter(private val imgList: List<Image>) :
+class ImageSlideAdapter() :
     RecyclerView.Adapter<ImageSlideAdapter.ImageSlideViewHolder>() {
 
-    val imageList = imgList
+    private var imageList = ArrayList<Image>()
 
     override fun getItemCount(): Int = imageList.size
 
@@ -47,5 +47,11 @@ class ImageSlideAdapter(private val imgList: List<Image>) :
             binding.ivImage.setImageBitmap(stringToBitmap(item.body.toString()))
             binding.executePendingBindings()
         }
+    }
+
+    fun addPostImageList(imageList: List<Image>) {
+        this.imageList.clear()
+        this.imageList.addAll(imageList)
+        notifyDataSetChanged()
     }
 }

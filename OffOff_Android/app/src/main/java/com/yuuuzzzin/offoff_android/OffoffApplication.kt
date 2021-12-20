@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import com.yuuuzzzin.offoff_android.service.SharedPreferenceController
-import com.yuuuzzzin.offoff_android.service.models.Image
 import com.yuuuzzzin.offoff_android.service.models.User
 import dagger.hilt.android.HiltAndroidApp
 import io.realm.Realm
@@ -40,7 +39,7 @@ class OffoffApplication : MultiDexApplication() {
         private lateinit var instance: OffoffApplication
         lateinit var pref: SharedPreferenceController
         lateinit var user: User
-        lateinit var imageList: List<Image>
+        //lateinit var imageList: List<Image>
 
         fun appCtx(): Context {
             return instance.applicationContext

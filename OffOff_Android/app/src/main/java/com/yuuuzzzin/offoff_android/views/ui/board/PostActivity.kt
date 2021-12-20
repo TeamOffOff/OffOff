@@ -98,7 +98,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         // 포스트 & 댓글 요청
         viewModel.getPost(postId, boardType, false)
         viewModel.getComments(postId, boardType, false)
-        viewModel.getPostImages(postId, boardType)
+        //viewModel.getPostImages(postId, boardType)
 
 //        viewModel.isSuccess.observe(binding.lifecycleOwner!!, {
 //            if(it)
@@ -422,9 +422,10 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
         postImageListAdapter.setOnPostImageClickListener(object :
             PostImageAdapter.OnPostImageClickListener {
             override fun onClickPostImage(item: Image, position: Int) {
-                // TODO: 이미지 클릭 시, 큰 이미지 화면 띄우기
                 val intent = Intent(this@PostActivity, ImageSlideActivity::class.java)
                 intent.putExtra("position", position)
+                intent.putExtra("boardType", boardType)
+                intent.putExtra("postId", postId)
                 startActivity(intent)
             }
         })

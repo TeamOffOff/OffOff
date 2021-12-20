@@ -407,7 +407,7 @@ constructor(
                 .let { response ->
                     if (response.isSuccessful) {
                         //_imageList.postValue(response.body()!!.image)
-                        OffoffApplication.imageList = response.body()!!.image
+                        //OffoffApplication.imageList = response.body()!!.image
                         Log.d("tag_success", "getPostImages: ${response.body()}")
                     } else {
                         Log.d("tag_fail", "getPostImages Error: ${response.code()}")
