@@ -40,6 +40,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
     private lateinit var boardName: String
     private var postId: String? = null
     private var postWriteType: Int = 0
+    private var imageList: List<Image>? = null
 
     private val requestActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -105,10 +106,14 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
             val post: Post = intent.getSerializableExtra("post") as Post
             viewModel.setPostText(post.title, post.content)
             if (!post.image.isNullOrEmpty()) {
+
+                imageList = post.image
                 Log.d("tag_이미지", post.image.toString())
+
                 val list = mutableListOf<Bitmap>()
                 for (i in post.image)
                     list.add(stringToBitmap(i.body!!))
+
                 imageAdapter.addItems(list)
                 binding.rvImage.visibility = View.VISIBLE
             }
@@ -188,7 +193,7 @@ class PostWriteActivity : BaseActivity<ActivityPostWriteBinding>(R.layout.activi
                     }
                 }
                 PostWriteType.EDIT -> {
-                    viewModel.editPost(boardType, postId!!)
+                    viewModel.editPost(boardType, postId!!, imageList)
                 }
             }
         }
