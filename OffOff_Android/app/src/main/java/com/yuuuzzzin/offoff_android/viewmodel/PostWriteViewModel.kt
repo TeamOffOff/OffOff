@@ -67,8 +67,6 @@ constructor(
             image = imageList
         )
 
-        Log.d("tag_*3 보내는 객체", post.toString())
-
         viewModelScope.launch(Dispatchers.IO) {
             repository.writePost(OffoffApplication.pref.token!!, post).let { response ->
                 if (response.isSuccessful) {
@@ -81,7 +79,7 @@ constructor(
         }
     }
 
-    fun editPost(boardType: String, postId: String) {
+    fun editPost(boardType: String, postId: String, imageList: List<Image>? = emptyList()) {
         if (!check()) return
 
         _loading.postValue(Event(true))
@@ -91,7 +89,8 @@ constructor(
             boardType = boardType,
             author = OffoffApplication.user.id,
             title = title.value!!,
-            content = content.value!!
+            content = content.value!!,
+            image = imageList
         )
 
         viewModelScope.launch(Dispatchers.IO) {
