@@ -70,6 +70,7 @@ class PostActivity : BaseActivity<ActivityPostBinding>(R.layout.activity_post) {
 
         if (resultCode == Activity.RESULT_OK) {
             viewModel.getPost(postId, boardType, false)
+            viewModel.getComments(postId, boardType, false)
             requestUpdate = true
         }
     }
